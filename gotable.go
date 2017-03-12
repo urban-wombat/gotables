@@ -1109,7 +1109,7 @@ func max(a int, b int) int {
 }
 
 // 18.01.2017 M Gorman
-func printMatrix(tableName string, matrix [][]string, width []int, alignRight []bool) string {
+func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool) string {
 	var buf bytes.Buffer
 	var s string
 	var sep string	// Printed before each value.
@@ -1121,7 +1121,24 @@ func printMatrix(tableName string, matrix [][]string, width []int, alignRight []
 		sep = ""	// No separator before first column.
 		for col := 0; col < len(matrix); col++ {
 			if alignRight[col] {
-				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
+// TODO: Move this functionality to where printMatrix is called.
+				var toWrite string
+				if row <= 1 {	// It's a colName or typeName
+					toWrite = matrix[col][row]
+				} else {	// It's a float.
+					// Convert back to float so we can format it again in light of the maximum precision in the column.
+					float64Val, err := strconv.ParseFloat(matrix[col][row], 64)
+//					where(fmt.Sprintf("float64Val = %f from %q\n", float64Val, matrix[col][row]))
+					// TODO: Remove this panic.
+					if err != nil {
+						panic(err)
+					}
+					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], 64)
+//					width[col] = max(width[col], len(toWrite))
+				}
+//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
+				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite)	// Align right
+//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
 			} else {
 				s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row])	// Align left with -
@@ -1144,8 +1161,9 @@ func (table *GoTable) String() string {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
 		return ""
 	}
-	var horizontalSeparator byte = ' '	// Remove this later.
-	var horizontalSep string = " "
+//	var horizontalSeparator byte = ' '	// Remove this later?
+	var gapBetweenCols string = " "
+	var horizontalSep string
 	const verticalSep byte = '\n'
 	const colNameRowIndex = 0
 	const colTypeRowIndex = 1
@@ -1166,6 +1184,9 @@ func (table *GoTable) String() string {
 	alignRight := make([]bool, colCount)
 
 	width := make([]int, colCount)
+	prenum := make([]int, colCount)
+	points := make([]int, colCount)
+	precis := make([]int, colCount)
 
 /*
 	// Special case to align decimal points in float32 and float64.
@@ -1179,8 +1200,8 @@ func (table *GoTable) String() string {
 	}
 
 	// Col names
-	if len(table.colNames) > 0 {
-		horizontalSep = ""
+	// Initialise width to width of colName.
+	if len(table.colNames) > 0 {	// Allow for empty table?
 		for colIndex, colName := range table.colNames {
 			matrix[colIndex][colNameRowIndex] = colName
 			width[colIndex] = max(width[colIndex], len(colName))
@@ -1188,8 +1209,9 @@ func (table *GoTable) String() string {
 	}
 
 	// Col types
-	if len(table.colTypes) > 0 {
-		horizontalSep = ""
+	// Stretch width if colType is wider than colName.
+	// Set alignRight true if col is numeric.
+	if len(table.colTypes) > 0 {    // Allow for empty table?
 		for colIndex, colType := range table.colTypes {
 			matrix[colIndex][colTypeRowIndex] = colType
 			width[colIndex] = max(width[colIndex], len(colType))
@@ -1206,7 +1228,7 @@ func (table *GoTable) String() string {
 			os.Stderr.WriteString(err.Error())
 			return ""
 		}
-		horizontalSep = ""
+		horizontalSep = ""	// No gap on left of first column.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal    string
 			var tVal    bool
@@ -1234,84 +1256,72 @@ func (table *GoTable) String() string {
 					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 					var replicatedPercentChars string
 					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-					// buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
 					s = fmt.Sprintf("%q", replicatedPercentChars)
 				case "bool":
 					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
 					if !exists {
 						tVal = false
 					}
-					// buf.WriteString(fmt.Sprintf("%t", tVal))
 					s = fmt.Sprintf("%t", tVal)
 				case "uint8":
 					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
 					if !exists {
 						ui8Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", ui8Val))
 					s = fmt.Sprintf("%d", ui8Val)
 				case "uint16":
 					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
 					if !exists {
 						ui16Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", ui16Val))
 					s = fmt.Sprintf("%d", ui16Val)
 				case "uint32":
 					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
 					if !exists {
 						ui32Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", ui32Val))
 					s = fmt.Sprintf("%d", ui32Val)
 				case "uint64":
 					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
 					if !exists {
 						ui64Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", ui64Val))
 					s = fmt.Sprintf("%d", ui64Val)
 				case "uint":
 					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
 					if !exists {
 						uiVal = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", uiVal))
 					s = fmt.Sprintf("%d", uiVal)
 				case "int":
 					iVal, exists = rowMap[table.colNames[colIndex]].(int)
 					if !exists {
 						iVal = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", iVal))
 					s = fmt.Sprintf("%d", iVal)
 				case "int8":
 					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
 					if !exists {
 						i8Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", i8Val))
 					s = fmt.Sprintf("%d", i8Val)
 				case "int16":
 					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
 					if !exists {
 						i16Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", i16Val))
 					s = fmt.Sprintf("%d", i16Val)
 				case "int32":
 					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
 					if !exists {
 						i32Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", i32Val))
 					s = fmt.Sprintf("%d", i32Val)
 				case "int64":
 					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
 					if !exists {
 						i64Val = 0
 					}
-					// buf.WriteString(fmt.Sprintf("%d", i64Val))
 					s = fmt.Sprintf("%d", i64Val)
 				case "float32":
 					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
@@ -1319,15 +1329,17 @@ func (table *GoTable) String() string {
 						f32Val = 0.0
 					}
 					var f64ValForFormatFloat float64 = float64(f32Val)
-					// buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
 					s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
+//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
+					setWidths(s, colIndex, prenum, points, precis, width)
 				case "float64":
 					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
 					if !exists {
 						f64Val = 0.0
 					}
-					// buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))	// -1 strips off excess decimal places.
 					s = strconv.FormatFloat(f64Val, 'f', -1, 64)	// -1 strips off excess decimal places.
+//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
+					setWidths(s, colIndex, prenum, points, precis, width)
 				default:
 					log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
 					return ""
@@ -1352,16 +1364,59 @@ printMatrix() will have to use a format which places the decimal point in a unif
 			}
 */
 
-			width[colIndex] = max(width[colIndex], len(s))
+//			width[colIndex] = max(width[colIndex], len(s))
+//			where(fmt.Sprintf("len(%q) = %d\n", s, len(s)))
 
-			horizontalSep = string(horizontalSeparator)
+//			horizontalSep = string(horizontalSeparator)
+			horizontalSep = gapBetweenCols
 		}
 		buf.WriteByte(verticalSep)
 	}
 
-	s = printMatrix(table.tableName, matrix, width, alignRight)
+	s = printMatrix(table.tableName, matrix, width, precis, alignRight)
 
 	return s
+}
+
+func prenumberOf(s string) (prenumber int) {
+	index := strings.Index(s, ".")
+	if index >= 0 {
+		prenumber = index
+	} else {
+		prenumber = len(s)
+	}
+//	where(fmt.Sprintf("prenumber of %q = %d\n", s, prenumber))
+	return prenumber
+}
+
+func pointsOf(s string) (points int) {
+	index := strings.Index(s, ".")
+	if index >= 0 {
+		points = 1
+	} else {
+		points = 0
+	}
+//	where(fmt.Sprintf("points of %q = %d\n", s, points))
+	return points
+}
+
+func precisionOf(s string) (precision int) {
+	index := strings.Index(s, ".")
+	if index >= 0 {
+		precision = (len(s) - index) - 1
+	} else {
+		precision = 0
+	}
+//	where(fmt.Sprintf("precision of %q = %d\n", s, precision))
+	return precision
+}
+
+func setWidths(s string, colIndex int, prenum []int, points []int, precis []int, width []int) {
+	prenum[colIndex] = max(prenum[colIndex], prenumberOf(s))
+	points[colIndex] = max(points[colIndex], pointsOf(s))
+	precis[colIndex] = max(precis[colIndex], precisionOf(s))
+	thisWidth := prenum[colIndex] + points[colIndex] + precis[colIndex]
+	width[colIndex] = max(width[colIndex], thisWidth)
 }
 
 /*
