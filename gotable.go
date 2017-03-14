@@ -1161,6 +1161,7 @@ func (table *GoTable) String() string {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
 		return ""
 	}
+
 //	var horizontalSeparator byte = ' '	// Remove this later?
 	var gapBetweenCols string = " "
 	var horizontalSep string
@@ -1364,8 +1365,9 @@ printMatrix() will have to use a format which places the decimal point in a unif
 			}
 */
 
-//			width[colIndex] = max(width[colIndex], len(s))
+			width[colIndex] = max(width[colIndex], len(s))	// Needed for non-numeric columns.
 //			where(fmt.Sprintf("len(%q) = %d\n", s, len(s)))
+//			where(fmt.Sprintf("width[%d] = %d\n", colIndex, width[colIndex]))
 
 //			horizontalSep = string(horizontalSeparator)
 			horizontalSep = gapBetweenCols
@@ -1374,6 +1376,14 @@ printMatrix() will have to use a format which places the decimal point in a unif
 	}
 
 	s = printMatrix(table.tableName, matrix, width, precis, alignRight)
+
+/*
+	where(fmt.Sprintf("(1) I AM HERE! About to print [%s]", table.tableName))
+	fmt.Printf("(2) I AM HERE! About to print [%s]\n", table.tableName)
+	fmt.Println(s)
+	panic(fmt.Errorf("what the!"))
+	os.Exit(55)
+*/
 
 	return s
 }
