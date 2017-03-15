@@ -72,7 +72,9 @@ var intRegexp		*regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`^(\b[0-9]+\.([0-9]+\b)?|\.[0-9]+\b)`)
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^(\b[0-9]+\.([0-9]+\b)?|\.[0-9]+\b))|([Nn][Aa][Nn])`)
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])`)
-   var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
+// var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
+// Allow negative float numbers! 15/03/2017 Amazed that this was missed during initial testing!
+   var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 var namePattern                    =   `^[a-zA-Z_][a-zA-Z0-9_]*$`
 var tableNamePattern               = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegExp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
@@ -712,7 +714,9 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 				}
 				if math.IsNaN(float64Val) && textFound != "NaN" {
-					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+//					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+					return nil, fmt.Errorf("%s col %s: expecting NaN as Not a Number for type %s but found: %s ",
+						p.gotFilePos(), colNames[i], colTypes[i], textFound)
 				}
 				float32Val = float32(float64Val)
 				rowMap[colNames[i]] = float32Val
@@ -727,7 +731,9 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 				}
 				if math.IsNaN(float64Val) && textFound != "NaN" {
-					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+//					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+					return nil, fmt.Errorf("%s col %s: expecting NaN as Not a Number for type %s but found: %s ",
+						p.gotFilePos(), colNames[i], colTypes[i], textFound)
 				}
 				rowMap[colNames[i]] = float64Val
 			default:
