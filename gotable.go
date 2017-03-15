@@ -1381,8 +1381,8 @@ printMatrix() will have to use a format which places the decimal point in a unif
 	where(fmt.Sprintf("(1) I AM HERE! About to print [%s]", table.tableName))
 	fmt.Printf("(2) I AM HERE! About to print [%s]\n", table.tableName)
 	fmt.Println(s)
-	panic(fmt.Errorf("what the!"))
 	os.Exit(55)
+	panic(fmt.Errorf("what the!"))
 */
 
 	return s
