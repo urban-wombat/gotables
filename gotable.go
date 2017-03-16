@@ -1109,7 +1109,7 @@ func max(a int, b int) int {
 }
 
 // 18.01.2017 M Gorman
-func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool) string {
+func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool, colTypes []string) string {
 	var buf bytes.Buffer
 	var s string
 	var sep string	// Printed before each value.
@@ -1117,6 +1117,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 	s = fmt.Sprintf("[%s]\n", tableName)
 	buf.WriteString(s)
 
+//	where(fmt.Sprintf("matrix = %v", matrix))
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = ""	// No separator before first column.
 		for col := 0; col < len(matrix); col++ {
@@ -1125,15 +1126,22 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				var toWrite string
 				if row <= 1 {	// It's a colName or typeName
 					toWrite = matrix[col][row]
-				} else {	// It's a float.
+				} else {	// It's numeric. Note: float conversion handles int conversion.
+					var bits int
+					switch colTypes[col] {
+						case "float32": bits = 32
+						case "float64": bits = 64
+						default: bits = 64	// For int and other non-float integrals.
+					}
 					// Convert back to float so we can format it again in light of the maximum precision in the column.
-					float64Val, err := strconv.ParseFloat(matrix[col][row], 64)
+//					where(fmt.Sprintf("About to parse %s: %s (bits=%d)", colTypes[col], matrix[col][row], bits))
+					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
 //					where(fmt.Sprintf("float64Val = %f from %q\n", float64Val, matrix[col][row]))
 					// TODO: Remove this panic.
 					if err != nil {
 						panic(err)
 					}
-					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], 64)
+					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], bits)
 //					width[col] = max(width[col], len(toWrite))
 				}
 //				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
@@ -1202,6 +1210,7 @@ func (table *GoTable) String() string {
 
 	// Col names
 	// Initialise width to width of colName.
+//	where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
 	if len(table.colNames) > 0 {	// Allow for empty table?
 		for colIndex, colName := range table.colNames {
 			matrix[colIndex][colNameRowIndex] = colName
@@ -1219,6 +1228,8 @@ func (table *GoTable) String() string {
 			alignRight[colIndex], _ = IsNumericColType(colType)
 		}
 	}
+
+//	where(fmt.Sprintf("matrix before printMatrix(): %v", matrix))
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
@@ -1375,7 +1386,7 @@ printMatrix() will have to use a format which places the decimal point in a unif
 		buf.WriteByte(verticalSep)
 	}
 
-	s = printMatrix(table.tableName, matrix, width, precis, alignRight)
+	s = printMatrix(table.tableName, matrix, width, precis, alignRight, table.colTypes)
 
 /*
 	where(fmt.Sprintf("(1) I AM HERE! About to print [%s]", table.tableName))
