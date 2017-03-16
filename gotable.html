@@ -1,0 +1,2497 @@
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = ;
+	document.CALLGRAPH = ;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "."</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="#pkg-index" class="indexLink">Index</a></dd>
+			
+				<dd><a href="#pkg-examples" class="examplesLink">Examples</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>
+Functions and methods for processing GoTable tables.
+</p>
+<p>
+The GoTable parser reads text and parses it into a set of one or more tables in a TableSet.
+</p>
+<p>
+Functions and methods for sorting GoTable tables.
+</p>
+
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+				
+				<dd><a href="#IsNumericColType">func IsNumericColType(colType string) (bool, error)</a></dd>
+			
+				
+				<dd><a href="#IsValidColName">func IsValidColName(colName string) (bool, error)</a></dd>
+			
+				
+				<dd><a href="#IsValidColType">func IsValidColType(colType string) (bool, error)</a></dd>
+			
+				
+				<dd><a href="#IsValidTableName">func IsValidTableName(tableName string) (bool, error)</a></dd>
+			
+				
+				<dd><a href="#Round">func Round(val float64, places int) (rounded float64)</a></dd>
+			
+			
+				
+				<dd><a href="#GoTable">type GoTable</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GobDecodeTable">func GobDecodeTable(buffer bytes.Buffer) (*GoTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTable">func NewGoTable(tableName string) (*GoTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableWithCols">func NewGoTableWithCols(tableName string, colNames []string, colTypes []string) (*GoTable, error)</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddCol">func (table *GoTable) AddCol(colName string, colType string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddColNames">func (table *GoTable) AddColNames(colNames []string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddColTypes">func (table *GoTable) AddColTypes(colTypes []string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddRow">func (table *GoTable) AddRow() error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddRowMap">func (table *GoTable) AddRowMap(newRow GoTableRow) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddSortKey">func (table *GoTable) AddSortKey(colName string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.AddTableRow">func (table *GoTable) AddTableRow(newRow GoTableRow) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColCount">func (table *GoTable) ColCount() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColIndex">func (table *GoTable) ColIndex(colName string) (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColName">func (table *GoTable) ColName(colIndex int) (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColNames">func (table *GoTable) ColNames() []string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColType">func (table *GoTable) ColType(colName string) (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColTypeByColIndex">func (table *GoTable) ColTypeByColIndex(colIndex int) (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.ColTypes">func (table *GoTable) ColTypes() []string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.DeleteRow">func (table *GoTable) DeleteRow(rowIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetBool">func (table *GoTable) GetBool(colName string, rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetBoolByColIndex">func (table *GoTable) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetFloat32">func (table *GoTable) GetFloat32(colName string, rowIndex int) (float32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetFloat32ByColIndex">func (table *GoTable) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetFloat64">func (table *GoTable) GetFloat64(colName string, rowIndex int) (float64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetFloat64ByColIndex">func (table *GoTable) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt">func (table *GoTable) GetInt(colName string, rowIndex int) (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt16">func (table *GoTable) GetInt16(colName string, rowIndex int) (int16, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt16ByColIndex">func (table *GoTable) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt32">func (table *GoTable) GetInt32(colName string, rowIndex int) (int32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt32ByColIndex">func (table *GoTable) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt64">func (table *GoTable) GetInt64(colName string, rowIndex int) (int64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt64ByColIndex">func (table *GoTable) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt8">func (table *GoTable) GetInt8(colName string, rowIndex int) (int8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetInt8ByColIndex">func (table *GoTable) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetIntByColIndex">func (table *GoTable) GetIntByColIndex(colIndex int, rowIndex int) (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetSortKeysAsTable">func (thisTable *GoTable) GetSortKeysAsTable() (*GoTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetString">func (table *GoTable) GetString(colName string, rowIndex int) (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetStringByColIndex">func (table *GoTable) GetStringByColIndex(colIndex int, rowIndex int) (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint">func (table *GoTable) GetUint(colName string, rowIndex int) (uint, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint16">func (table *GoTable) GetUint16(colName string, rowIndex int) (uint16, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint16ByColIndex">func (table *GoTable) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint32">func (table *GoTable) GetUint32(colName string, rowIndex int) (uint32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint32ByColIndex">func (table *GoTable) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint64">func (table *GoTable) GetUint64(colName string, rowIndex int) (uint64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint64ByColIndex">func (table *GoTable) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint8">func (table *GoTable) GetUint8(colName string, rowIndex int) (uint8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUint8ByColIndex">func (table *GoTable) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetUintByColIndex">func (table *GoTable) GetUintByColIndex(colIndex int, rowIndex int) (uint, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetVal">func (table *GoTable) GetVal(colName string, rowIndex int) (interface{}, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GetValByColIndex">func (table *GoTable) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.GobEncode">func (table *GoTable) GobEncode() (bytes.Buffer, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.HasCell">func (table *GoTable) HasCell(colName string, rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.HasCellByColIndex">func (table *GoTable) HasCellByColIndex(colIndex int, rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.HasCol">func (table *GoTable) HasCol(colName string) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.HasColByColIndex">func (table *GoTable) HasColByColIndex(colIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.HasRow">func (table *GoTable) HasRow(rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.IsColType">func (table *GoTable) IsColType(colName string, typeNameQuestioning string) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.IsColTypeByColIndex">func (table *GoTable) IsColTypeByColIndex(colIndex int, typeNameQuestioning string) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.IsValidRow">func (table *GoTable) IsValidRow(rowIndex int) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.IsValidTable">func (table *GoTable) IsValidTable() (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.RenameCol">func (table *GoTable) RenameCol(oldName string, newName string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.RenameTable">func (table *GoTable) RenameTable(tableName string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.RowCount">func (table *GoTable) RowCount() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.RowMap">func (table *GoTable) RowMap(rowIndex int) (GoTableRow, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetBool">func (table *GoTable) SetBool(colName string, rowIndex int, newValue bool) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetBoolByColIndex">func (table *GoTable) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetCellToZero">func (table *GoTable) SetCellToZero(colName string, rowIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetCellToZeroByColIndex">func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetColCellsToZero">func (table *GoTable) SetColCellsToZero(colName string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetColCellsToZeroByColIndex">func (table *GoTable) SetColCellsToZeroByColIndex(colIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetFloat32">func (table *GoTable) SetFloat32(colName string, rowIndex int, newValue float32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetFloat32ByColIndex">func (table *GoTable) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetFloat64">func (table *GoTable) SetFloat64(colName string, rowIndex int, newValue float64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetFloat64ByColIndex">func (table *GoTable) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt">func (table *GoTable) SetInt(colName string, rowIndex int, newValue int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt16">func (table *GoTable) SetInt16(colName string, rowIndex int, newValue int16) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt16ByColIndex">func (table *GoTable) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt32">func (table *GoTable) SetInt32(colName string, rowIndex int, newValue int32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt32ByColIndex">func (table *GoTable) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt64">func (table *GoTable) SetInt64(colName string, rowIndex int, newValue int64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt64ByColIndex">func (table *GoTable) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt8">func (table *GoTable) SetInt8(colName string, rowIndex int, newValue int8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetInt8ByColIndex">func (table *GoTable) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetIntByColIndex">func (table *GoTable) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetRowCellsToZero">func (table *GoTable) SetRowCellsToZero(rowIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetRowFloatCellsToNaN">func (table *GoTable) SetRowFloatCellsToNaN(rowIndex int) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetSortKeys">func (table *GoTable) SetSortKeys(sortColNames ...string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetSortKeysReverse">func (table *GoTable) SetSortKeysReverse(sortColNames ...string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetString">func (table *GoTable) SetString(colName string, rowIndex int, newValue string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetStringByColIndex">func (table *GoTable) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetTableName">func (table *GoTable) SetTableName(tableName string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint">func (table *GoTable) SetUint(colName string, rowIndex int, newValue uint) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint16">func (table *GoTable) SetUint16(colName string, rowIndex int, newValue uint16) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint16ByColIndex">func (table *GoTable) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint32">func (table *GoTable) SetUint32(colName string, rowIndex int, newValue uint32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint32ByColIndex">func (table *GoTable) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint64">func (table *GoTable) SetUint64(colName string, rowIndex int, newValue uint64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint64ByColIndex">func (table *GoTable) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint8">func (table *GoTable) SetUint8(colName string, rowIndex int, newValue uint8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUint8ByColIndex">func (table *GoTable) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetUintByColIndex">func (table *GoTable) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetVal">func (table *GoTable) SetVal(colName string, rowIndex int, val interface{}) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SetValByColIndex">func (table *GoTable) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.Sort">func (table *GoTable) Sort()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SortByKeys">func (table *GoTable) SortByKeys(sortKeys SortKeys)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.SortKeys">func (table *GoTable) SortKeys() (SortKeys, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.String">func (table *GoTable) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.StringCSV">func (table *GoTable) StringCSV() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.StringSpacePadded">func (table *GoTable) StringSpacePadded() (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.StringTabWriter">func (table *GoTable) StringTabWriter() (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.TableName">func (table *GoTable) TableName() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTable.WriteFile">func (goTable *GoTable) WriteFile(fileName string, mode os.FileMode) error</a></dd>
+				
+			
+				
+				<dd><a href="#GoTableExported">type GoTableExported</a></dd>
+				
+				
+			
+				
+				<dd><a href="#GoTableRow">type GoTableRow</a></dd>
+				
+				
+			
+				
+				<dd><a href="#GoTableSet">type GoTableSet</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GobDecodeTableSet">func GobDecodeTableSet(buffer []bytes.Buffer) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSet">func NewGoTableSet(goTableSetName string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSetFromFile">func NewGoTableSetFromFile(fileName string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSetFromHtmlReader">func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSetFromHtmlString">func NewGoTableSetFromHtmlString(sourceName string, htmlString string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSetFromHtmlUrl">func NewGoTableSetFromHtmlUrl(url string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewGoTableSetFromString">func NewGoTableSetFromString(s string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#ReadFile">func ReadFile(fileName string) (*GoTableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#ReadString">func ReadString(s string) (*GoTableSet, error)</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.AddGoTable">func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.AddTable">func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.FileName">func (goTableSet *GoTableSet) FileName() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.GoTable">func (goTableSet *GoTableSet) GoTable(tableName string) (*GoTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.GoTableSetName">func (goTableSet *GoTableSet) GoTableSetName() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.GobEncode">func (tableSet *GoTableSet) GobEncode() ([]bytes.Buffer, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.HasTable">func (goTableSet *GoTableSet) HasTable(tableName string) (bool, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.RenameTable">func (goTableSet *GoTableSet) RenameTable(renameFrom string, renameTo string) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.SetFileName">func (goTableSet *GoTableSet) SetFileName(fileName string)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.SetGoTableSetName">func (goTableSet *GoTableSet) SetGoTableSetName(goTableSetName string)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.String">func (goTableSet *GoTableSet) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.StringSpacePadded">func (goTableSet *GoTableSet) StringSpacePadded() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.Table">func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.TableCount">func (goTableSet *GoTableSet) TableCount() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#GoTableSet.WriteFile">func (goTableSet *GoTableSet) WriteFile(fileName string, mode os.FileMode) error</a></dd>
+				
+			
+				
+				<dd><a href="#GoTableSetExported">type GoTableSetExported</a></dd>
+				
+				
+			
+				
+				<dd><a href="#SortKey">type SortKey</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#SortKey.String">func (key SortKey) String() string</a></dd>
+				
+			
+				
+				<dd><a href="#SortKeyExported">type SortKeyExported</a></dd>
+				
+				
+			
+				
+				<dd><a href="#SortKeys">type SortKeys</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#SortKeys.String">func (keys SortKeys) String() string</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+		<div id="pkg-examples">
+			<h4>Examples</h4>
+			<dl>
+			
+			<dd><a class="exampleLink" href="#example_NewGoTableSet">NewGoTableSet</a></dd>
+			
+			<dd><a class="exampleLink" href="#example_NewGoTableSetFromHtmlUrl">NewGoTableSetFromHtmlUrl</a></dd>
+			
+			<dd><a class="exampleLink" href="#example_Round">Round</a></dd>
+			
+			</dl>
+		</div>
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="/src/target/gotable.go">gotable.go</a>
+			
+				<a href="/src/target/html.go">html.go</a>
+			
+				<a href="/src/target/parser.go">parser.go</a>
+			
+				<a href="/src/target/sort.go">sort.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+		
+		
+			
+			
+			<h2 id="IsNumericColType">func <a href="/src/target/parser.go?s=13995:14046#L443">IsNumericColType</a>
+				<a class="permalink" href="#IsNumericColType">&#xb6;</a>
+			</h2>
+			<pre>func IsNumericColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Returns true for those Go types that are numeric.
+</p>
+<p>
+Go types NOT (yet) supported: complex64 complex128 byte rune
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="IsValidColName">func <a href="/src/target/parser.go?s=14480:14529#L458">IsValidColName</a>
+				<a class="permalink" href="#IsValidColName">&#xb6;</a>
+			</h2>
+			<pre>func IsValidColName(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="IsValidColType">func <a href="/src/target/parser.go?s=13414:13463#L423">IsValidColType</a>
+				<a class="permalink" href="#IsValidColType">&#xb6;</a>
+			</h2>
+			<pre>func IsValidColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Returns true for those Go types that GoTable supports.
+</p>
+<p>
+Go types NOT (yet) supported: complex64 complex128 byte rune
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="IsValidTableName">func <a href="/src/target/parser.go?s=14861:14914#L473">IsValidTableName</a>
+				<a class="permalink" href="#IsValidTableName">&#xb6;</a>
+			</h2>
+			<pre>func IsValidTableName(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="Round">func <a href="/src/target/gotable.go?s=85908:85961#L2999">Round</a>
+				<a class="permalink" href="#Round">&#xb6;</a>
+			</h2>
+			<pre>func Round(val <a href="/pkg/builtin/#float64">float64</a>, places <a href="/pkg/builtin/#int">int</a>) (rounded <a href="/pkg/builtin/#float64">float64</a>)</pre>
+			<p>
+Round is a custom implementation for rounding values as Golang does not include a round function in the standard math package.
+</p>
+<p>
+Round up if fraction is &gt;= 0.5 otherwise round down.
+</p>
+<p>
+From: <a href="https://medium.com/">https://medium.com/</a>@edoardo849/mercato-how-to-build-an-effective-web-scraper-with-golang-e2918d279f49#.istjzw4nl
+</p>
+
+			<div id="example_Round" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">numberToRound := 12.326
+places := 2 <span class="comment">// The rounded fractional part will have 2 decimal places.</span>
+
+rounded := Round(numberToRound, places)
+fmt.Println(rounded)
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">12.33
+</pre>
+			
+		
+	</div>
+</div>
+
+			
+
+		
+		
+			
+			
+			<h2 id="GoTable">type <a href="/src/target/gotable.go?s=9711:9919#L338">GoTable</a>
+				<a class="permalink" href="#GoTable">&#xb6;</a>
+			</h2>
+			
+			<pre>type GoTable struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=97007:97065#L3367">GobDecodeTable</a>
+					<a class="permalink" href="#GobDecodeTable">&#xb6;</a>
+				</h3>
+				<pre>func GobDecodeTable(buffer <a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+			
+				
+				<h3 id="NewGoTable">func <a href="/src/target/gotable.go?s=15783:15834#L570">NewGoTable</a>
+					<a class="permalink" href="#NewGoTable">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTable(tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Factory function to generate a *GoTable pointer.
+</p>
+<pre>var myTable *gotable.GoTable
+myTable, err = gotable.NewGoTable(&#34;My_Table&#34;)
+if err != nil {
+	panic(err)
+}
+</pre>
+
+				
+				
+			
+				
+				<h3 id="NewGoTableWithCols">func <a href="/src/target/gotable.go?s=16738:16835#L601">NewGoTableWithCols</a>
+					<a class="permalink" href="#NewGoTableWithCols">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableWithCols(tableName <a href="/pkg/builtin/#string">string</a>, colNames []<a href="/pkg/builtin/#string">string</a>, colTypes []<a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+table, err := gotable.NewGoTableWithCols(&#34;Moviegoers&#34;, []string{&#34;Age&#34;, &#34;Mothballs&#34;}, []string{&#34;int&#34;, &#34;bool&#34;})
+</p>
+
+				
+				
+			
+
+			
+				
+				<h3 id="GoTable.AddCol">func (*GoTable) <a href="/src/target/gotable.go?s=46475:46541#L1575">AddCol</a>
+					<a class="permalink" href="#GoTable.AddCol">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddCol(colName <a href="/pkg/builtin/#string">string</a>, colType <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Add a column to this table, one column at a time.
+</p>
+<pre>err = myTable.AddCol(headingName, headingType)
+if err != nil {
+	panic(err)
+}
+</pre>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddColNames">func (*GoTable) <a href="/src/target/gotable.go?s=49066:49124#L1670">AddColNames</a>
+					<a class="permalink" href="#GoTable.AddColNames">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddColNames(colNames []<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Initialise a freshly created *GoTable (see NewGoTable()) with a list of column names.
+The column sequence is maintained.
+</p>
+<p>
+The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddColTypes">func (*GoTable) <a href="/src/target/gotable.go?s=50320:50378#L1712">AddColTypes</a>
+					<a class="permalink" href="#GoTable.AddColTypes">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddColTypes(colTypes []<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Initialise a freshly created *GoTable (see NewGoTable()) with a list of column types.
+The column sequence is maintained.
+</p>
+<p>
+The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddRow">func (*GoTable) <a href="/src/target/gotable.go?s=17733:17769#L643">AddRow</a>
+					<a class="permalink" href="#GoTable.AddRow">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddRow() <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+All cells in the new added row will be set to their zero value, such as 0, &#34;&#34;, or false.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddRowMap">func (*GoTable) <a href="/src/target/gotable.go?s=22158:22214#L800">AddRowMap</a>
+					<a class="permalink" href="#GoTable.AddRowMap">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddRowMap(newRow <a href="#GoTableRow">GoTableRow</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+This is for adding an entire new row of data to a table in bulk, so to speak.
+</p>
+<pre>var row gotable.GoTableRow = make(gotable.GoTableRow)
+row[&#34;Manager&#34;] = &#34;JC&#34;
+row[&#34;Apostles&#34;] = 12
+err = goTable.AddRowMap(row)
+if err != nil {
+    panic(err)
+}
+</pre>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddSortKey">func (*GoTable) <a href="/src/target/gotable.go?s=13962:14016#L504">AddSortKey</a>
+					<a class="permalink" href="#GoTable.AddSortKey">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddSortKey(colName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.AddTableRow">func (*GoTable) <a href="/src/target/gotable.go?s=21723:21781#L782">AddTableRow</a>
+					<a class="permalink" href="#GoTable.AddTableRow">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) AddTableRow(newRow <a href="#GoTableRow">GoTableRow</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Add (append) a row of data (newRow) to this table.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColCount">func (*GoTable) <a href="/src/target/gotable.go?s=54113:54149#L1844">ColCount</a>
+					<a class="permalink" href="#GoTable.ColCount">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColCount() <a href="/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=53005:53064#L1805">ColIndex</a>
+					<a class="permalink" href="#GoTable.ColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColIndex(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColName">func (*GoTable) <a href="/src/target/gotable.go?s=82090:82149#L2877">ColName</a>
+					<a class="permalink" href="#GoTable.ColName">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColName(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColNames">func (*GoTable) <a href="/src/target/gotable.go?s=15050:15091#L542">ColNames</a>
+					<a class="permalink" href="#GoTable.ColNames">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColNames() []<a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColType">func (*GoTable) <a href="/src/target/gotable.go?s=52190:52251#L1780">ColType</a>
+					<a class="permalink" href="#GoTable.ColType">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColType(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColTypeByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=52592:52661#L1793">ColTypeByColIndex</a>
+					<a class="permalink" href="#GoTable.ColTypeByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColTypeByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.ColTypes">func (*GoTable) <a href="/src/target/gotable.go?s=15245:15286#L550">ColTypes</a>
+					<a class="permalink" href="#GoTable.ColTypes">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) ColTypes() []<a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.DeleteRow">func (*GoTable) <a href="/src/target/gotable.go?s=23910:23961#L850">DeleteRow</a>
+					<a class="permalink" href="#GoTable.DeleteRow">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) DeleteRow(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetBool">func (*GoTable) <a href="/src/target/gotable.go?s=76521:76594#L2669">GetBool</a>
+					<a class="permalink" href="#GoTable.GetBool">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetBool(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetBoolByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=76958:77039#L2688">GetBoolByColIndex</a>
+					<a class="permalink" href="#GoTable.GetBoolByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetBoolByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetFloat32">func (*GoTable) <a href="/src/target/gotable.go?s=65631:65710#L2213">GetFloat32</a>
+					<a class="permalink" href="#GoTable.GetFloat32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetFloat32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float32">float32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetFloat32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=66078:66165#L2232">GetFloat32ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetFloat32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetFloat32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float32">float32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetFloat64">func (*GoTable) <a href="/src/target/gotable.go?s=66556:66635#L2251">GetFloat64</a>
+					<a class="permalink" href="#GoTable.GetFloat64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetFloat64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetFloat64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=67003:67090#L2270">GetFloat64ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetFloat64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetFloat64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt">func (*GoTable) <a href="/src/target/gotable.go?s=68378:68449#L2327">GetInt</a>
+					<a class="permalink" href="#GoTable.GetInt">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt16">func (*GoTable) <a href="/src/target/gotable.go?s=73808:73883#L2555">GetInt16</a>
+					<a class="permalink" href="#GoTable.GetInt16">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int16">int16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt16ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=74245:74328#L2574">GetInt16ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetInt16ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int16">int16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt32">func (*GoTable) <a href="/src/target/gotable.go?s=74713:74788#L2593">GetInt32</a>
+					<a class="permalink" href="#GoTable.GetInt32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int32">int32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=75150:75233#L2612">GetInt32ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetInt32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int32">int32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt64">func (*GoTable) <a href="/src/target/gotable.go?s=75617:75692#L2631">GetInt64</a>
+					<a class="permalink" href="#GoTable.GetInt64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int64">int64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=76054:76137#L2650">GetInt64ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetInt64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int64">int64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt8">func (*GoTable) <a href="/src/target/gotable.go?s=72911:72984#L2517">GetInt8</a>
+					<a class="permalink" href="#GoTable.GetInt8">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int8">int8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetInt8ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=73344:73425#L2536">GetInt8ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetInt8ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetInt8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int8">int8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetIntByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=68807:68886#L2346">GetIntByColIndex</a>
+					<a class="permalink" href="#GoTable.GetIntByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetIntByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetSortKeysAsTable">func (*GoTable) <a href="/src/target/gotable.go?s=10864:10928#L391">GetSortKeysAsTable</a>
+					<a class="permalink" href="#GoTable.GetSortKeysAsTable">&#xb6;</a>
+				</h3>
+				<pre>func (thisTable *<a href="#GoTable">GoTable</a>) GetSortKeysAsTable() (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetString">func (*GoTable) <a href="/src/target/gotable.go?s=64671:64748#L2173">GetString</a>
+					<a class="permalink" href="#GoTable.GetString">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetStringByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=65158:65243#L2194">GetStringByColIndex</a>
+					<a class="permalink" href="#GoTable.GetStringByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint">func (*GoTable) <a href="/src/target/gotable.go?s=67481:67554#L2289">GetUint</a>
+					<a class="permalink" href="#GoTable.GetUint">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint">uint</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint16">func (*GoTable) <a href="/src/target/gotable.go?s=70172:70249#L2403">GetUint16</a>
+					<a class="permalink" href="#GoTable.GetUint16">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint16">uint16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint16ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=70613:70698#L2422">GetUint16ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetUint16ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint16">uint16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint32">func (*GoTable) <a href="/src/target/gotable.go?s=71085:71162#L2441">GetUint32</a>
+					<a class="permalink" href="#GoTable.GetUint32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint32">uint32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=71526:71611#L2460">GetUint32ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetUint32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint32">uint32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint64">func (*GoTable) <a href="/src/target/gotable.go?s=71998:72075#L2479">GetUint64</a>
+					<a class="permalink" href="#GoTable.GetUint64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint64">uint64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=72439:72524#L2498">GetUint64ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetUint64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint64">uint64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint8">func (*GoTable) <a href="/src/target/gotable.go?s=69267:69342#L2365">GetUint8</a>
+					<a class="permalink" href="#GoTable.GetUint8">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUint8ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=69704:69787#L2384">GetUint8ByColIndex</a>
+					<a class="permalink" href="#GoTable.GetUint8ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUint8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetUintByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=67914:67995#L2308">GetUintByColIndex</a>
+					<a class="permalink" href="#GoTable.GetUintByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetUintByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint">uint</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetVal">func (*GoTable) <a href="/src/target/gotable.go?s=61764:61843#L2070">GetVal</a>
+					<a class="permalink" href="#GoTable.GetVal">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetVal(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (interface{}, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+This is a fundamental method called by all type-specific methods.
+Returns an interface{} value which may contain any valid gotable data type or NaN.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GetValByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=62605:62692#L2096">GetValByColIndex</a>
+					<a class="permalink" href="#GoTable.GetValByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GetValByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (interface{}, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+This is a fundamental method called by all type-specific methods.
+Returns an interface{} value which may contain any valid gotable data type or NaN.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.GobEncode">func (*GoTable) <a href="/src/target/gotable.go?s=91197:91252#L3165">GobEncode</a>
+					<a class="permalink" href="#GoTable.GobEncode">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) GobEncode() (<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.HasCell">func (*GoTable) <a href="/src/target/gotable.go?s=63491:63564#L2127">HasCell</a>
+					<a class="permalink" href="#GoTable.HasCell">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) HasCell(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Returns true if this table has colName and has rowIndex.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.HasCellByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=63897:63978#L2145">HasCellByColIndex</a>
+					<a class="permalink" href="#GoTable.HasCellByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) HasCellByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Returns true if this table has colIndex and has rowIndex.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.HasCol">func (*GoTable) <a href="/src/target/gotable.go?s=51011:51069#L1739">HasCol</a>
+					<a class="permalink" href="#GoTable.HasCol">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) HasCol(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Checks whether col exists
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.HasColByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=51283:51349#L1749">HasColByColIndex</a>
+					<a class="permalink" href="#GoTable.HasColByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) HasColByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Checks whether col exists
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.HasRow">func (*GoTable) <a href="/src/target/gotable.go?s=64271:64327#L2162">HasRow</a>
+					<a class="permalink" href="#GoTable.HasRow">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) HasRow(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.IsColType">func (*GoTable) <a href="/src/target/gotable.go?s=77425:77514#L2707">IsColType</a>
+					<a class="permalink" href="#GoTable.IsColType">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) IsColType(colName <a href="/pkg/builtin/#string">string</a>, typeNameQuestioning <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.IsColTypeByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=77867:77964#L2720">IsColTypeByColIndex</a>
+					<a class="permalink" href="#GoTable.IsColTypeByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) IsColTypeByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, typeNameQuestioning <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.IsValidRow">func (*GoTable) <a href="/src/target/gotable.go?s=82528:82588#L2889">IsValidRow</a>
+					<a class="permalink" href="#GoTable.IsValidRow">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) IsValidRow(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.IsValidTable">func (*GoTable) <a href="/src/target/gotable.go?s=83184:83234#L2916">IsValidTable</a>
+					<a class="permalink" href="#GoTable.IsValidTable">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) IsValidTable() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.RenameCol">func (*GoTable) <a href="/src/target/gotable.go?s=80311:80380#L2817">RenameCol</a>
+					<a class="permalink" href="#GoTable.RenameCol">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) RenameCol(oldName <a href="/pkg/builtin/#string">string</a>, newName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Note: This may leave the table in an invalid or unstable state if an error is returned.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.RenameTable">func (*GoTable) <a href="/src/target/gotable.go?s=79554:79611#L2787">RenameTable</a>
+					<a class="permalink" href="#GoTable.RenameTable">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) RenameTable(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.RowCount">func (*GoTable) <a href="/src/target/gotable.go?s=54307:54343#L1852">RowCount</a>
+					<a class="permalink" href="#GoTable.RowCount">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) RowCount() <a href="/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.RowMap">func (*GoTable) <a href="/src/target/gotable.go?s=54585:54647#L1861">RowMap</a>
+					<a class="permalink" href="#GoTable.RowMap">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) RowMap(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="#GoTableRow">GoTableRow</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+This bulk data method that returns a RowMap which is the data for a given table row.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetBool">func (*GoTable) <a href="/src/target/gotable.go?s=55478:55558#L1886">SetBool</a>
+					<a class="permalink" href="#GoTable.SetBool">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetBool(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetBoolByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=55702:55790#L1893">SetBoolByColIndex</a>
+					<a class="permalink" href="#GoTable.SetBoolByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetBoolByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetCellToZero">func (*GoTable) <a href="/src/target/gotable.go?s=19935:20006#L726">SetCellToZero</a>
+					<a class="permalink" href="#GoTable.SetCellToZero">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetCellToZero(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetCellToZeroByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=20312:20391#L746">SetCellToZeroByColIndex</a>
+					<a class="permalink" href="#GoTable.SetCellToZeroByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetCellToZeroByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetColCellsToZero">func (*GoTable) <a href="/src/target/gotable.go?s=19227:19288#L698">SetColCellsToZero</a>
+					<a class="permalink" href="#GoTable.SetColCellsToZero">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetColCellsToZero(colName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetColCellsToZeroByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=19584:19653#L710">SetColCellsToZeroByColIndex</a>
+					<a class="permalink" href="#GoTable.SetColCellsToZeroByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetColCellsToZeroByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetFloat32">func (*GoTable) <a href="/src/target/gotable.go?s=60651:60737#L2040">SetFloat32</a>
+					<a class="permalink" href="#GoTable.SetFloat32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetFloat32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float32">float32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetFloat32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=60881:60975#L2047">SetFloat32ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetFloat32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetFloat32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float32">float32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetFloat64">func (*GoTable) <a href="/src/target/gotable.go?s=61130:61216#L2054">SetFloat64</a>
+					<a class="permalink" href="#GoTable.SetFloat64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetFloat64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetFloat64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=61360:61454#L2061">SetFloat64ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetFloat64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetFloat64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt">func (*GoTable) <a href="/src/target/gotable.go?s=56169:56247#L1907">SetInt</a>
+					<a class="permalink" href="#GoTable.SetInt">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt16">func (*GoTable) <a href="/src/target/gotable.go?s=57525:57607#L1949">SetInt16</a>
+					<a class="permalink" href="#GoTable.SetInt16">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int16">int16</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt16ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=59916:60006#L2019">SetInt16ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetInt16ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int16">int16</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt32">func (*GoTable) <a href="/src/target/gotable.go?s=57751:57833#L1956">SetInt32</a>
+					<a class="permalink" href="#GoTable.SetInt32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int32">int32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=60161:60251#L2026">SetInt32ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetInt32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int32">int32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt64">func (*GoTable) <a href="/src/target/gotable.go?s=57977:58059#L1963">SetInt64</a>
+					<a class="permalink" href="#GoTable.SetInt64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int64">int64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=60406:60496#L2033">SetInt64ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetInt64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int64">int64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt8">func (*GoTable) <a href="/src/target/gotable.go?s=57301:57381#L1942">SetInt8</a>
+					<a class="permalink" href="#GoTable.SetInt8">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int8">int8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetInt8ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=59673:59761#L2012">SetInt8ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetInt8ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetInt8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int8">int8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetIntByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=58446:58532#L1977">SetIntByColIndex</a>
+					<a class="permalink" href="#GoTable.SetIntByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetIntByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetRowCellsToZero">func (*GoTable) <a href="/src/target/gotable.go?s=18811:18870#L681">SetRowCellsToZero</a>
+					<a class="permalink" href="#GoTable.SetRowCellsToZero">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetRowCellsToZero(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Set all cells in this row to their zero value, such as 0, &#34;&#34;, or false.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetRowFloatCellsToNaN">func (*GoTable) <a href="/src/target/gotable.go?s=18142:18205#L658">SetRowFloatCellsToNaN</a>
+					<a class="permalink" href="#GoTable.SetRowFloatCellsToNaN">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetRowFloatCellsToNaN(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetSortKeys">func (*GoTable) <a href="/src/target/gotable.go?s=12116:12179#L441">SetSortKeys</a>
+					<a class="permalink" href="#GoTable.SetSortKeys">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetSortKeys(sortColNames ...<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Call with an argument list, or a slice of string followed by ...
+</p>
+<p>
+Pass sort keys as separate arguments:
+</p>
+<pre>SetSortKeys(&#34;col1&#34;,&#34;col2&#34;,&#34;col3&#34;)
+</pre>
+<p>
+Pass sort keys as a slice:
+</p>
+<pre>SetSortKeys([]string{&#34;col1&#34;,&#34;col2&#34;,&#34;col3&#34;}...)
+</pre>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetSortKeysReverse">func (*GoTable) <a href="/src/target/gotable.go?s=12798:12868#L464">SetSortKeysReverse</a>
+					<a class="permalink" href="#GoTable.SetSortKeysReverse">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetSortKeysReverse(sortColNames ...<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Call with an argument list, or a slice of string followed by ...
+</p>
+<p>
+Example 1: SetSortKeysReverse(&#34;col1&#34;,&#34;col3&#34;)
+</p>
+<p>
+Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetString">func (*GoTable) <a href="/src/target/gotable.go?s=55003:55087#L1872">SetString</a>
+					<a class="permalink" href="#GoTable.SetString">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetStringByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=55231:55323#L1879">SetStringByColIndex</a>
+					<a class="permalink" href="#GoTable.SetStringByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetTableName">func (*GoTable) <a href="/src/target/gotable.go?s=78918:78976#L2754">SetTableName</a>
+					<a class="permalink" href="#GoTable.SetTableName">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetTableName(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint">func (*GoTable) <a href="/src/target/gotable.go?s=55945:56025#L1900">SetUint</a>
+					<a class="permalink" href="#GoTable.SetUint">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint">uint</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint16">func (*GoTable) <a href="/src/target/gotable.go?s=56617:56701#L1921">SetUint16</a>
+					<a class="permalink" href="#GoTable.SetUint16">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint16">uint16</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint16ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=58932:59024#L1991">SetUint16ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetUint16ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint16">uint16</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint32">func (*GoTable) <a href="/src/target/gotable.go?s=56845:56929#L1928">SetUint32</a>
+					<a class="permalink" href="#GoTable.SetUint32">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint32">uint32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint32ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=59179:59271#L1998">SetUint32ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetUint32ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint32">uint32</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint64">func (*GoTable) <a href="/src/target/gotable.go?s=57073:57157#L1935">SetUint64</a>
+					<a class="permalink" href="#GoTable.SetUint64">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint64">uint64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint64ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=59426:59518#L2005">SetUint64ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetUint64ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint64">uint64</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint8">func (*GoTable) <a href="/src/target/gotable.go?s=56391:56473#L1914">SetUint8</a>
+					<a class="permalink" href="#GoTable.SetUint8">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUint8ByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=58687:58777#L1984">SetUint8ByColIndex</a>
+					<a class="permalink" href="#GoTable.SetUint8ByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUint8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetUintByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=58203:58291#L1970">SetUintByColIndex</a>
+					<a class="permalink" href="#GoTable.SetUintByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetUintByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint">uint</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetVal">func (*GoTable) <a href="/src/target/gotable.go?s=47396:47477#L1609">SetVal</a>
+					<a class="permalink" href="#GoTable.SetVal">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetVal(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, val interface{}) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+This is a fundamental method called by all type-specific methods.
+Requires a val of valid type for the col in the table.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SetValByColIndex">func (*GoTable) <a href="/src/target/gotable.go?s=48131:48220#L1636">SetValByColIndex</a>
+					<a class="permalink" href="#GoTable.SetValByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SetValByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, val interface{}) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+This is a fundamental method called by all type-specific methods.
+Requires a val of valid type for the col in the table.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.Sort">func (*GoTable) <a href="/src/target/sort.go?s=5598:5626#L239">Sort</a>
+					<a class="permalink" href="#GoTable.Sort">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) Sort()</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SortByKeys">func (*GoTable) <a href="/src/target/sort.go?s=5666:5717#L243">SortByKeys</a>
+					<a class="permalink" href="#GoTable.SortByKeys">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SortByKeys(sortKeys <a href="#SortKeys">SortKeys</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.SortKeys">func (*GoTable) <a href="/src/target/gotable.go?s=14873:14923#L535">SortKeys</a>
+					<a class="permalink" href="#GoTable.SortKeys">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) SortKeys() (<a href="#SortKeys">SortKeys</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.String">func (*GoTable) <a href="/src/target/gotable.go?s=33530:33567#L1161">String</a>
+					<a class="permalink" href="#GoTable.String">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
+				<p>
+Return a parsable table as a string with numbers format aligned right.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.StringCSV">func (*GoTable) <a href="/src/target/gotable.go?s=42307:42347#L1443">StringCSV</a>
+					<a class="permalink" href="#GoTable.StringCSV">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) StringCSV() <a href="/pkg/builtin/#string">string</a></pre>
+				<p>
+Return a table as a comma separated variables for spreadsheets.
+</p>
+<p>
+Note: This does not (yet) implement handling of commas and quotation marks inside strings.
+See: <a href="https://en.wikipedia.org/wiki/Comma-separated_values">https://en.wikipedia.org/wiki/Comma-separated_values</a>
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.StringSpacePadded">func (*GoTable) <a href="/src/target/gotable.go?s=26144:26201#L910">StringSpacePadded</a>
+					<a class="permalink" href="#GoTable.StringSpacePadded">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) StringSpacePadded() (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.StringTabWriter">func (*GoTable) <a href="/src/target/gotable.go?s=24897:24952#L886">StringTabWriter</a>
+					<a class="permalink" href="#GoTable.StringTabWriter">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) StringTabWriter() (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Returns a parsable elastic tabbed table as a string.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTable.TableName">func (*GoTable) <a href="/src/target/gotable.go?s=53919:53959#L1836">TableName</a>
+					<a class="permalink" href="#GoTable.TableName">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#GoTable">GoTable</a>) TableName() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTable.WriteFile">func (*GoTable) <a href="/src/target/gotable.go?s=4004:4078#L134">WriteFile</a>
+					<a class="permalink" href="#GoTable.WriteFile">&#xb6;</a>
+				</h3>
+				<pre>func (goTable *<a href="#GoTable">GoTable</a>) WriteFile(fileName <a href="/pkg/builtin/#string">string</a>, mode <a href="/pkg/os/">os</a>.<a href="/pkg/os/#FileMode">FileMode</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Write a GoTable to a text file.
+</p>
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="GoTableExported">type <a href="/src/target/gotable.go?s=9920:10144#L346">GoTableExported</a>
+				<a class="permalink" href="#GoTableExported">&#xb6;</a>
+			</h2>
+			
+			<pre>type GoTableExported struct {
+<span id="GoTableExported.TableName"></span>    TableName      <a href="/pkg/builtin/#string">string</a>
+<span id="GoTableExported.ColNames"></span>    ColNames       []<a href="/pkg/builtin/#string">string</a>
+<span id="GoTableExported.ColTypes"></span>    ColTypes       []<a href="/pkg/builtin/#string">string</a>
+<span id="GoTableExported.ColNamesLookup"></span>    ColNamesLookup map[<a href="/pkg/builtin/#string">string</a>]<a href="/pkg/builtin/#int">int</a> <span class="comment">// To look up a colNames index from a col name.</span>
+<span id="GoTableExported.Rows"></span>    Rows           goTableRows
+<span id="GoTableExported.SortKeys"></span>    SortKeys       []<a href="#SortKeyExported">SortKeyExported</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="GoTableRow">type <a href="/src/target/gotable.go?s=15440:15478#L558">GoTableRow</a>
+				<a class="permalink" href="#GoTableRow">&#xb6;</a>
+			</h2>
+			
+			<pre>type GoTableRow map[<a href="/pkg/builtin/#string">string</a>]interface{}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="GoTableSet">type <a href="/src/target/gotable.go?s=2463:2559#L80">GoTableSet</a>
+				<a class="permalink" href="#GoTableSet">&#xb6;</a>
+			</h2>
+			<p>
+GoTableSet contains a list of pointers to tables: []*GoTable
+The table sequence is maintained.
+</p>
+<p>
+GoTableSet has a small number of roles. Most work is done with GoTable
+</p>
+
+			<pre>type GoTableSet struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=95003:95069#L3294">GobDecodeTableSet</a>
+					<a class="permalink" href="#GobDecodeTableSet">&#xb6;</a>
+				</h3>
+				<pre>func GobDecodeTableSet(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+			
+				
+				<h3 id="NewGoTableSet">func <a href="/src/target/gotable.go?s=2754:2816#L92">NewGoTableSet</a>
+					<a class="permalink" href="#NewGoTableSet">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSet(goTableSetName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Factory function to return an initialised *GoTableSet pointer.
+</p>
+
+				<div id="example_NewGoTableSet" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableSetName := &#34;MyTableSet&#34;
+tableSet, err := NewGoTableSet(tableSetName)
+if err != nil {
+    panic(err)
+}
+tableCount := tableSet.TableCount()
+name := tableSet.GoTableSetName()
+fmt.Println(tableCount)
+fmt.Println(name)
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">0
+MyTableSet
+</pre>
+			
+		
+	</div>
+</div>
+
+				
+			
+				
+				<h3 id="NewGoTableSetFromFile">func <a href="/src/target/gotable.go?s=3418:3482#L112">NewGoTableSetFromFile</a>
+					<a class="permalink" href="#NewGoTableSetFromFile">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSetFromFile(fileName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Read and parse a gotable file into a GoTableSet. Replaces ReadFile(fileName string)
+</p>
+
+				
+				
+			
+				
+				<h3 id="NewGoTableSetFromHtmlReader">func <a href="/src/target/html.go?s=3107:3197#L92">NewGoTableSetFromHtmlReader</a>
+					<a class="permalink" href="#NewGoTableSetFromHtmlReader">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSetFromHtmlReader(sourceName <a href="/pkg/builtin/#string">string</a>, reader <a href="/pkg/io/">io</a>.<a href="/pkg/io/#Reader">Reader</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+			
+				
+				<h3 id="NewGoTableSetFromHtmlString">func <a href="/src/target/html.go?s=1944:2035#L56">NewGoTableSetFromHtmlString</a>
+					<a class="permalink" href="#NewGoTableSetFromHtmlString">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSetFromHtmlString(sourceName <a href="/pkg/builtin/#string">string</a>, htmlString <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+			
+				
+				<h3 id="NewGoTableSetFromHtmlUrl">func <a href="/src/target/html.go?s=2459:2521#L72">NewGoTableSetFromHtmlUrl</a>
+					<a class="permalink" href="#NewGoTableSetFromHtmlUrl">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSetFromHtmlUrl(url <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				<div id="example_NewGoTableSetFromHtmlUrl" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">url := &#34;http://www.bom.gov.au/vic/observations/melbourne.shtml&#34;
+var tableSet *GoTableSet
+tableSet, err := NewGoTableSetFromHtmlUrl(url)
+if err != nil {
+    panic(err)
+}
+tableCount := tableSet.TableCount()
+fmt.Println(tableCount)
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">1
+</pre>
+			
+		
+	</div>
+</div>
+
+				
+			
+				
+				<h3 id="NewGoTableSetFromString">func <a href="/src/target/gotable.go?s=4816:4875#L164">NewGoTableSetFromString</a>
+					<a class="permalink" href="#NewGoTableSetFromString">&#xb6;</a>
+				</h3>
+				<pre>func NewGoTableSetFromString(s <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Read and parse a gotable string into a GoTableSet. Replaces ReadString(s string)
+</p>
+
+				
+				
+			
+				
+				<h3 id="ReadFile">func <a href="/src/target/gotable.go?s=3097:3148#L100">ReadFile</a>
+					<a class="permalink" href="#ReadFile">&#xb6;</a>
+				</h3>
+				<pre>func ReadFile(fileName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Read and parse a gotable file into a GoTableSet. Use NewGoTableSetFromFile(fileName string)
+</p>
+
+				
+				
+			
+				
+				<h3 id="ReadString">func <a href="/src/target/gotable.go?s=4575:4621#L154">ReadString</a>
+					<a class="permalink" href="#ReadString">&#xb6;</a>
+				</h3>
+				<pre>func ReadString(s <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTableSet">GoTableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Read and parse a gotable string into a GoTableSet. Use NewGoTableSetFromString(s string)
+</p>
+
+				
+				
+			
+
+			
+				
+				<h3 id="GoTableSet.AddGoTable">func (*GoTableSet) <a href="/src/target/gotable.go?s=7979:8046#L288">AddGoTable</a>
+					<a class="permalink" href="#GoTableSet.AddGoTable">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) AddGoTable(newTable *<a href="#GoTable">GoTable</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Add a table to a table set.
+This function may be deprecated later in favour of AddTable()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.AddTable">func (*GoTableSet) <a href="/src/target/gotable.go?s=7772:7837#L282">AddTable</a>
+					<a class="permalink" href="#GoTableSet.AddTable">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) AddTable(newTable *<a href="#GoTable">GoTable</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Add a table to a table set.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.FileName">func (*GoTableSet) <a href="/src/target/gotable.go?s=7481:7528#L269">FileName</a>
+					<a class="permalink" href="#GoTableSet.FileName">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) FileName() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.GoTable">func (*GoTableSet) <a href="/src/target/gotable.go?s=9268:9341#L325">GoTable</a>
+					<a class="permalink" href="#GoTableSet.GoTable">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) GoTable(tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Deprecated. Use GoTableSet.Table() instead.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.GoTableSetName">func (*GoTableSet) <a href="/src/target/gotable.go?s=7268:7321#L261">GoTableSetName</a>
+					<a class="permalink" href="#GoTableSet.GoTableSetName">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) GoTableSetName() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.GobEncode">func (*GoTableSet) <a href="/src/target/gotable.go?s=92201:92264#L3209">GobEncode</a>
+					<a class="permalink" href="#GoTableSet.GobEncode">&#xb6;</a>
+				</h3>
+				<pre>func (tableSet *<a href="#GoTableSet">GoTableSet</a>) GobEncode() ([]<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.HasTable">func (*GoTableSet) <a href="/src/target/gotable.go?s=8610:8680#L304">HasTable</a>
+					<a class="permalink" href="#GoTableSet.HasTable">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) HasTable(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Checks whether table exists
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.RenameTable">func (*GoTableSet) <a href="/src/target/gotable.go?s=79743:79826#L2794">RenameTable</a>
+					<a class="permalink" href="#GoTableSet.RenameTable">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) RenameTable(renameFrom <a href="/pkg/builtin/#string">string</a>, renameTo <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.SetFileName">func (*GoTableSet) <a href="/src/target/gotable.go?s=7562:7620#L273">SetFileName</a>
+					<a class="permalink" href="#GoTableSet.SetFileName">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) SetFileName(fileName <a href="/pkg/builtin/#string">string</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.SetGoTableSetName">func (*GoTableSet) <a href="/src/target/gotable.go?s=7361:7431#L265">SetGoTableSetName</a>
+					<a class="permalink" href="#GoTableSet.SetGoTableSetName">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) SetGoTableSetName(goTableSetName <a href="/pkg/builtin/#string">string</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.String">func (*GoTableSet) <a href="/src/target/gotable.go?s=5507:5552#L193">String</a>
+					<a class="permalink" href="#GoTableSet.String">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
+				<p>
+Returns a set of parsable tables with format right-aligned (numbers) as a string.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.StringSpacePadded">func (*GoTableSet) <a href="/src/target/gotable.go?s=6055:6111#L216">StringSpacePadded</a>
+					<a class="permalink" href="#GoTableSet.StringSpacePadded">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) StringSpacePadded() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.Table">func (*GoTableSet) <a href="/src/target/gotable.go?s=8957:9028#L315">Table</a>
+					<a class="permalink" href="#GoTableSet.Table">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) Table(tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Replaces GoTableSet.GoTable()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.TableCount">func (*GoTableSet) <a href="/src/target/gotable.go?s=7658:7704#L277">TableCount</a>
+					<a class="permalink" href="#GoTableSet.TableCount">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) TableCount() <a href="/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GoTableSet.WriteFile">func (*GoTableSet) <a href="/src/target/gotable.go?s=3553:3633#L117">WriteFile</a>
+					<a class="permalink" href="#GoTableSet.WriteFile">&#xb6;</a>
+				</h3>
+				<pre>func (goTableSet *<a href="#GoTableSet">GoTableSet</a>) WriteFile(fileName <a href="/pkg/builtin/#string">string</a>, mode <a href="/pkg/os/">os</a>.<a href="/pkg/os/#FileMode">FileMode</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Write a GoTableSet to a text file.
+</p>
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="GoTableSetExported">type <a href="/src/target/gotable.go?s=2606:2686#L86">GoTableSetExported</a>
+				<a class="permalink" href="#GoTableSetExported">&#xb6;</a>
+			</h2>
+			<p>
+Selected header information for exporting.
+</p>
+
+			<pre>type GoTableSetExported struct {
+<span id="GoTableSetExported.GoTableSetName"></span>    GoTableSetName <a href="/pkg/builtin/#string">string</a>
+<span id="GoTableSetExported.FileName"></span>    FileName       <a href="/pkg/builtin/#string">string</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SortKey">type <a href="/src/target/gotable.go?s=10146:10240#L355">SortKey</a>
+				<a class="permalink" href="#SortKey">&#xb6;</a>
+			</h2>
+			
+			<pre>type SortKey struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="SortKey.String">func (SortKey) <a href="/src/target/gotable.go?s=10346:10380#L369">String</a>
+					<a class="permalink" href="#SortKey.String">&#xb6;</a>
+				</h3>
+				<pre>func (key <a href="#SortKey">SortKey</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="SortKeyExported">type <a href="/src/target/gotable.go?s=10242:10344#L362">SortKeyExported</a>
+				<a class="permalink" href="#SortKeyExported">&#xb6;</a>
+			</h2>
+			
+			<pre>type SortKeyExported struct {
+<span id="SortKeyExported.ColName"></span>    ColName  <a href="/pkg/builtin/#string">string</a>
+<span id="SortKeyExported.ColType"></span>    ColType  <a href="/pkg/builtin/#string">string</a>
+<span id="SortKeyExported.Reverse"></span>    Reverse  <a href="/pkg/builtin/#bool">bool</a>
+<span id="SortKeyExported.SortFunc"></span>    SortFunc compareFunc
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SortKeys">type <a href="/src/target/gotable.go?s=10483:10506#L373">SortKeys</a>
+				<a class="permalink" href="#SortKeys">&#xb6;</a>
+			</h2>
+			
+			<pre>type SortKeys []<a href="#SortKey">SortKey</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="SortKeys.String">func (SortKeys) <a href="/src/target/gotable.go?s=10508:10544#L375">String</a>
+					<a class="permalink" href="#SortKeys.String">&#xb6;</a>
+				</h3>
+				<pre>func (keys <a href="#SortKeys">SortKeys</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+

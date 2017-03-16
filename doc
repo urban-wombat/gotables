@@ -1,0 +1,3 @@
+cmd='godoc -v -html -index .'
+echo $cmd
+$cmd > gotable.html
