@@ -712,7 +712,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 				}
 				if math.IsNaN(float64Val) && textFound != "NaN" {
-//					return nil, fmt.Errorf("%s Expecting NaN as Notja Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+//					return nil, fmt.Errorf("%s Expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
 					return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 						p.gotFilePos(), colNames[i], colTypes[i], textFound)
 				}

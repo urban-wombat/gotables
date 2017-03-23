@@ -1117,6 +1117,11 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 	s = fmt.Sprintf("[%s]\n", tableName)
 	buf.WriteString(s)
 
+	// Avoid out of bounds error accessing matrix[0]
+	if len(matrix) == 0 {
+		return buf.String()
+	}
+
 //	where(fmt.Sprintf("matrix = %v", matrix))
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = ""	// No separator before first column.
