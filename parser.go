@@ -172,6 +172,8 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 	tableShape = _UNDEFINED_SHAPE
 	// Note: It's not worth the trouble of printing a table as a struct.
 
+	var structHasRowData bool
+
 	var parserColNames []string
 	var parserColTypes []string
 	var rowMapOfStruct GoTableRow	// Needs to persist over multiple lines.
@@ -240,10 +242,11 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				const structTypeIndex = 1
 				const structEqualsIndex = 2
 				const bareMinimumTokensForStructEquals = 3
+				const nameAndTypeOnlyTokenCount = bareMinimumTokensForStructEquals
 
 				if len(lineSplit) >= bareMinimumTokensForStructEquals && lineSplit[structEqualsIndex] == "=" {
 
-					// (1) Get the table struct (name, type and value) of this line.
+					// (1) Get the table struct (name, type and optional value) of this line.
 
 					tableShape = _STRUCT_SHAPE
 					var colName string = lineSplit[structNameIndex]
@@ -258,33 +261,70 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					var colNameSlice []string = []string{colName}
 					var colTypeSlice []string = []string{colType}
 
-					// Find the equals sign within the string so we can locate the value data after equals.
-					// We know it's there, so don't check for nil returned.
-					var rangeFound []int = equalsRegExp.FindStringIndex(line)
-					var valueData string = line[rangeFound[1]:]	// Just after = equals sign.
-					valueData = strings.TrimLeft(valueData, " \t\r\n")	// Remove leading spaces.
-					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
-					if err != nil {
-//						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						return nil, err
-					}
-					// Still expecting _COL_NAMES which is where we find struct: name type = value
-
 					err = goTable.AddCol(colName, colType)
 					if err != nil {
 						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					}
 
-					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-					// Exactly one row is needed for a struct table.
-					if goTable.RowCount() < 1 {
-						goTable.addRowOfNil()
+// where(p.gotFilePos())
+					// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
+					if goTable.ColCount() == 1 {
+						structHasRowData = len(lineSplit) > nameAndTypeOnlyTokenCount
+// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
+					}
+// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
+
+					if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
+// where("expecting SOME value")
+						return nil, fmt.Errorf("%s Expecting a value after '=' but found: (nothing)")
 					}
 
-					var val interface{} = rowMapOfStruct[colName]
-					err = goTable.SetVal(colName, 0, val)
-					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
+						// An approximate way to construct text for the error message. Spacing may be different.
+						var remaining string
+						for i := 3; i < len(lineSplit); i++ {
+							remaining += lineSplit[i] + " "
+						}
+						return nil, fmt.Errorf("%s Expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
+					}
+
+					if structHasRowData {
+// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
+						// Find the equals sign byte location within the string so we can locate the value data after equals.
+						// We know it's there (from the line split above), so don't check for nil returned.
+						var rangeFound []int = equalsRegExp.FindStringIndex(line)
+						var valueData string = line[rangeFound[1]:]	// Just after = equals sign.
+						valueData = strings.TrimLeft(valueData, " \t\r\n")	// Remove leading space.
+						rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
+// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
+						if err != nil {
+//							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+// where(err)
+							return nil, err
+						}
+						// Still expecting _COL_NAMES which is where we find struct: name type = value
+
+/*
+						err = goTable.AddCol(colName, colType)
+						if err != nil {
+							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+						}
+*/
+
+						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
+						// Exactly one row is needed for a struct table.
+						if goTable.RowCount() < 1 {
+							goTable.addRowOfNil()
+						}
+
+						var val interface{} = rowMapOfStruct[colName]
+						err = goTable.SetVal(colName, 0, val)
+						if err != nil {
+							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+						}
+					} else {
+						// Should reach here. It means a subsequent struct line has/doesn't-have row data, in disagreement with the first struct line.
+						// It should be all or none.
 					}
 				} else {
 					if tableShape == _STRUCT_SHAPE {
@@ -518,7 +558,6 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 
 	for i = 0; i < lenColTypes; i++ {
 		if len(remaining) == 0 {	// End of line
-//			return nil, fmt.Errorf("%s Expecting %d col value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
 			return nil, fmt.Errorf("%s Expecting %d value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
 		}
 		switch colTypes[i] {
