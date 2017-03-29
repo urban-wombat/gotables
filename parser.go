@@ -170,7 +170,9 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 	)
 	var tableShape _TableShape
 	tableShape = _UNDEFINED_SHAPE
+	// Note: tableShape variable is used for parsing. Not sure it's needed.
 	// Note: It's not worth the trouble of printing a table as a struct.
+	// Let's give it a try ... 29/03/2017
 
 	var structHasRowData bool
 
@@ -226,6 +228,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					if err != nil {
 						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					}
+					tableShape = _UNDEFINED_SHAPE
 					// Add this table to tables. Do it immediately to allow empty tables. 02.08.2016
 					err = goTables.AddGoTable(goTable)
 					if err != nil {
@@ -249,6 +252,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					// (1) Get the table struct (name, type and optional value) of this line.
 
 					tableShape = _STRUCT_SHAPE
+					goTable.structShape = true
 					var colName string = lineSplit[structNameIndex]
 					var colType string = lineSplit[structTypeIndex]
 					var isValid bool
@@ -322,9 +326,6 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 						if err != nil {
 							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 						}
-					} else {
-						// Should reach here. It means a subsequent struct line has/doesn't-have row data, in disagreement with the first struct line.
-						// It should be all or none.
 					}
 				} else {
 					if tableShape == _STRUCT_SHAPE {

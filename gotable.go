@@ -352,6 +352,7 @@ type GoTable struct {
 	colNamesLookup map[string]int	// To look up a colNames index from a col name.
 	rows        goTableRows
 	sortKeys  []SortKey
+	structShape bool
 }
 type GoTableExported struct {
 	TableName   string
@@ -1391,15 +1392,30 @@ printMatrix() will have to use a format which places the decimal point in a unif
 		buf.WriteByte(verticalSep)
 	}
 
-	s = printMatrix(table.tableName, matrix, width, precis, alignRight, table.colTypes)
+	// Print as struct shape or table shape.
+	if table.structShape && table.RowCount() <= 1 {
+		s = printStruct(table)
+	} else {
+		s = printMatrix(table.tableName, matrix, width, precis, alignRight, table.colTypes)
+	}
 
-/*
-	where(fmt.Sprintf("(1) I AM HERE! About to print [%s]", table.tableName))
-	fmt.Printf("(2) I AM HERE! About to print [%s]\n", table.tableName)
-	fmt.Println(s)
-	os.Exit(55)
-	panic(fmt.Errorf("what the!"))
-*/
+	return s
+}
+
+func printStruct(table *GoTable) string {
+	var asString string
+	var s string
+	var structHasRowData bool = table.RowCount() > 0
+
+	s = fmt.Sprintf("[%s]\n", table.tableName)
+	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		s += table.colNames[colIndex] + " " + table.colTypes[colIndex] + " ="
+		if structHasRowData {
+			asString, _ = table.GetValByColIndexAsString(colIndex, 0)
+			s += " " + asString
+		}
+		s += "\n"
+	}
 
 	return s
 }
@@ -2079,6 +2095,7 @@ func (table *GoTable) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue 
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotable data type or NaN.
 func (table *GoTable) GetVal(colName string, rowIndex int) (interface{}, error) {
+	// Why don't we simply call GetValByColIndex() ???
 	if table == nil {
 		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -3419,4 +3436,118 @@ func funcName() string {
 	nameEnd := filepath.Ext(nameFull)           // .foo
 	name := strings.TrimPrefix(nameEnd, ".")    // foo
 	return name
+}
+
+func (table *GoTable) GetValByColIndexAsString(colIndex int, rowIndex int) (string, error) {
+	var sVal    string
+	var tVal    bool
+	var ui8Val  uint8
+	var ui16Val uint16
+	var ui32Val uint32
+	var ui64Val uint64
+	var uiVal   uint
+	var iVal    int
+	var i8Val   int8
+	var i16Val  int16
+	var i32Val  int32
+	var i64Val  int64
+	var f32Val  float32
+	var f64Val  float64
+
+	var interfaceType interface{}
+	var err error
+	var buf bytes.Buffer
+	var s string
+
+	interfaceType, err = table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil {
+		return "", err
+	}
+
+	switch table.colTypes[colIndex] {
+		case "string":
+			sVal = interfaceType.(string)
+			buf.WriteString(fmt.Sprintf("%q", sVal))
+		case "bool":
+			tVal = interfaceType.(bool)
+			buf.WriteString(fmt.Sprintf("%t", tVal))
+		case "uint8":
+			ui8Val = interfaceType.(uint8)
+			buf.WriteString(fmt.Sprintf("%d", ui8Val))
+		case "uint16":
+			ui16Val = interfaceType.(uint16)
+			buf.WriteString(fmt.Sprintf("%d", ui16Val))
+		case "uint32":
+			ui32Val = interfaceType.(uint32)
+			buf.WriteString(fmt.Sprintf("%d", ui32Val))
+		case "uint64":
+			ui64Val = interfaceType.(uint64)
+			buf.WriteString(fmt.Sprintf("%d", ui64Val))
+		case "uint":
+			uiVal = interfaceType.(uint)
+			buf.WriteString(fmt.Sprintf("%d", uiVal))
+		case "int":
+			iVal = interfaceType.(int)
+			buf.WriteString(fmt.Sprintf("%d", iVal))
+		case "int8":
+			i8Val = interfaceType.(int8)
+			buf.WriteString(fmt.Sprintf("%d", i8Val))
+		case "int16":
+			i16Val = interfaceType.(int16)
+			buf.WriteString(fmt.Sprintf("%d", i16Val))
+		case "int32":
+			i32Val = interfaceType.(int32)
+			buf.WriteString(fmt.Sprintf("%d", i32Val))
+		case "int64":
+			i64Val = interfaceType.(int64)
+			buf.WriteString(fmt.Sprintf("%d", i64Val))
+		case "float32":
+			f32Val = interfaceType.(float32)
+			var f64ValForFormatFloat float64 = float64(f32Val)
+			buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
+		case "float64":
+			f64Val = interfaceType.(float64)
+			buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))	// -1 strips off excess decimal places.
+		default:
+			err = fmt.Errorf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+			return "", err
+	}
+
+	s = buf.String()
+
+	return s, nil
+}
+
+func (table *GoTable) GetValAsString(colName string, rowIndex int) (string, error) {
+	var colIndex int
+	var err error
+
+	if table == nil {
+		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
+	colIndex, err = table.ColIndex(colName)
+	if err != nil {
+		return "", err
+	}
+
+	return table.GetValByColIndexAsString(colIndex, rowIndex)
+}
+
+func (table *GoTable) IsStructShape() (bool, error) {
+	if table == nil {
+		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
+	return table.structShape, nil
+}
+
+func (table *GoTable) SetStructShape(isStructShape bool) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
+	table.structShape = isStructShape
+
+	return nil
 }
