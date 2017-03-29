@@ -1,3 +1,1 @@
-cmd='godoc -v -html -index .'
-echo $cmd
-$cmd > gotable.html
+godoc -html -index . > gotable.html
