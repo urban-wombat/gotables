@@ -26,7 +26,7 @@ Here is a simple program that parses the table into a GoTableSet (a set of table
     package main
 
     import (
-        "github.com/gotable"
+        "github.com/urban-wombat/gotable"
         "fmt"
     )
 
