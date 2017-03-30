@@ -1411,7 +1411,8 @@ func printStruct(table *GoTable) string {
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 		s += table.colNames[colIndex] + " " + table.colTypes[colIndex] + " ="
 		if structHasRowData {
-			asString, _ = table.GetValByColIndexAsString(colIndex, 0)
+			const RowIndexZero = 0
+			asString, _ = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
 			s += " " + asString
 		}
 		s += "\n"
@@ -3438,7 +3439,7 @@ func funcName() string {
 	return name
 }
 
-func (table *GoTable) GetValByColIndexAsString(colIndex int, rowIndex int) (string, error) {
+func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	var sVal    string
 	var tVal    bool
 	var ui8Val  uint8
@@ -3531,7 +3532,7 @@ func (table *GoTable) GetValAsString(colName string, rowIndex int) (string, erro
 		return "", err
 	}
 
-	return table.GetValByColIndexAsString(colIndex, rowIndex)
+	return table.GetValAsStringByColIndex(colIndex, rowIndex)
 }
 
 func (table *GoTable) IsStructShape() (bool, error) {
