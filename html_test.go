@@ -1,10 +1,10 @@
 package gotable
 
 import (
-	"testing"
 	"fmt"
-//	"strconv"
-//	"math"
+	"testing"
+	//	"strconv"
+	//	"math"
 )
 
 /*
@@ -34,71 +34,71 @@ func TestNewGoTableSetFromHtmlString1(t *testing.T) {
 	tests := []struct {
 		tableHtml string
 		tableName string
-		colCount int
-		rowCount int
-		succeeds bool
-		testCell bool
+		colCount  int
+		rowCount  int
+		succeeds  bool
+		testCell  bool
 	}{
-		{	// test0 Well-formed HTML table
+		{ // test0 Well-formed HTML table
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test0</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>
 			</table>`,
-			"table_0", 3, 3, true, true },
-		{ 	// test1 Missing </table>
+			"table_0", 3, 3, true, true},
+		{ // test1 Missing </table>
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test1</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>`,
-			"table_0", 3, 3, true, true },
-		{	// test2 Missing </tr> </table>
+			"table_0", 3, 3, true, true},
+		{ // test2 Missing </tr> </table>
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test2</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td>`,
-			"table_0", 3, 3, true, true },
-		{	// test3 Missing </td> </tr> </table>
+			"table_0", 3, 3, true, true},
+		{ // test3 Missing </td> </tr> </table>
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test3</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2`,
-			"table_0", 3, 3, true, true },
-		{	// test4 Missing <td> </td> </tr> </table>
+			"table_0", 3, 3, true, true},
+		{ // test4 Missing <td> </td> </tr> </table>
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test4</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td>     r2 c2`,
-			"table_0", 3, 3, true, true },
-		{	// test5 Missing col in row 0. Equivalent to additional col in row 1.
+			"table_0", 3, 3, true, true},
+		{ // test5 Missing col in row 0. Equivalent to additional col in row 1.
 			`<table>
 			<tr> <td>r0 c0</td> <td>r0 c1</td>                </tr>
 			<tr> <td>test5</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>
 			</table>`,
-			"table_0", 3, 3, true, true },
-		{	// test6 Progressively more cols in additional rows.
+			"table_0", 3, 3, true, true},
+		{ // test6 Progressively more cols in additional rows.
 			`<table>
 			<tr> <td>r0 c0</td>                               </tr>
 			<tr> <td>test6</td> <td>r1 c1</td>                </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>
 			</table>`,
-			"table_0", 3, 3, true, false },
-		{	// test7 Empty first row. Progressively more cols in additional rows.
+			"table_0", 3, 3, true, false},
+		{ // test7 Empty first row. Progressively more cols in additional rows.
 			`<table>
 			<tr>                                              </tr>
 			<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
 			<tr> <td>test7</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>
 			</table>`,
-			"table_0", 3, 3, true, true },
-		{	// test8 Add more than one col in subsequent row.
+			"table_0", 3, 3, true, true},
+		{ // test8 Add more than one col in subsequent row.
 			`<table>
 			<tr> <td>r0 c0</td>                               </tr>
 			<tr> <td>test8</td> <td>r1 c1</td> <td>r1 c2</td> </tr>
 			<tr> <td>r2 c0</td> <td>r2 c1</td> <td>r2 c2</td> </tr>
 			</table>`,
-			"table_0", 3, 3, true, false },
+			"table_0", 3, 3, true, false},
 	}
 
 	for i, test := range tests {
@@ -204,7 +204,7 @@ func TestNewGoTableSetFromHtmlString1(t *testing.T) {
 //func TestReadString5(t *testing.T) {
 //	goTableSet, err := ReadString(
 //		`[TableEmpty]
-//		
+//
 //		`)
 //	if err != nil {
 //		t.Error(err)
@@ -379,7 +379,7 @@ func TestNewGoTableSetFromHtmlString1(t *testing.T) {
 //}
 //
 //func TestSetAndGetFunctions(t *testing.T) {
-//	var bVal   bool		
+//	var bVal   bool
 ////	byte 			// alias for uint8
 ////	complex128 		// The set of all complex numbers with float64 real and imaginary parts
 ////	complex64		// The set of all complex numbers with float32 real and imaginary parts
@@ -392,7 +392,7 @@ func TestNewGoTableSetFromHtmlString1(t *testing.T) {
 //	var i64Val int64	// The set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
 //	var i8Val  int8		// The set of all signed  8-bit integers (-128 to 127)
 ////	rune 			// alias for int32
-//	var sVal    string		
+//	var sVal    string
 //*/
 //	var uiVal   uint	// Machine-dependent
 ///*

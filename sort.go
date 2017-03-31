@@ -4,8 +4,8 @@ Functions and methods for sorting GoTable tables.
 package gotable
 
 import (
-	"strings"
 	"sort"
+	"strings"
 )
 
 /*
@@ -46,27 +46,27 @@ var compareAlphabetic_string compareFunc = func(i, j interface{}) int {
 	var sj_string string = j.(string)
 	var si_lower string = strings.ToLower(si_string)
 	var sj_lower string = strings.ToLower(sj_string)
-/*
-	if si_lower == sj_lower {
-		return si_string < sj_string
-	}
-	return si_lower < sj_lower
-*/
+	/*
+		if si_lower == sj_lower {
+			return si_string < sj_string
+		}
+		return si_lower < sj_lower
+	*/
 	if si_lower < sj_lower {
-//	//	where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
+		//	//	where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 		return -1
 	} else if si_lower > sj_lower {
-	//	where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
+		//	where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 		return +1
-	} else {	// si_lower == sj_lower
+	} else { // si_lower == sj_lower
 		if si_string < sj_string {
-		//	where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
+			//	where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 			return -1
 		} else if si_string > sj_string {
-		//	where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
+			//	where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 			return +1
 		} else {
-		//	where(fmt.Sprintf("%q == %q\n", si_string, sj_string))
+			//	where(fmt.Sprintf("%q == %q\n", si_string, sj_string))
 			return 0
 		}
 	}
@@ -232,8 +232,8 @@ var compareCount int
 
 type tableSortable struct {
 	table *GoTable
-	rows   goTableRows
-	less   func(i, j GoTableRow) bool
+	rows  goTableRows
+	less  func(i, j GoTableRow) bool
 }
 
 func (table tableSortable) Len() int { return len(table.rows) }
@@ -251,42 +251,42 @@ func (table *GoTable) Sort() {
 }
 
 func (table *GoTable) SortByKeys(sortKeys SortKeys) {
-//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
+	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow GoTableRow) bool {
-compareCount++
-//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
-//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
+		compareCount++
+		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
+		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
 			var iInterface interface{} = iRow[colName]
 			var jInterface interface{} = jRow[colName]
 			var compared int = sortFunc(iInterface, jInterface)
-//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
-//where(fmt.Sprintf("compared = %d ...\n", compared))
+			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
+			//where(fmt.Sprintf("compared = %d ...\n", compared))
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
 				compared *= -1
-//temp := compared
-//temp *= -1	// Reverse the sign.
-//				// Reverse the sign.
-//				if compared < 0 {
-//					compared = +1
-//				} else if compared > 0 {
-//					compared = -1
-//				}
-//if temp != compared {
-//	err := errors.New("compared = %d and temp = %d")
-//	panic(err)
-//}
+				//temp := compared
+				//temp *= -1	// Reverse the sign.
+				//				// Reverse the sign.
+				//				if compared < 0 {
+				//					compared = +1
+				//				} else if compared > 0 {
+				//					compared = -1
+				//				}
+				//if temp != compared {
+				//	err := errors.New("compared = %d and temp = %d")
+				//	panic(err)
+				//}
 			}
-//where(fmt.Sprintf("... compared = %d\n", compared))
+			//where(fmt.Sprintf("... compared = %d\n", compared))
 			if compared != 0 {
-			//	where(fmt.Sprintf("not equal"))
-			//	where(fmt.Sprintf("Less = %v\n", compared < 0))
+				//	where(fmt.Sprintf("not equal"))
+				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
 				return compared < 0
 			}
-		//	where(fmt.Sprintf("*** return false\n"))
+			//	where(fmt.Sprintf("*** return false\n"))
 		}
 		return false
 	}})
@@ -328,10 +328,10 @@ func (tableRows goTableRows) Less(i, j int) bool {
 	var jInterface interface{} = tableRows[j][colName]
 	var compared int = sortFunc(iInterface, jInterface)
 	if compared != 0 {
-	//	where(fmt.Sprintf("not equal"))
-	//	where(fmt.Sprintf("Less = %v\n", compared < 0))
+		//	where(fmt.Sprintf("not equal"))
+		//	where(fmt.Sprintf("Less = %v\n", compared < 0))
 		return compared < 0
 	}
-//	where(fmt.Sprintf("*** return false\n"))
+	//	where(fmt.Sprintf("*** return false\n"))
 	return false
 }

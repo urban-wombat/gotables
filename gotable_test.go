@@ -1,10 +1,10 @@
 package gotable
 
 import (
-	"testing"
 	"fmt"
-	"strconv"
 	"math"
+	"strconv"
+	"testing"
 )
 
 /*
@@ -94,13 +94,13 @@ func TestRenameTable(t *testing.T) {
 	var setupName string = "Fred"
 
 	var tests3 = []struct {
-		input string
+		input    string
 		succeeds bool
-		output string
+		output   string
 	}{
-		{ "Barney", true,  "Barney" },
-		{ "",       false, "Fred"   },
-		{ "$&*",    false, "Fred"   },
+		{"Barney", true, "Barney"},
+		{"", false, "Fred"},
+		{"$&*", false, "Fred"},
 	}
 
 	for _, test := range tests3 {
@@ -123,24 +123,24 @@ func TestRenameTable(t *testing.T) {
 }
 
 func TestGoTableSetRenameTable(t *testing.T) {
-/*
-	goTableSet, err := ReadString(`[Wilma]`)
-	if err != nil {
-		panic(err)
-	}
-*/
-//	fmt.Printf("goTableSet.TableCount() = %d\n", goTableSet.TableCount())
+	/*
+		goTableSet, err := ReadString(`[Wilma]`)
+		if err != nil {
+			panic(err)
+		}
+	*/
+	//	fmt.Printf("goTableSet.TableCount() = %d\n", goTableSet.TableCount())
 
 	tests := []struct {
 		renameFrom string
 		renameTo   string
 		succeeds   bool
 	}{
-		{ "Wilma", "Betty", true  },
-		{ "Betty", "Wilma", false },
-		{ "Wilma", "Wilma", false },
-		{ "",      "Wilma", false },
-		{ "Wilma", "",      false },
+		{"Wilma", "Betty", true},
+		{"Betty", "Wilma", false},
+		{"Wilma", "Wilma", false},
+		{"", "Wilma", false},
+		{"Wilma", "", false},
 	}
 
 	for i, test := range tests {
@@ -182,15 +182,15 @@ func TestReadString1(t *testing.T) {
 
 	tests := []struct {
 		tableName string
-		colCount int
-		rowCount int
-		succeeds bool
+		colCount  int
+		rowCount  int
+		succeeds  bool
 	}{
-		{ "EmptyTable1", 0, 0, true },
-		{ "EmptyTable2", 0, 0, true },
-		{ "TableWithColNamesAndTypes", 3, 0, true },
-		{ "TableWithRow", 3, 1, true },
-		{ "TableWithRows", 3, 2, true },
+		{"EmptyTable1", 0, 0, true},
+		{"EmptyTable2", 0, 0, true},
+		{"TableWithColNamesAndTypes", 3, 0, true},
+		{"TableWithRow", 3, 1, true},
+		{"TableWithRows", 3, 2, true},
 	}
 
 	for i, test := range tests {
@@ -270,11 +270,11 @@ func TestReadString5(t *testing.T) {
 
 	tests := []struct {
 		tableName string
-		colCount int
-		rowCount int
-		succeeds bool
+		colCount  int
+		rowCount  int
+		succeeds  bool
 	}{
-		{ "TableEmpty", 0, 0, true },
+		{"TableEmpty", 0, 0, true},
 	}
 
 	for i, test := range tests {
@@ -315,11 +315,11 @@ func TestReadString6(t *testing.T) {
 
 	tests := []struct {
 		tableName string
-		colCount int
-		rowCount int
-		succeeds bool
+		colCount  int
+		rowCount  int
+		succeeds  bool
 	}{
-		{ "TableStruct", 2, 1, true },
+		{"TableStruct", 2, 1, true},
 	}
 
 	for i, test := range tests {
@@ -407,7 +407,7 @@ func ExampleNewGoTableSet() {
 
 func ExampleRound() {
 	numberToRound := 12.326
-	places := 2		// The rounded fractional part will have 2 decimal places.
+	places := 2 // The rounded fractional part will have 2 decimal places.
 
 	rounded := Round(numberToRound, places)
 	fmt.Println(rounded)
@@ -421,11 +421,11 @@ func TestRound(t *testing.T) {
 		places  int
 		rounded float64
 	}{
-		{ 12.326, 2, 12.33 },
-		{ 12.325, 2, 12.33 },
-		{ 12.324, 2, 12.32 },
-		{ 12.32,  2, 12.32 },
-		{ 12.3,   2, 12.3  },
+		{12.326, 2, 12.33},
+		{12.325, 2, 12.33},
+		{12.324, 2, 12.32},
+		{12.32, 2, 12.32},
+		{12.3, 2, 12.3},
 	}
 
 	for i, test := range tests {
@@ -437,28 +437,28 @@ func TestRound(t *testing.T) {
 }
 
 func TestSetAndGetFunctions(t *testing.T) {
-	var bVal   bool		
-//	byte 			// alias for uint8
-//	complex128 		// The set of all complex numbers with float64 real and imaginary parts
-//	complex64		// The set of all complex numbers with float32 real and imaginary parts
-/*
-	var f32Val float32	// The set of all IEEE-754 32-bit floating-point numbers
-	var f64Val float64	// The set of all IEEE-754 64-bit floating-point numbers
-	var iVal   int		// Machine-dependent
-	var i16Val int16	// The set of all signed 16-bit integers (-32768 to 32767)
-	var i32Val int32	// The set of all signed 32-bit integers (-2147483648 to 2147483647)
-	var i64Val int64	// The set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
-	var i8Val  int8		// The set of all signed  8-bit integers (-128 to 127)
-//	rune 			// alias for int32
-	var sVal    string		
-*/
-	var uiVal   uint	// Machine-dependent
-/*
-	var ui16Val uint16	// The set of all unsigned 16-bit integers (0 to 65535)
-	var ui32Val uint32	// The set of all unsigned 32-bit integers (0 to 4294967295)
-	var ui64Val uint64	// The set of all unsigned 64-bit integers (0 to 18446744073709551615)
-	var ui8Val  uint8	// The set of all unsigned  8-bit integers (0 to 255)
-*/
+	var bVal bool
+	//	byte 			// alias for uint8
+	//	complex128 		// The set of all complex numbers with float64 real and imaginary parts
+	//	complex64		// The set of all complex numbers with float32 real and imaginary parts
+	/*
+	   	var f32Val float32	// The set of all IEEE-754 32-bit floating-point numbers
+	   	var f64Val float64	// The set of all IEEE-754 64-bit floating-point numbers
+	   	var iVal   int		// Machine-dependent
+	   	var i16Val int16	// The set of all signed 16-bit integers (-32768 to 32767)
+	   	var i32Val int32	// The set of all signed 32-bit integers (-2147483648 to 2147483647)
+	   	var i64Val int64	// The set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
+	   	var i8Val  int8		// The set of all signed  8-bit integers (-128 to 127)
+	   //	rune 			// alias for int32
+	   	var sVal    string
+	*/
+	var uiVal uint // Machine-dependent
+	/*
+		var ui16Val uint16	// The set of all unsigned 16-bit integers (0 to 65535)
+		var ui32Val uint32	// The set of all unsigned 32-bit integers (0 to 4294967295)
+		var ui64Val uint64	// The set of all unsigned 64-bit integers (0 to 18446744073709551615)
+		var ui8Val  uint8	// The set of all unsigned  8-bit integers (0 to 255)
+	*/
 
 	var err error
 	var table *GoTable
@@ -471,7 +471,6 @@ func TestSetAndGetFunctions(t *testing.T) {
 	}
 
 	table.AddRow()
-
 
 	// Bool tests
 
@@ -503,7 +502,6 @@ func TestSetAndGetFunctions(t *testing.T) {
 	if bVal != false {
 		t.Errorf("Expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
 	}
-
 
 	// Uint tests
 
@@ -542,22 +540,22 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 	var err error
 
 	// For testing machine-dependent types
-	var intBits int = strconv.IntSize	// uint and int are the same bit size.
+	var intBits int = strconv.IntSize // uint and int are the same bit size.
 	var intMinVal int64
 	var intMaxVal uint64
 	var uintMaxVal uint64
 	switch intBits {
-		case 32:
-			intMinVal = math.MinInt32
-			intMaxVal = math.MaxInt32
-			uintMaxVal = math.MaxUint32
-		case 64:
-			intMinVal = math.MinInt64
-			intMaxVal = math.MaxInt64
-			uintMaxVal = math.MaxUint64
-		default:
-			msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-			t.Errorf(msg)
+	case 32:
+		intMinVal = math.MinInt32
+		intMaxVal = math.MaxInt32
+		uintMaxVal = math.MaxUint32
+	case 64:
+		intMinVal = math.MinInt64
+		intMaxVal = math.MaxInt64
+		uintMaxVal = math.MaxUint64
+	default:
+		msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+		t.Errorf(msg)
 	}
 
 	var tests = []struct {
@@ -778,10 +776,10 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 		_, err = NewGoTableSetFromString(test.input)
 		if err == nil != test.valid {
 			switch test.valid {
-				case true:
-					t.Errorf("test[%d]: %v", i, err)
-				case false:
-					t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
+			case true:
+				t.Errorf("test[%d]: %v", i, err)
+			case false:
+				t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -800,59 +798,59 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 	// NOTE: Only half of these tests will be executed. They are machine dependent: 32-bit OR 64-bit machines.
 
 	// For testing machine-dependent types
-	var intBits int = strconv.IntSize	// uint and int are the same bit size.
+	var intBits int = strconv.IntSize // uint and int are the same bit size.
 	switch intBits {
-		case 32:	// NOTE: This will be executed on 32-bit machines ONLY.
-			tests = append(tests, testCase{`
+	case 32: // NOTE: This will be executed on 32-bit machines ONLY.
+		tests = append(tests, testCase{`
 					[uint]
 					i uint = 4294967296`,
-					false,
-				},
-			)
-			tests = append(tests, testCase{`
+			false,
+		},
+		)
+		tests = append(tests, testCase{`
 					[int]
 					i int = -2147483649`,
-					false,
-				},
-			)
-			tests = append(tests, testCase{`
+			false,
+		},
+		)
+		tests = append(tests, testCase{`
 					[int]
 					i int = 2147483648`,
-					false,
-				},
-			)
-		case 64:	// NOTE: This will be executed on 32-bit machines ONLY.
-			tests = append(tests, testCase{`
+			false,
+		},
+		)
+	case 64: // NOTE: This will be executed on 32-bit machines ONLY.
+		tests = append(tests, testCase{`
 					[uint]
 					i uint = 18446744073709551616`,
-					false,
-				},
-			)
-			tests = append(tests, testCase{`
+			false,
+		},
+		)
+		tests = append(tests, testCase{`
 					[int]
 					i int = -9223372036854775809`,
-					false,
-				},
-			)
-			tests = append(tests, testCase{`
+			false,
+		},
+		)
+		tests = append(tests, testCase{`
 					[int]
 					i int = 9223372036854775808`,
-					false,
-				},
-			)
-		default:
-			msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-			t.Errorf(msg)
+			false,
+		},
+		)
+	default:
+		msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+		t.Errorf(msg)
 	}
 
 	for i, test := range tests {
 		_, err = NewGoTableSetFromString(test.input)
 		if err == nil != test.valid {
 			switch test.valid {
-				case true:
-					t.Errorf("test[%d]: %v", i, err)
-				case false:
-					t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
+			case true:
+				t.Errorf("test[%d]: %v", i, err)
+			case false:
+				t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}

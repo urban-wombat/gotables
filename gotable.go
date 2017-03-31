@@ -4,20 +4,20 @@ Functions and methods for processing GoTable tables.
 package gotable
 
 import (
+	"bufio"
+	"bytes"
+	"encoding/gob"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
-	"bytes"
-	"bufio"
-	"os"
-	"text/tabwriter"
-	"strings"
 	"math"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
-	"io/ioutil"
-	"encoding/gob"
+	"strings"
+	"text/tabwriter"
 )
 
 /*
@@ -43,43 +43,40 @@ SOFTWARE.
 */
 
 func init() {
-    log.SetFlags(log.Lshortfile)
+	log.SetFlags(log.Lshortfile)
 }
 
 // type compareFunc func(table GoTable, colName string, i, j int) int
 type compareFunc func(i, j interface{}) int
 
-var compareFuncs = map[string]compareFunc {
-	"bool": compare_bool,
+var compareFuncs = map[string]compareFunc{
+	"bool":    compare_bool,
 	"float32": compare_float32,
 	"float64": compare_float64,
-	"uint": compare_uint,
-	"int": compare_int,
-	"int16": compare_int16,
-	"int32": compare_int32,
-	"int64": compare_int64,
-	"int8": compare_int8,
-	"string": compareAlphabetic_string,
-	"uint16": compare_uint16,
-	"uint32": compare_uint32,
-	"uint64": compare_uint64,
-	"uint8": compare_uint8,
+	"uint":    compare_uint,
+	"int":     compare_int,
+	"int16":   compare_int16,
+	"int32":   compare_int32,
+	"int64":   compare_int64,
+	"int8":    compare_int8,
+	"string":  compareAlphabetic_string,
+	"uint16":  compare_uint16,
+	"uint32":  compare_uint32,
+	"uint64":  compare_uint64,
+	"uint8":   compare_uint8,
 }
-
 
 /*
 #####################################################################################
 GoTableSet
 #####################################################################################
-2016.12.16  Malcolm Gorman  Use bytes.Buffer to construct string() string strings. 
+2016.12.16  Malcolm Gorman  Use bytes.Buffer to construct string() string strings.
 #####################################################################################
 */
-
 
 // ##########
 // GoTableSet
 // ##########
-
 
 /*
 GoTableSet contains a list of pointers to tables: []*GoTable
@@ -90,8 +87,9 @@ GoTableSet has a small number of roles. Most work is done with GoTable
 type GoTableSet struct {
 	goTableSetName string
 	fileName       string
-	tables      []*GoTable
+	tables         []*GoTable
 }
+
 // Selected header information for exporting.
 type GoTableSetExported struct {
 	GoTableSetName string
@@ -102,14 +100,14 @@ type GoTableSetExported struct {
 func NewGoTableSet(goTableSetName string) (*GoTableSet, error) {
 	var newTables *GoTableSet = new(GoTableSet)
 	newTables.goTableSetName = goTableSetName
-	newTables.tables = make([]*GoTable, 0)	// An empty slice of tables.
+	newTables.tables = make([]*GoTable, 0) // An empty slice of tables.
 	return newTables, nil
 }
 
 // Read and parse a gotable file into a GoTableSet. Use NewGoTableSetFromFile(fileName string)
 func ReadFile(fileName string) (*GoTableSet, error) {
 	var p parser
-//	fmt.Printf("ReadFile(%q)\n", fileName)
+	//	fmt.Printf("ReadFile(%q)\n", fileName)
 	p.SetFileName(fileName)
 	tables, err := p.parseFile(fileName)
 	if err != nil {
@@ -131,7 +129,7 @@ func (goTableSet *GoTableSet) WriteFile(fileName string, mode os.FileMode) error
 
 	goTableSet_String = goTableSet.String()
 	goTableSet_Bytes = []byte(goTableSet_String)
-	if mode == 0 {	// No permissions set.
+	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
 	where(fmt.Sprintf("mode = %v\n", mode))
@@ -151,7 +149,7 @@ func (goTable *GoTable) WriteFile(fileName string, mode os.FileMode) error {
 
 	goTable_String = goTable.String()
 	goTable_Bytes = []byte(goTable_String)
-	if mode == 0 {	// No permissions set.
+	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
 	where(fmt.Sprintf("mode = %v\n", mode))
@@ -221,7 +219,7 @@ func (goTableSet *GoTableSet) String() string {
 		verticalSep = "\n"
 	}
 	return s
- }
+}
 
 func (goTableSet *GoTableSet) StringSpacePadded() string {
 	var horizontalSeparator byte = ' '
@@ -232,13 +230,13 @@ func (goTableSet *GoTableSet) StringSpacePadded() string {
 func (goTableSet *GoTableSet) _String(horizontalSeparator byte) string {
 	var s string
 	var buf bytes.Buffer
-//	buf.WriteString("# From file: \"" + goTableSet.name + "\"\n\n")
+	//	buf.WriteString("# From file: \"" + goTableSet.name + "\"\n\n")
 	var tableSep = ""
 	var table *GoTable
 	for i := 0; i < len(goTableSet.tables); i++ {
 		table = goTableSet.tables[i]
 		buf.WriteString(tableSep)
-//		buf.WriteString(fmt.Sprintf("%v", table))
+		//		buf.WriteString(fmt.Sprintf("%v", table))
 		buf.WriteString(fmt.Sprintf("%v", table._String(horizontalSeparator)))
 		tableSep = "\n"
 	}
@@ -289,17 +287,17 @@ func (goTableSet *GoTableSet) TableCount() int {
 }
 
 // Add a table to a table set.
-func (goTableSet *GoTableSet) AddTable(newTable *GoTable) (error) {
+func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error {
 	return goTableSet.AddGoTable(newTable)
 }
 
 // Add a table to a table set.
 // This function may be deprecated later in favour of AddTable()
-func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) (error) {
+func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
 	for _, existingTable := range goTableSet.tables {
-//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
-//where(fmt.Sprintf("newTable.TableName() = %s\n", newTable.TableName()))
+		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
+		//where(fmt.Sprintf("newTable.TableName() = %s\n", newTable.TableName()))
 		if existingTable.TableName() == newTable.TableName() {
 			return errors.New(fmt.Sprintf("Table [%s] already exists: %s", newTable.tableName, newTable.tableName))
 		}
@@ -312,7 +310,7 @@ func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) (error) {
 
 // Checks whether table exists
 func (goTableSet *GoTableSet) HasTable(tableName string) (bool, error) {
-//where(fmt.Sprintf("HasTable(%q)\n", tableName))
+	//where(fmt.Sprintf("HasTable(%q)\n", tableName))
 	for _, table := range goTableSet.tables {
 		if table.TableName() == tableName {
 			return true, nil
@@ -336,7 +334,6 @@ func (goTableSet *GoTableSet) GoTable(tableName string) (*GoTable, error) {
 	return goTableSet.Table(tableName)
 }
 
-
 /*
 #####################################################################################
 GoTable
@@ -346,21 +343,21 @@ GoTable
 */
 
 type GoTable struct {
-	tableName   string
-	colNames  []string
-	colTypes  []string
-	colNamesLookup map[string]int	// To look up a colNames index from a col name.
-	rows        goTableRows
-	sortKeys  []SortKey
-	structShape bool
+	tableName      string
+	colNames       []string
+	colTypes       []string
+	colNamesLookup map[string]int // To look up a colNames index from a col name.
+	rows           goTableRows
+	sortKeys       []SortKey
+	structShape    bool
 }
 type GoTableExported struct {
-	TableName   string
-	ColNames  []string
-	ColTypes  []string
-	ColNamesLookup map[string]int	// To look up a colNames index from a col name.
-	Rows        goTableRows
-	SortKeys  []SortKeyExported
+	TableName      string
+	ColNames       []string
+	ColTypes       []string
+	ColNamesLookup map[string]int // To look up a colNames index from a col name.
+	Rows           goTableRows
+	SortKeys       []SortKeyExported
 }
 
 type SortKey struct {
@@ -453,7 +450,7 @@ func (table *GoTable) SetSortKeys(sortColNames ...string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-	table.sortKeys = newSortKeys()	// Replace any existing sort keys.
+	table.sortKeys = newSortKeys() // Replace any existing sort keys.
 	for _, colName := range sortColNames {
 		err := table.AddSortKey(colName)
 		if err != nil {
@@ -461,7 +458,7 @@ func (table *GoTable) SetSortKeys(sortColNames ...string) error {
 			return errSortKey
 		}
 	}
-//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
+	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
 	return nil
 }
 
@@ -483,7 +480,7 @@ func (table *GoTable) SetSortKeysReverse(sortColNames ...string) error {
 			return errSortKey
 		}
 	}
-//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
+	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
 	return nil
 }
 
@@ -496,14 +493,14 @@ func (table *GoTable) setSortKeyReverse(colName string) error {
 		return err
 	}
 	var found bool = false
-//where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
+	//where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
 	for i, sortKey := range table.sortKeys {
 		if sortKey.colName == colName {
 			table.sortKeys[i].reverse = true
 			found = true
 		}
 	}
-//where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
+	//where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
 	if !found {
 		err := errors.New(fmt.Sprintf("SortKey not found: %q", colName))
 		return err
@@ -516,7 +513,7 @@ func (table *GoTable) AddSortKey(colName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-//	where(fmt.Sprintf("AddSortKey(%q)\n", colName))
+	//	where(fmt.Sprintf("AddSortKey(%q)\n", colName))
 	colInfo, err := table.colInfo(colName)
 	if err != nil {
 		// Col doesn't exist.
@@ -533,7 +530,7 @@ func (table *GoTable) AddSortKey(colName string) error {
 	key.colType = colType
 
 	sortFunc, exists := compareFuncs[colType]
-	if !exists {	// Error occurs only during software development if a type has not been handled.
+	if !exists { // Error occurs only during software development if a type has not been handled.
 		return errors.New(fmt.Sprintf("Table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.TableName(), colName, colType, colType))
 	}
 
@@ -568,6 +565,7 @@ func (table *GoTable) ColTypes() []string {
 
 type GoTableRow map[string]interface{}
 type goTableRows []GoTableRow
+
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 // Factory function to generate a *GoTable pointer.
@@ -677,9 +675,11 @@ func (table *GoTable) SetRowFloatCellsToNaN(rowIndex int) error {
 		if err != nil {
 			return err
 		}
-		switch (colType) {
-			case "float32": err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(math.NaN()))
-			case "float64": err = table.SetFloat64ByColIndex(colIndex, rowIndex, math.NaN())
+		switch colType {
+		case "float32":
+			err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(math.NaN()))
+		case "float64":
+			err = table.SetFloat64ByColIndex(colIndex, rowIndex, math.NaN())
 		}
 		if err != nil {
 			return err
@@ -766,21 +766,35 @@ func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error 
 		return err
 	}
 
-	switch (colType) {
-		case "bool": err = table.SetBoolByColIndex(colIndex, rowIndex, false)
-		case "float32": err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
-		case "float64": err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
-		case "uint": err = table.SetUintByColIndex(colIndex, rowIndex, 0)
-		case "int": err = table.SetIntByColIndex(colIndex, rowIndex, 0)
-		case "int16": err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
-		case "int32": err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
-		case "int64": err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
-		case "int8": err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
-		case "string": err = table.SetStringByColIndex(colIndex, rowIndex, "")
-		case "uint16": err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
-		case "uint32": err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
-		case "uint64": err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
-		case "uint8": err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
+	switch colType {
+	case "bool":
+		err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+	case "float32":
+		err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
+	case "float64":
+		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
+	case "uint":
+		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
+	case "int":
+		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
+	case "int16":
+		err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
+	case "int32":
+		err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
+	case "int64":
+		err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
+	case "int8":
+		err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
+	case "string":
+		err = table.SetStringByColIndex(colIndex, rowIndex, "")
+	case "uint16":
+		err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
+	case "uint32":
+		err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
+	case "uint64":
+		err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
+	case "uint8":
+		err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
 	}
 	if err != nil {
 		return err
@@ -827,14 +841,14 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 		if err != nil {
 			return err
 		}
-// where(fmt.Sprintf("colName[%d] = %q\n", i, colName))
+		// where(fmt.Sprintf("colName[%d] = %q\n", i, colName))
 
 		// Check that a col has been provided for each corresponding col in the table.
 		// (We don't [yet] check to see if excess cols have been provided.)
 		_, exists = newRow[colName]
 		if !exists {
 			// For some types (float32 and float64) there is a missing value: NaN
-			missingValue, exists = missingValueForType(colType)	// Only for float32 and float64
+			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
 			if !exists {
 				// Don't permit a misleading missing value to be present for ints, bools, strings.
 				return errors.New(fmt.Sprintf("AddRowMap(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
@@ -868,8 +882,8 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 		return err
 	}
 
-//	newRows := append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
-//	table.rows = newRows
+	//	newRows := append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
+	//	table.rows = newRows
 
 	copy(table.rows[rowIndex:], table.rows[rowIndex+1:])
 	table.rows = table.rows[:len(table.rows)-1]
@@ -883,10 +897,10 @@ Return a missing value for a type. The only types that have a good enough missin
 func missingValueForType(typeName string) (interface{}, bool) {
 	var missingValue interface{}
 	switch typeName {
-		case "float32", "float64":
-			missingValue = math.NaN()
-		default:
-			return nil, false
+	case "float32", "float64":
+		missingValue = math.NaN()
+	default:
+		return nil, false
 	}
 	return missingValue, true
 }
@@ -899,22 +913,22 @@ func (table *GoTable) StringTabWriter() (string, error) {
 		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	var buf bytes.Buffer
-	bufWriter := bufio.NewWriter(&buf)	// Implements Writer interface. Instead of using os.Stdout.
-	const minwidth = 0	// No effect?
-	const tabwidth = 0	// No effect?
-	const padding  = 1	// Space beween cells. This works.
-	const padchar  = ' '
-	const flags    = uint(0) // ?
-//	const flags    = uint(tabwriter.AlignRight)	// Right aligns ALL columns!
-//	const flags    = uint(tabwriter.Debug)		// Prints vertical bar between columns.
-//	tabWriter := new(tabwriter.Writer).Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)
-//	tabWriter := new(tabwriter.Writer)	// 18.01.2017 temporarily commented out
-	tabWriter := tabwriter.NewWriter(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 trying this
-//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
-//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
-	fmt.Fprintf(tabWriter, table._String('\t'))	// Write this table to tabWriter.
+	bufWriter := bufio.NewWriter(&buf) // Implements Writer interface. Instead of using os.Stdout.
+	const minwidth = 0                 // No effect?
+	const tabwidth = 0                 // No effect?
+	const padding = 1                  // Space beween cells. This works.
+	const padchar = ' '
+	const flags = uint(0) // ?
+	//	const flags    = uint(tabwriter.AlignRight)	// Right aligns ALL columns!
+	//	const flags    = uint(tabwriter.Debug)		// Prints vertical bar between columns.
+	//	tabWriter := new(tabwriter.Writer).Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)
+	//	tabWriter := new(tabwriter.Writer)	// 18.01.2017 temporarily commented out
+	tabWriter := tabwriter.NewWriter(bufWriter, minwidth, tabwidth, padding, padchar, flags) // 18.01.2017 trying this
+	//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
+	//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
+	fmt.Fprintf(tabWriter, table._String('\t')) // Write this table to tabWriter.
 	tabWriter.Flush()
-	bufWriter.Flush()	// Necessary!
+	bufWriter.Flush() // Necessary!
 	return buf.String(), nil
 }
 
@@ -934,7 +948,7 @@ func (table *GoTable) _String(horizontalSeparator byte) string {
 		return ""
 	}
 	const tabForTabwriter = '\t'
-	if horizontalSeparator == 0 {	// Null char.
+	if horizontalSeparator == 0 { // Null char.
 		horizontalSeparator = tabForTabwriter
 	}
 	var horizontalSep string
@@ -980,114 +994,114 @@ func (table *GoTable) _String(horizontalSeparator byte) string {
 		}
 		horizontalSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-			var sVal    string
-			var tVal    bool
-			var ui8Val  uint8
+			var sVal string
+			var tVal bool
+			var ui8Val uint8
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
-			var uiVal   uint
-			var iVal    int
-			var i8Val   int8
-			var i16Val  int16
-			var i32Val  int32
-			var i64Val  int64
-			var f32Val  float32
-			var f64Val  float64
+			var uiVal uint
+			var iVal int
+			var i8Val int8
+			var i16Val int16
+			var i32Val int32
+			var i64Val int64
+			var f32Val float32
+			var f64Val float64
 			var exists bool
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
-				case "string":
-					sVal, exists = rowMap[table.colNames[colIndex]].(string)
-					if !exists {
-						sVal = ""
-					}
-					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
-					var replicatedPercentChars string
-					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
-				case "bool":
-					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-					if !exists {
-						tVal = false
-					}
-					buf.WriteString(fmt.Sprintf("%t", tVal))
-				case "uint8":
-					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-					if !exists {
-						ui8Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", ui8Val))
-				case "uint16":
-					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-					if !exists {
-						ui16Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", ui16Val))
-				case "uint32":
-					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-					if !exists {
-						ui32Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", ui32Val))
-				case "uint64":
-					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-					if !exists {
-						ui64Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", ui64Val))
-				case "uint":
-					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-					if !exists {
-						uiVal = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", uiVal))
-				case "int":
-					iVal, exists = rowMap[table.colNames[colIndex]].(int)
-					if !exists {
-						iVal = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", iVal))
-				case "int8":
-					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-					if !exists {
-						i8Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", i8Val))
-				case "int16":
-					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-					if !exists {
-						i16Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", i16Val))
-				case "int32":
-					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-					if !exists {
-						i32Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", i32Val))
-				case "int64":
-					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-					if !exists {
-						i64Val = 0
-					}
-					buf.WriteString(fmt.Sprintf("%d", i64Val))
-				case "float32":
-					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
-					if !exists {
-						f32Val = 0.0
-					}
-					var f64ValForFormatFloat float64 = float64(f32Val)
-					buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
-				case "float64":
-					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
-					if !exists {
-						f64Val = 0.0
-					}
-					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))	// -1 strips off excess decimal places.
-				default:
-					log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
-					return ""
+			case "string":
+				sVal, exists = rowMap[table.colNames[colIndex]].(string)
+				if !exists {
+					sVal = ""
+				}
+				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
+				var replicatedPercentChars string
+				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
+				buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
+			case "bool":
+				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+				if !exists {
+					tVal = false
+				}
+				buf.WriteString(fmt.Sprintf("%t", tVal))
+			case "uint8":
+				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+				if !exists {
+					ui8Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", ui8Val))
+			case "uint16":
+				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+				if !exists {
+					ui16Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", ui16Val))
+			case "uint32":
+				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+				if !exists {
+					ui32Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", ui32Val))
+			case "uint64":
+				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+				if !exists {
+					ui64Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", ui64Val))
+			case "uint":
+				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+				if !exists {
+					uiVal = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", uiVal))
+			case "int":
+				iVal, exists = rowMap[table.colNames[colIndex]].(int)
+				if !exists {
+					iVal = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", iVal))
+			case "int8":
+				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+				if !exists {
+					i8Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", i8Val))
+			case "int16":
+				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+				if !exists {
+					i16Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", i16Val))
+			case "int32":
+				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+				if !exists {
+					i32Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", i32Val))
+			case "int64":
+				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+				if !exists {
+					i64Val = 0
+				}
+				buf.WriteString(fmt.Sprintf("%d", i64Val))
+			case "float32":
+				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+				if !exists {
+					f32Val = 0.0
+				}
+				var f64ValForFormatFloat float64 = float64(f32Val)
+				buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
+			case "float64":
+				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+				if !exists {
+					f64Val = 0.0
+				}
+				buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+			default:
+				log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+				return ""
 			}
 
 			horizontalSep = string(horizontalSeparator)
@@ -1113,7 +1127,7 @@ func max(a int, b int) int {
 func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool, colTypes []string) string {
 	var buf bytes.Buffer
 	var s string
-	var sep string	// Printed before each value.
+	var sep string // Printed before each value.
 
 	s = fmt.Sprintf("[%s]\n", tableName)
 	buf.WriteString(s)
@@ -1123,42 +1137,45 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 		return buf.String()
 	}
 
-//	where(fmt.Sprintf("matrix = %v", matrix))
+	//	where(fmt.Sprintf("matrix = %v", matrix))
 	for row := 0; row < len(matrix[0]); row++ {
-		sep = ""	// No separator before first column.
+		sep = "" // No separator before first column.
 		for col := 0; col < len(matrix); col++ {
 			if alignRight[col] {
-// TODO: Move this functionality to where printMatrix is called.
+				// TODO: Move this functionality to where printMatrix is called.
 				var toWrite string
-				if row <= 1 {	// It's a colName or typeName
+				if row <= 1 { // It's a colName or typeName
 					toWrite = matrix[col][row]
-				} else {	// It's numeric. Note: float conversion handles int conversion.
+				} else { // It's numeric. Note: float conversion handles int conversion.
 					var bits int
 					switch colTypes[col] {
-						case "float32": bits = 32
-						case "float64": bits = 64
-						default: bits = 64	// For int and other non-float integrals.
+					case "float32":
+						bits = 32
+					case "float64":
+						bits = 64
+					default:
+						bits = 64 // For int and other non-float integrals.
 					}
 					// Convert back to float so we can format it again in light of the maximum precision in the column.
-//					where(fmt.Sprintf("About to parse %s: %s (bits=%d)", colTypes[col], matrix[col][row], bits))
+					//					where(fmt.Sprintf("About to parse %s: %s (bits=%d)", colTypes[col], matrix[col][row], bits))
 					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
-//					where(fmt.Sprintf("float64Val = %f from %q\n", float64Val, matrix[col][row]))
+					//					where(fmt.Sprintf("float64Val = %f from %q\n", float64Val, matrix[col][row]))
 					// TODO: Remove this panic.
 					if err != nil {
 						panic(err)
 					}
 					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], bits)
-//					width[col] = max(width[col], len(toWrite))
+					//					width[col] = max(width[col], len(toWrite))
 				}
-//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
-				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite)	// Align right
-//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
+				//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
+				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
+				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
 			} else {
-				s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row])	// Align left with -
+				s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
 				buf.WriteString(s)
 			}
-			sep = " "	// Separator before subsequent columns.
+			sep = " " // Separator before subsequent columns.
 		}
 		s = fmt.Sprintln()
 		buf.WriteString(s)
@@ -1176,13 +1193,13 @@ func (table *GoTable) String() string {
 		return ""
 	}
 
-//	var horizontalSeparator byte = ' '	// Remove this later?
+	//	var horizontalSeparator byte = ' '	// Remove this later?
 	var gapBetweenCols string = " "
 	var horizontalSep string
 	const verticalSep byte = '\n'
 	const colNameRowIndex = 0
 	const colTypeRowIndex = 1
-	const headingRows = 2	// names row plus types row
+	const headingRows = 2 // names row plus types row
 	var s string
 	var buf bytes.Buffer
 
@@ -1193,8 +1210,8 @@ func (table *GoTable) String() string {
 
 	// Write table headings, types and column values to parallel slices.
 	// Keep track of the widest entry in each slice.
-	var colCount int = table.ColCount()				// For efficiency
-	var rowCountPlus2 int = table.RowCount() + 2	// Allow for col name and type.
+	var colCount int = table.ColCount()          // For efficiency
+	var rowCountPlus2 int = table.RowCount() + 2 // Allow for col name and type.
 
 	alignRight := make([]bool, colCount)
 
@@ -1203,11 +1220,11 @@ func (table *GoTable) String() string {
 	points := make([]int, colCount)
 	precis := make([]int, colCount)
 
-/*
-	// Special case to align decimal points in float32 and float64.
-	widthBeforePoint := make([]int, colCount)
-	widthAfterPoint := make([]int, colCount)
-*/
+	/*
+		// Special case to align decimal points in float32 and float64.
+		widthBeforePoint := make([]int, colCount)
+		widthAfterPoint := make([]int, colCount)
+	*/
 
 	matrix := make([][]string, colCount)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
@@ -1216,8 +1233,8 @@ func (table *GoTable) String() string {
 
 	// Col names
 	// Initialise width to width of colName.
-//	where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
-	if len(table.colNames) > 0 {	// Allow for empty table?
+	//	where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
+	if len(table.colNames) > 0 { // Allow for empty table?
 		for colIndex, colName := range table.colNames {
 			matrix[colIndex][colNameRowIndex] = colName
 			width[colIndex] = max(width[colIndex], len(colName))
@@ -1227,7 +1244,7 @@ func (table *GoTable) String() string {
 	// Col types
 	// Stretch width if colType is wider than colName.
 	// Set alignRight true if col is numeric.
-	if len(table.colTypes) > 0 {    // Allow for empty table?
+	if len(table.colTypes) > 0 { // Allow for empty table?
 		for colIndex, colType := range table.colTypes {
 			matrix[colIndex][colTypeRowIndex] = colType
 			width[colIndex] = max(width[colIndex], len(colType))
@@ -1235,7 +1252,7 @@ func (table *GoTable) String() string {
 		}
 	}
 
-//	where(fmt.Sprintf("matrix before printMatrix(): %v", matrix))
+	//	where(fmt.Sprintf("matrix before printMatrix(): %v", matrix))
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
@@ -1246,147 +1263,147 @@ func (table *GoTable) String() string {
 			os.Stderr.WriteString(err.Error())
 			return ""
 		}
-		horizontalSep = ""	// No gap on left of first column.
+		horizontalSep = "" // No gap on left of first column.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-			var sVal    string
-			var tVal    bool
-			var ui8Val  uint8
+			var sVal string
+			var tVal bool
+			var ui8Val uint8
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
-			var uiVal   uint
-			var iVal    int
-			var i8Val   int8
-			var i16Val  int16
-			var i32Val  int32
-			var i64Val  int64
-			var f32Val  float32
-			var f64Val  float64
+			var uiVal uint
+			var iVal int
+			var i8Val int8
+			var i16Val int16
+			var i32Val int32
+			var i64Val int64
+			var f32Val float32
+			var f64Val float64
 			var exists bool
 			buf.WriteString(horizontalSep)
 			var s string
 			switch table.colTypes[colIndex] {
-				case "string":
-					sVal, exists = rowMap[table.colNames[colIndex]].(string)
-					if !exists {
-						sVal = ""
-					}
-					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
-					var replicatedPercentChars string
-					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-					s = fmt.Sprintf("%q", replicatedPercentChars)
-				case "bool":
-					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-					if !exists {
-						tVal = false
-					}
-					s = fmt.Sprintf("%t", tVal)
-				case "uint8":
-					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-					if !exists {
-						ui8Val = 0
-					}
-					s = fmt.Sprintf("%d", ui8Val)
-				case "uint16":
-					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-					if !exists {
-						ui16Val = 0
-					}
-					s = fmt.Sprintf("%d", ui16Val)
-				case "uint32":
-					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-					if !exists {
-						ui32Val = 0
-					}
-					s = fmt.Sprintf("%d", ui32Val)
-				case "uint64":
-					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-					if !exists {
-						ui64Val = 0
-					}
-					s = fmt.Sprintf("%d", ui64Val)
-				case "uint":
-					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-					if !exists {
-						uiVal = 0
-					}
-					s = fmt.Sprintf("%d", uiVal)
-				case "int":
-					iVal, exists = rowMap[table.colNames[colIndex]].(int)
-					if !exists {
-						iVal = 0
-					}
-					s = fmt.Sprintf("%d", iVal)
-				case "int8":
-					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-					if !exists {
-						i8Val = 0
-					}
-					s = fmt.Sprintf("%d", i8Val)
-				case "int16":
-					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-					if !exists {
-						i16Val = 0
-					}
-					s = fmt.Sprintf("%d", i16Val)
-				case "int32":
-					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-					if !exists {
-						i32Val = 0
-					}
-					s = fmt.Sprintf("%d", i32Val)
-				case "int64":
-					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-					if !exists {
-						i64Val = 0
-					}
-					s = fmt.Sprintf("%d", i64Val)
-				case "float32":
-					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
-					if !exists {
-						f32Val = 0.0
-					}
-					var f64ValForFormatFloat float64 = float64(f32Val)
-					s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
-//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-					setWidths(s, colIndex, prenum, points, precis, width)
-				case "float64":
-					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
-					if !exists {
-						f64Val = 0.0
-					}
-					s = strconv.FormatFloat(f64Val, 'f', -1, 64)	// -1 strips off excess decimal places.
-//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-					setWidths(s, colIndex, prenum, points, precis, width)
-				default:
-					log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
-					return ""
+			case "string":
+				sVal, exists = rowMap[table.colNames[colIndex]].(string)
+				if !exists {
+					sVal = ""
+				}
+				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
+				var replicatedPercentChars string
+				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
+				s = fmt.Sprintf("%q", replicatedPercentChars)
+			case "bool":
+				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+				if !exists {
+					tVal = false
+				}
+				s = fmt.Sprintf("%t", tVal)
+			case "uint8":
+				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+				if !exists {
+					ui8Val = 0
+				}
+				s = fmt.Sprintf("%d", ui8Val)
+			case "uint16":
+				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+				if !exists {
+					ui16Val = 0
+				}
+				s = fmt.Sprintf("%d", ui16Val)
+			case "uint32":
+				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+				if !exists {
+					ui32Val = 0
+				}
+				s = fmt.Sprintf("%d", ui32Val)
+			case "uint64":
+				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+				if !exists {
+					ui64Val = 0
+				}
+				s = fmt.Sprintf("%d", ui64Val)
+			case "uint":
+				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+				if !exists {
+					uiVal = 0
+				}
+				s = fmt.Sprintf("%d", uiVal)
+			case "int":
+				iVal, exists = rowMap[table.colNames[colIndex]].(int)
+				if !exists {
+					iVal = 0
+				}
+				s = fmt.Sprintf("%d", iVal)
+			case "int8":
+				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+				if !exists {
+					i8Val = 0
+				}
+				s = fmt.Sprintf("%d", i8Val)
+			case "int16":
+				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+				if !exists {
+					i16Val = 0
+				}
+				s = fmt.Sprintf("%d", i16Val)
+			case "int32":
+				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+				if !exists {
+					i32Val = 0
+				}
+				s = fmt.Sprintf("%d", i32Val)
+			case "int64":
+				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+				if !exists {
+					i64Val = 0
+				}
+				s = fmt.Sprintf("%d", i64Val)
+			case "float32":
+				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+				if !exists {
+					f32Val = 0.0
+				}
+				var f64ValForFormatFloat float64 = float64(f32Val)
+				s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
+				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
+				setWidths(s, colIndex, prenum, points, precis, width)
+			case "float64":
+				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+				if !exists {
+					f64Val = 0.0
+				}
+				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
+				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
+				setWidths(s, colIndex, prenum, points, precis, width)
+			default:
+				log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
 
-/*	MAL WAS HERE 14.02.2017
-Accumulate the widest number before the decimal point.
-Accumulate the widest number after the decimal point.
-Width is then the widest before plus decimal point plus widest after.
-The problem is handling floats with no decimal points.
-And what if some in a column have points and others don't?
-printMatrix() will have to use a format which places the decimal point in a uniform location. Tricky.
-			fmt.Printf("table.colTypes[%d] = %s\n", colIndex, table.colTypes[colIndex])
-			if table.colTypes[colIndex] == "float32" || table.colTypes[colIndex] == "float64" {
-				fmt.Printf("s = %s\n", s)
-				widthBeforePoint[colIndex] = len(strings.Split(s, ".")[0])
-				fmt.Printf("widthBeforePoint[%d] = %d s=%s\n", colIndex, widthBeforePoint[colIndex], s)
-				widthAfterPoint[colIndex] = len(strings.Split(s, ".")[1])
-				fmt.Printf("widthAfterPoint[%d] = %d s=%s\n", colIndex, widthAfterPoint[colIndex], s)
-				// os.Exit(44)
-			}
-*/
+			/*	MAL WAS HERE 14.02.2017
+			Accumulate the widest number before the decimal point.
+			Accumulate the widest number after the decimal point.
+			Width is then the widest before plus decimal point plus widest after.
+			The problem is handling floats with no decimal points.
+			And what if some in a column have points and others don't?
+			printMatrix() will have to use a format which places the decimal point in a uniform location. Tricky.
+						fmt.Printf("table.colTypes[%d] = %s\n", colIndex, table.colTypes[colIndex])
+						if table.colTypes[colIndex] == "float32" || table.colTypes[colIndex] == "float64" {
+							fmt.Printf("s = %s\n", s)
+							widthBeforePoint[colIndex] = len(strings.Split(s, ".")[0])
+							fmt.Printf("widthBeforePoint[%d] = %d s=%s\n", colIndex, widthBeforePoint[colIndex], s)
+							widthAfterPoint[colIndex] = len(strings.Split(s, ".")[1])
+							fmt.Printf("widthAfterPoint[%d] = %d s=%s\n", colIndex, widthAfterPoint[colIndex], s)
+							// os.Exit(44)
+						}
+			*/
 
-			width[colIndex] = max(width[colIndex], len(s))	// Needed for non-numeric columns.
-//			where(fmt.Sprintf("len(%q) = %d\n", s, len(s)))
-//			where(fmt.Sprintf("width[%d] = %d\n", colIndex, width[colIndex]))
+			width[colIndex] = max(width[colIndex], len(s)) // Needed for non-numeric columns.
+			//			where(fmt.Sprintf("len(%q) = %d\n", s, len(s)))
+			//			where(fmt.Sprintf("width[%d] = %d\n", colIndex, width[colIndex]))
 
-//			horizontalSep = string(horizontalSeparator)
+			//			horizontalSep = string(horizontalSeparator)
 			horizontalSep = gapBetweenCols
 		}
 		buf.WriteByte(verticalSep)
@@ -1428,7 +1445,7 @@ func prenumberOf(s string) (prenumber int) {
 	} else {
 		prenumber = len(s)
 	}
-//	where(fmt.Sprintf("prenumber of %q = %d\n", s, prenumber))
+	//	where(fmt.Sprintf("prenumber of %q = %d\n", s, prenumber))
 	return prenumber
 }
 
@@ -1439,7 +1456,7 @@ func pointsOf(s string) (points int) {
 	} else {
 		points = 0
 	}
-//	where(fmt.Sprintf("points of %q = %d\n", s, points))
+	//	where(fmt.Sprintf("points of %q = %d\n", s, points))
 	return points
 }
 
@@ -1450,7 +1467,7 @@ func precisionOf(s string) (precision int) {
 	} else {
 		precision = 0
 	}
-//	where(fmt.Sprintf("precision of %q = %d\n", s, precision))
+	//	where(fmt.Sprintf("precision of %q = %d\n", s, precision))
 	return precision
 }
 
@@ -1493,87 +1510,87 @@ func (table *GoTable) StringCSV() string {
 		rowMap, _ = table.RowMap(rowIndex)
 		var rowColSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-			var sVal    string
-			var tVal    bool
-			var ui8Val  uint8
+			var sVal string
+			var tVal bool
+			var ui8Val uint8
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
-			var uiVal   uint
-			var iVal    int
-			var i8Val   int8
-			var i16Val  int16
-			var i32Val  int32
-			var i64Val  int64
-			var f32Val  float32
-			var f64Val  float64
+			var uiVal uint
+			var iVal int
+			var i8Val int8
+			var i16Val int16
+			var i32Val int32
+			var i64Val int64
+			var f32Val float32
+			var f64Val float64
 			var exists bool
 			buf.WriteString(rowColSep)
 			switch table.colTypes[colIndex] {
-				case "string":
-					sVal, exists = rowMap[table.colNames[colIndex]].(string)
-					buf.WriteString(fmt.Sprintf("%s", sVal))
-				case "bool":
-					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-					buf.WriteString(fmt.Sprintf("%t", tVal))
-				case "uint8":
-					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-					buf.WriteString(fmt.Sprintf("%d", ui8Val))
-				case "uint16":
-					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-					buf.WriteString(fmt.Sprintf("%d", ui16Val))
-				case "uint32":
-					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-					buf.WriteString(fmt.Sprintf("%d", ui32Val))
-				case "uint64":
-					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-					buf.WriteString(fmt.Sprintf("%d", ui64Val))
-				case "uint":
-					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-					buf.WriteString(fmt.Sprintf("%d", uiVal))
-				case "int":
-					iVal, exists = rowMap[table.colNames[colIndex]].(int)
-					buf.WriteString(fmt.Sprintf("%d", iVal))
-				case "int8":
-					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-					buf.WriteString(fmt.Sprintf("%d", i8Val))
-				case "int16":
-					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-					buf.WriteString(fmt.Sprintf("%d", i16Val))
-				case "int32":
-					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-					buf.WriteString(fmt.Sprintf("%d", i32Val))
-				case "int64":
-					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-					buf.WriteString(fmt.Sprintf("%d", i64Val))
-				case "float32":
-					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
-					if exists {
-						var f64ValForFormatFloat float64 = float64(f32Val)
-						if !math.IsNaN(f64ValForFormatFloat) {
-							buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32))
-						} else {
-							buf.WriteString(fmt.Sprintf(""))	// Missing value.
-						}
+			case "string":
+				sVal, exists = rowMap[table.colNames[colIndex]].(string)
+				buf.WriteString(fmt.Sprintf("%s", sVal))
+			case "bool":
+				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+				buf.WriteString(fmt.Sprintf("%t", tVal))
+			case "uint8":
+				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+				buf.WriteString(fmt.Sprintf("%d", ui8Val))
+			case "uint16":
+				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+				buf.WriteString(fmt.Sprintf("%d", ui16Val))
+			case "uint32":
+				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+				buf.WriteString(fmt.Sprintf("%d", ui32Val))
+			case "uint64":
+				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+				buf.WriteString(fmt.Sprintf("%d", ui64Val))
+			case "uint":
+				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+				buf.WriteString(fmt.Sprintf("%d", uiVal))
+			case "int":
+				iVal, exists = rowMap[table.colNames[colIndex]].(int)
+				buf.WriteString(fmt.Sprintf("%d", iVal))
+			case "int8":
+				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+				buf.WriteString(fmt.Sprintf("%d", i8Val))
+			case "int16":
+				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+				buf.WriteString(fmt.Sprintf("%d", i16Val))
+			case "int32":
+				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+				buf.WriteString(fmt.Sprintf("%d", i32Val))
+			case "int64":
+				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+				buf.WriteString(fmt.Sprintf("%d", i64Val))
+			case "float32":
+				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+				if exists {
+					var f64ValForFormatFloat float64 = float64(f32Val)
+					if !math.IsNaN(f64ValForFormatFloat) {
+						buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32))
 					} else {
-						buf.WriteString(fmt.Sprintf(""))	// Missing value.
-						exists = true	// To not trigger following test of missing value for other types.
+						buf.WriteString(fmt.Sprintf("")) // Missing value.
 					}
-				case "float64":
-					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
-					if exists {
-						if !math.IsNaN(f64Val) {
-							buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))
-						} else {
-							buf.WriteString(fmt.Sprintf(""))	// Missing value.
-						}
+				} else {
+					buf.WriteString(fmt.Sprintf("")) // Missing value.
+					exists = true                    // To not trigger following test of missing value for other types.
+				}
+			case "float64":
+				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+				if exists {
+					if !math.IsNaN(f64Val) {
+						buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))
 					} else {
-						buf.WriteString(fmt.Sprintf(""))	// Missing value.
-						exists = true	// To not trigger following test of missing value for other types.
+						buf.WriteString(fmt.Sprintf("")) // Missing value.
 					}
-				default:
-					log.Printf("ERROR IN func StringCSV(): Unknown type: %s\n", table.colTypes[colIndex])
-					return ""
+				} else {
+					buf.WriteString(fmt.Sprintf("")) // Missing value.
+					exists = true                    // To not trigger following test of missing value for other types.
+				}
+			default:
+				log.Printf("ERROR IN func StringCSV(): Unknown type: %s\n", table.colTypes[colIndex])
+				return ""
 			}
 
 			if !exists {
@@ -1620,7 +1637,7 @@ func (table *GoTable) AddCol(colName string, colType string) error {
 
 	table.colNames = append(table.colNames, colName)
 	table.colTypes = append(table.colTypes, colType)
-	colIndex := len(table.colNames)-1
+	colIndex := len(table.colNames) - 1
 
 	table.colNamesLookup[colName] = colIndex
 
@@ -1711,9 +1728,9 @@ func (table *GoTable) AddColNames(colNames []string) error {
 		}
 	}
 
-/*	MOVED DOWN
-	table.colNames = append(table.colNames, colNames...)	// Explode slice with ... notation.
-*/
+	/*	MOVED DOWN
+		table.colNames = append(table.colNames, colNames...)	// Explode slice with ... notation.
+	*/
 
 	for index, colName := range colNames {
 		// Make sure this col name doesn't already exist.
@@ -1726,7 +1743,7 @@ func (table *GoTable) AddColNames(colNames []string) error {
 		table.colNamesLookup[colName] = index
 	}
 
-	table.colNames = append(table.colNames, colNames...)	// Explode slice with ... notation.
+	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
 
 	return nil
 }
@@ -1753,7 +1770,7 @@ func (table *GoTable) AddColTypes(colTypes []string) error {
 		}
 	}
 
-	table.colTypes = append(table.colTypes, colTypes...)	// Explode slice with ... notation.
+	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
 
 	return nil
 }
@@ -1834,7 +1851,7 @@ func (table *GoTable) ColIndex(colName string) (int, error) {
 	if table == nil {
 		return -1, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-	index , exists := table.colNamesLookup[colName]
+	index, exists := table.colNamesLookup[colName]
 	if exists {
 		return index, nil
 	}
@@ -1892,7 +1909,7 @@ func (table *GoTable) RowMap(rowIndex int) (GoTableRow, error) {
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return nil, errors.New(fmt.Sprintf("Table [%s] has %d row%s. Row index out of range: %d",
-		table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
+			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return table.rows[rowIndex], nil
 }
@@ -2194,7 +2211,7 @@ func (table *GoTable) HasRow(rowIndex int) (bool, error) {
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return false, errors.New(fmt.Sprintf("Table [%s] has %d row%s. Row index out of range: %d",
-		table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
+			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return true, nil
 }
@@ -2207,12 +2224,12 @@ func (table *GoTable) GetString(colName string, rowIndex int) (string, error) {
 	var err error
 	var interfaceType interface{}
 	interfaceType, err = table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(string)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "string")
 		return zeroVal, err
 	}
@@ -2226,12 +2243,12 @@ func (table *GoTable) GetStringByColIndex(colIndex int, rowIndex int) (string, e
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(string)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "string")
 		return zeroVal, err
 	}
@@ -2245,12 +2262,12 @@ func (table *GoTable) GetFloat32(colName string, rowIndex int) (float32, error) 
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(float32)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "float32")
 		return zeroVal, err
 	}
@@ -2264,12 +2281,12 @@ func (table *GoTable) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32,
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(float32)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "float32")
 		return zeroVal, err
 	}
@@ -2283,12 +2300,12 @@ func (table *GoTable) GetFloat64(colName string, rowIndex int) (float64, error) 
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(float64)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "float64")
 		return zeroVal, err
 	}
@@ -2302,12 +2319,12 @@ func (table *GoTable) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64,
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(float64)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "float64")
 		return zeroVal, err
 	}
@@ -2321,12 +2338,12 @@ func (table *GoTable) GetUint(colName string, rowIndex int) (uint, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "uint")
 		return zeroVal, err
 	}
@@ -2340,12 +2357,12 @@ func (table *GoTable) GetUintByColIndex(colIndex int, rowIndex int) (uint, error
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint")
 		return zeroVal, err
 	}
@@ -2359,12 +2376,12 @@ func (table *GoTable) GetInt(colName string, rowIndex int) (int, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "int")
 		return zeroVal, err
 	}
@@ -2378,12 +2395,12 @@ func (table *GoTable) GetIntByColIndex(colIndex int, rowIndex int) (int, error) 
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "int")
 		return zeroVal, err
 	}
@@ -2397,12 +2414,12 @@ func (table *GoTable) GetUint8(colName string, rowIndex int) (uint8, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint8)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "uint8")
 		return zeroVal, err
 	}
@@ -2416,12 +2433,12 @@ func (table *GoTable) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, err
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint8)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint8")
 		return zeroVal, err
 	}
@@ -2435,12 +2452,12 @@ func (table *GoTable) GetUint16(colName string, rowIndex int) (uint16, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint16)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "uint16")
 		return zeroVal, err
 	}
@@ -2454,12 +2471,12 @@ func (table *GoTable) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, e
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint16)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint16")
 		return zeroVal, err
 	}
@@ -2473,12 +2490,12 @@ func (table *GoTable) GetUint32(colName string, rowIndex int) (uint32, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint32)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "uint32")
 		return zeroVal, err
 	}
@@ -2492,12 +2509,12 @@ func (table *GoTable) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, e
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint32)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint32")
 		return zeroVal, err
 	}
@@ -2511,12 +2528,12 @@ func (table *GoTable) GetUint64(colName string, rowIndex int) (uint64, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint64)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "uint64")
 		return zeroVal, err
 	}
@@ -2530,12 +2547,12 @@ func (table *GoTable) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, e
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(uint64)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint64")
 		return zeroVal, err
 	}
@@ -2549,12 +2566,12 @@ func (table *GoTable) GetInt8(colName string, rowIndex int) (int8, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int8)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "int8")
 		return zeroVal, err
 	}
@@ -2568,12 +2585,12 @@ func (table *GoTable) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int8)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "int8")
 		return zeroVal, err
 	}
@@ -2587,12 +2604,12 @@ func (table *GoTable) GetInt16(colName string, rowIndex int) (int16, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int16)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "int16")
 		return zeroVal, err
 	}
@@ -2606,12 +2623,12 @@ func (table *GoTable) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, err
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int16)
-	if (!valid) {
+	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "int16")
 		return zeroVal, err
 	}
@@ -2625,12 +2642,12 @@ func (table *GoTable) GetInt32(colName string, rowIndex int) (int32, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int32)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "int32")
 		return zeroVal, err
 	}
@@ -2644,12 +2661,12 @@ func (table *GoTable) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, err
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int32)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColTypeByColIndex(colIndex, "int32")
 		return zeroVal, err
 	}
@@ -2663,12 +2680,12 @@ func (table *GoTable) GetInt64(colName string, rowIndex int) (int64, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int64)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "int64")
 		return zeroVal, err
 	}
@@ -2682,12 +2699,12 @@ func (table *GoTable) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, err
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(int64)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColTypeByColIndex(colIndex, "int64")
 		return zeroVal, err
 	}
@@ -2701,12 +2718,12 @@ func (table *GoTable) GetBool(colName string, rowIndex int) (bool, error) {
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(bool)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColType(colName, "bool")
 		return zeroVal, err
 	}
@@ -2720,12 +2737,12 @@ func (table *GoTable) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error
 		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
-	if (err != nil) {
+	if err != nil {
 		return zeroVal, err
 	}
 
 	val, valid := interfaceType.(bool)
-	if (!valid) {
+	if !valid {
 		_, err = table.IsColTypeByColIndex(colIndex, "bool")
 		return zeroVal, err
 	}
@@ -2768,7 +2785,6 @@ func (table *GoTable) IsColTypeByColIndex(colIndex int, typeNameQuestioning stri
 	return true, nil
 }
 
-
 // ###
 // Row
 // ###
@@ -2778,6 +2794,7 @@ func (table *GoTable) IsColTypeByColIndex(colIndex int, typeNameQuestioning stri
 // A type assertion accesses the underlying concrete type.
 // Or, if the underlying type is unknown, a type switch determines the type.
 type _RowAsInterface []interface{}
+
 // But for now we will use a map to store a Row for simplicity, even though it will take up more space.
 
 func (table *GoTable) SetTableName(tableName string) error {
@@ -2874,8 +2891,8 @@ func (table *GoTable) RenameCol(oldName string, newName string) error {
 	table.colNames[colIndex] = newName
 
 	// Rename col in map of col names to col indexes.
-	delete(table.colNamesLookup, oldName)		// Delete the old one.
-	table.colNamesLookup[newName] = colIndex	// Add the new one.
+	delete(table.colNamesLookup, oldName)    // Delete the old one.
+	table.colNamesLookup[newName] = colIndex // Add the new one.
 
 	// Rename each row.
 	// table.renameColCells()
@@ -2896,8 +2913,8 @@ func (table *GoTable) RenameCol(oldName string, newName string) error {
 			err := errors.New(msg)
 			return err
 		}
-		delete(rowMap, oldName)		// Delete the old name and value.
-		rowMap[newName] = cellValue	// Add the new name and saved cell value.
+		delete(rowMap, oldName)     // Delete the old name and value.
+		rowMap[newName] = cellValue // Add the new name and saved cell value.
 	}
 
 	return nil
@@ -3030,7 +3047,7 @@ func Round(val float64, places int) (rounded float64) {
 	var round float64
 	pow := math.Pow(10, float64(places))
 	digit := pow * val
-	_, frac := math.Modf(digit)	// Modf(f) returns integer and fractional floating-point numbers that sum to f
+	_, frac := math.Modf(digit) // Modf(f) returns integer and fractional floating-point numbers that sum to f
 	if frac >= roundOn {
 		round = math.Ceil(digit)
 	} else {
@@ -3329,7 +3346,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*GoTableSet, error) {
 	}
 
 	var table *GoTable
-	var tableCount = len(buffer)-1	// The tail end buffer element is the header.
+	var tableCount = len(buffer) - 1 // The tail end buffer element is the header.
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
 		table, err = GobDecodeTable(buffer[tableIndex])
 		if err != nil {
@@ -3342,7 +3359,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*GoTableSet, error) {
 	}
 
 	// Decode and restore the header.
-	var headerIndex int = len(buffer)-1
+	var headerIndex int = len(buffer) - 1
 	var encodedHeader bytes.Buffer = buffer[headerIndex]
 	var dec *gob.Decoder = gob.NewDecoder(&encodedHeader)
 	var goTableSetHeader GoTableSetExported
@@ -3350,8 +3367,8 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*GoTableSet, error) {
 	if err != nil {
 		return nil, err
 	}
-	tableSet.goTableSetName = goTableSetHeader.GoTableSetName 
-	tableSet.fileName = goTableSetHeader.FileName 
+	tableSet.goTableSetName = goTableSetHeader.GoTableSetName
+	tableSet.fileName = goTableSetHeader.FileName
 
 	return tableSet, nil
 }
@@ -3387,8 +3404,8 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*GoTableSet, error) {
 //	if err != nil {
 //		return nil, err
 //	}
-//	tableSet.goTableSetName = goTableSetHeader.GoTableSetName 
-//	tableSet.fileName = goTableSetHeader.FileName 
+//	tableSet.goTableSetName = goTableSetHeader.GoTableSetName
+//	tableSet.fileName = goTableSetHeader.FileName
 //
 //	return tableSet, nil
 //}
@@ -3433,27 +3450,27 @@ func GobDecodeTable(buffer bytes.Buffer) (*GoTable, error) {
 
 func funcName() string {
 	pc, _, _, _ := runtime.Caller(1)
-	nameFull := runtime.FuncForPC(pc).Name()    // main.foo
-	nameEnd := filepath.Ext(nameFull)           // .foo
-	name := strings.TrimPrefix(nameEnd, ".")    // foo
+	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	nameEnd := filepath.Ext(nameFull)        // .foo
+	name := strings.TrimPrefix(nameEnd, ".") // foo
 	return name
 }
 
 func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
-	var sVal    string
-	var tVal    bool
-	var ui8Val  uint8
+	var sVal string
+	var tVal bool
+	var ui8Val uint8
 	var ui16Val uint16
 	var ui32Val uint32
 	var ui64Val uint64
-	var uiVal   uint
-	var iVal    int
-	var i8Val   int8
-	var i16Val  int16
-	var i32Val  int32
-	var i64Val  int64
-	var f32Val  float32
-	var f64Val  float64
+	var uiVal uint
+	var iVal int
+	var i8Val int8
+	var i16Val int16
+	var i32Val int32
+	var i64Val int64
+	var f32Val float32
+	var f64Val float64
 
 	var interfaceType interface{}
 	var err error
@@ -3466,52 +3483,52 @@ func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (stri
 	}
 
 	switch table.colTypes[colIndex] {
-		case "string":
-			sVal = interfaceType.(string)
-			buf.WriteString(fmt.Sprintf("%q", sVal))
-		case "bool":
-			tVal = interfaceType.(bool)
-			buf.WriteString(fmt.Sprintf("%t", tVal))
-		case "uint8":
-			ui8Val = interfaceType.(uint8)
-			buf.WriteString(fmt.Sprintf("%d", ui8Val))
-		case "uint16":
-			ui16Val = interfaceType.(uint16)
-			buf.WriteString(fmt.Sprintf("%d", ui16Val))
-		case "uint32":
-			ui32Val = interfaceType.(uint32)
-			buf.WriteString(fmt.Sprintf("%d", ui32Val))
-		case "uint64":
-			ui64Val = interfaceType.(uint64)
-			buf.WriteString(fmt.Sprintf("%d", ui64Val))
-		case "uint":
-			uiVal = interfaceType.(uint)
-			buf.WriteString(fmt.Sprintf("%d", uiVal))
-		case "int":
-			iVal = interfaceType.(int)
-			buf.WriteString(fmt.Sprintf("%d", iVal))
-		case "int8":
-			i8Val = interfaceType.(int8)
-			buf.WriteString(fmt.Sprintf("%d", i8Val))
-		case "int16":
-			i16Val = interfaceType.(int16)
-			buf.WriteString(fmt.Sprintf("%d", i16Val))
-		case "int32":
-			i32Val = interfaceType.(int32)
-			buf.WriteString(fmt.Sprintf("%d", i32Val))
-		case "int64":
-			i64Val = interfaceType.(int64)
-			buf.WriteString(fmt.Sprintf("%d", i64Val))
-		case "float32":
-			f32Val = interfaceType.(float32)
-			var f64ValForFormatFloat float64 = float64(f32Val)
-			buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
-		case "float64":
-			f64Val = interfaceType.(float64)
-			buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))	// -1 strips off excess decimal places.
-		default:
-			err = fmt.Errorf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
-			return "", err
+	case "string":
+		sVal = interfaceType.(string)
+		buf.WriteString(fmt.Sprintf("%q", sVal))
+	case "bool":
+		tVal = interfaceType.(bool)
+		buf.WriteString(fmt.Sprintf("%t", tVal))
+	case "uint8":
+		ui8Val = interfaceType.(uint8)
+		buf.WriteString(fmt.Sprintf("%d", ui8Val))
+	case "uint16":
+		ui16Val = interfaceType.(uint16)
+		buf.WriteString(fmt.Sprintf("%d", ui16Val))
+	case "uint32":
+		ui32Val = interfaceType.(uint32)
+		buf.WriteString(fmt.Sprintf("%d", ui32Val))
+	case "uint64":
+		ui64Val = interfaceType.(uint64)
+		buf.WriteString(fmt.Sprintf("%d", ui64Val))
+	case "uint":
+		uiVal = interfaceType.(uint)
+		buf.WriteString(fmt.Sprintf("%d", uiVal))
+	case "int":
+		iVal = interfaceType.(int)
+		buf.WriteString(fmt.Sprintf("%d", iVal))
+	case "int8":
+		i8Val = interfaceType.(int8)
+		buf.WriteString(fmt.Sprintf("%d", i8Val))
+	case "int16":
+		i16Val = interfaceType.(int16)
+		buf.WriteString(fmt.Sprintf("%d", i16Val))
+	case "int32":
+		i32Val = interfaceType.(int32)
+		buf.WriteString(fmt.Sprintf("%d", i32Val))
+	case "int64":
+		i64Val = interfaceType.(int64)
+		buf.WriteString(fmt.Sprintf("%d", i64Val))
+	case "float32":
+		f32Val = interfaceType.(float32)
+		var f64ValForFormatFloat float64 = float64(f32Val)
+		buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
+	case "float64":
+		f64Val = interfaceType.(float64)
+		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+	default:
+		err = fmt.Errorf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+		return "", err
 	}
 
 	s = buf.String()

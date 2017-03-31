@@ -7,18 +7,18 @@ package gotable
 
 import (
 	"fmt"
-//	"os"
+	//	"os"
 	"bufio"
+	"bytes"
+	"errors"
 	"io"
 	"io/ioutil"
-	"regexp"
-	"strings"
-	"strconv"
-	"errors"
-	"runtime"
 	"log"
-	"bytes"
-//	"unsafe"
+	"regexp"
+	"runtime"
+	"strconv"
+	"strings"
+	//	"unsafe"
 	"math"
 )
 
@@ -45,8 +45,9 @@ SOFTWARE.
 */
 
 func init() {
-	log.SetFlags(log.Llongfile)	// For var where
+	log.SetFlags(log.Llongfile) // For var where
 }
+
 var where = log.Print
 
 var globalLineNum int
@@ -56,32 +57,33 @@ const _ALL_SUBSTRINGS = -1
 // Constants for strconv parse functions.
 const (
 	_DECIMAL = 10
-	_BITS_8   =  8	// Bit width.
-	_BITS_16  = 16	// Bit width.
-	_BITS_32  = 32	// Bit width.
-	_BITS_64  = 64	// Bit width.
+	_BITS_8  = 8  // Bit width.
+	_BITS_16 = 16 // Bit width.
+	_BITS_32 = 32 // Bit width.
+	_BITS_64 = 64 // Bit width.
 )
 
 // Compiled regular expressions.
 // From http://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes:  /"(?:[^"\\]|\\.)*"/
 // var stringRegexp *regexp.Regexp = regexp.MustCompile("/"(?:[^"\\]|\\.)*"/")
-var stringRegexp	*regexp.Regexp = regexp.MustCompile(`^"(?:[^"\\]*(?:\\.)?)*"`)
-var boolRegexp		*regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
-var uintRegexp		*regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
-var intRegexp		*regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+var stringRegexp *regexp.Regexp = regexp.MustCompile(`^"(?:[^"\\]*(?:\\.)?)*"`)
+var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
+var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
+var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+
 // Allow negative float numbers! 15/03/2017 Amazed that this was missed during initial testing!
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 // From Regular Expressions Cookbook.
-   var floatRegexp		*regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
-var namePattern                    =   `^[a-zA-Z_][a-zA-Z0-9_]*$`
-var tableNamePattern               = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
+var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
+var namePattern = `^[a-zA-Z_][a-zA-Z0-9_]*$`
+var tableNamePattern = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegExp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
-var colNameRegExp   *regexp.Regexp = regexp.MustCompile(namePattern)
-var whiteRegExp     *regexp.Regexp = regexp.MustCompile(`\s+`)
-var equalsRegExp    *regexp.Regexp = regexp.MustCompile(`=`)
+var colNameRegExp *regexp.Regexp = regexp.MustCompile(namePattern)
+var whiteRegExp *regexp.Regexp = regexp.MustCompile(`\s+`)
+var equalsRegExp *regexp.Regexp = regexp.MustCompile(`=`)
+
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
-
 
 /*
 type DataType int
@@ -106,7 +108,7 @@ const (
 )
 */
 
-var globalColTypesMap = map[string]int {
+var globalColTypesMap = map[string]int{
 	"bool":    0,
 	"float32": 0,
 	"float64": 0,
@@ -123,7 +125,7 @@ var globalColTypesMap = map[string]int {
 	"uint8":   0,
 }
 
-var globalNumericColTypesMap = map[string]int {
+var globalNumericColTypesMap = map[string]int{
 	"float32": 0,
 	"float64": 0,
 	"int":     0,
@@ -140,16 +142,15 @@ var globalNumericColTypesMap = map[string]int {
 
 func (p *parser) parseString0(s string) (*GoTableSet, error) {
 	goTables, err := NewGoTableSet("")
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
 	var stringReader *strings.Reader = strings.NewReader(s)
-fmt.Printf("stringReader = %v\n", stringReader)
+	fmt.Printf("stringReader = %v\n", stringReader)
 
 	return goTables, err
 }
-
 
 func (p *parser) parseString(s string) (*GoTableSet, error) {
 	type _TableSection string
@@ -161,11 +162,11 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 	)
 	var expecting _TableSection
 	expecting = _TABLE_NAME
-	
+
 	type _TableShape string
 	const (
-		_TABLE_SHAPE  _TableShape = "_TABLE_SHAPE"
-		_STRUCT_SHAPE _TableShape = "_STRUCT_SHAPE"
+		_TABLE_SHAPE     _TableShape = "_TABLE_SHAPE"
+		_STRUCT_SHAPE    _TableShape = "_STRUCT_SHAPE"
 		_UNDEFINED_SHAPE _TableShape = "_UNDEFINED_SHAPE"
 	)
 	var tableShape _TableShape
@@ -178,11 +179,11 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowMapOfStruct GoTableRow	// Needs to persist over multiple lines.
+	var rowMapOfStruct GoTableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
 	goTables, err := NewGoTableSet(unnamed)
-	if (err != nil) {
+	if err != nil {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
 
@@ -214,175 +215,175 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 		switch expecting {
 
-			case _TABLE_NAME:
+		case _TABLE_NAME:
 
-				if len(line) > 0 {
-					// Skip blank lines before table.
-					var tableName string
-					tableName, err = p.getTableName(line)
-					if err != nil {
-//						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						return nil, err
-					}
-					goTable, err = NewGoTable(tableName)
-					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					}
-					tableShape = _UNDEFINED_SHAPE
-					// Add this table to tables. Do it immediately to allow empty tables. 02.08.2016
-					err = goTables.AddGoTable(goTable)
-					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					}
-					expecting = _COL_NAMES
+			if len(line) > 0 {
+				// Skip blank lines before table.
+				var tableName string
+				tableName, err = p.getTableName(line)
+				if err != nil {
+					//						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, err
+				}
+				goTable, err = NewGoTable(tableName)
+				if err != nil {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
+				tableShape = _UNDEFINED_SHAPE
+				// Add this table to tables. Do it immediately to allow empty tables. 02.08.2016
+				err = goTables.AddGoTable(goTable)
+				if err != nil {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
+				expecting = _COL_NAMES
+			}
+
+		case _COL_NAMES: // Also proxy for a line of a table struct in the form: name type = value
+
+			// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
+			var lineSplit []string = whiteRegExp.Split(line, _ALL_SUBSTRINGS)
+			const structNameIndex = 0
+			const structTypeIndex = 1
+			const structEqualsIndex = 2
+			const bareMinimumTokensForStructEquals = 3
+			const nameAndTypeOnlyTokenCount = bareMinimumTokensForStructEquals
+
+			if len(lineSplit) >= bareMinimumTokensForStructEquals && lineSplit[structEqualsIndex] == "=" {
+
+				// (1) Get the table struct (name, type and optional value) of this line.
+
+				tableShape = _STRUCT_SHAPE
+				goTable.structShape = true
+				var colName string = lineSplit[structNameIndex]
+				var colType string = lineSplit[structTypeIndex]
+				var isValid bool
+				if isValid, err = IsValidColName(colName); !isValid {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
+				if isValid, err = IsValidColType(colType); !isValid {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
+				var colNameSlice []string = []string{colName}
+				var colTypeSlice []string = []string{colType}
+
+				err = goTable.AddCol(colName, colType)
+				if err != nil {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
-			case _COL_NAMES:	// Also proxy for a line of a table struct in the form: name type = value
+				// where(p.gotFilePos())
+				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
+				if goTable.ColCount() == 1 {
+					structHasRowData = len(lineSplit) > nameAndTypeOnlyTokenCount
+					// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
+				}
+				// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
 
-				// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
-				var lineSplit []string = whiteRegExp.Split(line, _ALL_SUBSTRINGS)
-				const structNameIndex = 0
-				const structTypeIndex = 1
-				const structEqualsIndex = 2
-				const bareMinimumTokensForStructEquals = 3
-				const nameAndTypeOnlyTokenCount = bareMinimumTokensForStructEquals
+				if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
+					// where("expecting SOME value")
+					return nil, fmt.Errorf("%s Expecting a value after '=' but found: (nothing)")
+				}
 
-				if len(lineSplit) >= bareMinimumTokensForStructEquals && lineSplit[structEqualsIndex] == "=" {
-
-					// (1) Get the table struct (name, type and optional value) of this line.
-
-					tableShape = _STRUCT_SHAPE
-					goTable.structShape = true
-					var colName string = lineSplit[structNameIndex]
-					var colType string = lineSplit[structTypeIndex]
-					var isValid bool
-					if isValid, err = IsValidColName(colName); !isValid {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
+					// An approximate way to construct text for the error message. Spacing may be different.
+					var remaining string
+					for i := 3; i < len(lineSplit); i++ {
+						remaining += lineSplit[i] + " "
 					}
-					if isValid, err = IsValidColType(colType); !isValid {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					}
-					var colNameSlice []string = []string{colName}
-					var colTypeSlice []string = []string{colType}
+					return nil, fmt.Errorf("%s Expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
+				}
 
-					err = goTable.AddCol(colName, colType)
+				if structHasRowData {
+					// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
+					// Find the equals sign byte location within the string so we can locate the value data after equals.
+					// We know it's there (from the line split above), so don't check for nil returned.
+					var rangeFound []int = equalsRegExp.FindStringIndex(line)
+					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
+					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
+					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
+					// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
 					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+						//							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+						// where(err)
+						return nil, err
 					}
+					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
-// where(p.gotFilePos())
-					// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
-					if goTable.ColCount() == 1 {
-						structHasRowData = len(lineSplit) > nameAndTypeOnlyTokenCount
-// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
-					}
-// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
-
-					if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
-// where("expecting SOME value")
-						return nil, fmt.Errorf("%s Expecting a value after '=' but found: (nothing)")
-					}
-
-					if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
-						// An approximate way to construct text for the error message. Spacing may be different.
-						var remaining string
-						for i := 3; i < len(lineSplit); i++ {
-							remaining += lineSplit[i] + " "
-						}
-						return nil, fmt.Errorf("%s Expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
-					}
-
-					if structHasRowData {
-// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
-						// Find the equals sign byte location within the string so we can locate the value data after equals.
-						// We know it's there (from the line split above), so don't check for nil returned.
-						var rangeFound []int = equalsRegExp.FindStringIndex(line)
-						var valueData string = line[rangeFound[1]:]	// Just after = equals sign.
-						valueData = strings.TrimLeft(valueData, " \t\r\n")	// Remove leading space.
-						rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
-// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
-						if err != nil {
-//							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-// where(err)
-							return nil, err
-						}
-						// Still expecting _COL_NAMES which is where we find struct: name type = value
-
-/*
+					/*
 						err = goTable.AddCol(colName, colType)
 						if err != nil {
 							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 						}
-*/
+					*/
 
-						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-						// Exactly one row is needed for a struct table.
-						if goTable.RowCount() < 1 {
-							goTable.addRowOfNil()
-						}
-
-						var val interface{} = rowMapOfStruct[colName]
-						err = goTable.SetVal(colName, 0, val)
-						if err != nil {
-							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						}
-					}
-				} else {
-					if tableShape == _STRUCT_SHAPE {
-						return nil, fmt.Errorf("%s Expecting more structs (name type = value) but found: %s", p.gotFilePos(), line)
+					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
+					// Exactly one row is needed for a struct table.
+					if goTable.RowCount() < 1 {
+						goTable.addRowOfNil()
 					}
 
-					tableShape = _TABLE_SHAPE
-
-					// (2) Get the col names.
-
-					parserColNames, err = p.getColNames(lineSplit)
+					var val interface{} = rowMapOfStruct[colName]
+					err = goTable.SetVal(colName, 0, val)
 					if err != nil {
-						return nil, err
+						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					}
-					err = goTable.AddColNames(parserColNames)
-					if err != nil {
-						return nil, err
-					}
-					expecting = _COL_TYPES
+				}
+			} else {
+				if tableShape == _STRUCT_SHAPE {
+					return nil, fmt.Errorf("%s Expecting more structs (name type = value) but found: %s", p.gotFilePos(), line)
 				}
 
-			case _COL_TYPES:
+				tableShape = _TABLE_SHAPE
 
-				parserColTypes, err = p.getColTypes(line)
+				// (2) Get the col names.
+
+				parserColNames, err = p.getColNames(lineSplit)
 				if err != nil {
 					return nil, err
 				}
-				lenColNames := len(parserColNames)
-				lenColTypes := len(parserColTypes)
-				if lenColTypes != lenColNames {
-					return nil, fmt.Errorf("%s Expecting %d col type%s, not %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
-				}
-				goTable.AddColTypes(parserColTypes)
-				expecting = _COL_ROWS
-
-			case _COL_ROWS:
-
-				// Found data.
-				var rowMap GoTableRow
-				rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
+				err = goTable.AddColNames(parserColNames)
 				if err != nil {
-//					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					return nil, err
 				}
-				lenColTypes := len(parserColTypes)
-				lenRowMap := len(rowMap)
-				if lenColTypes != lenRowMap {
-					return nil, fmt.Errorf("%s Expecting %d value%s, not %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
-				}
-				goTable.AddRowMap(rowMap)
-				if err != nil {
-					return goTables, err
-				}
+				expecting = _COL_TYPES
+			}
+
+		case _COL_TYPES:
+
+			parserColTypes, err = p.getColTypes(line)
+			if err != nil {
+				return nil, err
+			}
+			lenColNames := len(parserColNames)
+			lenColTypes := len(parserColTypes)
+			if lenColTypes != lenColNames {
+				return nil, fmt.Errorf("%s Expecting %d col type%s, not %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
+			}
+			goTable.AddColTypes(parserColTypes)
+			expecting = _COL_ROWS
+
+		case _COL_ROWS:
+
+			// Found data.
+			var rowMap GoTableRow
+			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
+			if err != nil {
+				//					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				return nil, err
+			}
+			lenColTypes := len(parserColTypes)
+			lenRowMap := len(rowMap)
+			if lenColTypes != lenRowMap {
+				return nil, fmt.Errorf("%s Expecting %d value%s, not %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
+			}
+			goTable.AddRowMap(rowMap)
+			if err != nil {
+				return goTables, err
+			}
 		}
 
 		if readError == io.EOF {
-			return goTables, nil	// It's not an error to reach EOF. It just means end of document.
+			return goTables, nil // It's not an error to reach EOF. It just means end of document.
 		}
 	}
 }
@@ -432,7 +433,7 @@ func (p *parser) getTableName(line string) (string, error) {
 	}
 
 	// Strip off surrounding []
-	tableName = tableName[1:len(tableName)-1]
+	tableName = tableName[1 : len(tableName)-1]
 	return tableName, nil
 }
 
@@ -457,7 +458,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 	for i := 0; i < len(colTypes); i++ {
 		valid, err := IsValidColType(colTypes[i])
 		if !valid {
-//			log.Printf("%s", msg)	// To print the source file name and line number.
+			//			log.Printf("%s", msg)	// To print the source file name and line number.
 			msg := fmt.Sprintf("%s %s", p.gotFilePos(), err)
 			return nil, errors.New(msg)
 		}
@@ -535,258 +536,258 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 	var err error
 	rowMap := make(GoTableRow)
 
-	remaining := line	// Remainder of line left to parse.
+	remaining := line // Remainder of line left to parse.
 	var rangeFound []int
 	var textFound string
 	var colCount = 0
-	var lenColTypes = len(colTypes) 
+	var lenColTypes = len(colTypes)
 	var i int
 
-	var stringVal  string
-	var boolVal    bool
-	var uint8Val   uint8
-	var uint16Val  uint16
-	var uint32Val  uint32
-	var uint64Val  uint64
-	var uintVal    uint
-	var intVal     int
-	var int8Val    int8
-	var int16Val   int16
-	var int32Val   int32
-	var int64Val   int64
+	var stringVal string
+	var boolVal bool
+	var uint8Val uint8
+	var uint16Val uint16
+	var uint32Val uint32
+	var uint64Val uint64
+	var uintVal uint
+	var intVal int
+	var int8Val int8
+	var int16Val int16
+	var int32Val int32
+	var int64Val int64
 	var float32Val float32
 	var float64Val float64
 
 	for i = 0; i < lenColTypes; i++ {
-		if len(remaining) == 0 {	// End of line
+		if len(remaining) == 0 { // End of line
 			return nil, fmt.Errorf("%s Expecting %d value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
 		}
 		switch colTypes[i] {
-			case "string":
-				rangeFound = stringRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				stringVal = textFound[1:len(textFound)-1]	// Strip off leading and trailing "" quotes.
-				rowMap[colNames[i]] = stringVal
+		case "string":
+			rangeFound = stringRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
+			rowMap[colNames[i]] = stringVal
 
-			case "bool":
-				rangeFound = boolRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+		case "bool":
+			rangeFound = boolRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			boolVal, err = strconv.ParseBool(textFound)
+			if err != nil { // This error check probably redundant.
+				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
+			}
+			rowMap[colNames[i]] = boolVal
+		case "uint8":
+			rangeFound = uintRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			uint8Val = uint8(uint64Val)
+			rowMap[colNames[i]] = uint8Val
+		case "uint16":
+			rangeFound = uintRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			uint16Val = uint16(uint64Val)
+			rowMap[colNames[i]] = uint16Val
+		case "uint32":
+			rangeFound = uintRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			uint32Val = uint32(uint64Val)
+			rowMap[colNames[i]] = uint32Val
+		case "uint64":
+			rangeFound = uintRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			rowMap[colNames[i]] = uint64Val
+		case "uint":
+			rangeFound = uintRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			intBits := strconv.IntSize // uint and int are the same size.
+			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, intBits)
+			if err != nil {
+				var minVal int64
+				var maxVal uint64
+				switch intBits {
+				case 32:
+					minVal = 0
+					maxVal = math.MaxUint32
+				case 64:
+					minVal = 0
+					maxVal = math.MaxUint64
+				default:
+					msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+					log.Printf("%s", msg)
+					return nil, fmt.Errorf("%s", msg)
 				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				boolVal, err = strconv.ParseBool(textFound)
-				if err != nil {	// This error check probably redundant.
-					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
+				rangeMsg := rangeForIntegerType(minVal, maxVal)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			uintVal = uint(uint64Val) // May be unnecessary.
+			rowMap[colNames[i]] = uintVal
+		case "int":
+			rangeFound = intRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			intBits := strconv.IntSize
+			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, intBits)
+			if err != nil {
+				var minVal int64
+				var maxVal uint64
+				switch intBits {
+				case 32:
+					minVal = math.MinInt32
+					maxVal = math.MaxInt32
+				case 64:
+					minVal = math.MinInt64
+					maxVal = math.MaxInt64
+				default:
+					msg := fmt.Sprintf("CHECK int ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+					log.Printf("%s", msg)
+					return nil, fmt.Errorf("%s", msg)
 				}
-				rowMap[colNames[i]] = boolVal
-			case "uint8":
-				rangeFound = uintRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				uint8Val = uint8(uint64Val)
-				rowMap[colNames[i]] = uint8Val
-			case "uint16":
-				rangeFound = uintRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(0, math.MaxUint16)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				uint16Val = uint16(uint64Val)
-				rowMap[colNames[i]] = uint16Val
-			case "uint32":
-				rangeFound = uintRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(0, math.MaxUint32)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				uint32Val = uint32(uint64Val)
-				rowMap[colNames[i]] = uint32Val
-			case "uint64":
-				rangeFound = uintRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(0, math.MaxUint64)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				rowMap[colNames[i]] = uint64Val
-			case "uint":
-				rangeFound = uintRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				intBits := strconv.IntSize	// uint and int are the same size.
-				uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, intBits)
-				if err != nil {	
-					var minVal int64
-					var maxVal uint64
-					switch intBits {
-						case 32:
-							minVal = 0
-							maxVal = math.MaxUint32
-						case 64:
-							minVal = 0
-							maxVal = math.MaxUint64
-						default:
-							msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-							log.Printf("%s", msg)
-							return nil, fmt.Errorf("%s", msg)
-					}
-					rangeMsg := rangeForIntegerType(minVal, maxVal)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				uintVal = uint(uint64Val)	// May be unnecessary.
-				rowMap[colNames[i]] = uintVal
-			case "int":
-				rangeFound = intRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				intBits := strconv.IntSize
-				int64Val, err = strconv.ParseInt(textFound, _DECIMAL, intBits)
-				if err != nil {	
-					var minVal int64
-					var maxVal uint64
-					switch intBits {
-						case 32:
-							minVal = math.MinInt32
-							maxVal = math.MaxInt32
-						case 64:
-							minVal = math.MinInt64
-							maxVal = math.MaxInt64
-						default:
-							msg := fmt.Sprintf("CHECK int ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-							log.Printf("%s", msg)
-							return nil, fmt.Errorf("%s", msg)
-					}
-					rangeMsg := rangeForIntegerType(minVal, maxVal)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				intVal = int(int64Val)	// May be unnecessary.
-				rowMap[colNames[i]] = intVal
-			case "int8":
-				rangeFound = intRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_8)
-				if err != nil {	
-					// Example: data.got[55] strconv.ParseInt: parsing "-129": value out of range for type int8
-					rangeMsg := rangeForIntegerType(math.MinInt8, math.MaxInt8)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				int8Val = int8(int64Val)
-				rowMap[colNames[i]] = int8Val
-			case "int16":
-				rangeFound = intRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_16)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(math.MinInt16, math.MaxInt16)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				int16Val = int16(int64Val)
-				rowMap[colNames[i]] = int16Val
-			case "int32":
-				rangeFound = intRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_32)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(math.MinInt32, math.MaxInt32)
-					return nil, fmt.Errorf("%s %s for type %s%s ", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				int32Val = int32(int64Val)
-				rowMap[colNames[i]] = int32Val
-			case "int64":
-				rangeFound = intRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_64)
-				if err != nil {	
-					rangeMsg := rangeForIntegerType(math.MinInt64, math.MaxInt64)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				rowMap[colNames[i]] = int64Val
-			case "float32":
-				rangeFound = floatRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-				float64Val, err = strconv.ParseFloat(textFound, _BITS_32)
-				if err != nil {	
-					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
-				}
-				if math.IsNaN(float64Val) && textFound != "NaN" {
-//					return nil, fmt.Errorf("%s Expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
-					return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
-						p.gotFilePos(), colNames[i], colTypes[i], textFound)
-				}
-				float32Val = float32(float64Val)
-				rowMap[colNames[i]] = float32Val
-			case "float64":
-				rangeFound = floatRegexp.FindStringIndex(remaining)
-				if rangeFound == nil {
-					return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
-				}
-				textFound = remaining[rangeFound[0]:rangeFound[1]]
-//				where(fmt.Sprintf("textFound: %s", textFound))
-				float64Val, err = strconv.ParseFloat(textFound, _BITS_64)
-				if err != nil {	
-					return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
-				}
-//				where(fmt.Sprintf("float64Val: %f", float64Val))
-				if math.IsNaN(float64Val) && textFound != "NaN" {
-//					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
-					return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
-						p.gotFilePos(), colNames[i], colTypes[i], textFound)
-				}
-				rowMap[colNames[i]] = float64Val
-			default:
-				log.Printf("Unreachable code in getRowCol()")	// Need to define another type?
-				return nil, fmt.Errorf("%s Unreachable code in getRowCol()", p.gotFilePos())
+				rangeMsg := rangeForIntegerType(minVal, maxVal)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			intVal = int(int64Val) // May be unnecessary.
+			rowMap[colNames[i]] = intVal
+		case "int8":
+			rangeFound = intRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_8)
+			if err != nil {
+				// Example: data.got[55] strconv.ParseInt: parsing "-129": value out of range for type int8
+				rangeMsg := rangeForIntegerType(math.MinInt8, math.MaxInt8)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			int8Val = int8(int64Val)
+			rowMap[colNames[i]] = int8Val
+		case "int16":
+			rangeFound = intRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_16)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(math.MinInt16, math.MaxInt16)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			int16Val = int16(int64Val)
+			rowMap[colNames[i]] = int16Val
+		case "int32":
+			rangeFound = intRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_32)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(math.MinInt32, math.MaxInt32)
+				return nil, fmt.Errorf("%s %s for type %s%s ", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			int32Val = int32(int64Val)
+			rowMap[colNames[i]] = int32Val
+		case "int64":
+			rangeFound = intRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_64)
+			if err != nil {
+				rangeMsg := rangeForIntegerType(math.MinInt64, math.MaxInt64)
+				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+			}
+			rowMap[colNames[i]] = int64Val
+		case "float32":
+			rangeFound = floatRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			float64Val, err = strconv.ParseFloat(textFound, _BITS_32)
+			if err != nil {
+				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
+			}
+			if math.IsNaN(float64Val) && textFound != "NaN" {
+				//					return nil, fmt.Errorf("%s Expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
+					p.gotFilePos(), colNames[i], colTypes[i], textFound)
+			}
+			float32Val = float32(float64Val)
+			rowMap[colNames[i]] = float32Val
+		case "float64":
+			rangeFound = floatRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			//				where(fmt.Sprintf("textFound: %s", textFound))
+			float64Val, err = strconv.ParseFloat(textFound, _BITS_64)
+			if err != nil {
+				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
+			}
+			//				where(fmt.Sprintf("float64Val: %f", float64Val))
+			if math.IsNaN(float64Val) && textFound != "NaN" {
+				//					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
+					p.gotFilePos(), colNames[i], colTypes[i], textFound)
+			}
+			rowMap[colNames[i]] = float64Val
+		default:
+			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
+			return nil, fmt.Errorf("%s Unreachable code in getRowCol()", p.gotFilePos())
 		}
 		remaining = remaining[rangeFound[1]:len(remaining)]
-		remaining = strings.TrimLeft(remaining, " \t\r\n")	// Remove leading spaces.
+		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading spaces.
 		colCount++
 	}
 
-	if len(remaining) > 0 {	// Still one or more columns to parse.
-//		return nil, fmt.Errorf("%s Expecting %d col value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
+	if len(remaining) > 0 { // Still one or more columns to parse.
+		//		return nil, fmt.Errorf("%s Expecting %d col value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
 		return nil, fmt.Errorf("%s Expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
 
 	}
@@ -828,5 +829,5 @@ func plural(items int) string {
 	if items == 1 || items == -1 {
 		return ""
 	}
-	return "s" 
+	return "s"
 }
