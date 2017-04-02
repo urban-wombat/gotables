@@ -104,8 +104,9 @@ func NewGoTableSet(goTableSetName string) (*GoTableSet, error) {
 	return newTables, nil
 }
 
-// Read and parse a gotable file into a GoTableSet. Use NewGoTableSetFromFile(fileName string)
-func ReadFile(fileName string) (*GoTableSet, error) {
+// Read and parse a gotable file into a GoTableSet.
+// Replaces ReadFile(fileName string)
+func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 	var p parser
 	//	fmt.Printf("ReadFile(%q)\n", fileName)
 	p.SetFileName(fileName)
@@ -116,9 +117,11 @@ func ReadFile(fileName string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// Read and parse a gotable file into a GoTableSet. Replaces ReadFile(fileName string)
-func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
-	return ReadFile(fileName)
+// DEPRECATED. Use NewGoTableSetFromFile(fileName string)
+// Read and parse a gotable file into a GoTableSet.
+func ReadFile(fileName string) (*GoTableSet, error) {
+	fmt.Fprintf(os.Stderr, "Warning: deprecated method: gotable.ReadFile() Use: gotable.NewGoTableSetFromFile()\n")
+	return NewGoTableSetFromFile(fileName)
 }
 
 // Write a GoTableSet to a text file.
@@ -159,7 +162,8 @@ func (goTable *GoTable) WriteFile(fileName string, mode os.FileMode) error {
 }
 
 // Read and parse a gotable string into a GoTableSet. Use NewGoTableSetFromString(s string)
-func ReadString(s string) (*GoTableSet, error) {
+// Replaces ReadString(s string)
+func NewGoTableSetFromString(s string) (*GoTableSet, error) {
 	var p parser
 	tables, err := p.parseString(s)
 	if err != nil {
@@ -168,9 +172,11 @@ func ReadString(s string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// Read and parse a gotable string into a GoTableSet. Replaces ReadString(s string)
-func NewGoTableSetFromString(s string) (*GoTableSet, error) {
-	return ReadString(s)
+// DEPRECATED. Use NewGoTableSetFromString(fileName string)
+// Read and parse a gotable string into a GoTableSet.
+func ReadString(s string) (*GoTableSet, error) {
+	fmt.Fprintf(os.Stderr, "Warning: deprecated method: gotable.ReadString() Use: gotable.NewGoTableSetFromString()\n")
+	return NewGoTableSetFromString(s)
 }
 
 /*
@@ -3454,6 +3460,15 @@ func funcName() string {
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo
 	return name
+}
+
+func funcNameFull() string {
+    pc, sourceFile, lineNumber, ok := runtime.Caller(1)
+    if !ok {
+        return "Could not obtain func name and source file information."
+    }
+    nameFull := runtime.FuncForPC(pc).Name() // main.foo
+    return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
 }
 
 func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
