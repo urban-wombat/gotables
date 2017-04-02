@@ -105,6 +105,7 @@ func NewGoTableSet(goTableSetName string) (*GoTableSet, error) {
 }
 
 // Read and parse a gotable file into a GoTableSet.
+//
 // Replaces ReadFile(fileName string)
 func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 	var p parser
@@ -117,10 +118,11 @@ func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// DEPRECATED. Use NewGoTableSetFromFile(fileName string)
+// Deprecated: Use NewGoTableSetFromFile(fileName string)
+//
 // Read and parse a gotable file into a GoTableSet.
 func ReadFile(fileName string) (*GoTableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: deprecated method: gotable.ReadFile() Use: gotable.NewGoTableSetFromFile()\n")
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.ReadFile() Use: gotable.NewGoTableSetFromFile()\n")
 	return NewGoTableSetFromFile(fileName)
 }
 
@@ -161,7 +163,8 @@ func (goTable *GoTable) WriteFile(fileName string, mode os.FileMode) error {
 	return err
 }
 
-// Read and parse a gotable string into a GoTableSet. Use NewGoTableSetFromString(s string)
+// Read and parse a gotable string into a GoTableSet.
+//
 // Replaces ReadString(s string)
 func NewGoTableSetFromString(s string) (*GoTableSet, error) {
 	var p parser
@@ -172,10 +175,11 @@ func NewGoTableSetFromString(s string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// DEPRECATED. Use NewGoTableSetFromString(fileName string)
+// Deprecated: Use NewGoTableSetFromString(fileName string)
+//
 // Read and parse a gotable string into a GoTableSet.
 func ReadString(s string) (*GoTableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: deprecated method: gotable.ReadString() Use: gotable.NewGoTableSetFromString()\n")
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.ReadString() Use: gotable.NewGoTableSetFromString()\n")
 	return NewGoTableSetFromString(s)
 }
 
