@@ -36,7 +36,7 @@ SOFTWARE.
 //	var tests *GoTable
 //	var setupName string = "Fred"
 //
-//	testsTableSet, err = ReadString(
+//	testsTableSet, err = NewGoTableSetFromString(
 //		`[tests]
 //		input		succeeds	output
 //		string		bool		string
@@ -124,7 +124,7 @@ func TestRenameTable(t *testing.T) {
 
 func TestGoTableSetRenameTable(t *testing.T) {
 	/*
-		goTableSet, err := ReadString(`[Wilma]`)
+		goTableSet, err := NewGoTableSetFromString(`[Wilma]`)
 		if err != nil {
 			panic(err)
 		}
@@ -144,7 +144,7 @@ func TestGoTableSetRenameTable(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		goTableSet, err := ReadString(`[Wilma]`)
+		goTableSet, err := NewGoTableSetFromString(`[Wilma]`)
 		if err != nil {
 			t.Error(err)
 		}
@@ -156,7 +156,7 @@ func TestGoTableSetRenameTable(t *testing.T) {
 }
 
 func TestReadString1(t *testing.T) {
-	goTableSet, err := ReadString(
+	goTableSet, err := NewGoTableSetFromString(
 		`[EmptyTable1]
 
 		[EmptyTable2]
@@ -217,7 +217,7 @@ func TestReadString1(t *testing.T) {
 }
 
 func TestReadString2(t *testing.T) {
-	_, err := ReadString(
+	_, err := NewGoTableSetFromString(
 		`[EmptyTable1]
 
 		# Should be a syntax error. Table should have both names AND types.
@@ -232,7 +232,7 @@ func TestReadString2(t *testing.T) {
 }
 
 func TestReadString3(t *testing.T) {
-	_, err := ReadString(
+	_, err := NewGoTableSetFromString(
 		`[TableWithRow]
 		D	E	F
 		int	int	int
@@ -246,7 +246,7 @@ func TestReadString3(t *testing.T) {
 }
 
 func TestReadString4(t *testing.T) {
-	_, err := ReadString(
+	_, err := NewGoTableSetFromString(
 		`[TableWithRow]
 		D	E	F
 		int	int	int
@@ -260,7 +260,7 @@ func TestReadString4(t *testing.T) {
 }
 
 func TestReadString5(t *testing.T) {
-	goTableSet, err := ReadString(
+	goTableSet, err := NewGoTableSetFromString(
 		`[TableEmpty]
 		
 		`)
@@ -301,7 +301,7 @@ func TestReadString5(t *testing.T) {
 }
 
 func TestReadString6(t *testing.T) {
-	goTableSet, err := ReadString(
+	goTableSet, err := NewGoTableSetFromString(
 		`[TableStruct]
 		i int = 42
 		j int = 44
@@ -346,7 +346,7 @@ func TestReadString6(t *testing.T) {
 }
 
 func TestReadString7(t *testing.T) {
-	_, err := ReadString(
+	_, err := NewGoTableSetFromString(
 		`[TableStruct]
 		i int = 42
 		j int = 44
@@ -362,7 +362,7 @@ func TestReadString7(t *testing.T) {
 }
 
 func TestReadString8(t *testing.T) {
-	_, err := ReadString(
+	_, err := NewGoTableSetFromString(
 		`[TableShaped]
 		X Y Z
 		# Expecting col types, not structs.
@@ -375,19 +375,6 @@ func TestReadString8(t *testing.T) {
 	if err == nil {
 		t.Error(err)
 	}
-}
-
-func ExampleNewGoTableSetFromHtmlUrl() {
-	url := "http://www.bom.gov.au/vic/observations/melbourne.shtml"
-	var tableSet *GoTableSet
-	tableSet, err := NewGoTableSetFromHtmlUrl(url)
-	if err != nil {
-		panic(err)
-	}
-	tableCount := tableSet.TableCount()
-	fmt.Println(tableCount)
-	// Output:
-	// 1
 }
 
 func ExampleNewGoTableSet() {
@@ -892,8 +879,9 @@ func BenchmarkGoTableSetToString(b *testing.B) {
 		b.Error(err)
 	}
 
+	var _ string
 	for i := 0; i < b.N; i++ {
-		_ := goTableSet.String()
+		_ = goTableSet.String()
 	}
 }
 

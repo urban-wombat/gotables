@@ -29,6 +29,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+func ExampleNewGoTableSetFromHtmlUrl() {
+	url := "http://www.bom.gov.au/vic/observations/melbourne.shtml"
+	var tableSet *GoTableSet
+	tableSet, err := NewGoTableSetFromHtmlUrl(url)
+	if err != nil {
+		panic(err)
+	}
+	tableCount := tableSet.TableCount()
+	fmt.Println(tableCount)
+	// Output:
+	// 1
+}
+
 func TestNewGoTableSetFromHtmlString1(t *testing.T) {
 
 	tests := []struct {
