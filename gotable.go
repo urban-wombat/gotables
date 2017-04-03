@@ -309,7 +309,7 @@ func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
 		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
 		//where(fmt.Sprintf("newTable.TableName() = %s\n", newTable.TableName()))
 		if existingTable.TableName() == newTable.TableName() {
-			return errors.New(fmt.Sprintf("Table [%s] already exists: %s", newTable.tableName, newTable.tableName))
+			return errors.New(fmt.Sprintf("table [%s] already exists: %s", newTable.tableName, newTable.tableName))
 		}
 	}
 
@@ -326,7 +326,7 @@ func (goTableSet *GoTableSet) HasTable(tableName string) (bool, error) {
 			return true, nil
 		}
 	}
-	return false, errors.New(fmt.Sprintf("Table [%s] does not exist.", tableName))
+	return false, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
 }
 
 // Replaces GoTableSet.GoTable()
@@ -336,7 +336,7 @@ func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error) {
 			return table, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("Table [%s] does not exist.", tableName))
+	return nil, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
 }
 
 // Deprecated. Use GoTableSet.Table() instead.
@@ -499,7 +499,7 @@ func (table *GoTable) setSortKeyReverse(colName string) error {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if len(table.sortKeys) == 0 {
-		err := errors.New(fmt.Sprintf("Must call SetSortKeys() before calling SetSortKeysReverse()"))
+		err := errors.New(fmt.Sprintf("must call SetSortKeys() before calling SetSortKeysReverse()"))
 		return err
 	}
 	var found bool = false
@@ -535,13 +535,13 @@ func (table *GoTable) AddSortKey(colName string) error {
 
 	var colType = colInfo.colType
 	if len(colType) == 0 {
-		return errors.New(fmt.Sprintf("Table [%s]: Unknown colType for col: %q", table.TableName(), colName))
+		return errors.New(fmt.Sprintf("table [%s]: Unknown colType for col: %q", table.TableName(), colName))
 	}
 	key.colType = colType
 
 	sortFunc, exists := compareFuncs[colType]
 	if !exists { // Error occurs only during software development if a type has not been handled.
-		return errors.New(fmt.Sprintf("Table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.TableName(), colName, colType, colType))
+		return errors.New(fmt.Sprintf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.TableName(), colName, colType, colType))
 	}
 
 	key.sortFunc = sortFunc
@@ -871,7 +871,7 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-			return errors.New(fmt.Sprintf("AddRowMap(): Table [%s] col %s expecting type %s but found type %s",
+			return errors.New(fmt.Sprintf("AddRowMap(): table [%s] col %s expecting type %s but found type %s",
 				table.tableName, colName, colType, valType))
 		}
 	}
@@ -887,7 +887,7 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		err := errors.New(fmt.Sprintf("In table [%s] with %d rows, row index %d does not exist.",
+		err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist.",
 			table.tableName, table.RowCount(), rowIndex))
 		return err
 	}
@@ -1641,7 +1641,7 @@ func (table *GoTable) AddCol(colName string, colType string) error {
 	// Make sure this col name doesn't already exist.
 	_, exists := table.colNamesLookup[colName]
 	if exists {
-		err := errors.New(fmt.Sprintf("Table [%s] col already exists: %s", table.TableName(), colName))
+		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), colName))
 		return err
 	}
 
@@ -1676,7 +1676,7 @@ func (table *GoTable) SetVal(colName string, rowIndex int, val interface{}) erro
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return errors.New(fmt.Sprintf("Table [%s] col %q expecting type %q not type %q", table.TableName(), colName, colType, valType))
+		return errors.New(fmt.Sprintf("table [%s] col %q expecting type %q not type %q", table.TableName(), colName, colType, valType))
 	}
 
 	// Set the val
@@ -1705,7 +1705,7 @@ func (table *GoTable) SetValByColIndex(colIndex int, rowIndex int, val interface
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return errors.New(fmt.Sprintf("Table [%s] col index %d col name %q expecting type %q not type %q",
+		return errors.New(fmt.Sprintf("table [%s] col index %d col name %q expecting type %q not type %q",
 			table.TableName(), colIndex, colName, colType, valType))
 	}
 
@@ -1729,7 +1729,7 @@ func (table *GoTable) AddColNames(colNames []string) error {
 	var lenNames int = len(colNames)
 	var lenTypes int = len(table.colTypes)
 	if lenTypes != 0 && lenNames != lenTypes {
-		return errors.New(fmt.Sprintf("Table [%s] col names %d != col types %d", table.tableName, lenNames, lenTypes))
+		return errors.New(fmt.Sprintf("table [%s] col names %d != col types %d", table.tableName, lenNames, lenTypes))
 	}
 
 	for _, colName := range colNames {
@@ -1746,7 +1746,7 @@ func (table *GoTable) AddColNames(colNames []string) error {
 		// Make sure this col name doesn't already exist.
 		_, exists := table.colNamesLookup[colName]
 		if exists {
-			err := errors.New(fmt.Sprintf("Table [%s] col already exists: %s", table.TableName(), colName))
+			err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), colName))
 			return err
 		}
 
@@ -1771,7 +1771,7 @@ func (table *GoTable) AddColTypes(colTypes []string) error {
 	var lenNames int = len(table.colNames)
 	var lenTypes int = len(colTypes)
 	if lenNames != 0 && lenTypes != lenNames {
-		return errors.New(fmt.Sprintf("Table [%s] col types %d != col names %d", table.tableName, lenTypes, lenNames))
+		return errors.New(fmt.Sprintf("table [%s] col types %d != col names %d", table.tableName, lenTypes, lenNames))
 	}
 
 	for _, colType := range colTypes {
@@ -1807,7 +1807,7 @@ func (table *GoTable) HasColByColIndex(colIndex int) (bool, error) {
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		err := errors.New(fmt.Sprintf("In table [%s] with %d col%s, col index %d does not exist.",
+		err := errors.New(fmt.Sprintf("in table [%s] with %d col%s, col index %d does not exist.",
 			table.tableName, table.ColCount(), plural(table.ColCount()), colIndex))
 		return false, err
 	}
@@ -1824,7 +1824,7 @@ func (table *GoTable) colInfo(colName string) (colInfo, error) {
 	var exists bool
 	index, exists = table.colNamesLookup[colName]
 	if !exists {
-		err := errors.New(fmt.Sprintf("Table [%s] col does not exist: %s", table.tableName, colName))
+		err := errors.New(fmt.Sprintf("table [%s] col does not exist: %s", table.tableName, colName))
 		return cInfo, err
 	}
 	cInfo.colName = colName
@@ -1838,7 +1838,7 @@ func (table *GoTable) ColType(colName string) (string, error) {
 	}
 	index, exists := table.colNamesLookup[colName]
 	if !exists {
-		err := errors.New(fmt.Sprintf("Table [%s] col does not exist: %s", table.tableName, colName))
+		err := errors.New(fmt.Sprintf("table [%s] col does not exist: %s", table.tableName, colName))
 		return "", err
 	}
 	var colType string = table.colTypes[index]
@@ -1850,7 +1850,7 @@ func (table *GoTable) ColTypeByColIndex(colIndex int) (string, error) {
 		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > len(table.colTypes)-1 {
-		err := errors.New(fmt.Sprintf("Table [%s] col index does not exist: %d", table.tableName, colIndex))
+		err := errors.New(fmt.Sprintf("table [%s] col index does not exist: %d", table.tableName, colIndex))
 		return "", err
 	}
 	var colType string = table.colTypes[colIndex]
@@ -1865,7 +1865,7 @@ func (table *GoTable) ColIndex(colName string) (int, error) {
 	if exists {
 		return index, nil
 	}
-	err := errors.New(fmt.Sprintf("Table [%s] col does not exist: %s", table.tableName, colName))
+	err := errors.New(fmt.Sprintf("table [%s] col does not exist: %s", table.tableName, colName))
 	return -1, err
 }
 
@@ -1882,7 +1882,7 @@ func (table *GoTable) lastRowIndex() (int, error) {
 	var err error
 	var rowCount int = table.RowCount()
 	if rowCount < 1 {
-		err = errors.New(fmt.Sprintf("Table [%s] has zero rows", table.TableName()))
+		err = errors.New(fmt.Sprintf("table [%s] has zero rows", table.TableName()))
 		return -1, err
 	}
 	return table.RowCount() - 1, nil
@@ -1918,7 +1918,7 @@ func (table *GoTable) RowMap(rowIndex int) (GoTableRow, error) {
 		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return nil, errors.New(fmt.Sprintf("Table [%s] has %d row%s. Row index out of range: %d",
+		return nil, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
 			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return table.rows[rowIndex], nil
@@ -2220,7 +2220,7 @@ func (table *GoTable) HasRow(rowIndex int) (bool, error) {
 		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return false, errors.New(fmt.Sprintf("Table [%s] has %d row%s. Row index out of range: %d",
+		return false, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
 			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return true, nil
@@ -2766,7 +2766,7 @@ func (table *GoTable) IsColType(colName string, typeNameQuestioning string) (boo
 	}
 	colType, _ := table.ColType(colName)
 	if colType != typeNameQuestioning {
-		err := errors.New(fmt.Sprintf("Table [%s] col name %q type is %q not %q",
+		err := errors.New(fmt.Sprintf("table [%s] col name %q type is %q not %q",
 			table.tableName, colName, colType, typeNameQuestioning))
 		return false, err
 	}
@@ -2787,7 +2787,7 @@ func (table *GoTable) IsColTypeByColIndex(colIndex int, typeNameQuestioning stri
 	isColType, err := table.IsColType(colName, typeNameQuestioning)
 	if !isColType {
 		colType, _ := table.ColType(colName)
-		err := errors.New(fmt.Sprintf("Table [%s] col %q col index %d type is %q not %q",
+		err := errors.New(fmt.Sprintf("table [%s] col %q col index %d type is %q not %q",
 			table.tableName, colName, colIndex, colType, typeNameQuestioning))
 		return false, err
 	}
@@ -2812,7 +2812,7 @@ func (table *GoTable) SetTableName(tableName string) error {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if len(tableName) < 1 {
-		return errors.New("Invalid table name has zero length")
+		return errors.New("invalid table name has zero length")
 	}
 
 	_, err := IsValidTableName(tableName)
@@ -2827,7 +2827,7 @@ func (table *GoTable) SetTableName(tableName string) error {
 
 func (table *GoTableExported) setTableNameExported(tableName string) error {
 	if len(tableName) < 1 {
-		return errors.New("Invalid table name has zero length")
+		return errors.New("invalid table name has zero length")
 	}
 
 	_, err := IsValidTableName(tableName)
@@ -2853,7 +2853,7 @@ func (goTableSet *GoTableSet) RenameTable(renameFrom string, renameTo string) er
 	}
 
 	if exists, _ := goTableSet.HasTable(renameTo); exists == true {
-		return errors.New(fmt.Sprintf("Table [%s] already exists.", renameTo))
+		return errors.New(fmt.Sprintf("table [%s] already exists.", renameTo))
 	}
 
 	table, err := goTableSet.Table(renameFrom)
@@ -2885,7 +2885,7 @@ func (table *GoTable) RenameCol(oldName string, newName string) error {
 
 	// Requires newCol to NOT be already in the table for renaming to.
 	if hasCol, _ := table.HasCol(newName); hasCol {
-		err := errors.New(fmt.Sprintf("Table [%s] col already exists: %s", table.TableName(), newName))
+		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), newName))
 		return err
 	}
 
@@ -2935,7 +2935,7 @@ func (table *GoTable) ColName(colIndex int) (string, error) {
 		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		return "", errors.New(fmt.Sprintf("Table [%s] has %d col%s. Col index out of range: %d",
+		return "", errors.New(fmt.Sprintf("table [%s] has %d col%s. Col index out of range: %d",
 			table.TableName(), table.ColCount(), plural(table.ColCount()), colIndex))
 	}
 	colName := table.colNames[colIndex]
@@ -2960,7 +2960,7 @@ func (table *GoTable) IsValidRow(rowIndex int) (bool, error) {
 		var colName string = colNames[colIndex]
 		_, ok = rowMap[colName]
 		if !ok {
-			msg := fmt.Sprintf("Table [%s] col %q row %d cell value is missing", table.TableName(), colName, rowIndex)
+			msg := fmt.Sprintf("table [%s] col %q row %d cell value is missing", table.TableName(), colName, rowIndex)
 			err := errors.New(msg)
 			return false, err
 		}
@@ -2999,13 +2999,13 @@ func (table *GoTable) IsValidTable() (bool, error) {
 
 	var colNamesCount int = len(colNames)
 	if len(colTypes) != colNamesCount {
-		err = fmt.Errorf("Table [%s] with %d cols names expecting %d col types but found: %d",
+		err = fmt.Errorf("table [%s] with %d cols names expecting %d col types but found: %d",
 			tableName, colNamesCount, colNamesCount, len(colTypes))
 		return false, err
 	}
 
 	if len(table.colNamesLookup) != colNamesCount {
-		err = fmt.Errorf("Table [%s] with %d cols names expecting %d col names lookup entries but found: %d",
+		err = fmt.Errorf("table [%s] with %d cols names expecting %d col names lookup entries but found: %d",
 			tableName, colNamesCount, colNamesCount, len(table.colNamesLookup))
 		return false, err
 	}
@@ -3020,7 +3020,7 @@ func (table *GoTable) IsValidTable() (bool, error) {
 			return false, err
 		}
 		if len(rowMap) != colNamesCount {
-			err = fmt.Errorf("Table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+			err = fmt.Errorf("table [%s] with %d cols expecting %d values per row but in row %d found: %d",
 				tableName, colNamesCount, colNamesCount, rowIndex, len(rowMap))
 			return false, err
 		}
@@ -3028,16 +3028,16 @@ func (table *GoTable) IsValidTable() (bool, error) {
 
 	for keyIndex, _ := range table.sortKeys {
 		if isValid, err = IsValidColName(table.sortKeys[keyIndex].colName); !isValid {
-			err = fmt.Errorf("Table [%s].sortKeys[%d].colName: %v", tableName, keyIndex, err)
+			err = fmt.Errorf("table [%s].sortKeys[%d].colName: %v", tableName, keyIndex, err)
 			return false, err
 		}
 		if isValid, err = IsValidColType(table.sortKeys[keyIndex].colType); !isValid {
-			err = fmt.Errorf("Table [%s].sortKeys[%d].colType: %v", tableName, keyIndex, err)
+			err = fmt.Errorf("table [%s].sortKeys[%d].colType: %v", tableName, keyIndex, err)
 			return false, err
 		}
 		// Note: Not fully sure that a nil sortFunc is an invalid state.
 		if table.sortKeys[keyIndex].sortFunc == nil {
-			err = fmt.Errorf("Table [%s].sortKeys[%d].sortFunc == nil", tableName, keyIndex)
+			err = fmt.Errorf("table [%s].sortKeys[%d].sortFunc == nil", tableName, keyIndex)
 			return false, err
 		}
 	}
@@ -3277,7 +3277,7 @@ func (tableSet *GoTableSet) GobEncode() ([]bytes.Buffer, error) {
 		}
 		encodedTableSet = append(encodedTableSet, encodedTable)
 		if len(encodedTableSet) != tableIndex+1 {
-			err = fmt.Errorf("GobEncode(): Table [%s] Error appending table to table set",
+			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
 				table.TableName())
 			return emptyBuffer, err
 		}
@@ -3296,7 +3296,7 @@ func (tableSet *GoTableSet) GobEncode() ([]bytes.Buffer, error) {
 	encodedTableSet = append(encodedTableSet, encodedHeader)
 	var headerIndex int = len(tableSet.tables)
 	if len(encodedTableSet) != headerIndex+1 {
-		err = fmt.Errorf("GobEncode(): Error appending table set header to table set")
+		err = fmt.Errorf("GobEncode(): error appending table set header to table set")
 		return emptyBuffer, err
 	}
 
@@ -3321,7 +3321,7 @@ func (tableSet *GoTableSet) GobEncode() ([]bytes.Buffer, error) {
 //		}
 //		encodedTableSet = append(encodedTableSet, encodedTable)
 //		if len(encodedTableSet) != tableIndex+1 {
-//			err = fmt.Errorf("GobEncode(): Table [%s] Error appending table to table set",
+//			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
 //				table.TableName())
 //			return emptyBuffer, err
 //		}
@@ -3340,7 +3340,7 @@ func (tableSet *GoTableSet) GobEncode() ([]bytes.Buffer, error) {
 //	encodedTableSet = append(encodedTableSet, encodedHeader.Bytes())
 //	var headerIndex int = len(tableSet.tables)
 //	if len(encodedTableSet) != headerIndex+1 {
-//		err = fmt.Errorf("GobEncode(): Error appending table set header to table set")
+//		err = fmt.Errorf("GobEncode(): error appending table set header to table set")
 //		return emptyBuffer, err
 //	}
 //
@@ -3546,7 +3546,7 @@ func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (stri
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		err = fmt.Errorf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+		err = fmt.Errorf("ERROR IN func String(): unknown type: %s\n", table.colTypes[colIndex])
 		return "", err
 	}
 

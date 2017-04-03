@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -917,6 +918,61 @@ func BenchmarkGobDecode(b *testing.B) {
 		_, err := GobDecodeTableSet(gobEncodedTableSet)
 		if err != nil {
 			b.Error(err)
+		}
+	}
+}
+
+func TestIsNumericColType(t *testing.T) {
+	tableString := `
+    [table]
+    T_i int    = 9223372036854775807
+    T_i64 int64 = 9223372036854775807
+    T_f int8 = 42
+    T_u uint8  = 255
+    T_i81 int8 = 127
+    T_i82 int8 = -128
+    T_i161 int16 = 32767
+    T_i162 int16 = -32768
+    T_i321 int8 = 127
+    T_i322 int8 = -128
+    T_ui uint16 = 65535
+    F_s string = "forty-two"
+    F_t bool = true
+    `
+
+	tableSet, err := NewGoTableSetFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table, err := tableSet.Table("table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			t.Error(err)
+		}
+
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			t.Error(err)
+		}
+
+		isNumeric, _ := IsNumericColType(colType)
+
+		hasPrefixT := strings.HasPrefix(colName, "T_")
+		hasPrefixF := strings.HasPrefix(colName, "F_")
+		if !hasPrefixT && !hasPrefixF {
+			t.Error(fmt.Errorf("Expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName))
+		}
+
+		if isNumeric != hasPrefixT {
+			err := fmt.Errorf("col %s type %s unexpected IsNumeric: %t", colName, colType, isNumeric)
+			t.Error(err)
 		}
 	}
 }
