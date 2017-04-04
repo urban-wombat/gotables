@@ -191,7 +191,7 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("expecting from string to contain 1 table, not %d", tableCount)
+		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table, not %d", tableCount)
 	}
 
 	table, err := tableSet.TableByTableIndex(0)

@@ -205,7 +205,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 		if len(line) == 0 {
 			if expecting == _COL_TYPES {
-				return nil, fmt.Errorf("%s Expecting col types after col names.", p.gotFilePos())
+				return nil, fmt.Errorf("%s expecting col types after col names", p.gotFilePos())
 				// A blank line is okay after table name, col types or row values, but col names must always have col types.
 			}
 			expecting = _TABLE_NAME
@@ -281,7 +281,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 				if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
 					// where("expecting SOME value")
-					return nil, fmt.Errorf("%s Expecting a value after '=' but found: (nothing)")
+					return nil, fmt.Errorf("%s expecting a value after '=' but found: (nothing)")
 				}
 
 				if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
@@ -290,7 +290,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					for i := 3; i < len(lineSplit); i++ {
 						remaining += lineSplit[i] + " "
 					}
-					return nil, fmt.Errorf("%s Expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
+					return nil, fmt.Errorf("%s expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
 				}
 
 				if structHasRowData {
@@ -323,7 +323,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
-					return nil, fmt.Errorf("%s Expecting more structs (name type = value) but found: %s", p.gotFilePos(), line)
+					return nil, fmt.Errorf("%s expecting more structs ( <name> <type> = <value> ) but found: %s", p.gotFilePos(), line)
 				}
 
 				tableShape = _TABLE_SHAPE
@@ -350,7 +350,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 			lenColNames := len(parserColNames)
 			lenColTypes := len(parserColTypes)
 			if lenColTypes != lenColNames {
-				return nil, fmt.Errorf("%s Expecting %d col type%s, not %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
+				return nil, fmt.Errorf("%s expecting %d col type%s, not %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
 			goTable.AppendColTypes(parserColTypes)
 			expecting = _COL_ROWS
@@ -367,7 +367,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
-				return nil, fmt.Errorf("%s Expecting %d value%s, not %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
+				return nil, fmt.Errorf("%s expecting %d value%s, not %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
 			goTable.AppendRowMap(rowMap)
 			if err != nil {
@@ -416,13 +416,13 @@ func (p *parser) getTableName(line string) (string, error) {
 
 	fields := strings.Fields(line)
 	if len(fields) != 1 {
-		return "", fmt.Errorf("%s Expecting a table name (without spaces), not: %s", p.gotFilePos(), line)
+		return "", fmt.Errorf("%s expecting a table name (without spaces), not: %s", p.gotFilePos(), line)
 	}
 	tableName := fields[0]
 
 	result := tableNameRegExp.MatchString(tableName)
 	if !result {
-		return "", fmt.Errorf("%s Expecting a valid alpha-numeric table name, eg [_Foo1Bar2], not: %s", p.gotFilePos(), tableName)
+		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name, eg [_Foo1Bar2], not: %s", p.gotFilePos(), tableName)
 	}
 
 	// Strip off surrounding []
@@ -445,7 +445,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 
 	var colTypes []string = whiteRegExp.Split(line, _ALL_SUBSTRINGS)
 	if len(colTypes) == 0 {
-		return nil, fmt.Errorf("%s Expecting col types", p.gotFilePos())
+		return nil, fmt.Errorf("%s expecting col types", p.gotFilePos())
 	}
 
 	for i := 0; i < len(colTypes); i++ {
@@ -509,7 +509,7 @@ func IsValidColName(colName string) (bool, error) {
 
 	_, contains := globalColTypesMap[colName]
 	if contains {
-		return false, fmt.Errorf("Invalid col name (cannot use Golang col types): %s", colName)
+		return false, fmt.Errorf("Invalid col name: %s (cannot use Go builtin types as col names)", colName)
 	}
 
 	return true, nil
@@ -553,13 +553,13 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 
 	for i = 0; i < lenColTypes; i++ {
 		if len(remaining) == 0 { // End of line
-			return nil, fmt.Errorf("%s Expecting %d value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
+			return nil, fmt.Errorf("%s expecting %d value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
 		}
 		switch colTypes[i] {
 		case "string":
 			rangeFound = stringRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
@@ -568,7 +568,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			boolVal, err = strconv.ParseBool(textFound)
@@ -579,7 +579,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "uint8":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
@@ -592,7 +592,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "uint16":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
@@ -605,7 +605,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "uint32":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
@@ -618,7 +618,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "uint64":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
@@ -630,7 +630,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "uint":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			intBits := strconv.IntSize // uint and int are the same size.
@@ -658,7 +658,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "int":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			intBits := strconv.IntSize
@@ -686,7 +686,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "int8":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_8)
@@ -700,7 +700,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "int16":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_16)
@@ -713,7 +713,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "int32":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_32)
@@ -726,7 +726,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "int64":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_64)
@@ -738,7 +738,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "float32":
 			rangeFound = floatRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			float64Val, err = strconv.ParseFloat(textFound, _BITS_32)
@@ -746,7 +746,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
 			if math.IsNaN(float64Val) && textFound != "NaN" {
-				//					return nil, fmt.Errorf("%s Expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+				//					return nil, fmt.Errorf("%s expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
@@ -755,7 +755,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 		case "float64":
 			rangeFound = floatRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s Expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of type %s, not: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			//				where(fmt.Sprintf("textFound: %s", textFound))
@@ -765,7 +765,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 			}
 			//				where(fmt.Sprintf("float64Val: %f", float64Val))
 			if math.IsNaN(float64Val) && textFound != "NaN" {
-				//					return nil, fmt.Errorf("%s Expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
+				//					return nil, fmt.Errorf("%s expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
@@ -780,8 +780,8 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRo
 	}
 
 	if len(remaining) > 0 { // Still one or more columns to parse.
-		//		return nil, fmt.Errorf("%s Expecting %d col value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
-		return nil, fmt.Errorf("%s Expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
+		// This handles both table shape and struct shape columns.
+		return nil, fmt.Errorf("%s expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
 
 	}
 
