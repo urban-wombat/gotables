@@ -231,7 +231,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				}
 				tableShape = _UNDEFINED_SHAPE
 				// Add this table to tables. Do it immediately to allow empty tables. 02.08.2016
-				err = goTables.AddGoTable(goTable)
+				err = goTables.AppendTable(goTable)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}

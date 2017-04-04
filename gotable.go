@@ -118,7 +118,7 @@ func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// Deprecated: Use NewGoTableSetFromFile(fileName string)
+// Deprecated: Use NewGoTableSetFromFile(fileName string) instead.
 //
 // Read and parse a gotable file into a GoTableSet.
 func ReadFile(fileName string) (*GoTableSet, error) {
@@ -175,7 +175,7 @@ func NewGoTableSetFromString(s string) (*GoTableSet, error) {
 	return tables, nil
 }
 
-// Deprecated: Use NewGoTableSetFromString(fileName string)
+// Deprecated: Use NewGoTableSetFromString(fileName string) instead.
 //
 // Read and parse a gotable string into a GoTableSet.
 func ReadString(s string) (*GoTableSet, error) {
@@ -296,14 +296,21 @@ func (goTableSet *GoTableSet) TableCount() int {
 	return len(goTableSet.tables)
 }
 
-// Add a table to a table set.
+// Deprecated. Use GoTableSet.AppendTable() instead.
 func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error {
-	return goTableSet.AddGoTable(newTable)
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return goTableSet.AppendTable(newTable)
+}
+
+// Deprecated. Use GoTableSet.AppendTable() instead.
+func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return goTableSet.AppendTable(newTable)
 }
 
 // Add a table to a table set.
 // This function may be deprecated later in favour of AddTable()
-func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
+func (goTableSet *GoTableSet) AppendTable(newTable *GoTable) error {
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
 	for _, existingTable := range goTableSet.tables {
 		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
