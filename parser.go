@@ -266,7 +266,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				var colNameSlice []string = []string{colName}
 				var colTypeSlice []string = []string{colType}
 
-				err = goTable.AddCol(colName, colType)
+				err = goTable.AppendCol(colName, colType)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
@@ -308,13 +308,6 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 						return nil, err
 					}
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
-
-					/*
-						err = goTable.AddCol(colName, colType)
-						if err != nil {
-							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						}
-					*/
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.

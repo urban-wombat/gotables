@@ -462,7 +462,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 	// Bool tests
 
-	err = table.AddCol("bVal", "bool")
+	err = table.AppendCol("bVal", "bool")
 	if err != nil {
 		t.Error(err)
 	}
@@ -493,7 +493,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 	// Uint tests
 
-	err = table.AddCol("uiVal", "uint")
+	err = table.AppendCol("uiVal", "uint")
 	if err != nil {
 		t.Error(err)
 	}
@@ -1069,7 +1069,7 @@ func TestColCount(t *testing.T) {
 		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
 	}
 
-	err = table.AddCol("ExtraCol", "bool")
+	err = table.AppendCol("ExtraCol", "bool")
 	if err != nil {
 		t.Error(err)
 	}
@@ -1090,7 +1090,7 @@ func TestColCount(t *testing.T) {
 		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
 	}
 
-	err = table.AddCol("AnotherCol", "string")
+	err = table.AppendCol("AnotherCol", "string")
 	if err != nil {
 		t.Error(err)
 	}

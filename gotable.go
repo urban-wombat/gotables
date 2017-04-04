@@ -122,7 +122,7 @@ func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 //
 // Read and parse a gotable file into a GoTableSet.
 func ReadFile(fileName string) (*GoTableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.ReadFile() Use: gotable.NewGoTableSetFromFile()\n")
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return NewGoTableSetFromFile(fileName)
 }
 
@@ -179,7 +179,7 @@ func NewGoTableSetFromString(s string) (*GoTableSet, error) {
 //
 // Read and parse a gotable string into a GoTableSet.
 func ReadString(s string) (*GoTableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.ReadString() Use: gotable.NewGoTableSetFromString()\n")
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return NewGoTableSetFromString(s)
 }
 
@@ -423,15 +423,15 @@ func (thisTable *GoTable) GetSortKeysAsTable() (*GoTable, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = keysTable.AddCol("colName", "string")
+	err = keysTable.AppendCol("colName", "string")
 	if err != nil {
 		return nil, err
 	}
-	err = keysTable.AddCol("colType", "string")
+	err = keysTable.AppendCol("colType", "string")
 	if err != nil {
 		return nil, err
 	}
-	err = keysTable.AddCol("reverse", "bool")
+	err = keysTable.AppendCol("reverse", "bool")
 	if err != nil {
 		return nil, err
 	}
@@ -1629,12 +1629,12 @@ func (table *GoTable) StringCSV() string {
 
 // Add a column to this table, one column at a time.
 /*
-	err = myTable.AddCol(headingName, headingType)
+	err = myTable.AppendCol(headingName, headingType)
 	if err != nil {
 		panic(err)
 	}
 */
-func (table *GoTable) AddCol(colName string, colType string) error {
+func (table *GoTable) AppendCol(colName string, colType string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -1664,6 +1664,20 @@ func (table *GoTable) AddCol(colName string, colType string) error {
 	}
 
 	return nil
+}
+
+// Deprecated: AddCol() Use AppendCol() insead.
+//
+// Add a column to this table, one column at a time.
+/*
+	err = myTable.AddCol(headingName, headingType)
+	if err != nil {
+		panic(err)
+	}
+*/
+func (table *GoTable) AddCol(colName string, colType string) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendCol(colName, colType)
 }
 
 func (table *GoTable) DeleteColByColIndex(colIndex int) error {
