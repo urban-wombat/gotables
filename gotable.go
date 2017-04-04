@@ -656,7 +656,7 @@ Add (append) a new blank row to this table. This does NOT initialise the cell va
 
 Note: This is used by the parser. Not for use by end-users.
 */
-func (table *GoTable) addRowOfNil() error {
+func (table *GoTable) appendRowOfNil() error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -666,11 +666,11 @@ func (table *GoTable) addRowOfNil() error {
 }
 
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
-func (table *GoTable) AddRow() error {
+func (table *GoTable) AppendRow() error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-	err := table.addRowOfNil()
+	err := table.appendRowOfNil()
 	if err != nil {
 		return err
 	}
@@ -678,6 +678,14 @@ func (table *GoTable) AddRow() error {
 	rowIndex, _ = table.lastRowIndex()
 	table.SetRowCellsToZero(rowIndex)
 	return nil
+}
+
+// Deprecated. Use GoTable.AppendRow() instead.
+//
+// All cells in the new added row will be set to their zero value, such as 0, "", or false.
+func (table *GoTable) AddRow() error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendRow()
 }
 
 // Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
@@ -1776,7 +1784,7 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *GoTable) AddColNames(colNames []string) error {
+func (table *GoTable) AppendColNames(colNames []string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -1810,6 +1818,12 @@ func (table *GoTable) AddColNames(colNames []string) error {
 	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
 
 	return nil
+}
+
+// Deprecated: Use AppendColNames() instead.
+func (table *GoTable) AddColNames(colNames []string) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendColNames(colNames)
 }
 
 /*

@@ -458,7 +458,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 
-	table.AddRow()
+	table.AppendRow()
 
 	// Bool tests
 
@@ -978,7 +978,7 @@ func TestIsNumericColType(t *testing.T) {
 	}
 }
 
-func TestAddRow(t *testing.T) {
+func TestAppendRow(t *testing.T) {
 	tableString := `
     [table]
 	F_bool bool =
@@ -1012,7 +1012,7 @@ func TestAddRow(t *testing.T) {
 		t.Error(fmt.Errorf("Expecting row count of 0, not: %d", rowCount))
 	}
 
-	err = table.AddRow()
+	err = table.AppendRow()
 	if err != nil {
 		t.Error(err)
 	}

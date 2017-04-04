@@ -312,7 +312,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
 					if goTable.RowCount() < 1 {
-						goTable.addRowOfNil()
+						goTable.appendRowOfNil()
 					}
 
 					var val interface{} = rowMapOfStruct[colName]
@@ -334,7 +334,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				if err != nil {
 					return nil, err
 				}
-				err = goTable.AddColNames(parserColNames)
+				err = goTable.AppendColNames(parserColNames)
 				if err != nil {
 					return nil, err
 				}
