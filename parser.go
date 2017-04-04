@@ -369,7 +369,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s Expecting %d value%s, not %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-			goTable.AddRowMap(rowMap)
+			goTable.AppendRowMap(rowMap)
 			if err != nil {
 				return goTables, err
 			}

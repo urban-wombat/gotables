@@ -296,13 +296,13 @@ func (goTableSet *GoTableSet) TableCount() int {
 	return len(goTableSet.tables)
 }
 
-// Deprecated. Use GoTableSet.AppendTable() instead.
+// Deprecated: Use GoTableSet.AppendTable() instead.
 func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
 
-// Deprecated. Use GoTableSet.AppendTable() instead.
+// Deprecated: Use GoTableSet.AppendTable() instead.
 func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return goTableSet.AppendTable(newTable)
@@ -346,7 +346,7 @@ func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error) {
 	return nil, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
 }
 
-// Deprecated. Use GoTableSet.Table() instead.
+// Deprecated: Use GoTableSet.Table() instead.
 func (goTableSet *GoTableSet) GoTable(tableName string) (*GoTable, error) {
 	return goTableSet.Table(tableName)
 }
@@ -680,7 +680,7 @@ func (table *GoTable) AppendRow() error {
 	return nil
 }
 
-// Deprecated. Use GoTable.AppendRow() instead.
+// Deprecated: Use GoTable.AppendRow() instead.
 //
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 func (table *GoTable) AddRow() error {
@@ -833,7 +833,7 @@ func (table *GoTable) AddTableRow(newRow GoTableRow) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-	return table.AddRowMap(newRow)
+	return table.AppendRowMap(newRow)
 }
 
 /*
@@ -842,12 +842,12 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	var row gotable.GoTableRow = make(gotable.GoTableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
-	err = goTable.AddRowMap(row)
+	err = goTable.AppendRowMap(row)
 	if err != nil {
 	    panic(err)
 	}
 */
-func (table *GoTable) AddRowMap(newRow GoTableRow) error {
+func (table *GoTable) AppendRowMap(newRow GoTableRow) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -876,7 +876,7 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
 			if !exists {
 				// Don't permit a misleading missing value to be present for ints, bools, strings.
-				return errors.New(fmt.Sprintf("AddRowMap(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
+				return errors.New(fmt.Sprintf("AppendRowMap(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
 					table.tableName, colName, colType))
 			}
 			newRow[colName] = missingValue
@@ -886,7 +886,7 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-			return errors.New(fmt.Sprintf("AddRowMap(): table [%s] col %s expecting type %s but found type %s",
+			return errors.New(fmt.Sprintf("AppendRowMap(): table [%s] col %s expecting type %s but found type %s",
 				table.tableName, colName, colType, valType))
 		}
 	}
@@ -895,6 +895,12 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 	table.rows = append(table.rows, newRow)
 
 	return nil
+}
+
+// Deprecated: Use GoTable.AppendRowMap() instead.
+func (table *GoTable) AddRowMap(newRow GoTableRow) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendRowMap(newRow)
 }
 
 func (table *GoTable) DeleteRow(rowIndex int) error {
@@ -1854,7 +1860,7 @@ func (table *GoTable) AppendColTypes(colTypes []string) error {
 }
 
 // Deprecated: Use AppendColTypes() instead.
-func (table *GoTable) AddColTypes(colTypes []string) error {
+func (table *GoTable) AddColTypes(colTypes []string) error {	// Deprecated: Use AppendColTypes() instead.
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return table.AppendColTypes(colTypes)
 }
