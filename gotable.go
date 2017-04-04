@@ -183,6 +183,25 @@ func ReadString(s string) (*GoTableSet, error) {
 	return NewGoTableSetFromString(s)
 }
 
+func NewGoTableFromString(s string) (*GoTable, error) {
+	tableSet, err := NewGoTableSetFromString(s)
+	if err != nil {
+		return nil, err
+	}
+
+	tableCount := tableSet.TableCount()
+	if tableCount != 1 {
+		return nil, fmt.Errorf("expecting from string to contain 1 table, not %d", tableCount)
+	}
+
+	table, err := tableSet.TableByTableIndex(0)
+	if err != nil {
+		return nil, err
+	}
+
+	return table, nil
+}
+
 /*
 Returns a set of parsable elastic tabbed tables as a string.
 */
@@ -344,6 +363,16 @@ func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error) {
 		}
 	}
 	return nil, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
+}
+
+func (goTableSet *GoTableSet) TableByTableIndex(tableIndex int) (*GoTable, error) {
+	if tableIndex < 0 || tableIndex > goTableSet.TableCount()-1 {
+		err := errors.New(fmt.Sprintf("in *GoTableSet with %d tables, table index %d does not exist",
+			goTableSet.TableCount(), tableIndex))
+		return nil, err
+	}
+
+	return goTableSet.tables[tableIndex], nil
 }
 
 // Deprecated: Use Table() instead.
@@ -786,6 +815,7 @@ func (table *GoTable) SetCellToZero(colName string, rowIndex int) error {
 }
 
 func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error {
+	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
