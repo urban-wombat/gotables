@@ -882,7 +882,7 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 	return nil
 }
 
-func (table *GoTable) DeleteRow(rowIndex int) error {
+func (table *GoTable) RemoveRow(rowIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -899,6 +899,12 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 	table.rows = table.rows[:len(table.rows)-1]
 
 	return nil
+}
+
+// Deprecated: Use RemoveRow()
+func (table *GoTable) DeleteRow(rowIndex int) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.DeleteRow() Use: gotable.RemoveRow()\n")
+	return table.RemoveRow(rowIndex)
 }
 
 /*
@@ -1657,6 +1663,39 @@ func (table *GoTable) AddCol(colName string, colType string) error {
 	}
 
 	return nil
+}
+
+func (table *GoTable) DeleteColByColIndex(colIndex int) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+	if colIndex < 0 || colIndex > table.ColCount()-1 {
+		err := errors.New(fmt.Sprintf("in table [%s] with %d cols, col index %d does not exist.",
+			table.tableName, table.ColCount(), colIndex))
+		return err
+	}
+
+	colName, err := table.ColName(colIndex)
+	if err != nil {
+		return err
+	}
+	delete(table.colNamesLookup, colName)
+
+	copy(table.colNames[colIndex:], table.colNames[colIndex+1:])
+	table.colNames = table.colNames[:len(table.colNames)-1]
+
+	copy(table.colTypes[colIndex:], table.colTypes[colIndex+1:])
+	table.colTypes = table.colTypes[:len(table.colTypes)-1]
+
+	return nil
+}
+
+func (table *GoTable) DeleteCol(colName string) error {
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return err
+	}
+	return table.DeleteColByColIndex(colIndex)
 }
 
 // This is a fundamental method called by all type-specific methods.

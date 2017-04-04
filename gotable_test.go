@@ -925,19 +925,20 @@ func BenchmarkGobDecode(b *testing.B) {
 func TestIsNumericColType(t *testing.T) {
 	tableString := `
     [table]
-    T_i int    = 9223372036854775807
-    T_i64 int64 = 9223372036854775807
-    T_f int8 = 42
-    T_u uint8  = 255
-    T_i81 int8 = 127
-    T_i82 int8 = -128
-    T_i161 int16 = 32767
-    T_i162 int16 = -32768
-    T_i321 int8 = 127
-    T_i322 int8 = -128
-    T_ui uint16 = 65535
-    F_s string = "forty-two"
-    F_t bool = true
+	F_bool bool =
+	F_string string =
+	T_float32 float32 =
+	T_float64 float64 =
+	T_int int =
+	T_int16 int16 =
+	T_int32 int32 =
+	T_int64 int64 =
+	T_int8 int8 =
+	T_uint uint =
+	T_uint16 uint16 =
+	T_uint32 uint32 =
+	T_uint64 uint64 =
+	T_uint8 uint8 =
     `
 
 	tableSet, err := NewGoTableSetFromString(tableString)
@@ -974,5 +975,138 @@ func TestIsNumericColType(t *testing.T) {
 			err := fmt.Errorf("col %s type %s unexpected IsNumeric: %t", colName, colType, isNumeric)
 			t.Error(err)
 		}
+	}
+}
+
+func TestAddRow(t *testing.T) {
+	tableString := `
+    [table]
+	F_bool bool =
+	F_string string =
+	T_float32 float32 =
+	T_float64 float64 =
+	T_int int =
+	T_int16 int16 =
+	T_int32 int32 =
+	T_int64 int64 =
+	T_int8 int8 =
+	T_uint uint =
+	T_uint16 uint16 =
+	T_uint32 uint32 =
+	T_uint64 uint64 =
+	T_uint8 uint8 =
+    `
+
+	tableSet, err := NewGoTableSetFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table, err := tableSet.Table("table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	rowCount := table.RowCount()
+	if rowCount != 0 {
+		t.Error(fmt.Errorf("Expecting row count of 0, not: %d", rowCount))
+	}
+
+	err = table.AddRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rowCount = table.RowCount()
+	if rowCount != 1 {
+		t.Error(fmt.Errorf("Expecting row count of 1, not: %d", rowCount))
+	}
+
+	err = table.RemoveRow(0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	rowCount = table.RowCount()
+	if rowCount != 0 {
+		t.Error(fmt.Errorf("Expecting row count of 0, not: %d", rowCount))
+	}
+}
+
+func TestColCount(t *testing.T) {
+	tableString := `
+    [table]
+	F_bool bool =
+	F_string string =
+	T_float32 float32 =
+	T_float64 float64 =
+	T_int int =
+	T_int16 int16 =
+	T_int32 int32 =
+	T_int64 int64 =
+	T_int8 int8 =
+	T_uint uint =
+	T_uint16 uint16 =
+	T_uint32 uint32 =
+	T_uint64 uint64 =
+	T_uint8 uint8 =
+    `
+
+	tableSet, err := NewGoTableSetFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table, err := tableSet.Table("table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	const initialColCount = 14
+
+	colCount := table.ColCount()
+	if colCount != initialColCount {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
+	}
+
+	err = table.AddCol("ExtraCol", "bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	colCount = table.ColCount()
+	if colCount != initialColCount + 1 {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount + 1, colCount))
+	}
+
+	lastCol := colCount-1
+	err = table.DeleteColByColIndex(lastCol)
+	if err != nil {
+		t.Error(err)
+	}
+
+	colCount = table.ColCount()
+	if colCount != initialColCount {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
+	}
+
+	err = table.AddCol("AnotherCol", "string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	colCount = table.ColCount()
+	if colCount != initialColCount + 1 {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount + 1, colCount))
+	}
+
+	err = table.DeleteCol("AnotherCol")
+	if err != nil {
+		t.Error(err)
+	}
+
+	colCount = table.ColCount()
+	if colCount != initialColCount {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
 	}
 }
