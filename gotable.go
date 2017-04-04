@@ -700,6 +700,19 @@ func (table *GoTable) appendRowOfNil() error {
 	return nil
 }
 
+func (table *GoTable) AppendRows(howMany int) error {
+	if howMany <= 0 {
+		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.TableName(), howMany, howMany)
+	}
+	for i := 0; i < howMany; i++ {
+		err := table.AppendRow()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 func (table *GoTable) AppendRow() error {
 	if table == nil {
@@ -3698,6 +3711,7 @@ func (table *GoTable) IsStructShape() (bool, error) {
 	return table.structShape, nil
 }
 
+// Will be ignored (when writing table as string) if table RowCount() is more than 1
 func (table *GoTable) SetStructShape(isStructShape bool) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
