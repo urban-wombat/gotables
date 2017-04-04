@@ -526,11 +526,11 @@ func (table *GoTable) setSortKeyReverse(colName string) error {
 	return nil
 }
 
-func (table *GoTable) AddSortKey(colName string) error {
+func (table *GoTable) AppendSortKey(colName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
-	//	where(fmt.Sprintf("AddSortKey(%q)\n", colName))
+	//	where(fmt.Sprintf("AppendSortKey(%q)\n", colName))
 	colInfo, err := table.colInfo(colName)
 	if err != nil {
 		// Col doesn't exist.
@@ -555,6 +555,12 @@ func (table *GoTable) AddSortKey(colName string) error {
 	table.sortKeys = append(table.sortKeys, key)
 
 	return nil
+}
+
+// Deprecated: Use GoTable.AppendSortKey() instead.
+func (table *GoTable) AddSortKey(colName string) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendSortKey(colName)
 }
 
 func (table *GoTable) SortKeys() (SortKeys, error) {
