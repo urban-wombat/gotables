@@ -1022,7 +1022,7 @@ func TestAddRow(t *testing.T) {
 		t.Error(fmt.Errorf("Expecting row count of 1, not: %d", rowCount))
 	}
 
-	err = table.RemoveRow(0)
+	err = table.DeleteRow(0)
 	if err != nil {
 		t.Error(err)
 	}

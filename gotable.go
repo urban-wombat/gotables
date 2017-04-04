@@ -882,7 +882,7 @@ func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 	return nil
 }
 
-func (table *GoTable) RemoveRow(rowIndex int) error {
+func (table *GoTable) DeleteRow(rowIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -899,12 +899,6 @@ func (table *GoTable) RemoveRow(rowIndex int) error {
 	table.rows = table.rows[:len(table.rows)-1]
 
 	return nil
-}
-
-// Deprecated: Use RemoveRow()
-func (table *GoTable) DeleteRow(rowIndex int) error {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: gotable.DeleteRow() Use: gotable.RemoveRow()\n")
-	return table.RemoveRow(rowIndex)
 }
 
 /*
