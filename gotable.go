@@ -296,13 +296,13 @@ func (goTableSet *GoTableSet) TableCount() int {
 	return len(goTableSet.tables)
 }
 
-// Deprecated: Use GoTableSet.AppendTable() instead.
+// Deprecated: Use AppendTable() instead.
 func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
 
-// Deprecated: Use GoTableSet.AppendTable() instead.
+// Deprecated: Use AppendTable() instead.
 func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return goTableSet.AppendTable(newTable)
@@ -346,7 +346,7 @@ func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error) {
 	return nil, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
 }
 
-// Deprecated: Use GoTableSet.Table() instead.
+// Deprecated: Use Table() instead.
 func (goTableSet *GoTableSet) GoTable(tableName string) (*GoTable, error) {
 	return goTableSet.Table(tableName)
 }
@@ -557,7 +557,7 @@ func (table *GoTable) AppendSortKey(colName string) error {
 	return nil
 }
 
-// Deprecated: Use GoTable.AppendSortKey() instead.
+// Deprecated: Use AppendSortKey() instead.
 func (table *GoTable) AddSortKey(colName string) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return table.AppendSortKey(colName)
@@ -686,7 +686,7 @@ func (table *GoTable) AppendRow() error {
 	return nil
 }
 
-// Deprecated: Use GoTable.AppendRow() instead.
+// Deprecated: Use AppendRow() instead.
 //
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 func (table *GoTable) AddRow() error {
@@ -834,8 +834,11 @@ func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error 
 	return nil
 }
 
+// Deprecated: Use AppendRowMap() instead.
+//
 // Add (append) a row of data (newRow) to this table.
 func (table *GoTable) AddTableRow(newRow GoTableRow) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -903,7 +906,7 @@ func (table *GoTable) AppendRowMap(newRow GoTableRow) error {
 	return nil
 }
 
-// Deprecated: Use GoTable.AppendRowMap() instead.
+// Deprecated: Use AppendRowMap() instead.
 func (table *GoTable) AddRowMap(newRow GoTableRow) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return table.AppendRowMap(newRow)
