@@ -352,7 +352,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 			if lenColTypes != lenColNames {
 				return nil, fmt.Errorf("%s Expecting %d col type%s, not %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
-			goTable.AddColTypes(parserColTypes)
+			goTable.AppendColTypes(parserColTypes)
 			expecting = _COL_ROWS
 
 		case _COL_ROWS:

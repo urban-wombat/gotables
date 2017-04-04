@@ -1832,7 +1832,7 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *GoTable) AddColTypes(colTypes []string) error {
+func (table *GoTable) AppendColTypes(colTypes []string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
@@ -1851,6 +1851,12 @@ func (table *GoTable) AddColTypes(colTypes []string) error {
 	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
 
 	return nil
+}
+
+// Deprecated: Use AppendColTypes() instead.
+func (table *GoTable) AddColTypes(colTypes []string) error {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
+	return table.AppendColTypes(colTypes)
 }
 
 type colInfo struct {
