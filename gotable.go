@@ -1422,21 +1422,21 @@ func (table *GoTable) String() string {
 			matrix[colIndex][headingRows+rowIndex] = s
 
 			/*	MAL WAS HERE 14.02.2017
-			Accumulate the widest number before the decimal point.
-			Accumulate the widest number after the decimal point.
-			Width is then the widest before plus decimal point plus widest after.
-			The problem is handling floats with no decimal points.
-			And what if some in a column have points and others don't?
-			printMatrix() will have to use a format which places the decimal point in a uniform location. Tricky.
-						fmt.Printf("table.colTypes[%d] = %s\n", colIndex, table.colTypes[colIndex])
-						if table.colTypes[colIndex] == "float32" || table.colTypes[colIndex] == "float64" {
-							fmt.Printf("s = %s\n", s)
-							widthBeforePoint[colIndex] = len(strings.Split(s, ".")[0])
-							fmt.Printf("widthBeforePoint[%d] = %d s=%s\n", colIndex, widthBeforePoint[colIndex], s)
-							widthAfterPoint[colIndex] = len(strings.Split(s, ".")[1])
-							fmt.Printf("widthAfterPoint[%d] = %d s=%s\n", colIndex, widthAfterPoint[colIndex], s)
-							// os.Exit(44)
-						}
+				Accumulate the widest number before the decimal point.
+				Accumulate the widest number after the decimal point.
+				Width is then the widest before plus decimal point plus widest after.
+				The problem is handling floats with no decimal points.
+				And what if some in a column have points and others don't?
+				printMatrix() will have to use a format which places the decimal point in a uniform location. Tricky.
+							fmt.Printf("table.colTypes[%d] = %s\n", colIndex, table.colTypes[colIndex])
+							if table.colTypes[colIndex] == "float32" || table.colTypes[colIndex] == "float64" {
+								fmt.Printf("s = %s\n", s)
+								widthBeforePoint[colIndex] = len(strings.Split(s, ".")[0])
+								fmt.Printf("widthBeforePoint[%d] = %d s=%s\n", colIndex, widthBeforePoint[colIndex], s)
+								widthAfterPoint[colIndex] = len(strings.Split(s, ".")[1])
+								fmt.Printf("widthAfterPoint[%d] = %d s=%s\n", colIndex, widthAfterPoint[colIndex], s)
+								// os.Exit(44)
+							}
 			*/
 
 			width[colIndex] = max(width[colIndex], len(s)) // Needed for non-numeric columns.
@@ -1869,7 +1869,7 @@ func (table *GoTable) AppendColTypes(colTypes []string) error {
 }
 
 // Deprecated: Use AppendColTypes() instead.
-func (table *GoTable) AddColTypes(colTypes []string) error {	// Deprecated: Use AppendColTypes() instead.
+func (table *GoTable) AddColTypes(colTypes []string) error { // Deprecated: Use AppendColTypes() instead.
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s()\n", funcName())
 	return table.AppendColTypes(colTypes)
 }
@@ -3556,12 +3556,12 @@ func funcName() string {
 }
 
 func funcNameFull() string {
-    pc, sourceFile, lineNumber, ok := runtime.Caller(1)
-    if !ok {
-        return "Could not obtain func name and source file information."
-    }
-    nameFull := runtime.FuncForPC(pc).Name() // main.foo
-    return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
+	pc, sourceFile, lineNumber, ok := runtime.Caller(1)
+	if !ok {
+		return "Could not obtain func name and source file information."
+	}
+	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
 }
 
 func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {

@@ -12,7 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-//	"path"
+	//	"path"
 	"strings"
 )
 
@@ -64,7 +64,7 @@ const startTag = "START_TAG"
 const endTag = "END_TAG"
 
 func NewGoTableSetFromHtmlString(sourceName string, htmlString string) (*GoTableSet, error) {
-//	where("called NewGoTableSetFromHtmlString()")
+	//	where("called NewGoTableSetFromHtmlString()")
 	/*
 		htmlString = `<table>
 		<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
@@ -162,7 +162,7 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 		//		lineGap := sourceLineNumber - prevLineNumber
 		// where(fmt.Sprintf("* %s[%d] len(raw)=%d lineGap=%d: %s", path.Base(sourceName), sourceLineNumber, len(raw), lineGap, string(raw)))
 		// where(fmt.Sprintf("* %s[%d] len(raw)=%d: %s", path.Base(sourceName), sourceLineNumber, len(raw), string(raw)))
-//		where(fmt.Sprintf("At %s[%d] %s", path.Base(sourceName), sourceLineNumber, string(raw)))
+		//		where(fmt.Sprintf("At %s[%d] %s", path.Base(sourceName), sourceLineNumber, string(raw)))
 		//		prevLineNumber = sourceLineNumber
 		for i := 0; i < len(raw); i++ {
 			if raw[i] == 10 {
@@ -179,43 +179,43 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 
 			switch tokenData {
 			case "table": // start
-//				where(fmt.Sprintf("<table>"))
+				//				where(fmt.Sprintf("<table>"))
 				if prevTableTag != endTag {
-//					where(fmt.Sprintf("unclosed <table>"))
+					//					where(fmt.Sprintf("unclosed <table>"))
 					// Close the previous table.
-//					where("calling endTheRow()")
+					//					where("calling endTheRow()")
 					prevTrTag, prevTdTag, insideRow, insideCol, colIndex, isTdRow, isFirstRow, isFirstRowDone = endTheRow(isTdRow, isFirstRow, isFirstRowDone)
-//					where("calling endTheTable()")
+					//					where("calling endTheTable()")
 					prevTableTag, rowIndex, isFirstRowDone, insideTable, err = endTheTable(tableSet, table)
 					if err != nil {
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
 					fmt.Fprintf(os.Stderr, "\n")
-//					where(fmt.Sprintf("\n%s", tableSet))
+					//					where(fmt.Sprintf("\n%s", tableSet))
 					fmt.Fprintf(os.Stderr, "\n")
 				}
 
 				prevTableTag = startTag
 				startToken = "table"
-//				where("calling startTheTable()")
+				//				where("calling startTheTable()")
 				tableIndex, table, tableSet, rowIndex, err = startTheTable(tableIndex, tableSet)
 				if err != nil {
 					return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 				}
-//				where(fmt.Sprintf("tableIndex = %d", tableIndex))
+				//				where(fmt.Sprintf("tableIndex = %d", tableIndex))
 				insideTable = true
 
 			case "tr": // start
-//				where(fmt.Sprintf("<tr>"))
+				//				where(fmt.Sprintf("<tr>"))
 				if !insideTable {
-//					where("orphan <tr>")
-//					where("continue")
+					//					where("orphan <tr>")
+					//					where("continue")
 					continue
 				}
 				if prevTrTag != endTag {
-//					where(fmt.Sprintf("unclosed <tr>"))
+					//					where(fmt.Sprintf("unclosed <tr>"))
 					// Close the previous row.
-//					where("calling endTheRow()")
+					//					where("calling endTheRow()")
 					prevTrTag, prevTdTag, insideRow, insideCol, colIndex, isTdRow, isFirstRow, isFirstRowDone = endTheRow(isTdRow, isFirstRow, isFirstRowDone)
 				}
 				prevTrTag = startTag
@@ -226,68 +226,68 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 				if tokenData == "td" {
 					isTdRow = true
 				}
-//				where(fmt.Sprintf("<td>"))
+				//				where(fmt.Sprintf("<td>"))
 				if !insideRow {
-//					where("orphan <td>")
-//					where("continue")
+					//					where("orphan <td>")
+					//					where("continue")
 					continue
 				}
 				prevTdTag = startTag
 				insideCol = true
 				colIndex++
-//				where(fmt.Sprintf("colIndex++ = %d", colIndex))
-//				where(fmt.Sprintf("isFirstRow = %t", isFirstRow))
-//				where(fmt.Sprintf("??? if   colIndex == 0"))
+				//				where(fmt.Sprintf("colIndex++ = %d", colIndex))
+				//				where(fmt.Sprintf("isFirstRow = %t", isFirstRow))
+				//				where(fmt.Sprintf("??? if   colIndex == 0"))
 				if colIndex == 0 {
 					// We know it's a new row with data in it, not <th> headings.
 					rowIndex++
-//					where(fmt.Sprintf("setting rowIndex++ = %d", rowIndex))
+					//					where(fmt.Sprintf("setting rowIndex++ = %d", rowIndex))
 				}
 				startToken = "td"
 
-//				where(fmt.Sprintf("??? if   !isFirstRow=%t && !isFirstRowDone=%t == %t", !isFirstRow, !isFirstRowDone, !isFirstRow && !isFirstRowDone))
+				//				where(fmt.Sprintf("??? if   !isFirstRow=%t && !isFirstRowDone=%t == %t", !isFirstRow, !isFirstRowDone, !isFirstRow && !isFirstRowDone))
 				if !isFirstRow && !isFirstRowDone {
 					isFirstRow = true
-//					where(fmt.Sprintf("??? then setting isFirstRow = %t", isFirstRow))
+					//					where(fmt.Sprintf("??? then setting isFirstRow = %t", isFirstRow))
 				} else {
-//					where(fmt.Sprintf("??? else NOT setting isFirstRow = true"))
+					//					where(fmt.Sprintf("??? else NOT setting isFirstRow = true"))
 				}
-//				where(fmt.Sprintf("??? if   insideRow=%t && isFirstRow=%t == %t", insideRow, isFirstRow, insideRow && isFirstRow))
+				//				where(fmt.Sprintf("??? if   insideRow=%t && isFirstRow=%t == %t", insideRow, isFirstRow, insideRow && isFirstRow))
 				if insideRow && isFirstRow {
 					// Create a column.
 					colName = fmt.Sprintf("col_%d", colIndex)
-//					where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+					//					where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
 					err = table.AddCol(colName, colType)
 					if err != nil {
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
 				} else {
-//					where(fmt.Sprintf("??? else NOT [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+					//					where(fmt.Sprintf("??? else NOT [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
 				}
 
 				// We can't reliably add rows after each <tr> because it may contain only <th> tags.
-//				where(fmt.Sprintf("??? if   table.RowCount()=%d == rowIndex=%d == %t", table.RowCount(), rowIndex, table.RowCount() == rowIndex))
+				//				where(fmt.Sprintf("??? if   table.RowCount()=%d == rowIndex=%d == %t", table.RowCount(), rowIndex, table.RowCount() == rowIndex))
 				if table.RowCount() == rowIndex {
 					// Need exactly one new row.
-//					where(fmt.Sprintf("??? then [%s].AddRow()", table.TableName()))
+					//					where(fmt.Sprintf("??? then [%s].AddRow()", table.TableName()))
 					table.AddRow()
 				} else {
-//					where(fmt.Sprintf("??? else NOT [%s].AddRow()", table.TableName()))
+					//					where(fmt.Sprintf("??? else NOT [%s].AddRow()", table.TableName()))
 				}
 			}
 
 		case html.TextToken:
 			switch prevStartToken {
 			case "td":
-//				where(fmt.Sprintf("case td <td>%s</td>", tokenData))
-//				where(fmt.Sprintf("insideRow=%t && insideCol=%t == %t", insideRow, insideCol, insideRow && insideCol))
+				//				where(fmt.Sprintf("case td <td>%s</td>", tokenData))
+				//				where(fmt.Sprintf("insideRow=%t && insideCol=%t == %t", insideRow, insideCol, insideRow && insideCol))
 				if insideRow && insideCol { // Don't accumulate token data outside of a row or col.
-//					where()
+					//					where()
 					if colIndex >= table.ColCount() {
 						// This row has more cols than previous rows. Not good, but we'll accommodate that.
 						// Create additional column.
 						colName = fmt.Sprintf("col_%d", colIndex)
-//						where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+						//						where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
 						err = table.AddCol(colName, colType)
 						if err != nil {
 							return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
@@ -296,43 +296,43 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 
 					// Read what is already accumulated.
 					accumulated, err = table.GetStringByColIndex(colIndex, rowIndex)
-//					where()
+					//					where()
 					if err != nil {
-//						where()
+						//						where()
 						//								return nil, err
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
-//					where()
+					//					where()
 					const nbspChar = "\u00a0"
 					//							const nbspNum = "&#160;"	// See https://en.wikipedia.org/wiki/Non-breaking_space
 					//							const trimChars = " \t\n" + nbspChar + nbspNum	// This seems to remove trailing digits!
 					const trimChars = " \t\n" + nbspChar
-//					where()
+					//					where()
 					const punctuation = ".,;:"
 
-//					where()
-//					where(fmt.Sprintf("tokenData: %q (before Trim)", tokenData))
+					//					where()
+					//					where(fmt.Sprintf("tokenData: %q (before Trim)", tokenData))
 					// Make sure there is just one space between tokens in accumulated.
 					tokenData = strings.Trim(tokenData, trimChars)
-//					where(fmt.Sprintf("tokenData: %q (after  Trim)", tokenData))
+					//					where(fmt.Sprintf("tokenData: %q (after  Trim)", tokenData))
 					if strings.ContainsAny(tokenData, punctuation) {
-//						where(fmt.Sprintf("tokenData: %q (contains punctuation)", tokenData))
+						//						where(fmt.Sprintf("tokenData: %q (contains punctuation)", tokenData))
 						// Don't insert space.
 						accumulated += tokenData
 					} else {
-//						where(fmt.Sprintf("tokenData: %q (does NOT contain punctuation)", tokenData))
-//						where(fmt.Sprintf("accumulated: %q (before inserting space)", accumulated))
-//						where(fmt.Sprintf("tokenData  : %q (before inserting space)", tokenData))
+						//						where(fmt.Sprintf("tokenData: %q (does NOT contain punctuation)", tokenData))
+						//						where(fmt.Sprintf("accumulated: %q (before inserting space)", accumulated))
+						//						where(fmt.Sprintf("tokenData  : %q (before inserting space)", tokenData))
 						accumulated += " " + tokenData
-//						where(fmt.Sprintf("accumulated: %q (after  inserting space)", accumulated))
+						//						where(fmt.Sprintf("accumulated: %q (after  inserting space)", accumulated))
 					}
-//					where()
+					//					where()
 
-//					where(fmt.Sprintf("accumulated: %q (before Trim)", accumulated))
+					//					where(fmt.Sprintf("accumulated: %q (before Trim)", accumulated))
 					accumulated = strings.Trim(accumulated, trimChars) // Remove white space crud.
 					// Write back accumulated plus current text token (minus surrounding white space crud).
 					err = table.SetStringByColIndex(colIndex, rowIndex, accumulated)
-//					where(fmt.Sprintf("accumulated: %q (after  Trim)", accumulated))
+					//					where(fmt.Sprintf("accumulated: %q (after  Trim)", accumulated))
 					if err != nil {
 						//								return nil, err
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
@@ -346,32 +346,32 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 		case html.EndTagToken:
 			switch tokenData {
 			case "table": // end
-//				where(fmt.Sprintf("</table>"))
+				//				where(fmt.Sprintf("</table>"))
 				if prevTableTag != startTag {
 					// Orphan table. It will have already been ended. So do nothing.
-//					where(fmt.Sprintf("orphan </table>"))
+					//					where(fmt.Sprintf("orphan </table>"))
 				} else {
-//					where("calling endTheRow()")
+					//					where("calling endTheRow()")
 					prevTrTag, prevTdTag, insideRow, insideCol, colIndex, isTdRow, isFirstRow, isFirstRowDone = endTheRow(isTdRow, isFirstRow, isFirstRowDone)
-//					where("calling endTheTable()")
+					//					where("calling endTheTable()")
 					prevTableTag, rowIndex, isFirstRowDone, insideTable, err = endTheTable(tableSet, table)
 					if err != nil {
-//						where()
+						//						where()
 						//								return nil, err
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
 				}
 			case "tr": // end
-//				where(fmt.Sprintf("</tr>"))
+				//				where(fmt.Sprintf("</tr>"))
 				if prevTrTag != startTag {
-//					where(fmt.Sprintf("orphan </tr>"))
+					//					where(fmt.Sprintf("orphan </tr>"))
 				}
-//				where("calling endTheRow()")
+				//				where("calling endTheRow()")
 				prevTrTag, prevTdTag, insideRow, insideCol, colIndex, isTdRow, isFirstRow, isFirstRowDone = endTheRow(isTdRow, isFirstRow, isFirstRowDone)
 			case "td": // end
-//				where(fmt.Sprintf("</td>"))
+				//				where(fmt.Sprintf("</td>"))
 				if prevTdTag != startTag {
-//					where(fmt.Sprintf("orphan </td>"))
+					//					where(fmt.Sprintf("orphan </td>"))
 				}
 				// NOTE: Do not set insideCol to false. Sometimes there is no html.TextToken tokenData?
 				// There's a logic error here somewhere. There are newlines in tokenData which are not in <td></td>
@@ -391,14 +391,14 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 			return tableSet, nil
 
 		case html.CommentToken:
-//			where(fmt.Sprintf("CommentToken: token = %v", token))
-//			//				where(fmt.Sprintf("text: %s", string(text)))
+			//			where(fmt.Sprintf("CommentToken: token = %v", token))
+			//			//				where(fmt.Sprintf("text: %s", string(text)))
 		}
-//		where(fmt.Sprintf("insideTable    = %t", insideTable))
-//		where(fmt.Sprintf("isFirstRow     = %t", isFirstRow))
-//		where(fmt.Sprintf("isFirstRowDone = %t", isFirstRowDone))
-//		where(fmt.Sprintf("insideRow      = %t", insideRow))
-//		where(fmt.Sprintf("insideCol      = %t", insideCol))
+		//		where(fmt.Sprintf("insideTable    = %t", insideTable))
+		//		where(fmt.Sprintf("isFirstRow     = %t", isFirstRow))
+		//		where(fmt.Sprintf("isFirstRowDone = %t", isFirstRowDone))
+		//		where(fmt.Sprintf("insideRow      = %t", insideRow))
+		//		where(fmt.Sprintf("insideCol      = %t", insideCol))
 		fmt.Fprintf(os.Stderr, "\n")
 
 		prevStartToken = startToken
@@ -406,12 +406,12 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 }
 
 func startTheTable(tableIndex int, tableSet *GoTableSet) (int, *GoTable, *GoTableSet, int, error) {
-//	where("startTheTable()")
+	//	where("startTheTable()")
 	var err error
 
 	tableIndex++
 	rowIndex := -1
-//	where(fmt.Sprintf("tableIndex++ = %d", tableIndex))
+	//	where(fmt.Sprintf("tableIndex++ = %d", tableIndex))
 	table, err := NewGoTable(fmt.Sprintf("table_%d", tableIndex))
 	if err != nil {
 		return tableIndex, table, tableSet, rowIndex, err
@@ -425,10 +425,10 @@ func startTheTable(tableIndex int, tableSet *GoTableSet) (int, *GoTable, *GoTabl
 }
 
 func endTheTable(tableSet *GoTableSet, table *GoTable) (string, int, bool, bool, error) {
-//	where("endTheTable()")
+	//	where("endTheTable()")
 	prevTableTag := endTag
 	rowIndex := -1 // For good measure. In case </tr> not encountered.
-//	where(fmt.Sprintf("rowIndex = %d", rowIndex))
+	//	where(fmt.Sprintf("rowIndex = %d", rowIndex))
 	isFirstRowDone := false
 	insideTable := false
 	if isValid, err := table.IsValidTable(); !isValid {
@@ -436,28 +436,28 @@ func endTheTable(tableSet *GoTableSet, table *GoTable) (string, int, bool, bool,
 	}
 
 	fmt.Fprintf(os.Stderr, "\n")
-//	where(fmt.Sprintf("\n%s", tableSet))
+	//	where(fmt.Sprintf("\n%s", tableSet))
 	fmt.Fprintf(os.Stderr, "\n")
 
-//	where(fmt.Sprintf("setting isFirstRowDone = %t", isFirstRowDone))
+	//	where(fmt.Sprintf("setting isFirstRowDone = %t", isFirstRowDone))
 	return prevTableTag, rowIndex, isFirstRowDone, insideTable, nil
 }
 
 func endTheRow(isTdRow bool, isFirstRow bool, isFirstRowDone bool) (string, string, bool, bool, int, bool, bool, bool) {
-//	where("endTheRow()")
+	//	where("endTheRow()")
 	prevTrTag := endTag
 	prevTdTag := endTag
 	insideRow := false
 	insideCol := false // For good measure. In case </td> not encountered.
 	colIndex := -1
-//	where(fmt.Sprintf("colIndex = %d", colIndex))
+	//	where(fmt.Sprintf("colIndex = %d", colIndex))
 	if isFirstRow == true {
 		if isTdRow {
 			isFirstRow = false
 			isFirstRowDone = true
-//			where(fmt.Sprintf("setting isFirstRowDone = %t", isFirstRowDone))
+			//			where(fmt.Sprintf("setting isFirstRowDone = %t", isFirstRowDone))
 		} else {
-//			where(fmt.Sprintf("Not a real first row! Undo the column headings!"))
+			//			where(fmt.Sprintf("Not a real first row! Undo the column headings!"))
 		}
 	}
 

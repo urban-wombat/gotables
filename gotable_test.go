@@ -1075,11 +1075,11 @@ func TestColCount(t *testing.T) {
 	}
 
 	colCount = table.ColCount()
-	if colCount != initialColCount + 1 {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount + 1, colCount))
+	if colCount != initialColCount+1 {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount+1, colCount))
 	}
 
-	lastCol := colCount-1
+	lastCol := colCount - 1
 	err = table.DeleteColByColIndex(lastCol)
 	if err != nil {
 		t.Error(err)
@@ -1096,8 +1096,8 @@ func TestColCount(t *testing.T) {
 	}
 
 	colCount = table.ColCount()
-	if colCount != initialColCount + 1 {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount + 1, colCount))
+	if colCount != initialColCount+1 {
+		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount+1, colCount))
 	}
 
 	err = table.DeleteCol("AnotherCol")
