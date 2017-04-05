@@ -591,6 +591,10 @@ Functions and methods for sorting GoTable tables.
 			<h4>Examples</h4>
 			<dl>
 			
+			<dd><a class="exampleLink" href="#example_GoTable_DeleteRows">GoTable.DeleteRows</a></dd>
+			
+			<dd><a class="exampleLink" href="#example_NewGoTableFromString">NewGoTableFromString</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_NewGoTableSet">NewGoTableSet</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Round">Round</a></dd>
@@ -811,7 +815,55 @@ if err != nil {
 				</h3>
 				<pre>func NewGoTableFromString(s <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 				
-				
+				<div id="example_NewGoTableFromString" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableString := `
+[MyTable]
+MyBool bool = true
+MyString string = &#34;The answer to life, the universe and everything&#34;
+MyInt int = 42
+`
+
+table, err := NewGoTableFromString(tableString)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(table)
+
+table.SetStructShape(false)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(table)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">[MyTable]
+MyBool bool = true
+MyString string = &#34;The answer to life, the universe and everything&#34;
+MyInt int = 42
+
+[MyTable]
+MyBool MyString                                          MyInt
+bool   string                                              int
+true   &#34;The answer to life, the universe and everything&#34;    42
+</pre>
+			
+		
+	</div>
+</div>
+
 				
 			
 				
@@ -1145,11 +1197,83 @@ if err != nil {
 				</h3>
 				<pre>func (table *<a href="#GoTable">GoTable</a>) DeleteRows(firstRowIndex <a href="/pkg/builtin/#int">int</a>, lastRowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
 				<p>
-Delete rows from firstRowIndex to lastRowIndex inclusive. That means lastRowIndex will be deleted.
+Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
 </p>
 
 				
-				
+				<div id="example_GoTable_DeleteRows" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableString := `
+[items]
+item
+int
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+`
+
+table, err := NewGoTableFromString(tableString)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(table)
+
+err = table.DeleteRows(4, 6)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(table)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">[items]
+item
+ int
+   0
+   1
+   2
+   3
+   4
+   5
+   6
+   7
+   8
+   9
+
+[items]
+item
+ int
+   0
+   1
+   2
+   3
+   7
+   8
+   9
+</pre>
+			
+		
+	</div>
+</div>
+
 				
 			
 				

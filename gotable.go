@@ -979,7 +979,7 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 	return nil
 }
 
-// Delete rows from firstRowIndex to lastRowIndex inclusive. That means lastRowIndex will be deleted.
+// Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
 func (table *GoTable) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())

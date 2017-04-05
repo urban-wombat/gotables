@@ -1330,3 +1330,95 @@ func TestDeleteRows(t *testing.T) {
 		}
 	}
 }
+
+func ExampleGoTable_DeleteRows() {
+	tableString := `
+	[items]
+	item
+	int
+	0
+	1
+	2
+	3
+	4
+	5
+	6
+	7
+	8
+	9
+	`
+
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	err = table.DeleteRows(4, 6)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [items]
+	// item
+	//  int
+	//    0
+	//    1
+	//    2
+	//    3
+	//    4
+	//    5
+	//    6
+	//    7
+	//    8
+	//    9
+	// 
+	// [items]
+	// item
+	//  int
+	//    0
+	//    1
+	//    2
+	//    3
+	//    7
+	//    8
+	//    9
+}
+
+func ExampleNewGoTableFromString() {
+	tableString := `
+	[MyTable]
+	MyBool bool = true
+	MyString string = "The answer to life, the universe and everything"
+	MyInt int = 42
+	`
+
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	table.SetStructShape(false)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [MyTable]
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything"
+	// MyInt int = 42
+	//
+	// [MyTable]
+	// MyBool MyString                                          MyInt
+	// bool   string                                              int
+	// true   "The answer to life, the universe and everything"    42
+}
