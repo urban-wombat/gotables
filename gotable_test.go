@@ -206,13 +206,13 @@ func TestReadString1(t *testing.T) {
 		colCount := table.ColCount()
 		if colCount != test.colCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -290,13 +290,13 @@ func TestReadString5(t *testing.T) {
 		colCount := table.ColCount()
 		if colCount != test.colCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -335,13 +335,13 @@ func TestReadString6(t *testing.T) {
 		colCount := table.ColCount()
 		if colCount != test.colCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
 			tableName := table.TableName()
-			t.Errorf("test[%d]: Expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -419,7 +419,7 @@ func TestRound(t *testing.T) {
 	for i, test := range tests {
 		rounded := Round(test.val, test.places)
 		if rounded != test.rounded {
-			t.Errorf("test[%d]: Expecting %f, not %f", i, test.rounded, rounded)
+			t.Errorf("test[%d]: expecting %f, not %f", i, test.rounded, rounded)
 		}
 	}
 }
@@ -476,7 +476,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 	if bVal != true {
-		t.Errorf("Expecting GetBool() value %t, not %t\n", true, bVal)
+		t.Errorf("expecting GetBool() value %t, not %t\n", true, bVal)
 	}
 
 	err = table.SetBoolByColIndex(colIndex, rowIndex, false)
@@ -488,7 +488,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 	if bVal != false {
-		t.Errorf("Expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
+		t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
 	}
 
 	// Uint tests
@@ -508,7 +508,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 	if uiVal != 55 {
-		t.Errorf("Expecting GetUint() value %d, not %d\n", 55, uiVal)
+		t.Errorf("expecting GetUint() value %d, not %d\n", 55, uiVal)
 	}
 
 	err = table.SetUintByColIndex(colIndex, rowIndex, 66)
@@ -520,7 +520,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 	if uiVal != 66 {
-		t.Errorf("Expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
+		t.Errorf("expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
 	}
 }
 
@@ -767,7 +767,7 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 			case true:
 				t.Errorf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
+				t.Errorf("test[%d]: NewGoTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -838,7 +838,7 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 			case true:
 				t.Errorf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewGoTableSetFromString(): Expecting this input to fail with a range error: %s", i, test.input)
+				t.Errorf("test[%d]: NewGoTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -968,7 +968,7 @@ func TestIsNumericColType(t *testing.T) {
 		hasPrefixT := strings.HasPrefix(colName, "T_")
 		hasPrefixF := strings.HasPrefix(colName, "F_")
 		if !hasPrefixT && !hasPrefixF {
-			t.Error(fmt.Errorf("Expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName))
+			t.Error(fmt.Errorf("expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName))
 		}
 
 		if isNumeric != hasPrefixT {
@@ -1009,7 +1009,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount := table.RowCount()
 	if rowCount != 0 {
-		t.Error(fmt.Errorf("Expecting row count of 0, not: %d", rowCount))
+		t.Error(fmt.Errorf("expecting row count of 0, not: %d", rowCount))
 	}
 
 	err = table.AppendRow()
@@ -1019,7 +1019,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount = table.RowCount()
 	if rowCount != 1 {
-		t.Error(fmt.Errorf("Expecting row count of 1, not: %d", rowCount))
+		t.Error(fmt.Errorf("expecting row count of 1, not: %d", rowCount))
 	}
 
 	err = table.DeleteRow(0)
@@ -1029,7 +1029,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount = table.RowCount()
 	if rowCount != 0 {
-		t.Error(fmt.Errorf("Expecting row count of 0, not: %d", rowCount))
+		t.Error(fmt.Errorf("expecting row count of 0, not: %d", rowCount))
 	}
 }
 
@@ -1066,7 +1066,7 @@ func TestColCount(t *testing.T) {
 
 	colCount := table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
 	}
 
 	err = table.AppendCol("ExtraCol", "bool")
@@ -1076,7 +1076,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount+1, colCount))
+		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount))
 	}
 
 	lastCol := colCount - 1
@@ -1087,7 +1087,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
 	}
 
 	err = table.AppendCol("AnotherCol", "string")
@@ -1097,7 +1097,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount+1, colCount))
+		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount))
 	}
 
 	err = table.DeleteCol("AnotherCol")
@@ -1107,6 +1107,226 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("Expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
+	}
+}
+
+func TestDeleteRow(t *testing.T) {
+	tableString := `
+	[table]
+	item
+	int
+	0
+	1
+	2
+	3
+	4
+	5
+	6
+	7
+	8
+	9
+	`
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	initialRowCount := table.RowCount()
+
+	const deleteRow = 4
+
+	err = table.DeleteRow(deleteRow)
+	if err != nil {
+		t.Error(err)
+	}
+
+	rowCount := table.RowCount()
+	if rowCount != initialRowCount - 1 {
+		t.Error(fmt.Errorf("expecting 1 row less than %d after DeleteRow(%d) but found %d", initialRowCount, deleteRow, rowCount))
+	}
+
+	// fmt.Println(table)
+
+	for i := 0; i < table.RowCount(); i++ {
+		item, err := table.GetInt("item", i)
+		if err != nil {
+			t.Error(err)
+		}
+		if item == deleteRow {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow))
+		}
+	}
+
+}
+
+func TestDeleteRows(t *testing.T) {
+	tableString := `
+	[items]
+	item
+	int
+	0
+	1
+	2
+	3
+	4
+	5
+	6
+	7
+	8
+	9
+	`
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	initialRowCount := table.RowCount()
+
+	// Test invalid row index range: first greater than last
+	err = table.DeleteRows(5, 4)
+	if err == nil {
+		t.Error(err)
+	}
+
+	// Test invalid row index range: first below zero
+	err = table.DeleteRows(-1, 4)
+	if err == nil {
+		t.Error(err)
+	}
+
+	// Test invalid row index range: last above initialRowCount-1
+	err = table.DeleteRows(0, initialRowCount)
+	if err == nil {
+		t.Error(err)
+	}
+
+	var first int
+	var last int
+	var items int
+	var rowCount int
+
+	// Test delete 1 item: 4
+	first = 4
+	last = 4
+	items = last - first + 1
+	err = table.DeleteRows(first, last)
+	if err != nil {
+		t.Error(err)
+	}
+	// fmt.Println(table)
+	rowCount = table.RowCount()
+	if rowCount != initialRowCount - items {
+		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
+			items, initialRowCount, first, last, rowCount))
+	}
+	for i := 0; i < table.RowCount(); i++ {
+		item, err := table.GetInt("item", i)
+		if err != nil {
+			t.Error(err)
+		}
+		if item == first {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				first, first, last, first))
+		}
+	}
+
+	// Test delete 2 items: 4 to 5
+	table, err = NewGoTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first = 4
+	last = 5
+	items = last - first + 1
+	err = table.DeleteRows(first, last)
+	if err != nil {
+		t.Error(err)
+	}
+	// fmt.Println(table)
+	rowCount = table.RowCount()
+	if rowCount != initialRowCount - items {
+		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
+			items, initialRowCount, first, last, rowCount))
+	}
+	for i := 0; i < table.RowCount(); i++ {
+		item, err := table.GetInt("item", i)
+		if err != nil {
+			t.Error(err)
+		}
+		if item == first {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				first, first, last, first))
+		}
+		if item == last {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				last, first, last, last))
+		}
+	}
+
+	// Test delete 6 items: 4 to 9
+	table, err = NewGoTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first = 6
+	last = 9
+	items = last - first + 1
+	err = table.DeleteRows(first, last)
+	if err != nil {
+		t.Error(err)
+	}
+	// fmt.Println(table)
+	rowCount = table.RowCount()
+	if rowCount != initialRowCount - items {
+		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
+			items, initialRowCount, first, last, rowCount))
+	}
+	for i := 0; i < table.RowCount(); i++ {
+		item, err := table.GetInt("item", i)
+		if err != nil {
+			t.Error(err)
+		}
+		if item == first {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				first, first, last, first))
+		}
+		if item == last {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				last, first, last, last))
+		}
+	}
+
+	// Test delete 3 items: 0 to 9
+	table, err = NewGoTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first = 0
+	last = 2
+	items = last - first + 1
+	err = table.DeleteRows(first, last)
+	if err != nil {
+		t.Error(err)
+	}
+	// fmt.Println(table)
+	rowCount = table.RowCount()
+	if rowCount != initialRowCount - items {
+		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
+			items, initialRowCount, first, last, rowCount))
+	}
+	for i := 0; i < table.RowCount(); i++ {
+		item, err := table.GetInt("item", i)
+		if err != nil {
+			t.Error(err)
+		}
+		if item == first {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				first, first, last, first))
+		}
+		if item == last {
+			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
+				last, first, last, last))
+		}
 	}
 }

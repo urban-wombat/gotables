@@ -191,7 +191,7 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table, not %d", tableCount)
+		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table but found %d", tableCount)
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
@@ -960,16 +960,44 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist.",
+/*
+		err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist",
 			table.tableName, table.RowCount(), rowIndex))
 		return err
+*/
+		return fmt.Errorf("in table [%s] with %d rows, row index %d does not exist",
+			table.tableName, table.RowCount(), rowIndex)
 	}
 
-	//	newRows := append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
-	//	table.rows = newRows
-
+/*
 	copy(table.rows[rowIndex:], table.rows[rowIndex+1:])
 	table.rows = table.rows[:len(table.rows)-1]
+*/
+	// From Ivo Balbaert p182 for deleting a single element.
+	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
+
+	return nil
+}
+
+// Delete rows from firstRowIndex to lastRowIndex inclusive. That means lastRowIndex will be deleted.
+func (table *GoTable) DeleteRows(firstRowIndex int, lastRowIndex int) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+	if firstRowIndex < 0 || firstRowIndex > table.RowCount()-1 {
+		return fmt.Errorf("in table [%s] with %d rows, firstRowIndex %d does not exist",
+			table.tableName, table.RowCount(), firstRowIndex)
+	}
+	if lastRowIndex < 0 || lastRowIndex > table.RowCount()-1 {
+		return fmt.Errorf("in table [%s] with %d rows, lastRowIndex %d does not exist",
+			table.tableName, table.RowCount(), lastRowIndex)
+	}
+	if firstRowIndex > lastRowIndex {
+		return fmt.Errorf("invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
+	}
+
+	// From Ivo Balbaert p182 for deleting a range of elements.
+	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
 	return nil
 }
