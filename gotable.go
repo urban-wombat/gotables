@@ -1248,6 +1248,8 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 		return buf.String()
 	}
 
+	var rightmostCol int = len(matrix)-1
+
 	//	where(fmt.Sprintf("matrix = %v", matrix))
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = "" // No separator before first column.
@@ -1283,7 +1285,12 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
 			} else {
-				s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
+				if col == rightmostCol {
+					// Don't pad (unnecessarily) to the right of rightmost col.
+					s = fmt.Sprintf("%s%s", sep, matrix[col][row])	// With no padding, doesn't need align left with -
+				} else {
+					s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
+				}
 				buf.WriteString(s)
 			}
 			sep = " " // Separator before subsequent columns.
