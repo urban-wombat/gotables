@@ -1254,7 +1254,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = "" // No separator before first column.
 		for col := 0; col < len(matrix); col++ {
-			if alignRight[col] {
+			if alignRight[col] {	// Right-aligned col.
 				// TODO: Move this functionality to where printMatrix is called.
 				var toWrite string
 				if row <= 1 { // It's a colName or typeName
@@ -1284,9 +1284,10 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
-			} else {
+			} else {	// Left-aligned col.
 				if col == rightmostCol {
-					// Don't pad (unnecessarily) to the right of rightmost col.
+					// Don't pad (unnecessarily) to the right of rightmost col if it is left-aligned.
+					// (Right-aligned (numeric) cols don't have padding to their right.)
 					s = fmt.Sprintf("%s%s", sep, matrix[col][row])	// With no padding, doesn't need align left with -
 				} else {
 					s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
