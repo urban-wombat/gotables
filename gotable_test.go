@@ -1331,6 +1331,40 @@ func TestDeleteRows(t *testing.T) {
 	}
 }
 
+func ExampleNewGoTableFromString() {
+	tableString := `
+	[MyTable]
+	MyBool bool = true
+	MyString string = "The answer to life, the universe and everything"
+	MyInt int = 42
+	`
+
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	table.SetStructShape(false)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [MyTable]
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything"
+	// MyInt int = 42
+	//
+	// [MyTable]
+	// MyBool MyString                                          MyInt
+	// bool   string                                              int
+	// true   "The answer to life, the universe and everything"    42
+}
+
 func ExampleGoTable_DeleteRows() {
 	tableString := `
 	[items]
@@ -1389,12 +1423,13 @@ func ExampleGoTable_DeleteRows() {
 	//    9
 }
 
-func ExampleNewGoTableFromString() {
+func ExampleGoTable_JoinColVals() {
 	tableString := `
-	[MyTable]
-	MyBool bool = true
-	MyString string = "The answer to life, the universe and everything"
-	MyInt int = 42
+	[commands]
+	command
+	string
+	"echo myfile"
+	"wc -l"
 	`
 
 	table, err := NewGoTableFromString(tableString)
@@ -1404,21 +1439,107 @@ func ExampleNewGoTableFromString() {
 
 	fmt.Println(table)
 
-	table.SetStructShape(false)
+	joined, err := table.JoinColVals("command", " | ")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(joined)
+
+	// Output:
+	// [commands]
+	// command
+	// string
+	// "echo myfile"
+	// "wc -l"
+	//
+	// echo myfile | wc -l
+}
+
+func ExampleGoTable_JoinColValsByColIndex() {
+	tableString := `
+	[commands]
+	command
+	string
+	"echo myfile"
+	"wc -l"
+	`
+
+	table, err := NewGoTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(table)
 
+	colIndex := 0
+	joined, err := table.JoinColValsByColIndex(colIndex, " | ")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(joined)
+
 	// Output:
-	// [MyTable]
-	// MyBool bool = true
-	// MyString string = "The answer to life, the universe and everything"
-	// MyInt int = 42
+	// [commands]
+	// command
+	// string
+	// "echo myfile"
+	// "wc -l"
 	//
-	// [MyTable]
-	// MyBool MyString                                          MyInt
-	// bool   string                                              int
-	// true   "The answer to life, the universe and everything"    42
+	// echo myfile | wc -l
+}
+
+func TestGetValAsString(t *testing.T) {
+	tableString := `
+	[table]
+	s string = "Fred"
+	t bool = true
+	i int = 23
+	f float64 = 55.5
+	`
+
+	table, err := NewGoTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var expecting string
+	var found string
+
+	expecting = "Fred"
+	found, err = table.GetValAsString("s", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	if found != expecting {
+		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+	}
+
+	expecting = "true"
+	found, err = table.GetValAsString("t", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	if found != expecting {
+		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+	}
+
+	expecting = "23"
+	found, err = table.GetValAsString("i", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	if found != expecting {
+		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+	}
+
+	expecting = "55.5"
+	found, err = table.GetValAsString("f", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	if found != expecting {
+		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+	}
 }

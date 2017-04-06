@@ -191,7 +191,7 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table but found %d", tableCount)
+		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table but found %d table%s", tableCount, plural(tableCount))
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
@@ -317,12 +317,20 @@ func (goTableSet *GoTableSet) TableCount() int {
 
 // Deprecated: Use AppendTable() instead.
 func (goTableSet *GoTableSet) AddTable(newTable *GoTable) error {
+	if goTableSet == nil {
+		return fmt.Errorf("%s(*GoTableSet) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
 
 // Deprecated: Use AppendTable() instead.
 func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
+	if goTableSet == nil {
+		return fmt.Errorf("%s(*GoTableSet) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
@@ -330,6 +338,10 @@ func (goTableSet *GoTableSet) AddGoTable(newTable *GoTable) error {
 // Add a table to a table set.
 // This function may be deprecated later in favour of AddTable()
 func (goTableSet *GoTableSet) AppendTable(newTable *GoTable) error {
+	if goTableSet == nil {
+		return fmt.Errorf("%s(*GoTableSet) *GoTable is <nil>", funcName())
+	}
+
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
 	for _, existingTable := range goTableSet.tables {
 		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
@@ -519,6 +531,7 @@ func (table *GoTable) SetSortKeysReverse(sortColNames ...string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
+
 	for _, colName := range sortColNames {
 		err := table.setSortKeyReverse(colName)
 		if err != nil {
@@ -588,6 +601,10 @@ func (table *GoTable) AppendSortKey(colName string) error {
 
 // Deprecated: Use AppendSortKey() instead.
 func (table *GoTable) AddSortKey(colName string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendSortKey() instead.\n", funcName())
 	return table.AppendSortKey(colName)
 }
@@ -701,6 +718,10 @@ func (table *GoTable) appendRowOfNil() error {
 }
 
 func (table *GoTable) AppendRows(howMany int) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	if howMany <= 0 {
 		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.TableName(), howMany, howMany)
 	}
@@ -732,6 +753,10 @@ func (table *GoTable) AppendRow() error {
 //
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 func (table *GoTable) AddRow() error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRow() instead.\n", funcName())
 	return table.AppendRow()
 }
@@ -951,6 +976,10 @@ func (table *GoTable) AppendRowMap(newRow GoTableRow) error {
 
 // Deprecated: Use AppendRowMap() instead.
 func (table *GoTable) AddRowMap(newRow GoTableRow) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRowMap() instead.\n", funcName())
 	return table.AppendRowMap(newRow)
 }
@@ -1539,6 +1568,10 @@ func (table *GoTable) String() string {
 }
 
 func printStruct(table *GoTable) string {
+	if table == nil {
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+	}
+
 	var asString string
 	var s string
 	var structHasRowData bool = table.RowCount() > 0
@@ -1549,7 +1582,12 @@ func printStruct(table *GoTable) string {
 		if structHasRowData {
 			const RowIndexZero = 0
 			asString, _ = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
-			s += " " + asString
+			if table.colTypes[colIndex] == "string" {
+				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
+				s += " " + fmt.Sprintf("%q", asString)
+			} else {
+				s += " " + asString
+			}
 		}
 		s += "\n"
 	}
@@ -1778,6 +1816,10 @@ func (table *GoTable) AppendCol(colName string, colType string) error {
 	}
 */
 func (table *GoTable) AddCol(colName string, colType string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendCol() instead.\n", funcName())
 	return table.AppendCol(colName, colType)
 }
@@ -1808,6 +1850,10 @@ func (table *GoTable) DeleteColByColIndex(colIndex int) error {
 }
 
 func (table *GoTable) DeleteCol(colName string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	colIndex, err := table.ColIndex(colName)
 	if err != nil {
 		return err
@@ -1916,6 +1962,10 @@ func (table *GoTable) AppendColNames(colNames []string) error {
 
 // Deprecated: Use AppendColNames() instead.
 func (table *GoTable) AddColNames(colNames []string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColNames() instead.\n", funcName())
 	return table.AppendColNames(colNames)
 }
@@ -1949,6 +1999,10 @@ func (table *GoTable) AppendColTypes(colTypes []string) error {
 
 // Deprecated: Use AppendColTypes() instead.
 func (table *GoTable) AddColTypes(colTypes []string) error { // Deprecated: Use AppendColTypes() instead.
+	if table == nil {
+		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColTypes() instead.\n", funcName())
 	return table.AppendColTypes(colTypes)
 }
@@ -3644,6 +3698,10 @@ func funcNameFull() string {
 }
 
 func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
+	if table == nil {
+		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
 	var sVal string
 	var tVal bool
 	var ui8Val uint8
@@ -3672,7 +3730,8 @@ func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (stri
 	switch table.colTypes[colIndex] {
 	case "string":
 		sVal = interfaceType.(string)
-		buf.WriteString(fmt.Sprintf("%q", sVal))
+		// DON'T include string delimiters in string.
+		buf.WriteString(fmt.Sprintf("%s", sVal))
 	case "bool":
 		tVal = interfaceType.(bool)
 		buf.WriteString(fmt.Sprintf("%t", tVal))
@@ -3756,4 +3815,39 @@ func (table *GoTable) SetStructShape(isStructShape bool) error {
 	table.structShape = isStructShape
 
 	return nil
+}
+
+// Join together a column of values. To compose a set of commands into a single command.
+func (table *GoTable) JoinColVals(colName string, separator string) (string, error) {
+	if table == nil {
+		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
+	rowCount := table.RowCount()
+	sVals := make([]string, rowCount)
+	for rowIndex := 0; rowIndex < rowCount; rowIndex++ {
+		s, err := table.GetValAsString(colName, rowIndex)
+		if err != nil {
+			return "", err
+		}
+		sVals[rowIndex] = s
+	}
+
+	joined := strings.Join(sVals, separator)
+
+	return joined, nil
+}
+
+// Join together a column of values. To compose a set of commands into a single command.
+func (table *GoTable) JoinColValsByColIndex(colIndex int, separator string) (string, error) {
+	if table == nil {
+		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+	}
+
+	colName, err := table.ColName(colIndex)
+	if err != nil {
+		return "", err
+	}
+	
+	return table.JoinColVals(colName, separator)
 }
