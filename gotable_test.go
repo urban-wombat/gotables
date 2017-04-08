@@ -1412,7 +1412,7 @@ func ExampleNewGoTableFromFile() {
 	// true   "The answer to life, the universe and everything"    42
 }
 
-func ExampleNewGoTableFromFileByFileName() {
+func ExampleNewGoTableFromFileByTableName() {
 	tableString := `
 	[MyTable]
 	MyBool bool = true
@@ -1420,10 +1420,12 @@ func ExampleNewGoTableFromFileByFileName() {
 	MyInt int = 42
 
 	[Fred]
+	i
+	int
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	fileName := "ExampleNewGoTableFromFileByFileName.txt"
+	fileName := "ExampleNewGoTableFromFileByTableName.txt"
 	err := ioutil.WriteFile(fileName, []byte(tableString), 0644)
 	if err != nil {
 		panic(err)

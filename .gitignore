@@ -220,4 +220,4 @@ pip-log.txt
 *.OLD
 junk
 ExampleNewGoTableFromFile.txt
-ExampleNewGoTableFromFileByFileName.txt
+ExampleNewGoTableFromFileByTableName.txt

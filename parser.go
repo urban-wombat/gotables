@@ -205,7 +205,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 		if len(line) == 0 {
 			if expecting == _COL_TYPES {
-				return nil, fmt.Errorf("%s expecting col types after col names", p.gotFilePos())
+				return nil, fmt.Errorf("%s expecting col names to be followed by a line of col types", p.gotFilePos())
 				// A blank line is okay after table name, col types or row values, but col names must always have col types.
 			}
 			expecting = _TABLE_NAME

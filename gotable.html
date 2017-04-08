@@ -614,6 +614,8 @@ Functions and methods for sorting GoTable tables.
 			
 			<dd><a class="exampleLink" href="#example_NewGoTableFromFile">NewGoTableFromFile</a></dd>
 			
+			<dd><a class="exampleLink" href="#example_NewGoTableFromFileByTableName">NewGoTableFromFileByTableName</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_NewGoTableFromString">NewGoTableFromString</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_NewGoTableSet">NewGoTableSet</a></dd>
@@ -685,7 +687,7 @@ Functions and methods for sorting GoTable tables.
 		
 			
 			
-			<h2 id="IsNumericColType">func <a href="/src/target/parser.go?s=15489:15540#L478">IsNumericColType</a>
+			<h2 id="IsNumericColType">func <a href="/src/target/parser.go?s=15511:15562#L478">IsNumericColType</a>
 				<a class="permalink" href="#IsNumericColType">&#xb6;</a>
 			</h2>
 			<pre>func IsNumericColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -702,7 +704,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidColName">func <a href="/src/target/parser.go?s=15974:16023#L493">IsValidColName</a>
+			<h2 id="IsValidColName">func <a href="/src/target/parser.go?s=15996:16045#L493">IsValidColName</a>
 				<a class="permalink" href="#IsValidColName">&#xb6;</a>
 			</h2>
 			<pre>func IsValidColName(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -713,7 +715,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidColType">func <a href="/src/target/parser.go?s=14908:14957#L458">IsValidColType</a>
+			<h2 id="IsValidColType">func <a href="/src/target/parser.go?s=14930:14979#L458">IsValidColType</a>
 				<a class="permalink" href="#IsValidColType">&#xb6;</a>
 			</h2>
 			<pre>func IsValidColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -730,7 +732,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidTableName">func <a href="/src/target/parser.go?s=16368:16421#L508">IsValidTableName</a>
+			<h2 id="IsValidTableName">func <a href="/src/target/parser.go?s=16390:16443#L508">IsValidTableName</a>
 				<a class="permalink" href="#IsValidTableName">&#xb6;</a>
 			</h2>
 			<pre>func IsValidTableName(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -905,7 +907,54 @@ true   &#34;The answer to life, the universe and everything&#34;    42
 				</h3>
 				<pre>func NewGoTableFromFileByTableName(fileName <a href="/pkg/builtin/#string">string</a>, tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#GoTable">GoTable</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 				
-				
+				<div id="example_NewGoTableFromFileByTableName" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableString := `
+[MyTable]
+MyBool bool = true
+MyString string = &#34;The answer to life, the universe and everything&#34;
+MyInt int = 42
+
+[Fred]
+i
+int
+`
+
+<span class="comment">// For testing, we need to write this out to a file so we can read it back.</span>
+fileName := &#34;ExampleNewGoTableFromFileByTableName.txt&#34;
+err := ioutil.WriteFile(fileName, []byte(tableString), 0644)
+if err != nil {
+    panic(err)
+}
+
+table, err := NewGoTableFromFileByTableName(fileName, &#34;MyTable&#34;)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(table)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">[MyTable]
+MyBool bool = true
+MyString string = &#34;The answer to life, the universe and everything&#34;
+MyInt int = 42
+</pre>
+			
+		
+	</div>
+</div>
+
 				
 			
 				
