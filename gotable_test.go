@@ -2,6 +2,7 @@ package gotable
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math"
 	"strconv"
 	"strings"
@@ -1352,6 +1353,52 @@ func ExampleNewGoTableFromString() {
 	}
 
 	fmt.Println(table)
+
+	// Output:
+	// [MyTable]
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything"
+	// MyInt int = 42
+	//
+	// [MyTable]
+	// MyBool MyString                                          MyInt
+	// bool   string                                              int
+	// true   "The answer to life, the universe and everything"    42
+}
+
+func ExampleNewGoTableFromFile() {
+	tableString := `
+	[MyTable]
+	MyBool bool = true
+	MyString string = "The answer to life, the universe and everything"
+	MyInt int = 42
+	`
+
+	table1, err := NewGoTableFromStringByTableName(tableString, "MyTable")
+	if err != nil {
+		panic(err)
+	}
+
+	// For testing, we need to write this out to a file so we can read it back.
+	fileName := "ExampleNewGoTableFromFile.txt"
+	err = ioutil.WriteFile(fileName, []byte(table1.String()), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	table2, err := NewGoTableFromFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table2)
+
+	table2.SetStructShape(false)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table2)
 
 	// Output:
 	// [MyTable]

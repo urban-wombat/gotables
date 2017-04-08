@@ -202,6 +202,40 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 	return table, nil
 }
 
+func NewGoTableFromStringByTableName(s string, tableName string) (*GoTable, error) {
+	tableSet, err := NewGoTableSetFromString(s)
+	if err != nil {
+		return nil, err
+	}
+
+	table, err := tableSet.Table(tableName)
+	if err != nil {
+		return nil, err
+	}
+
+	return table, nil
+}
+
+func NewGoTableFromFile(fileName string) (*GoTable, error) {
+	tableSet, err := NewGoTableSetFromFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	tableCount := tableSet.TableCount()
+	if tableCount != 1 {
+		return nil, fmt.Errorf("NewGoTableFromString() expecting file to contain 1 table but found %d table%s: %s",
+			tableCount, plural(tableCount), fileName)
+	}
+
+	table, err := tableSet.TableByTableIndex(0)
+	if err != nil {
+		return nil, err
+	}
+
+	return table, nil
+}
+
 /*
 Returns a set of parsable elastic tabbed tables as a string.
 */
@@ -364,17 +398,16 @@ func (goTableSet *GoTableSet) HasTable(tableName string) (bool, error) {
 			return true, nil
 		}
 	}
-	return false, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
+	return false, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
-// Replaces GoTableSet.GoTable()
 func (goTableSet *GoTableSet) Table(tableName string) (*GoTable, error) {
 	for _, table := range goTableSet.tables {
 		if table.TableName() == tableName {
 			return table, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("table [%s] does not exist.", tableName))
+	return nil, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
 func (goTableSet *GoTableSet) TableByTableIndex(tableIndex int) (*GoTable, error) {
@@ -389,6 +422,7 @@ func (goTableSet *GoTableSet) TableByTableIndex(tableIndex int) (*GoTable, error
 
 // Deprecated: Use Table() instead.
 func (goTableSet *GoTableSet) GoTable(tableName string) (*GoTable, error) {
+	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use Table() instead.\n", funcName())
 	return goTableSet.Table(tableName)
 }
 
@@ -1829,7 +1863,7 @@ func (table *GoTable) DeleteColByColIndex(colIndex int) error {
 		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		err := errors.New(fmt.Sprintf("in table [%s] with %d cols, col index %d does not exist.",
+		err := errors.New(fmt.Sprintf("in table [%s] with %d cols, col index %d does not exist",
 			table.tableName, table.ColCount(), colIndex))
 		return err
 	}
@@ -2029,7 +2063,7 @@ func (table *GoTable) HasColByColIndex(colIndex int) (bool, error) {
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		err := errors.New(fmt.Sprintf("in table [%s] with %d col%s, col index %d does not exist.",
+		err := errors.New(fmt.Sprintf("in table [%s] with %d col%s, col index %d does not exist",
 			table.tableName, table.ColCount(), plural(table.ColCount()), colIndex))
 		return false, err
 	}
