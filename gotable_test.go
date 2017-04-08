@@ -1412,6 +1412,37 @@ func ExampleNewGoTableFromFile() {
 	// true   "The answer to life, the universe and everything"    42
 }
 
+func ExampleNewGoTableFromFileByFileName() {
+	tableString := `
+	[MyTable]
+	MyBool bool = true
+	MyString string = "The answer to life, the universe and everything"
+	MyInt int = 42
+
+	[Fred]
+	`
+
+	// For testing, we need to write this out to a file so we can read it back.
+	fileName := "ExampleNewGoTableFromFileByFileName.txt"
+	err := ioutil.WriteFile(fileName, []byte(tableString), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	table, err := NewGoTableFromFileByTableName(fileName, "MyTable")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [MyTable]
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything"
+	// MyInt int = 42
+}
+
 func ExampleGoTable_DeleteRows() {
 	tableString := `
 	[items]

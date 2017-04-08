@@ -236,6 +236,20 @@ func NewGoTableFromFile(fileName string) (*GoTable, error) {
 	return table, nil
 }
 
+func NewGoTableFromFileByTableName(fileName string, tableName string) (*GoTable, error) {
+	tableSet, err := NewGoTableSetFromFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	table, err := tableSet.Table(tableName)
+	if err != nil {
+		return nil, err
+	}
+
+	return table, nil
+}
+
 /*
 Returns a set of parsable elastic tabbed tables as a string.
 */
