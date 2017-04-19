@@ -430,24 +430,20 @@ func TestSetAndGetFunctions(t *testing.T) {
 	//	byte 			// alias for uint8
 	//	complex128 		// The set of all complex numbers with float64 real and imaginary parts
 	//	complex64		// The set of all complex numbers with float32 real and imaginary parts
-	/*
-	   	var f32Val float32	// The set of all IEEE-754 32-bit floating-point numbers
-	   	var f64Val float64	// The set of all IEEE-754 64-bit floating-point numbers
-	   	var iVal   int		// Machine-dependent
-	   	var i16Val int16	// The set of all signed 16-bit integers (-32768 to 32767)
-	   	var i32Val int32	// The set of all signed 32-bit integers (-2147483648 to 2147483647)
-	   	var i64Val int64	// The set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
-	   	var i8Val  int8		// The set of all signed  8-bit integers (-128 to 127)
-	   //	rune 			// alias for int32
-	   	var sVal    string
-	*/
-	var uiVal uint // Machine-dependent
-	/*
-		var ui16Val uint16	// The set of all unsigned 16-bit integers (0 to 65535)
-		var ui32Val uint32	// The set of all unsigned 32-bit integers (0 to 4294967295)
-		var ui64Val uint64	// The set of all unsigned 64-bit integers (0 to 18446744073709551615)
-		var ui8Val  uint8	// The set of all unsigned  8-bit integers (0 to 255)
-	*/
+	var f32Val float32	// The set of all IEEE-754 32-bit floating-point numbers
+	var f64Val float64	// The set of all IEEE-754 64-bit floating-point numbers
+	var iVal   int		// Machine-dependent
+	var i16Val int16	// The set of all signed 16-bit integers (-32768 to 32767)
+	var i32Val int32	// The set of all signed 32-bit integers (-2147483648 to 2147483647)
+	var i64Val int64	// The set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
+	var i8Val  int8		// The set of all signed  8-bit integers (-128 to 127)
+	//	rune 			// alias for int32
+	var uiVal   uint // Machine-dependent
+	var ui16Val uint16	// The set of all unsigned 16-bit integers (0 to 65535)
+	var ui32Val uint32	// The set of all unsigned 32-bit integers (0 to 4294967295)
+	var ui64Val uint64	// The set of all unsigned 64-bit integers (0 to 18446744073709551615)
+	var ui8Val  uint8	// The set of all unsigned  8-bit integers (0 to 255)
+	var sVal    string
 
 	var err error
 	var table *GoTable
@@ -458,71 +454,475 @@ func TestSetAndGetFunctions(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
 	table.AppendRow()
 
-	// Bool tests
+	// Note: Tests are collected inside code blocks for human readability.
 
-	err = table.AppendCol("bVal", "bool")
-	if err != nil {
-		t.Error(err)
-	}
+	{	// bool tests
 
-	err = table.SetBool("bVal", rowIndex, true)
-	if err != nil {
-		t.Error(err)
-	}
-	bVal, err = table.GetBool("bVal", rowIndex)
-	if err != nil {
-		t.Error(err)
-	}
-	if bVal != true {
-		t.Errorf("expecting GetBool() value %t, not %t\n", true, bVal)
-	}
-
-	err = table.SetBoolByColIndex(colIndex, rowIndex, false)
-	if err != nil {
-		t.Error(err)
-	}
-	bVal, err = table.GetBoolByColIndex(colIndex, rowIndex)
-	if err != nil {
-		t.Error(err)
-	}
-	if bVal != false {
-		t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
-	}
-
-	// Uint tests
-
-	err = table.AppendCol("uiVal", "uint")
-	if err != nil {
-		t.Error(err)
-	}
-	colIndex += 1
-
-	err = table.SetUint("uiVal", rowIndex, 55)
-	if err != nil {
-		t.Error(err)
-	}
-	uiVal, err = table.GetUint("uiVal", rowIndex)
-	if err != nil {
-		t.Error(err)
-	}
-	if uiVal != 55 {
-		t.Errorf("expecting GetUint() value %d, not %d\n", 55, uiVal)
+		err = table.AppendCol("bVal", "bool")
+		if err != nil {
+			t.Error(err)
+		}
+	
+		err = table.SetBool("bVal", rowIndex, true)
+		if err != nil {
+			t.Error(err)
+		}
+		bVal, err = table.GetBool("bVal", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bVal != true {
+			t.Errorf("expecting GetBool() value %t, not %t\n", true, bVal)
+		}
+	
+		err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+		if err != nil {
+			t.Error(err)
+		}
+		bVal, err = table.GetBoolByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bVal != false {
+			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
+		}
 	}
 
-	err = table.SetUintByColIndex(colIndex, rowIndex, 66)
-	if err != nil {
-		t.Error(err)
+	{	// float32 tests
+	
+		err = table.AppendCol("f32Val", "float32")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetFloat32("f32Val", rowIndex, 55.1)
+		if err != nil {
+			t.Error(err)
+		}
+		f32Val, err = table.GetFloat32("f32Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if f32Val != 55.1 {
+			t.Errorf("expecting GetFloat32() value %f, not %f\n", 55.1, f32Val)
+		}
+	
+		err = table.SetFloat32ByColIndex(colIndex, rowIndex, 66.1)
+		if err != nil {
+			t.Error(err)
+		}
+		f32Val, err = table.GetFloat32ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if f32Val != 66.1 {
+			t.Errorf("expecting GetFloat32ByColIndex() value %f, not %f\n", 66.1, f32Val)
+		}
 	}
-	uiVal, err = table.GetUintByColIndex(colIndex, rowIndex)
-	if err != nil {
-		t.Error(err)
+
+	{	// float64 tests
+	
+		err = table.AppendCol("f64Val", "float64")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetFloat64("f64Val", rowIndex, 88.1)
+		if err != nil {
+			t.Error(err)
+		}
+		f64Val, err = table.GetFloat64("f64Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if f64Val != 88.1 {
+			t.Errorf("expecting GetFloat64() value %f, not %f\n", 88.1, f64Val)
+		}
+	
+		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 77.1)
+		if err != nil {
+			t.Error(err)
+		}
+		f64Val, err = table.GetFloat64ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if f64Val != 77.1 {
+			t.Errorf("expecting GetFloat64ByColIndex() value %f, not %f\n", 77.1, f64Val)
+		}
 	}
-	if uiVal != 66 {
-		t.Errorf("expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
+
+	{	// int tests
+	
+		err = table.AppendCol("iVal", "int")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetInt("iVal", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		iVal, err = table.GetInt("iVal", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if iVal != 55 {
+			t.Errorf("expecting GetInt() value %d, not %d\n", 55, iVal)
+		}
+	
+		err = table.SetIntByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		iVal, err = table.GetIntByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if iVal != 66 {
+			t.Errorf("expecting GetIntByColIndex() value %d, not %d\n", 66, iVal)
+		}
 	}
+
+	{	// int16 tests
+	
+		err = table.AppendCol("i16Val", "int16")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetInt16("i16Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		i16Val, err = table.GetInt16("i16Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i16Val != 55 {
+			t.Errorf("expecting GetInt16() value %d, not %d\n", 55, i16Val)
+		}
+	
+		err = table.SetInt16ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		i16Val, err = table.GetInt16ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i16Val != 66 {
+			t.Errorf("expecting GetInt16ByColIndex() value %d, not %d\n", 66, i16Val)
+		}
+	}
+
+	{	// int32 tests
+	
+		err = table.AppendCol("i32Val", "int32")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetInt32("i32Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		i32Val, err = table.GetInt32("i32Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i32Val != 55 {
+			t.Errorf("expecting GetInt32() value %d, not %d\n", 55, i32Val)
+		}
+	
+		err = table.SetInt32ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		i32Val, err = table.GetInt32ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i32Val != 66 {
+			t.Errorf("expecting GetInt32ByColIndex() value %d, not %d\n", 66, i32Val)
+		}
+	}
+
+	{	// int64 tests
+	
+		err = table.AppendCol("i64Val", "int64")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetInt64("i64Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		i64Val, err = table.GetInt64("i64Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i64Val != 55 {
+			t.Errorf("expecting GetInt64() value %d, not %d\n", 55, i64Val)
+		}
+	
+		err = table.SetInt64ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		i64Val, err = table.GetInt64ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i64Val != 66 {
+			t.Errorf("expecting GetInt64ByColIndex() value %d, not %d\n", 66, i64Val)
+		}
+	}
+
+	{	// int8 tests
+	
+		err = table.AppendCol("i8Val", "int8")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetInt8("i8Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		i8Val, err = table.GetInt8("i8Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i8Val != 55 {
+			t.Errorf("expecting GetInt8() value %d, not %d\n", 55, i8Val)
+		}
+	
+		err = table.SetInt8ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		i8Val, err = table.GetInt8ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if i8Val != 66 {
+			t.Errorf("expecting GetInt8ByColIndex() value %d, not %d\n", 66, i8Val)
+		}
+	}
+
+	{	// uint tests
+	
+		err = table.AppendCol("uiVal", "uint")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetUint("uiVal", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		uiVal, err = table.GetUint("uiVal", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if uiVal != 55 {
+			t.Errorf("expecting GetUint() value %d, not %d\n", 55, uiVal)
+		}
+	
+		err = table.SetUintByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		uiVal, err = table.GetUintByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if uiVal != 66 {
+			t.Errorf("expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
+		}
+	}
+
+	{	// uint16 tests
+	
+		err = table.AppendCol("ui16Val", "uint16")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetUint16("ui16Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		ui16Val, err = table.GetUint16("ui16Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui16Val != 55 {
+			t.Errorf("expecting GetUint16() value %d, not %d\n", 55, ui16Val)
+		}
+	
+		err = table.SetUint16ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		ui16Val, err = table.GetUint16ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui16Val != 66 {
+			t.Errorf("expecting GetUint16ByColIndex() value %d, not %d\n", 66, ui16Val)
+		}
+	}
+
+	{	// uint32 tests
+	
+		err = table.AppendCol("ui32Val", "uint32")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetUint32("ui32Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		ui32Val, err = table.GetUint32("ui32Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui32Val != 55 {
+			t.Errorf("expecting GetUint32() value %d, not %d\n", 55, ui32Val)
+		}
+	
+		err = table.SetUint32ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		ui32Val, err = table.GetUint32ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui32Val != 66 {
+			t.Errorf("expecting GetUint32ByColIndex() value %d, not %d\n", 66, ui32Val)
+		}
+	}
+
+	{	// uint64 tests
+	
+		err = table.AppendCol("ui64Val", "uint64")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetUint64("ui64Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		ui64Val, err = table.GetUint64("ui64Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui64Val != 55 {
+			t.Errorf("expecting GetUint64() value %d, not %d\n", 55, ui64Val)
+		}
+	
+		err = table.SetUint64ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		ui64Val, err = table.GetUint64ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui64Val != 66 {
+			t.Errorf("expecting GetUint64ByColIndex() value %d, not %d\n", 66, ui64Val)
+		}
+	}
+
+	{	// uint8 tests
+	
+		err = table.AppendCol("ui8Val", "uint8")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetUint8("ui8Val", rowIndex, 55)
+		if err != nil {
+			t.Error(err)
+		}
+		ui8Val, err = table.GetUint8("ui8Val", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui8Val != 55 {
+			t.Errorf("expecting GetUint8() value %d, not %d\n", 55, ui8Val)
+		}
+	
+		err = table.SetUint8ByColIndex(colIndex, rowIndex, 66)
+		if err != nil {
+			t.Error(err)
+		}
+		ui8Val, err = table.GetUint8ByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if ui8Val != 66 {
+			t.Errorf("expecting GetUint8ByColIndex() value %d, not %d\n", 66, ui8Val)
+		}
+	}
+
+	{	// string tests
+	
+		err = table.AppendCol("sVal", "string")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+	
+		err = table.SetString("sVal", rowIndex, "55")
+		if err != nil {
+			t.Error(err)
+		}
+		sVal, err = table.GetString("sVal", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if sVal != "55" {
+			t.Errorf("expecting GetString() value %q, not %q\n", "55", sVal)
+		}
+	
+		err = table.SetStringByColIndex(colIndex, rowIndex, "66")
+		if err != nil {
+			t.Error(err)
+		}
+		sVal, err = table.GetStringByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if sVal != "66" {
+			t.Errorf("expecting GetStringByColIndex() value %q, not %q\n", "66", sVal)
+		}
+	}
+
+/*
+	table.SetStructShape(true)
+	where(table)
+*/
 }
 
 func TestSetIntegerMinAndMax(t *testing.T) {
