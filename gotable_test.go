@@ -1623,3 +1623,30 @@ func TestGetValAsString(t *testing.T) {
 		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
 	}
 }
+
+func TestGoTableSet_FileName(t *testing.T) {
+	tableString :=`
+		[table]
+		s string = "Fred"
+		t bool = true
+		i int = 23
+		f float64 = 55.5
+	`
+
+	// For testing, we need to write this out to a file so we can read it back.
+	actualFileName := funcName() + ".txt"
+	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	tables, err := NewGoTableSetFromFile(actualFileName)
+	if err != nil {
+		panic(err)
+	}
+
+	fileName := tables.FileName()
+	if fileName != actualFileName {
+		t.Error(fmt.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName))
+	}
+}

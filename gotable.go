@@ -110,11 +110,13 @@ func NewGoTableSet(goTableSetName string) (*GoTableSet, error) {
 func NewGoTableSetFromFile(fileName string) (*GoTableSet, error) {
 	var p parser
 	//	fmt.Printf("ReadFile(%q)\n", fileName)
-	p.SetFileName(fileName)
+	p.SetFileName(fileName)	// Needed for printing file and line diagnostics.
+
 	tables, err := p.parseFile(fileName)
 	if err != nil {
 		return nil, err
 	}
+
 	return tables, nil
 }
 

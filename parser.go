@@ -385,7 +385,7 @@ func (p *parser) parseFile(fileName string) (*GoTableSet, error) {
 	var err error
 	var fileBytes []byte
 
-	p.SetFileName(fileName)
+	p.SetFileName(fileName)	// For file and line diagnostics.
 
 	fileBytes, err = ioutil.ReadFile(fileName)
 	if err != nil {
@@ -393,6 +393,8 @@ func (p *parser) parseFile(fileName string) (*GoTableSet, error) {
 	}
 
 	goTables, err := p.parseString(string(fileBytes))
+
+	goTables.SetFileName(fileName)
 
 	return goTables, err
 }
@@ -794,15 +796,10 @@ func rangeForIntegerType(min int64, max uint64) string {
 
 // parser definition: fields and methods.
 type parser struct {
-	fileName string
+	fileName string	// Needed for printing file and line diagnostics.
 }
 
-/*
-func (p *parser) SetGoTableSetName(goTableSetName string) {
-	p.goTableSetName = goTableSetName
-}
-*/
-
+// Needed for printing file and line diagnostics.
 func (p *parser) SetFileName(fileName string) {
 	p.fileName = fileName
 }
