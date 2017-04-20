@@ -258,7 +258,8 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 				var colType string = lineSplit[structTypeIndex]
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
-					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("%s %s EXPECTING EQUALS", p.gotFilePos(), err)
 				}
 				if isValid, err = IsValidColType(colType); !isValid {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
@@ -436,7 +437,16 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 	for i := 0; i < len(colNames); i++ {
 		isValid, err := IsValidColName(colNames[i])
 		if !isValid {
-			return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+			if i == 1 {
+				_, contains := globalColTypesMap[colNames[1]]
+				if contains {
+					return nil, fmt.Errorf("%s %s Did you mean: %s %s =", p.gotFilePos(), err, colNames[0], colNames[1])
+				} else {
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
+			} else {
+				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+			}
 		}
 	}
 
