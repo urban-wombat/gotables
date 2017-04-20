@@ -282,7 +282,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 
 				if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
 					// where("expecting SOME value")
-					return nil, fmt.Errorf("%s expecting a value after '=' but found: (nothing)")
+					return nil, fmt.Errorf("%s expecting a value after = but found: (nothing)", p.gotFilePos())
 				}
 
 				if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
@@ -291,7 +291,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 					for i := 3; i < len(lineSplit); i++ {
 						remaining += lineSplit[i] + " "
 					}
-					return nil, fmt.Errorf("%s expecting 0 values after '=' but found: %s", p.gotFilePos(), remaining)
+					return nil, fmt.Errorf("%s expecting 0 values after = but found: %s", p.gotFilePos(), remaining)
 				}
 
 				if structHasRowData {
@@ -442,10 +442,10 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 				if contains {
 					return nil, fmt.Errorf("%s %s Did you mean: %s %s =", p.gotFilePos(), err, colNames[0], colNames[1])
 				} else {
-					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)	// Default error.
 				}
 			} else {
-				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)	// Default error.
 			}
 		}
 	}
