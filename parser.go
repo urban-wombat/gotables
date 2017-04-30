@@ -141,7 +141,7 @@ var globalNumericColTypesMap = map[string]int{
 }
 
 func (p *parser) parseString0(s string) (*TableSet, error) {
-	goTables, err := NewTableSet("")
+	tables, err := NewTableSet("")
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func (p *parser) parseString0(s string) (*TableSet, error) {
 	var stringReader *strings.Reader = strings.NewReader(s)
 	fmt.Printf("stringReader = %v\n", stringReader)
 
-	return goTables, err
+	return tables, err
 }
 
 func (p *parser) parseString(s string) (*TableSet, error) {
@@ -182,12 +182,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 	var rowMapOfStruct TableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
-	goTables, err := NewTableSet(unnamed)
+	tables, err := NewTableSet(unnamed)
 	if err != nil {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
 
-	var goTable *Table
+	var table *Table
 
 	var line string
 	var readError error
@@ -225,13 +225,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					//						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					return nil, err
 				}
-				goTable, err = NewTable(tableName)
+				table, err = NewTable(tableName)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 				tableShape = _UNDEFINED_SHAPE
 				// Add this table to tables. Do it immediately to allow empty tables. 02.08.2016
-				err = goTables.AppendTable(goTable)
+				err = tables.AppendTable(table)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
@@ -253,7 +253,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				// (1) Get the table struct (name, type and optional value) of this line.
 
 				tableShape = _STRUCT_SHAPE
-				goTable.structShape = true
+				table.structShape = true
 				var colName string = lineSplit[structNameIndex]
 				var colType string = lineSplit[structTypeIndex]
 				var isValid bool
@@ -267,14 +267,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				var colNameSlice []string = []string{colName}
 				var colTypeSlice []string = []string{colType}
 
-				err = goTable.AppendCol(colName, colType)
+				err = table.AppendCol(colName, colType)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
 				// where(p.gotFilePos())
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
-				if goTable.ColCount() == 1 {
+				if table.ColCount() == 1 {
 					structHasRowData = len(lineSplit) > nameAndTypeOnlyTokenCount
 					// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
 				}
@@ -312,12 +312,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
-					if goTable.RowCount() < 1 {
-						goTable.appendRowOfNil()
+					if table.RowCount() < 1 {
+						table.appendRowOfNil()
 					}
 
 					var val interface{} = rowMapOfStruct[colName]
-					err = goTable.SetVal(colName, 0, val)
+					err = table.SetVal(colName, 0, val)
 					if err != nil {
 						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					}
@@ -335,7 +335,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				if err != nil {
 					return nil, err
 				}
-				err = goTable.AppendColNames(parserColNames)
+				err = table.AppendColNames(parserColNames)
 				if err != nil {
 					return nil, err
 				}
@@ -353,7 +353,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenColNames {
 				return nil, fmt.Errorf("%s expecting %d col type%s but found %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
-			goTable.AppendColTypes(parserColTypes)
+			table.AppendColTypes(parserColTypes)
 			expecting = _COL_ROWS
 
 		case _COL_ROWS:
@@ -370,14 +370,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s expecting %d value%s but found %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-			goTable.AppendRowMap(rowMap)
+			table.AppendRowMap(rowMap)
 			if err != nil {
-				return goTables, err
+				return tables, err
 			}
 		}
 
 		if readError == io.EOF {
-			return goTables, nil // It's not an error to reach EOF. It just means end of document.
+			return tables, nil // It's not an error to reach EOF. It just means end of document.
 		}
 	}
 }
@@ -393,11 +393,11 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 		return nil, err
 	}
 
-	goTables, err := p.parseString(string(fileBytes))
+	tables, err := p.parseString(string(fileBytes))
 
-	goTables.SetFileName(fileName)
+	tables.SetFileName(fileName)
 
-	return goTables, err
+	return tables, err
 }
 
 func (p *parser) gotFilePos() string {

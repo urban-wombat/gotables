@@ -32,12 +32,12 @@ SOFTWARE.
 
 // Sorting functions:
 
-func (tableRows goTableRows) Len() int {
+func (tableRows tableRows) Len() int {
 	return len(tableRows)
 }
 
 // func (table *Table) Swap(i, j int) {
-func (tableRows goTableRows) Swap(i, j int) {
+func (tableRows tableRows) Swap(i, j int) {
 	tableRows[i], tableRows[j] = tableRows[j], tableRows[i]
 }
 
@@ -232,7 +232,7 @@ var compareCount int
 
 type tableSortable struct {
 	table *Table
-	rows  goTableRows
+	rows  tableRows
 	less  func(i, j TableRow) bool
 }
 
@@ -293,7 +293,7 @@ func (table *Table) SortByKeys(sortKeys SortKeys) {
 }
 
 /*
-func (tableRows goTableRows) Less(i, j int) bool {
+func (tableRows tableRows) Less(i, j int) bool {
 compareCount++
 ////	where(fmt.Sprintf("len(table.sortKeys) = %d\n", len(table.sortKeys)))
 	var sortKeyCount = len(table.sortKeys)
@@ -320,7 +320,7 @@ compareCount++
 }
 */
 
-func (tableRows goTableRows) Less(i, j int) bool {
+func (tableRows tableRows) Less(i, j int) bool {
 	compareCount++
 	sortFunc := compare_int
 	colName := "SortOrder"

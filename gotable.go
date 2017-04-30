@@ -85,7 +85,7 @@ The table sequence is maintained.
 TableSet has a small number of roles. Most work is done with Table
 */
 type TableSet struct {
-	goTableSetName string
+	tableSetName string
 	fileName       string
 	tables         []*Table
 }
@@ -97,9 +97,9 @@ type TableSetExported struct {
 }
 
 // Factory function to return an initialised *TableSet pointer.
-func NewTableSet(goTableSetName string) (*TableSet, error) {
+func NewTableSet(tableSetName string) (*TableSet, error) {
 	var newTables *TableSet = new(TableSet)
-	newTables.goTableSetName = goTableSetName
+	newTables.tableSetName = tableSetName
 	newTables.tables = make([]*Table, 0) // An empty slice of tables.
 	return newTables, nil
 }
@@ -129,38 +129,38 @@ func ReadFile(fileName string) (*TableSet, error) {
 }
 
 // Write a TableSet to a text file.
-func (goTableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
+func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
 	var err error
-	var goTableSet_String string
-	var goTableSet_Bytes []byte
+	var tableSet_String string
+	var tableSet_Bytes []byte
 
-	goTableSet_String = goTableSet.String()
-	goTableSet_Bytes = []byte(goTableSet_String)
+	tableSet_String = tableSet.String()
+	tableSet_Bytes = []byte(tableSet_String)
 	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
 	where(fmt.Sprintf("mode = %v\n", mode))
-	err = ioutil.WriteFile(fileName, goTableSet_Bytes, mode)
+	err = ioutil.WriteFile(fileName, tableSet_Bytes, mode)
 
 	return err
 }
 
 // Write a Table to a text file.
-func (goTable *Table) WriteFile(fileName string, mode os.FileMode) error {
-	if goTable == nil {
+func (table *Table) WriteFile(fileName string, mode os.FileMode) error {
+	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
-	var goTable_String string
-	var goTable_Bytes []byte
+	var table_String string
+	var table_Bytes []byte
 
-	goTable_String = goTable.String()
-	goTable_Bytes = []byte(goTable_String)
+	table_String = table.String()
+	table_Bytes = []byte(table_String)
 	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
 	where(fmt.Sprintf("mode = %v\n", mode))
-	err = ioutil.WriteFile(fileName, goTable_Bytes, mode)
+	err = ioutil.WriteFile(fileName, table_Bytes, mode)
 
 	return err
 }
@@ -255,18 +255,18 @@ func NewTableFromFileByTableName(fileName string, tableName string) (*Table, err
 /*
 Returns a set of parsable elastic tabbed tables as a string.
 */
-//func (goTableSet *TableSet) String() string {
+//func (tableSet *TableSet) String() string {
 //	var verticalSep string = ""
 //	var s string
 //
-//	var tableSetName string = goTableSet.TableSetName()
+//	var tableSetName string = tableSet.TableSetName()
 //	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
+//		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
 //	}
 //
 //	var table *Table
-//	for i := 0; i < len(goTableSet.tables); i++ {
-//		table = goTableSet.tables[i]
+//	for i := 0; i < len(tableSet.tables); i++ {
+//		table = tableSet.tables[i]
 //		s += verticalSep
 //		s += table.String()
 //		verticalSep = "\n"
@@ -277,22 +277,22 @@ Returns a set of parsable elastic tabbed tables as a string.
 /*
 Returns a set of parsable tables with format right-aligned (numbers) as a string.
 */
-func (goTableSet *TableSet) String() string {
-	if goTableSet == nil {
+func (tableSet *TableSet) String() string {
+	if tableSet == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*TableSet) *TableSet is <nil>", funcName()))
 		return ""
 	}
 	var verticalSep string = ""
 	var s string
 
-	var tableSetName string = goTableSet.TableSetName()
+	var tableSetName string = tableSet.TableSetName()
 	if tableSetName != "" {
-		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
+		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
 	}
 
 	var table *Table
-	for i := 0; i < len(goTableSet.tables); i++ {
-		table = goTableSet.tables[i]
+	for i := 0; i < len(tableSet.tables); i++ {
+		table = tableSet.tables[i]
 		s += verticalSep
 		s += table.String()
 		verticalSep = "\n"
@@ -300,20 +300,20 @@ func (goTableSet *TableSet) String() string {
 	return s
 }
 
-func (goTableSet *TableSet) StringSpacePadded() string {
+func (tableSet *TableSet) StringSpacePadded() string {
 	var horizontalSeparator byte = ' '
-	return goTableSet._String(horizontalSeparator)
+	return tableSet._String(horizontalSeparator)
 }
 
 // Return parsable set of tables as a string.
-func (goTableSet *TableSet) _String(horizontalSeparator byte) string {
+func (tableSet *TableSet) _String(horizontalSeparator byte) string {
 	var s string
 	var buf bytes.Buffer
-	//	buf.WriteString("# From file: \"" + goTableSet.name + "\"\n\n")
+	//	buf.WriteString("# From file: \"" + tableSet.name + "\"\n\n")
 	var tableSep = ""
 	var table *Table
-	for i := 0; i < len(goTableSet.tables); i++ {
-		table = goTableSet.tables[i]
+	for i := 0; i < len(tableSet.tables); i++ {
+		table = tableSet.tables[i]
 		buf.WriteString(tableSep)
 		//		buf.WriteString(fmt.Sprintf("%v", table))
 		buf.WriteString(fmt.Sprintf("%v", table._String(horizontalSeparator)))
@@ -326,18 +326,18 @@ func (goTableSet *TableSet) _String(horizontalSeparator byte) string {
 /*
 Returns a set of parsable right aligned tables as a string.
 */
-//func (goTableSet *TableSet) StringAligned() string {
+//func (tableSet *TableSet) StringAligned() string {
 //	var verticalSep string = ""
 //	var s string
 //
-//	var tableSetName string = goTableSet.TableSetName()
+//	var tableSetName string = tableSet.TableSetName()
 //	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
+//		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
 //	}
 //
 //	var table *Table
-//	for i := 0; i < len(goTableSet.tables); i++ {
-//		table = goTableSet.tables[i]
+//	for i := 0; i < len(tableSet.tables); i++ {
+//		table = tableSet.tables[i]
 //		s += verticalSep
 //		s += table.StringAligned()
 //		verticalSep = "\n"
@@ -345,57 +345,57 @@ Returns a set of parsable right aligned tables as a string.
 //	return s
 // }
 
-func (goTableSet *TableSet) TableSetName() string {
-	return goTableSet.goTableSetName
+func (tableSet *TableSet) TableSetName() string {
+	return tableSet.tableSetName
 }
 
-func (goTableSet *TableSet) SetTableSetName(goTableSetName string) {
-	goTableSet.goTableSetName = goTableSetName
+func (tableSet *TableSet) SetTableSetName(tableSetName string) {
+	tableSet.tableSetName = tableSetName
 }
 
-func (goTableSet *TableSet) FileName() string {
-	return goTableSet.fileName
+func (tableSet *TableSet) FileName() string {
+	return tableSet.fileName
 }
 
-func (goTableSet *TableSet) SetFileName(fileName string) {
-	goTableSet.fileName = fileName
+func (tableSet *TableSet) SetFileName(fileName string) {
+	tableSet.fileName = fileName
 }
 
-func (goTableSet *TableSet) TableCount() int {
-	return len(goTableSet.tables)
+func (tableSet *TableSet) TableCount() int {
+	return len(tableSet.tables)
 }
 
 // Deprecated: Use AppendTable() instead.
-func (goTableSet *TableSet) AddTable(newTable *Table) error {
-	if goTableSet == nil {
+func (tableSet *TableSet) AddTable(newTable *Table) error {
+	if tableSet == nil {
 		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
-	return goTableSet.AppendTable(newTable)
+	return tableSet.AppendTable(newTable)
 }
 
 /*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
 // Deprecated: Use AppendTable() instead.
-func (goTableSet *TableSet) AddTable(newTable *Table) error {
-	if goTableSet == nil {
+func (tableSet *TableSet) AddTable(newTable *Table) error {
+	if tableSet == nil {
 		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
-	return goTableSet.AppendTable(newTable)
+	return tableSet.AppendTable(newTable)
 }
 */
 
 // Add a table to a table set.
 // This function may be deprecated later in favour of AddTable()
-func (goTableSet *TableSet) AppendTable(newTable *Table) error {
-	if goTableSet == nil {
+func (tableSet *TableSet) AppendTable(newTable *Table) error {
+	if tableSet == nil {
 		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
-	for _, existingTable := range goTableSet.tables {
+	for _, existingTable := range tableSet.tables {
 		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
 		//where(fmt.Sprintf("newTable.TableName() = %s\n", newTable.TableName()))
 		if existingTable.TableName() == newTable.TableName() {
@@ -403,15 +403,15 @@ func (goTableSet *TableSet) AppendTable(newTable *Table) error {
 		}
 	}
 
-	goTableSet.tables = append(goTableSet.tables, newTable)
+	tableSet.tables = append(tableSet.tables, newTable)
 
 	return nil
 }
 
 // Checks whether table exists
-func (goTableSet *TableSet) HasTable(tableName string) (bool, error) {
+func (tableSet *TableSet) HasTable(tableName string) (bool, error) {
 	//where(fmt.Sprintf("HasTable(%q)\n", tableName))
-	for _, table := range goTableSet.tables {
+	for _, table := range tableSet.tables {
 		if table.TableName() == tableName {
 			return true, nil
 		}
@@ -419,8 +419,8 @@ func (goTableSet *TableSet) HasTable(tableName string) (bool, error) {
 	return false, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
-func (goTableSet *TableSet) Table(tableName string) (*Table, error) {
-	for _, table := range goTableSet.tables {
+func (tableSet *TableSet) Table(tableName string) (*Table, error) {
+	for _, table := range tableSet.tables {
 		if table.TableName() == tableName {
 			return table, nil
 		}
@@ -428,21 +428,21 @@ func (goTableSet *TableSet) Table(tableName string) (*Table, error) {
 	return nil, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
-func (goTableSet *TableSet) TableByTableIndex(tableIndex int) (*Table, error) {
-	if tableIndex < 0 || tableIndex > goTableSet.TableCount()-1 {
+func (tableSet *TableSet) TableByTableIndex(tableIndex int) (*Table, error) {
+	if tableIndex < 0 || tableIndex > tableSet.TableCount()-1 {
 		err := errors.New(fmt.Sprintf("in *TableSet with %d tables, table index %d does not exist",
-			goTableSet.TableCount(), tableIndex))
+			tableSet.TableCount(), tableIndex))
 		return nil, err
 	}
 
-	return goTableSet.tables[tableIndex], nil
+	return tableSet.tables[tableIndex], nil
 }
 
 /*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
 // Deprecated: Use Table() instead.
-func (goTableSet *TableSet) Table(tableName string) (*Table, error) {
+func (tableSet *TableSet) Table(tableName string) (*Table, error) {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use Table() instead.\n", funcName())
-	return goTableSet.Table(tableName)
+	return tableSet.Table(tableName)
 }
 */
 
@@ -459,7 +459,7 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-	rows           goTableRows
+	rows           tableRows
 	sortKeys       []SortKey
 	structShape    bool
 }
@@ -468,7 +468,7 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows           goTableRows
+	Rows           tableRows
 	SortKeys       []SortKeyExported
 }
 
@@ -687,7 +687,7 @@ func (table *Table) ColTypes() []string {
 }
 
 type TableRow map[string]interface{}
-type goTableRows []TableRow
+type tableRows []TableRow
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
@@ -973,7 +973,7 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	var row gotable.TableRow = make(gotable.TableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
-	err = goTable.AppendRowMap(row)
+	err = table.AppendRowMap(row)
 	if err != nil {
 	    panic(err)
 	}
@@ -3123,16 +3123,16 @@ func (table *Table) RenameTable(tableName string) error {
 	return table.SetTableName(tableName)
 }
 
-func (goTableSet *TableSet) RenameTable(renameFrom string, renameTo string) error {
-	if exists, err := goTableSet.HasTable(renameFrom); exists == false {
+func (tableSet *TableSet) RenameTable(renameFrom string, renameTo string) error {
+	if exists, err := tableSet.HasTable(renameFrom); exists == false {
 		return err
 	}
 
-	if exists, _ := goTableSet.HasTable(renameTo); exists == true {
+	if exists, _ := tableSet.HasTable(renameTo); exists == true {
 		return errors.New(fmt.Sprintf("table [%s] already exists.", renameTo))
 	}
 
-	table, err := goTableSet.Table(renameFrom)
+	table, err := tableSet.Table(renameFrom)
 	if err != nil {
 		return err
 	}
@@ -3349,7 +3349,7 @@ type Table struct {
 	colNames  []string
 	colTypes  []string
 	colNamesLookup map[string]int	// To look up a colNames index from a col name.
-	rows        goTableRows
+	rows        tableRows
 	sortKeys  []SortKey
 }
 */
@@ -3403,7 +3403,7 @@ func (table *Table) exportTable() (*TableExported, error) {
 
 	var rowCount int = table.RowCount()
 
-	tableExported.Rows = make(goTableRows, rowCount)
+	tableExported.Rows = make(tableRows, rowCount)
 	if len(tableExported.Rows) != rowCount {
 		err = fmt.Errorf("exportTable() [%s] Could not make rows slice of size %d",
 			table.TableName(), rowCount)
@@ -3469,7 +3469,7 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 
 	var rowCount int = len(tableExported.Rows)
 
-	table.rows = make(goTableRows, rowCount)
+	table.rows = make(tableRows, rowCount)
 	elementCount = copy(table.rows, tableExported.Rows)
 	if elementCount != rowCount {
 		err = fmt.Errorf("importTable() [%s] expecting to import %d rows but imported: %d",
@@ -3502,15 +3502,15 @@ func (table *Table) GobEncode() (bytes.Buffer, error) {
 	var err error
 	var buffer bytes.Buffer
 	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-	var goTableExported *TableExported
+	var tableExported *TableExported
 
-	goTableExported, err = table.exportTable()
+	tableExported, err = table.exportTable()
 	if err != nil {
 		var blankBuffer bytes.Buffer
 		return blankBuffer, err
 	}
 
-	err = enc.Encode(goTableExported)
+	err = enc.Encode(tableExported)
 	if err != nil {
 		var blankBuffer bytes.Buffer
 		return blankBuffer, err
@@ -3523,14 +3523,14 @@ func (table *Table) GobEncode() (bytes.Buffer, error) {
 //	var err error
 //	var buffer bytes.Buffer
 //	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-//	var goTableExported *TableExported
+//	var tableExported *TableExported
 //
-//	goTableExported, err = table.exportTable()
+//	tableExported, err = table.exportTable()
 //	if err != nil {
 //		return buffer.Bytes(), err
 //	}
 //
-//	err = enc.Encode(goTableExported)
+//	err = enc.Encode(tableExported)
 //	if err != nil {
 //		return buffer.Bytes(), err
 //	}
@@ -3560,12 +3560,12 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 	}
 
 	// Add header information to the tail end of the buffer array.
-	var goTableSetHeader TableSetExported
-	goTableSetHeader.TableSetName = tableSet.goTableSetName
-	goTableSetHeader.FileName = tableSet.fileName
+	var tableSetHeader TableSetExported
+	tableSetHeader.TableSetName = tableSet.tableSetName
+	tableSetHeader.FileName = tableSet.fileName
 	var encodedHeader bytes.Buffer
 	var enc *gob.Encoder = gob.NewEncoder(&encodedHeader)
-	err = enc.Encode(goTableSetHeader)
+	err = enc.Encode(tableSetHeader)
 	if err != nil {
 		return emptyBuffer, err
 	}
@@ -3604,12 +3604,12 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 //	}
 //
 //	// Add header information to the tail end of the buffer array.
-//	var goTableSetHeader TableSetExported
-//	goTableSetHeader.TableSetName = tableSet.goTableSetName
-//	goTableSetHeader.FileName = tableSet.fileName
+//	var tableSetHeader TableSetExported
+//	tableSetHeader.TableSetName = tableSet.tableSetName
+//	tableSetHeader.FileName = tableSet.fileName
 //	var encodedHeader bytes.Buffer
 //	var enc *gob.Encoder = gob.NewEncoder(&encodedHeader)
-//	err = enc.Encode(goTableSetHeader)
+//	err = enc.Encode(tableSetHeader)
 //	if err != nil {
 //		return emptyBuffer, err
 //	}
@@ -3648,13 +3648,13 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	var headerIndex int = len(buffer) - 1
 	var encodedHeader bytes.Buffer = buffer[headerIndex]
 	var dec *gob.Decoder = gob.NewDecoder(&encodedHeader)
-	var goTableSetHeader TableSetExported
-	err = dec.Decode(&goTableSetHeader)
+	var tableSetHeader TableSetExported
+	err = dec.Decode(&tableSetHeader)
 	if err != nil {
 		return nil, err
 	}
-	tableSet.goTableSetName = goTableSetHeader.TableSetName
-	tableSet.fileName = goTableSetHeader.FileName
+	tableSet.tableSetName = tableSetHeader.TableSetName
+	tableSet.fileName = tableSetHeader.FileName
 
 	return tableSet, nil
 }
@@ -3685,13 +3685,13 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 ////	var encodedHeader bytes.Buffer = buffer[headerIndex]
 //	var encodedHeader []byte = buffer[headerIndex]
 //	var dec *gob.Decoder = gob.NewDecoder(&encodedHeader)
-//	var goTableSetHeader TableSetExported
-//	err = dec.Decode(&goTableSetHeader)
+//	var tableSetHeader TableSetExported
+//	err = dec.Decode(&tableSetHeader)
 //	if err != nil {
 //		return nil, err
 //	}
-//	tableSet.goTableSetName = goTableSetHeader.TableSetName
-//	tableSet.fileName = goTableSetHeader.FileName
+//	tableSet.tableSetName = tableSetHeader.TableSetName
+//	tableSet.fileName = tableSetHeader.FileName
 //
 //	return tableSet, nil
 //}
