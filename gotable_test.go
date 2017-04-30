@@ -35,7 +35,7 @@ SOFTWARE.
 //func TestRenameTable2(t *testing.T) {
 //	var err error
 //	var testsTableSet *TableSet
-//	var tests *GoTable
+//	var tests *Table
 //	var setupName string = "Fred"
 //
 //	testsTableSet, err = NewTableSetFromString(
@@ -55,7 +55,7 @@ SOFTWARE.
 //	}
 //	fmt.Printf("tests = \n%v", tests)
 //
-//	var table *GoTable
+//	var table *Table
 //
 //	for row := 0; row < tests.RowCount(); row++ {
 //		// Get test parameters for this row.
@@ -72,7 +72,7 @@ SOFTWARE.
 //			t.Error(err)
 //		}
 //
-//		table, err = NewGoTable(setupName)
+//		table, err = NewTable(setupName)
 //		if err != nil {
 //			t.Error(err)
 //		}
@@ -92,7 +92,7 @@ SOFTWARE.
 
 func TestRenameTable(t *testing.T) {
 	var err error
-	var table *GoTable
+	var table *Table
 	var setupName string = "Fred"
 
 	var tests3 = []struct {
@@ -107,7 +107,7 @@ func TestRenameTable(t *testing.T) {
 
 	for _, test := range tests3 {
 
-		table, err = NewGoTable(setupName)
+		table, err = NewTable(setupName)
 		if err != nil {
 			t.Error(err)
 		}
@@ -446,11 +446,11 @@ func TestSetAndGetFunctions(t *testing.T) {
 	var sVal    string
 
 	var err error
-	var table *GoTable
+	var table *Table
 	const rowIndex = 0
 	var colIndex = 0
 
-	table, err = NewGoTable("SetAndGet")
+	table, err = NewTable("SetAndGet")
 	if err != nil {
 		t.Error(err)
 	}
@@ -1528,7 +1528,7 @@ func TestDeleteRow(t *testing.T) {
 	8
 	9
 	`
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1577,7 +1577,7 @@ func TestDeleteRows(t *testing.T) {
 	8
 	9
 	`
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1633,7 +1633,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 
 	// Test delete 2 items: 4 to 5
-	table, err = NewGoTableFromString(tableString)
+	table, err = NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1666,7 +1666,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 
 	// Test delete 6 items: 4 to 9
-	table, err = NewGoTableFromString(tableString)
+	table, err = NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1699,7 +1699,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 
 	// Test delete 3 items: 0 to 9
-	table, err = NewGoTableFromString(tableString)
+	table, err = NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1732,7 +1732,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 }
 
-func ExampleNewGoTableFromString() {
+func ExampleNewTableFromString() {
 	tableString := `
 	[MyTable]
 	MyBool bool = true
@@ -1740,7 +1740,7 @@ func ExampleNewGoTableFromString() {
 	MyInt int = 42
 	`
 
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
@@ -1766,7 +1766,7 @@ func ExampleNewGoTableFromString() {
 	// true   "The answer to life, the universe and everything"    42
 }
 
-func ExampleNewGoTableFromFile() {
+func ExampleNewTableFromFile() {
 	tableString := `
 	[MyTable]
 	MyBool bool = true
@@ -1774,19 +1774,19 @@ func ExampleNewGoTableFromFile() {
 	MyInt int = 42
 	`
 
-	table1, err := NewGoTableFromStringByTableName(tableString, "MyTable")
+	table1, err := NewTableFromStringByTableName(tableString, "MyTable")
 	if err != nil {
 		panic(err)
 	}
 
 	// For testing, we need to write this out to a file so we can read it back.
-	fileName := "ExampleNewGoTableFromFile.txt"
+	fileName := "ExampleNewTableFromFile.txt"
 	err = ioutil.WriteFile(fileName, []byte(table1.String()), 0644)
 	if err != nil {
 		panic(err)
 	}
 
-	table2, err := NewGoTableFromFile(fileName)
+	table2, err := NewTableFromFile(fileName)
 	if err != nil {
 		panic(err)
 	}
@@ -1812,7 +1812,7 @@ func ExampleNewGoTableFromFile() {
 	// true   "The answer to life, the universe and everything"    42
 }
 
-func ExampleNewGoTableFromFileByTableName() {
+func ExampleNewTableFromFileByTableName() {
 	tableString := `
 	[MyTable]
 	MyBool bool = true
@@ -1825,13 +1825,13 @@ func ExampleNewGoTableFromFileByTableName() {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	fileName := "ExampleNewGoTableFromFileByTableName.txt"
+	fileName := "ExampleNewTableFromFileByTableName.txt"
 	err := ioutil.WriteFile(fileName, []byte(tableString), 0644)
 	if err != nil {
 		panic(err)
 	}
 
-	table, err := NewGoTableFromFileByTableName(fileName, "MyTable")
+	table, err := NewTableFromFileByTableName(fileName, "MyTable")
 	if err != nil {
 		panic(err)
 	}
@@ -1845,7 +1845,7 @@ func ExampleNewGoTableFromFileByTableName() {
 	// MyInt int = 42
 }
 
-func ExampleGoTable_DeleteRows() {
+func ExampleTable_DeleteRows() {
 	tableString := `
 	[items]
 	item
@@ -1862,7 +1862,7 @@ func ExampleGoTable_DeleteRows() {
 	9
 	`
 
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
@@ -1903,7 +1903,7 @@ func ExampleGoTable_DeleteRows() {
 	//    9
 }
 
-func ExampleGoTable_JoinColVals() {
+func ExampleTable_JoinColVals() {
 	tableString := `
 	[commands]
 	command
@@ -1912,7 +1912,7 @@ func ExampleGoTable_JoinColVals() {
 	"wc -l"
 	`
 
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
@@ -1936,7 +1936,7 @@ func ExampleGoTable_JoinColVals() {
 	// echo myfile | wc -l
 }
 
-func ExampleGoTable_JoinColValsByColIndex() {
+func ExampleTable_JoinColValsByColIndex() {
 	tableString := `
 	[commands]
 	command
@@ -1945,7 +1945,7 @@ func ExampleGoTable_JoinColValsByColIndex() {
 	"wc -l"
 	`
 
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
@@ -1979,7 +1979,7 @@ func TestGetValAsString(t *testing.T) {
 	f float64 = 55.5
 	`
 
-	table, err := NewGoTableFromString(tableString)
+	table, err := NewTableFromString(tableString)
 	if err != nil {
 		t.Error(err)
 	}

@@ -102,7 +102,7 @@ func NewTableSetFromHtmlUrl(url string) (*TableSet, error) {
 func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, error) {
 	var err error
 	var tableSet *TableSet
-	var table *GoTable
+	var table *Table
 	var z *html.Tokenizer
 	var tableIndex int = -1
 	var rowIndex int = -1
@@ -405,14 +405,14 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 	}
 }
 
-func startTheTable(tableIndex int, tableSet *TableSet) (int, *GoTable, *TableSet, int, error) {
+func startTheTable(tableIndex int, tableSet *TableSet) (int, *Table, *TableSet, int, error) {
 	//	where("startTheTable()")
 	var err error
 
 	tableIndex++
 	rowIndex := -1
 	//	where(fmt.Sprintf("tableIndex++ = %d", tableIndex))
-	table, err := NewGoTable(fmt.Sprintf("table_%d", tableIndex))
+	table, err := NewTable(fmt.Sprintf("table_%d", tableIndex))
 	if err != nil {
 		return tableIndex, table, tableSet, rowIndex, err
 	}
@@ -424,7 +424,7 @@ func startTheTable(tableIndex int, tableSet *TableSet) (int, *GoTable, *TableSet
 	return tableIndex, table, tableSet, rowIndex, nil
 }
 
-func endTheTable(tableSet *TableSet, table *GoTable) (string, int, bool, bool, error) {
+func endTheTable(tableSet *TableSet, table *Table) (string, int, bool, bool, error) {
 	//	where("endTheTable()")
 	prevTableTag := endTag
 	rowIndex := -1 // For good measure. In case </tr> not encountered.

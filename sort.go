@@ -1,5 +1,5 @@
 /*
-Functions and methods for sorting GoTable tables.
+Functions and methods for sorting Table tables.
 */
 package gotable
 
@@ -36,7 +36,7 @@ func (tableRows goTableRows) Len() int {
 	return len(tableRows)
 }
 
-// func (table *GoTable) Swap(i, j int) {
+// func (table *Table) Swap(i, j int) {
 func (tableRows goTableRows) Swap(i, j int) {
 	tableRows[i], tableRows[j] = tableRows[j], tableRows[i]
 }
@@ -231,9 +231,9 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 var compareCount int
 
 type tableSortable struct {
-	table *GoTable
+	table *Table
 	rows  goTableRows
-	less  func(i, j GoTableRow) bool
+	less  func(i, j TableRow) bool
 }
 
 func (table tableSortable) Len() int { return len(table.rows) }
@@ -246,13 +246,13 @@ func (table tableSortable) Less(i, j int) bool {
 	return table.less(table.rows[i], table.rows[j])
 }
 
-func (table *GoTable) Sort() {
+func (table *Table) Sort() {
 	table.SortByKeys(table.sortKeys)
 }
 
-func (table *GoTable) SortByKeys(sortKeys SortKeys) {
+func (table *Table) SortByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
-	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow GoTableRow) bool {
+	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow TableRow) bool {
 		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))

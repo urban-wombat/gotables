@@ -1,4 +1,4 @@
-// The GoTable parser reads text and parses it into a set of one or more tables in a TableSet.
+// The Table parser reads text and parses it into a set of one or more tables in a TableSet.
 package gotable
 
 /*
@@ -179,7 +179,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowMapOfStruct GoTableRow // Needs to persist over multiple lines.
+	var rowMapOfStruct TableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
 	goTables, err := NewTableSet(unnamed)
@@ -187,7 +187,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
 
-	var goTable *GoTable
+	var goTable *Table
 
 	var line string
 	var readError error
@@ -225,7 +225,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					//						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					return nil, err
 				}
-				goTable, err = NewGoTable(tableName)
+				goTable, err = NewTable(tableName)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
@@ -359,7 +359,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		case _COL_ROWS:
 
 			// Found data.
-			var rowMap GoTableRow
+			var rowMap TableRow
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil {
 				//					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
@@ -473,7 +473,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 }
 
 /*
-Returns true for those Go types that GoTable supports.
+Returns true for those Go types that Table supports.
 
 Go types NOT (yet) supported: complex64 complex128 byte rune
 */
@@ -536,10 +536,10 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowData(line string, colNames, colTypes []string) (GoTableRow, error) {
+func (p *parser) getRowData(line string, colNames, colTypes []string) (TableRow, error) {
 
 	var err error
-	rowMap := make(GoTableRow)
+	rowMap := make(TableRow)
 
 	remaining := line // Remainder of line left to parse.
 	var rangeFound []int
