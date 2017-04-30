@@ -386,7 +386,7 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 	var err error
 	var fileBytes []byte
 
-	p.SetFileName(fileName)	// For file and line diagnostics.
+	p.SetFileName(fileName) // For file and line diagnostics.
 
 	fileBytes, err = ioutil.ReadFile(fileName)
 	if err != nil {
@@ -442,10 +442,10 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 				if contains {
 					return nil, fmt.Errorf("%s %s Did you mean: %s %s =", p.gotFilePos(), err, colNames[0], colNames[1])
 				} else {
-					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)	// Default error.
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) // Default error.
 				}
 			} else {
-				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)	// Default error.
+				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) // Default error.
 			}
 		}
 	}
@@ -806,7 +806,7 @@ func rangeForIntegerType(min int64, max uint64) string {
 
 // parser definition: fields and methods.
 type parser struct {
-	fileName string	// Needed for printing file and line diagnostics.
+	fileName string // Needed for printing file and line diagnostics.
 }
 
 // Needed for printing file and line diagnostics.

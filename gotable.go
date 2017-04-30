@@ -79,21 +79,20 @@ TableSet
 // ##########
 
 /*
-TableSet contains a list of pointers to tables: []*Table
-The table sequence is maintained.
+TableSet is an ordered set of *Table pointers.
 
 TableSet has a small number of roles. Most work is done with Table
 */
 type TableSet struct {
 	tableSetName string
-	fileName       string
-	tables         []*Table
+	fileName     string
+	tables       []*Table
 }
 
 // Selected header information for exporting.
 type TableSetExported struct {
 	TableSetName string
-	FileName       string
+	FileName     string
 }
 
 // Factory function to return an initialised *TableSet pointer.
@@ -110,7 +109,7 @@ func NewTableSet(tableSetName string) (*TableSet, error) {
 func NewTableSetFromFile(fileName string) (*TableSet, error) {
 	var p parser
 	//	fmt.Printf("ReadFile(%q)\n", fileName)
-	p.SetFileName(fileName)	// Needed for printing file and line diagnostics.
+	p.SetFileName(fileName) // Needed for printing file and line diagnostics.
 
 	tables, err := p.parseFile(fileName)
 	if err != nil {
@@ -1043,19 +1042,19 @@ func (table *Table) DeleteRow(rowIndex int) error {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-/*
-		err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist",
-			table.tableName, table.RowCount(), rowIndex))
-		return err
-*/
+		/*
+			err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist",
+				table.tableName, table.RowCount(), rowIndex))
+			return err
+		*/
 		return fmt.Errorf("in table [%s] with %d rows, row index %d does not exist",
 			table.tableName, table.RowCount(), rowIndex)
 	}
 
-/*
-	copy(table.rows[rowIndex:], table.rows[rowIndex+1:])
-	table.rows = table.rows[:len(table.rows)-1]
-*/
+	/*
+		copy(table.rows[rowIndex:], table.rows[rowIndex+1:])
+		table.rows = table.rows[:len(table.rows)-1]
+	*/
 	// From Ivo Balbaert p182 for deleting a single element.
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
 
@@ -1331,13 +1330,13 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 		return buf.String()
 	}
 
-	var rightmostCol int = len(matrix)-1
+	var rightmostCol int = len(matrix) - 1
 
 	//	where(fmt.Sprintf("matrix = %v", matrix))
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = "" // No separator before first column.
 		for col := 0; col < len(matrix); col++ {
-			if alignRight[col] {	// Right-aligned col.
+			if alignRight[col] { // Right-aligned col.
 				// TODO: Move this functionality to where printMatrix is called.
 				var toWrite string
 				if row <= 1 { // It's a colName or typeName
@@ -1367,11 +1366,11 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
-			} else {	// Left-aligned col.
+			} else { // Left-aligned col.
 				if col == rightmostCol {
 					// Don't pad (unnecessarily) to the right of rightmost col if it is left-aligned.
 					// (Right-aligned (numeric) cols don't have padding to their right.)
-					s = fmt.Sprintf("%s%s", sep, matrix[col][row])	// With no padding, doesn't need align left with -
+					s = fmt.Sprintf("%s%s", sep, matrix[col][row]) // With no padding, doesn't need align left with -
 				} else {
 					s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
 				}
@@ -3902,6 +3901,6 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 	if err != nil {
 		return "", err
 	}
-	
+
 	return table.JoinColVals(colName, separator)
 }
