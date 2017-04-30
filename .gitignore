@@ -222,3 +222,5 @@ junk
 ExampleNewGoTableFromFile.txt
 ExampleNewGoTableFromFileByTableName.txt
 *.txt
+*.xml
+.idea/gotable.iml
