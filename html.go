@@ -50,8 +50,8 @@ func main() {
 	//	url := "http://www.bom.gov.au/products/IDV60901/IDV60901.94870.shtml"
 	//	url := "http://www.marketindex.com.au/asx200"
 
-	var tableSet *GoTableSet
-	tableSet, err = NewGoTableSetFromHtmlUrl(url)
+	var tableSet *TableSet
+	tableSet, err = NewTableSetFromHtmlUrl(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,8 +63,8 @@ func main() {
 const startTag = "START_TAG"
 const endTag = "END_TAG"
 
-func NewGoTableSetFromHtmlString(sourceName string, htmlString string) (*GoTableSet, error) {
-	//	where("called NewGoTableSetFromHtmlString()")
+func NewTableSetFromHtmlString(sourceName string, htmlString string) (*TableSet, error) {
+	//	where("called NewTableSetFromHtmlString()")
 	/*
 		htmlString = `<table>
 		<tr> <td>r0 c0</td> <td>r0 c1</td> <td>r0 c2</td> </tr>
@@ -76,17 +76,17 @@ func NewGoTableSetFromHtmlString(sourceName string, htmlString string) (*GoTable
 
 	var stringReader *strings.Reader = strings.NewReader(htmlString)
 
-	return NewGoTableSetFromHtmlReader(sourceName, stringReader)
+	return NewTableSetFromHtmlReader(sourceName, stringReader)
 }
 
-func NewGoTableSetFromHtmlUrl(url string) (*GoTableSet, error) {
+func NewTableSetFromHtmlUrl(url string) (*TableSet, error) {
 	var err error
-	var tableSet *GoTableSet
+	var tableSet *TableSet
 
 	response, err := http.Get(url)
 	if err != nil {
 		var errString string = err.Error()
-		var errPrepended error = errors.New("In NewGoTableSetFromHtml(url) http.Get(url) FAILED: " + errString)
+		var errPrepended error = errors.New("In NewTableSetFromHtml(url) http.Get(url) FAILED: " + errString)
 		return nil, errPrepended
 	}
 	defer response.Body.Close()
@@ -96,12 +96,12 @@ func NewGoTableSetFromHtmlUrl(url string) (*GoTableSet, error) {
 		return tableSet, fmt.Errorf("http get error status: %s : %q", response.Status, url)
 	}
 
-	return NewGoTableSetFromHtmlReader(url, response.Body)
+	return NewTableSetFromHtmlReader(url, response.Body)
 }
 
-func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableSet, error) {
+func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, error) {
 	var err error
-	var tableSet *GoTableSet
+	var tableSet *TableSet
 	var table *GoTable
 	var z *html.Tokenizer
 	var tableIndex int = -1
@@ -126,7 +126,7 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 	var prevTrTag string = endTag    // To avoid having to test for "".
 	var prevTdTag string = endTag    // To avoid having to test for "".
 
-	tableSet, err = NewGoTableSet("")
+	tableSet, err = NewTableSet("")
 	if err != nil {
 		return nil, err
 	}
@@ -405,7 +405,7 @@ func NewGoTableSetFromHtmlReader(sourceName string, reader io.Reader) (*GoTableS
 	}
 }
 
-func startTheTable(tableIndex int, tableSet *GoTableSet) (int, *GoTable, *GoTableSet, int, error) {
+func startTheTable(tableIndex int, tableSet *TableSet) (int, *GoTable, *TableSet, int, error) {
 	//	where("startTheTable()")
 	var err error
 
@@ -424,7 +424,7 @@ func startTheTable(tableIndex int, tableSet *GoTableSet) (int, *GoTable, *GoTabl
 	return tableIndex, table, tableSet, rowIndex, nil
 }
 
-func endTheTable(tableSet *GoTableSet, table *GoTable) (string, int, bool, bool, error) {
+func endTheTable(tableSet *TableSet, table *GoTable) (string, int, bool, bool, error) {
 	//	where("endTheTable()")
 	prevTableTag := endTag
 	rowIndex := -1 // For good measure. In case </tr> not encountered.

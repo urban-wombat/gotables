@@ -140,8 +140,8 @@ var globalNumericColTypesMap = map[string]int{
 	"uint8":   0,
 }
 
-func (p *parser) parseString0(s string) (*GoTableSet, error) {
-	goTables, err := NewGoTableSet("")
+func (p *parser) parseString0(s string) (*TableSet, error) {
+	goTables, err := NewTableSet("")
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +152,7 @@ func (p *parser) parseString0(s string) (*GoTableSet, error) {
 	return goTables, err
 }
 
-func (p *parser) parseString(s string) (*GoTableSet, error) {
+func (p *parser) parseString(s string) (*TableSet, error) {
 	type _TableSection string
 	const (
 		_TABLE_NAME _TableSection = "_TABLE_NAME"
@@ -182,7 +182,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 	var rowMapOfStruct GoTableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
-	goTables, err := NewGoTableSet(unnamed)
+	goTables, err := NewTableSet(unnamed)
 	if err != nil {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
@@ -382,7 +382,7 @@ func (p *parser) parseString(s string) (*GoTableSet, error) {
 	}
 }
 
-func (p *parser) parseFile(fileName string) (*GoTableSet, error) {
+func (p *parser) parseFile(fileName string) (*TableSet, error) {
 	var err error
 	var fileBytes []byte
 
@@ -821,7 +821,7 @@ func (p parser) String() string {
 	return buffer.String()
 }
 
-func (p *parser) Parse() (*GoTableSet, error) {
+func (p *parser) Parse() (*TableSet, error) {
 	return p.parseFile(p.fileName)
 }
 

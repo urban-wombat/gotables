@@ -34,11 +34,11 @@ SOFTWARE.
 /*
 //func TestRenameTable2(t *testing.T) {
 //	var err error
-//	var testsTableSet *GoTableSet
+//	var testsTableSet *TableSet
 //	var tests *GoTable
 //	var setupName string = "Fred"
 //
-//	testsTableSet, err = NewGoTableSetFromString(
+//	testsTableSet, err = NewTableSetFromString(
 //		`[tests]
 //		input		succeeds	output
 //		string		bool		string
@@ -124,9 +124,9 @@ func TestRenameTable(t *testing.T) {
 	}
 }
 
-func TestGoTableSetRenameTable(t *testing.T) {
+func TestTableSetRenameTable(t *testing.T) {
 	/*
-		goTableSet, err := NewGoTableSetFromString(`[Wilma]`)
+		goTableSet, err := NewTableSetFromString(`[Wilma]`)
 		if err != nil {
 			panic(err)
 		}
@@ -146,7 +146,7 @@ func TestGoTableSetRenameTable(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		goTableSet, err := NewGoTableSetFromString(`[Wilma]`)
+		goTableSet, err := NewTableSetFromString(`[Wilma]`)
 		if err != nil {
 			t.Error(err)
 		}
@@ -158,7 +158,7 @@ func TestGoTableSetRenameTable(t *testing.T) {
 }
 
 func TestReadString1(t *testing.T) {
-	goTableSet, err := NewGoTableSetFromString(
+	goTableSet, err := NewTableSetFromString(
 		`[EmptyTable1]
 
 		[EmptyTable2]
@@ -219,7 +219,7 @@ func TestReadString1(t *testing.T) {
 }
 
 func TestReadString2(t *testing.T) {
-	_, err := NewGoTableSetFromString(
+	_, err := NewTableSetFromString(
 		`[EmptyTable1]
 
 		# Should be a syntax error. Table should have both names AND types.
@@ -234,7 +234,7 @@ func TestReadString2(t *testing.T) {
 }
 
 func TestReadString3(t *testing.T) {
-	_, err := NewGoTableSetFromString(
+	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
 		int	int	int
@@ -248,7 +248,7 @@ func TestReadString3(t *testing.T) {
 }
 
 func TestReadString4(t *testing.T) {
-	_, err := NewGoTableSetFromString(
+	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
 		int	int	int
@@ -262,7 +262,7 @@ func TestReadString4(t *testing.T) {
 }
 
 func TestReadString5(t *testing.T) {
-	goTableSet, err := NewGoTableSetFromString(
+	goTableSet, err := NewTableSetFromString(
 		`[TableEmpty]
 		
 		`)
@@ -303,7 +303,7 @@ func TestReadString5(t *testing.T) {
 }
 
 func TestReadString6(t *testing.T) {
-	goTableSet, err := NewGoTableSetFromString(
+	goTableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
 		j int = 44
@@ -348,7 +348,7 @@ func TestReadString6(t *testing.T) {
 }
 
 func TestReadString7(t *testing.T) {
-	_, err := NewGoTableSetFromString(
+	_, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
 		j int = 44
@@ -364,7 +364,7 @@ func TestReadString7(t *testing.T) {
 }
 
 func TestReadString8(t *testing.T) {
-	_, err := NewGoTableSetFromString(
+	_, err := NewTableSetFromString(
 		`[TableShaped]
 		X Y Z
 		# Expecting col types, not structs.
@@ -379,14 +379,14 @@ func TestReadString8(t *testing.T) {
 	}
 }
 
-func ExampleNewGoTableSet() {
+func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
-	tableSet, err := NewGoTableSet(tableSetName)
+	tableSet, err := NewTableSet(tableSetName)
 	if err != nil {
 		panic(err)
 	}
 	tableCount := tableSet.TableCount()
-	name := tableSet.GoTableSetName()
+	name := tableSet.TableSetName()
 	fmt.Println(tableCount)
 	fmt.Println(name)
 	// Output:
@@ -1162,13 +1162,13 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		_, err = NewGoTableSetFromString(test.input)
+		_, err = NewTableSetFromString(test.input)
 		if err == nil != test.valid {
 			switch test.valid {
 			case true:
 				t.Errorf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewGoTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
+				t.Errorf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -1233,13 +1233,13 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		_, err = NewGoTableSetFromString(test.input)
+		_, err = NewTableSetFromString(test.input)
 		if err == nil != test.valid {
 			switch test.valid {
 			case true:
 				t.Errorf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewGoTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
+				t.Errorf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -1268,15 +1268,15 @@ var goTableSetString string = `
     ui uint16 = 65535
     `
 
-func BenchmarkNewGoTableSetFromString(b *testing.B) {
+func BenchmarkNewTableSetFromString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		NewGoTableSetFromString(goTableSetString)
+		NewTableSetFromString(goTableSetString)
 	}
 }
 
-func BenchmarkGoTableSetToString(b *testing.B) {
+func BenchmarkTableSetToString(b *testing.B) {
 	// Set up for benchmark.
-	goTableSet, err := NewGoTableSetFromString(goTableSetString)
+	goTableSet, err := NewTableSetFromString(goTableSetString)
 	if err != nil {
 		b.Error(err)
 	}
@@ -1289,7 +1289,7 @@ func BenchmarkGoTableSetToString(b *testing.B) {
 
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
-	goTableSet, err := NewGoTableSetFromString(goTableSetString)
+	goTableSet, err := NewTableSetFromString(goTableSetString)
 	if err != nil {
 		b.Error(err)
 	}
@@ -1304,7 +1304,7 @@ func BenchmarkGobEncode(b *testing.B) {
 
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
-	goTableSet, err := NewGoTableSetFromString(goTableSetString)
+	goTableSet, err := NewTableSetFromString(goTableSetString)
 	if err != nil {
 		b.Error(err)
 	}
@@ -1342,7 +1342,7 @@ func TestIsNumericColType(t *testing.T) {
 	T_uint8 uint8 =
     `
 
-	tableSet, err := NewGoTableSetFromString(tableString)
+	tableSet, err := NewTableSetFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1398,7 +1398,7 @@ func TestAppendRow(t *testing.T) {
 	T_uint8 uint8 =
     `
 
-	tableSet, err := NewGoTableSetFromString(tableString)
+	tableSet, err := NewTableSetFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1453,7 +1453,7 @@ func TestColCount(t *testing.T) {
 	T_uint8 uint8 =
     `
 
-	tableSet, err := NewGoTableSetFromString(tableString)
+	tableSet, err := NewTableSetFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2024,7 +2024,7 @@ func TestGetValAsString(t *testing.T) {
 	}
 }
 
-func TestGoTableSet_FileName(t *testing.T) {
+func TestTableSet_FileName(t *testing.T) {
 	tableString :=`
 		[table]
 		s string = "Fred"
@@ -2040,7 +2040,7 @@ func TestGoTableSet_FileName(t *testing.T) {
 		panic(err)
 	}
 
-	tables, err := NewGoTableSetFromFile(actualFileName)
+	tables, err := NewTableSetFromFile(actualFileName)
 	if err != nil {
 		panic(err)
 	}
