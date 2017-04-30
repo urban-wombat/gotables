@@ -1,5 +1,5 @@
 /*
-Functions and methods for processing GoTable tables.
+Functions and methods for processing Table tables.
 */
 package gotable
 
@@ -46,7 +46,7 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-// type compareFunc func(table GoTable, colName string, i, j int) int
+// type compareFunc func(table Table, colName string, i, j int) int
 type compareFunc func(i, j interface{}) int
 
 var compareFuncs = map[string]compareFunc{
@@ -79,15 +79,15 @@ TableSet
 // ##########
 
 /*
-TableSet contains a list of pointers to tables: []*GoTable
+TableSet contains a list of pointers to tables: []*Table
 The table sequence is maintained.
 
-TableSet has a small number of roles. Most work is done with GoTable
+TableSet has a small number of roles. Most work is done with Table
 */
 type TableSet struct {
 	goTableSetName string
 	fileName       string
-	tables         []*GoTable
+	tables         []*Table
 }
 
 // Selected header information for exporting.
@@ -100,7 +100,7 @@ type TableSetExported struct {
 func NewTableSet(goTableSetName string) (*TableSet, error) {
 	var newTables *TableSet = new(TableSet)
 	newTables.goTableSetName = goTableSetName
-	newTables.tables = make([]*GoTable, 0) // An empty slice of tables.
+	newTables.tables = make([]*Table, 0) // An empty slice of tables.
 	return newTables, nil
 }
 
@@ -145,10 +145,10 @@ func (goTableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
 	return err
 }
 
-// Write a GoTable to a text file.
-func (goTable *GoTable) WriteFile(fileName string, mode os.FileMode) error {
+// Write a Table to a text file.
+func (goTable *Table) WriteFile(fileName string, mode os.FileMode) error {
 	if goTable == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var goTable_String string
@@ -185,7 +185,7 @@ func ReadString(s string) (*TableSet, error) {
 	return NewTableSetFromString(s)
 }
 
-func NewGoTableFromString(s string) (*GoTable, error) {
+func NewTableFromString(s string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
 		return nil, err
@@ -193,7 +193,7 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewGoTableFromString() expecting string to contain 1 table but found %d table%s", tableCount, plural(tableCount))
+		return nil, fmt.Errorf("NewTableFromString() expecting string to contain 1 table but found %d table%s", tableCount, plural(tableCount))
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
@@ -204,7 +204,7 @@ func NewGoTableFromString(s string) (*GoTable, error) {
 	return table, nil
 }
 
-func NewGoTableFromStringByTableName(s string, tableName string) (*GoTable, error) {
+func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
 		return nil, err
@@ -218,7 +218,7 @@ func NewGoTableFromStringByTableName(s string, tableName string) (*GoTable, erro
 	return table, nil
 }
 
-func NewGoTableFromFile(fileName string) (*GoTable, error) {
+func NewTableFromFile(fileName string) (*Table, error) {
 	tableSet, err := NewTableSetFromFile(fileName)
 	if err != nil {
 		return nil, err
@@ -226,7 +226,7 @@ func NewGoTableFromFile(fileName string) (*GoTable, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewGoTableFromString() expecting file to contain 1 table but found %d table%s: %s",
+		return nil, fmt.Errorf("NewTableFromString() expecting file to contain 1 table but found %d table%s: %s",
 			tableCount, plural(tableCount), fileName)
 	}
 
@@ -238,7 +238,7 @@ func NewGoTableFromFile(fileName string) (*GoTable, error) {
 	return table, nil
 }
 
-func NewGoTableFromFileByTableName(fileName string, tableName string) (*GoTable, error) {
+func NewTableFromFileByTableName(fileName string, tableName string) (*Table, error) {
 	tableSet, err := NewTableSetFromFile(fileName)
 	if err != nil {
 		return nil, err
@@ -264,7 +264,7 @@ Returns a set of parsable elastic tabbed tables as a string.
 //		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
 //	}
 //
-//	var table *GoTable
+//	var table *Table
 //	for i := 0; i < len(goTableSet.tables); i++ {
 //		table = goTableSet.tables[i]
 //		s += verticalSep
@@ -290,7 +290,7 @@ func (goTableSet *TableSet) String() string {
 		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
 	}
 
-	var table *GoTable
+	var table *Table
 	for i := 0; i < len(goTableSet.tables); i++ {
 		table = goTableSet.tables[i]
 		s += verticalSep
@@ -311,7 +311,7 @@ func (goTableSet *TableSet) _String(horizontalSeparator byte) string {
 	var buf bytes.Buffer
 	//	buf.WriteString("# From file: \"" + goTableSet.name + "\"\n\n")
 	var tableSep = ""
-	var table *GoTable
+	var table *Table
 	for i := 0; i < len(goTableSet.tables); i++ {
 		table = goTableSet.tables[i]
 		buf.WriteString(tableSep)
@@ -335,7 +335,7 @@ Returns a set of parsable right aligned tables as a string.
 //		s += fmt.Sprintf("# %s\n\n", goTableSet.TableSetName())
 //	}
 //
-//	var table *GoTable
+//	var table *Table
 //	for i := 0; i < len(goTableSet.tables); i++ {
 //		table = goTableSet.tables[i]
 //		s += verticalSep
@@ -366,30 +366,32 @@ func (goTableSet *TableSet) TableCount() int {
 }
 
 // Deprecated: Use AppendTable() instead.
-func (goTableSet *TableSet) AddTable(newTable *GoTable) error {
+func (goTableSet *TableSet) AddTable(newTable *Table) error {
 	if goTableSet == nil {
-		return fmt.Errorf("%s(*TableSet) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
 
+/*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
 // Deprecated: Use AppendTable() instead.
-func (goTableSet *TableSet) AddGoTable(newTable *GoTable) error {
+func (goTableSet *TableSet) AddTable(newTable *Table) error {
 	if goTableSet == nil {
-		return fmt.Errorf("%s(*TableSet) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
 	return goTableSet.AppendTable(newTable)
 }
+*/
 
 // Add a table to a table set.
 // This function may be deprecated later in favour of AddTable()
-func (goTableSet *TableSet) AppendTable(newTable *GoTable) error {
+func (goTableSet *TableSet) AppendTable(newTable *Table) error {
 	if goTableSet == nil {
-		return fmt.Errorf("%s(*TableSet) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
 	}
 
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
@@ -417,7 +419,7 @@ func (goTableSet *TableSet) HasTable(tableName string) (bool, error) {
 	return false, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
-func (goTableSet *TableSet) Table(tableName string) (*GoTable, error) {
+func (goTableSet *TableSet) Table(tableName string) (*Table, error) {
 	for _, table := range goTableSet.tables {
 		if table.TableName() == tableName {
 			return table, nil
@@ -426,7 +428,7 @@ func (goTableSet *TableSet) Table(tableName string) (*GoTable, error) {
 	return nil, errors.New(fmt.Sprintf("table [%s] does not exist", tableName))
 }
 
-func (goTableSet *TableSet) TableByTableIndex(tableIndex int) (*GoTable, error) {
+func (goTableSet *TableSet) TableByTableIndex(tableIndex int) (*Table, error) {
 	if tableIndex < 0 || tableIndex > goTableSet.TableCount()-1 {
 		err := errors.New(fmt.Sprintf("in *TableSet with %d tables, table index %d does not exist",
 			goTableSet.TableCount(), tableIndex))
@@ -436,21 +438,23 @@ func (goTableSet *TableSet) TableByTableIndex(tableIndex int) (*GoTable, error) 
 	return goTableSet.tables[tableIndex], nil
 }
 
+/*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
 // Deprecated: Use Table() instead.
-func (goTableSet *TableSet) GoTable(tableName string) (*GoTable, error) {
+func (goTableSet *TableSet) Table(tableName string) (*Table, error) {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use Table() instead.\n", funcName())
 	return goTableSet.Table(tableName)
 }
+*/
 
 /*
 #####################################################################################
-GoTable
+Table
 #####################################################################################
-2016.02.03  Malcolm Gorman  Add sort keys to GoTable.
+2016.02.03  Malcolm Gorman  Add sort keys to Table.
 #####################################################################################
 */
 
-type GoTable struct {
+type Table struct {
 	tableName      string
 	colNames       []string
 	colTypes       []string
@@ -459,7 +463,7 @@ type GoTable struct {
 	sortKeys       []SortKey
 	structShape    bool
 }
-type GoTableExported struct {
+type TableExported struct {
 	TableName      string
 	ColNames       []string
 	ColTypes       []string
@@ -504,13 +508,13 @@ func (keys SortKeys) String() string {
 	return s
 }
 
-func (thisTable *GoTable) GetSortKeysAsTable() (*GoTable, error) {
+func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	if thisTable == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
-	var keysTable *GoTable
+	var keysTable *Table
 	var err error
-	keysTable, err = NewGoTable("sortKeys")
+	keysTable, err = NewTable("sortKeys")
 	if err != nil {
 		return nil, err
 	}
@@ -554,9 +558,9 @@ Pass sort keys as separate arguments:
 Pass sort keys as a slice:
 	SetSortKeys([]string{"col1","col2","col3"}...)
 */
-func (table *GoTable) SetSortKeys(sortColNames ...string) error {
+func (table *Table) SetSortKeys(sortColNames ...string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	table.sortKeys = newSortKeys() // Replace any existing sort keys.
 	for _, colName := range sortColNames {
@@ -577,9 +581,9 @@ Example 1: SetSortKeysReverse("col1","col3")
 
 Example 2: SetSortKeysReverse([]string{"col1","col3"}...)
 */
-func (table *GoTable) SetSortKeysReverse(sortColNames ...string) error {
+func (table *Table) SetSortKeysReverse(sortColNames ...string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	for _, colName := range sortColNames {
@@ -593,9 +597,9 @@ func (table *GoTable) SetSortKeysReverse(sortColNames ...string) error {
 	return nil
 }
 
-func (table *GoTable) setSortKeyReverse(colName string) error {
+func (table *Table) setSortKeyReverse(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if len(table.sortKeys) == 0 {
 		err := errors.New(fmt.Sprintf("must call SetSortKeys() before calling SetSortKeysReverse()"))
@@ -618,9 +622,9 @@ func (table *GoTable) setSortKeyReverse(colName string) error {
 	return nil
 }
 
-func (table *GoTable) AppendSortKey(colName string) error {
+func (table *Table) AppendSortKey(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	//	where(fmt.Sprintf("AppendSortKey(%q)\n", colName))
 	colInfo, err := table.colInfo(colName)
@@ -650,54 +654,54 @@ func (table *GoTable) AppendSortKey(colName string) error {
 }
 
 // Deprecated: Use AppendSortKey() instead.
-func (table *GoTable) AddSortKey(colName string) error {
+func (table *Table) AddSortKey(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendSortKey() instead.\n", funcName())
 	return table.AppendSortKey(colName)
 }
 
-func (table *GoTable) SortKeys() (SortKeys, error) {
+func (table *Table) SortKeys() (SortKeys, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.sortKeys, nil
 }
 
-func (table *GoTable) ColNames() []string {
+func (table *Table) ColNames() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return nil
 	}
 	return table.colNames
 }
 
-func (table *GoTable) ColTypes() []string {
+func (table *Table) ColTypes() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return nil
 	}
 	return table.colTypes
 }
 
-type GoTableRow map[string]interface{}
-type goTableRows []GoTableRow
+type TableRow map[string]interface{}
+type goTableRows []TableRow
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
-// Factory function to generate a *GoTable pointer.
+// Factory function to generate a *Table pointer.
 /*
-	var myTable *gotable.GoTable
-	myTable, err = gotable.NewGoTable("My_Table")
+	var myTable *gotable.Table
+	myTable, err = gotable.NewTable("My_Table")
 	if err != nil {
 		panic(err)
 	}
 */
-func NewGoTable(tableName string) (*GoTable, error) {
+func NewTable(tableName string) (*Table, error) {
 	var err error
-	var newTable *GoTable = new(GoTable)
+	var newTable *Table = new(Table)
 	err = newTable.SetTableName(tableName)
 	if err != nil {
 		return nil, err
@@ -705,13 +709,13 @@ func NewGoTable(tableName string) (*GoTable, error) {
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
-	newTable.rows = make([]GoTableRow, 0)
+	newTable.rows = make([]TableRow, 0)
 	return newTable, nil
 }
 
-func newGoTableExported(tableName string) (*GoTableExported, error) {
+func newTableExported(tableName string) (*TableExported, error) {
 	var err error
-	var NewTableExported *GoTableExported = new(GoTableExported)
+	var NewTableExported *TableExported = new(TableExported)
 	err = NewTableExported.setTableNameExported(tableName)
 	if err != nil {
 		return nil, err
@@ -719,18 +723,18 @@ func newGoTableExported(tableName string) (*GoTableExported, error) {
 	NewTableExported.ColNames = make([]string, 0)
 	NewTableExported.ColTypes = make([]string, 0)
 	NewTableExported.ColNamesLookup = map[string]int{}
-	NewTableExported.Rows = make([]GoTableRow, 0)
+	NewTableExported.Rows = make([]TableRow, 0)
 	return NewTableExported, nil
 }
 
 /*
-	table, err := gotable.NewGoTableWithCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
+	table, err := gotable.NewTableWithCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
 */
-func NewGoTableWithCols(tableName string, colNames []string, colTypes []string) (*GoTable, error) {
-	var newTable *GoTable
+func NewTableWithCols(tableName string, colNames []string, colTypes []string) (*Table, error) {
+	var newTable *Table
 	var err error
 
-	newTable, err = NewGoTable(tableName)
+	newTable, err = NewTable(tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -758,18 +762,18 @@ Add (append) a new blank row to this table. This does NOT initialise the cell va
 
 Note: This is used by the parser. Not for use by end-users.
 */
-func (table *GoTable) appendRowOfNil() error {
+func (table *Table) appendRowOfNil() error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
-	newRow := make(GoTableRow)
+	newRow := make(TableRow)
 	table.rows = append(table.rows, newRow)
 	return nil
 }
 
-func (table *GoTable) AppendRows(howMany int) error {
+func (table *Table) AppendRows(howMany int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	if howMany <= 0 {
@@ -785,9 +789,9 @@ func (table *GoTable) AppendRows(howMany int) error {
 }
 
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
-func (table *GoTable) AppendRow() error {
+func (table *Table) AppendRow() error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	err := table.appendRowOfNil()
 	if err != nil {
@@ -802,9 +806,9 @@ func (table *GoTable) AppendRow() error {
 // Deprecated: Use AppendRow() instead.
 //
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
-func (table *GoTable) AddRow() error {
+func (table *Table) AddRow() error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRow() instead.\n", funcName())
@@ -812,9 +816,9 @@ func (table *GoTable) AddRow() error {
 }
 
 // Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
-func (table *GoTable) SetRowFloatCellsToNaN(rowIndex int) error {
+func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var colType string
@@ -837,9 +841,9 @@ func (table *GoTable) SetRowFloatCellsToNaN(rowIndex int) error {
 }
 
 // Set all cells in this row to their zero value, such as 0, "", or false.
-func (table *GoTable) SetRowCellsToZero(rowIndex int) error {
+func (table *Table) SetRowCellsToZero(rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 
@@ -854,9 +858,9 @@ func (table *GoTable) SetRowCellsToZero(rowIndex int) error {
 }
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
-func (table *GoTable) SetColCellsToZero(colName string) error {
+func (table *Table) SetColCellsToZero(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	colIndex, err := table.ColIndex(colName)
 	if err != nil {
@@ -866,9 +870,9 @@ func (table *GoTable) SetColCellsToZero(colName string) error {
 }
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
-func (table *GoTable) SetColCellsToZeroByColIndex(colIndex int) error {
+func (table *Table) SetColCellsToZeroByColIndex(colIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 
@@ -882,9 +886,9 @@ func (table *GoTable) SetColCellsToZeroByColIndex(colIndex int) error {
 	return nil
 }
 
-func (table *GoTable) SetCellToZero(colName string, rowIndex int) error {
+func (table *Table) SetCellToZero(colName string, rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var colIndex int
@@ -902,10 +906,10 @@ func (table *GoTable) SetCellToZero(colName string, rowIndex int) error {
 	return nil
 }
 
-func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error {
+func (table *Table) SetCellToZeroByColIndex(colIndex int, rowIndex int) error {
 	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var colType string
@@ -955,10 +959,10 @@ func (table *GoTable) SetCellToZeroByColIndex(colIndex int, rowIndex int) error 
 // Deprecated: Use AppendRowMap() instead.
 //
 // Add (append) a row of data (newRow) to this table.
-func (table *GoTable) AddTableRow(newRow GoTableRow) error {
+func (table *Table) AddTableRow(newRow TableRow) error {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRowMap() instead.\n", funcName())
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.AppendRowMap(newRow)
 }
@@ -966,7 +970,7 @@ func (table *GoTable) AddTableRow(newRow GoTableRow) error {
 /*
 This is for adding an entire new row of data to a table in bulk, so to speak.
 
-	var row gotable.GoTableRow = make(gotable.GoTableRow)
+	var row gotable.TableRow = make(gotable.TableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
 	err = goTable.AppendRowMap(row)
@@ -974,9 +978,9 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	    panic(err)
 	}
 */
-func (table *GoTable) AppendRowMap(newRow GoTableRow) error {
+func (table *Table) AppendRowMap(newRow TableRow) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	// Check types match what the table is expecting.
 	var err error
@@ -1025,18 +1029,18 @@ func (table *GoTable) AppendRowMap(newRow GoTableRow) error {
 }
 
 // Deprecated: Use AppendRowMap() instead.
-func (table *GoTable) AddRowMap(newRow GoTableRow) error {
+func (table *Table) AddRowMap(newRow TableRow) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRowMap() instead.\n", funcName())
 	return table.AppendRowMap(newRow)
 }
 
-func (table *GoTable) DeleteRow(rowIndex int) error {
+func (table *Table) DeleteRow(rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 /*
@@ -1059,9 +1063,9 @@ func (table *GoTable) DeleteRow(rowIndex int) error {
 }
 
 // Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
-func (table *GoTable) DeleteRows(firstRowIndex int, lastRowIndex int) error {
+func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if firstRowIndex < 0 || firstRowIndex > table.RowCount()-1 {
 		return fmt.Errorf("in table [%s] with %d rows, firstRowIndex %d does not exist",
@@ -1098,9 +1102,9 @@ func missingValueForType(typeName string) (interface{}, bool) {
 /*
 Returns a parsable elastic tabbed table as a string.
 */
-func (table *GoTable) StringTabWriter() (string, error) {
+func (table *Table) StringTabWriter() (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var buf bytes.Buffer
 	bufWriter := bufio.NewWriter(&buf) // Implements Writer interface. Instead of using os.Stdout.
@@ -1122,9 +1126,9 @@ func (table *GoTable) StringTabWriter() (string, error) {
 	return buf.String(), nil
 }
 
-func (table *GoTable) StringSpacePadded() (string, error) {
+func (table *Table) StringSpacePadded() (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table._String(' '), nil
 }
@@ -1132,9 +1136,9 @@ func (table *GoTable) StringSpacePadded() (string, error) {
 /*
 Return a parsable table as a string. Intended for internal library use.
 */
-func (table *GoTable) _String(horizontalSeparator byte) string {
+func (table *Table) _String(horizontalSeparator byte) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -1175,7 +1179,7 @@ func (table *GoTable) _String(horizontalSeparator byte) string {
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowMap GoTableRow
+		var rowMap TableRow
 		rowMap, err := table.RowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
@@ -1385,9 +1389,9 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 /*
 Return a parsable table as a string with numbers format aligned right.
 */
-func (table *GoTable) String() string {
+func (table *Table) String() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return ""
 	}
 
@@ -1454,7 +1458,7 @@ func (table *GoTable) String() string {
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowMap GoTableRow
+		var rowMap TableRow
 		rowMap, err := table.RowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
@@ -1617,9 +1621,9 @@ func (table *GoTable) String() string {
 	return s
 }
 
-func printStruct(table *GoTable) string {
+func printStruct(table *Table) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 	}
 
 	var asString string
@@ -1692,9 +1696,9 @@ Return a table as a comma separated variables for spreadsheets.
 Note: This does not (yet) implement handling of commas and quotation marks inside strings.
 See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
-func (table *GoTable) StringCSV() string {
+func (table *Table) StringCSV() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return ""
 	}
 	const comma = ","
@@ -1713,7 +1717,7 @@ func (table *GoTable) StringCSV() string {
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		var rowSep = "\n"
-		var rowMap GoTableRow
+		var rowMap TableRow
 		rowMap, _ = table.RowMap(rowIndex)
 		var rowColSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -1801,7 +1805,7 @@ func (table *GoTable) StringCSV() string {
 			}
 
 			if !exists {
-				log.Printf("func (table *GoTable) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
+				log.Printf("func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
 					table.TableName(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
 					rowMap[table.colNames[colIndex]])
 				return ""
@@ -1824,9 +1828,9 @@ func (table *GoTable) StringCSV() string {
 		panic(err)
 	}
 */
-func (table *GoTable) AppendCol(colName string, colType string) error {
+func (table *Table) AppendCol(colName string, colType string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if isValid, err := IsValidColName(colName); !isValid {
 		return err
@@ -1865,18 +1869,18 @@ func (table *GoTable) AppendCol(colName string, colType string) error {
 		panic(err)
 	}
 */
-func (table *GoTable) AddCol(colName string, colType string) error {
+func (table *Table) AddCol(colName string, colType string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendCol() instead.\n", funcName())
 	return table.AppendCol(colName, colType)
 }
 
-func (table *GoTable) DeleteColByColIndex(colIndex int) error {
+func (table *Table) DeleteColByColIndex(colIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		err := errors.New(fmt.Sprintf("in table [%s] with %d cols, col index %d does not exist",
@@ -1899,9 +1903,9 @@ func (table *GoTable) DeleteColByColIndex(colIndex int) error {
 	return nil
 }
 
-func (table *GoTable) DeleteCol(colName string) error {
+func (table *Table) DeleteCol(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	colIndex, err := table.ColIndex(colName)
@@ -1913,9 +1917,9 @@ func (table *GoTable) DeleteCol(colName string) error {
 
 // This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
-func (table *GoTable) SetVal(colName string, rowIndex int, val interface{}) error {
+func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell {
@@ -1940,9 +1944,9 @@ func (table *GoTable) SetVal(colName string, rowIndex int, val interface{}) erro
 
 // This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
-func (table *GoTable) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
+func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell {
@@ -1969,14 +1973,14 @@ func (table *GoTable) SetValByColIndex(colIndex int, rowIndex int, val interface
 }
 
 /*
-Initialise a freshly created *GoTable (see NewGoTable()) with a list of column names.
+Initialise a freshly created *Table (see NewTable()) with a list of column names.
 The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *GoTable) AppendColNames(colNames []string) error {
+func (table *Table) AppendColNames(colNames []string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var lenNames int = len(colNames)
 	var lenTypes int = len(table.colTypes)
@@ -2011,9 +2015,9 @@ func (table *GoTable) AppendColNames(colNames []string) error {
 }
 
 // Deprecated: Use AppendColNames() instead.
-func (table *GoTable) AddColNames(colNames []string) error {
+func (table *Table) AddColNames(colNames []string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColNames() instead.\n", funcName())
@@ -2021,14 +2025,14 @@ func (table *GoTable) AddColNames(colNames []string) error {
 }
 
 /*
-Initialise a freshly created *GoTable (see NewGoTable()) with a list of column types.
+Initialise a freshly created *Table (see NewTable()) with a list of column types.
 The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *GoTable) AppendColTypes(colTypes []string) error {
+func (table *Table) AppendColTypes(colTypes []string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var lenNames int = len(table.colNames)
 	var lenTypes int = len(colTypes)
@@ -2048,9 +2052,9 @@ func (table *GoTable) AppendColTypes(colTypes []string) error {
 }
 
 // Deprecated: Use AppendColTypes() instead.
-func (table *GoTable) AddColTypes(colTypes []string) error { // Deprecated: Use AppendColTypes() instead.
+func (table *Table) AddColTypes(colTypes []string) error { // Deprecated: Use AppendColTypes() instead.
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColTypes() instead.\n", funcName())
@@ -2063,9 +2067,9 @@ type colInfo struct {
 }
 
 // Checks whether col exists
-func (table *GoTable) HasCol(colName string) (bool, error) {
+func (table *Table) HasCol(colName string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	_, err := table.colInfo(colName)
 	var exists bool = err == nil
@@ -2073,9 +2077,9 @@ func (table *GoTable) HasCol(colName string) (bool, error) {
 }
 
 // Checks whether col exists
-func (table *GoTable) HasColByColIndex(colIndex int) (bool, error) {
+func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
@@ -2087,10 +2091,10 @@ func (table *GoTable) HasColByColIndex(colIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *GoTable) colInfo(colName string) (colInfo, error) {
+func (table *Table) colInfo(colName string) (colInfo, error) {
 	var cInfo colInfo
 	if table == nil {
-		return cInfo, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return cInfo, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var index int
 	var exists bool
@@ -2104,9 +2108,9 @@ func (table *GoTable) colInfo(colName string) (colInfo, error) {
 	return cInfo, nil
 }
 
-func (table *GoTable) ColType(colName string) (string, error) {
+func (table *Table) ColType(colName string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	index, exists := table.colNamesLookup[colName]
 	if !exists {
@@ -2117,9 +2121,9 @@ func (table *GoTable) ColType(colName string) (string, error) {
 	return colType, nil
 }
 
-func (table *GoTable) ColTypeByColIndex(colIndex int) (string, error) {
+func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > len(table.colTypes)-1 {
 		err := errors.New(fmt.Sprintf("table [%s] col index does not exist: %d", table.tableName, colIndex))
@@ -2129,9 +2133,9 @@ func (table *GoTable) ColTypeByColIndex(colIndex int) (string, error) {
 	return colType, nil
 }
 
-func (table *GoTable) ColIndex(colName string) (int, error) {
+func (table *Table) ColIndex(colName string) (int, error) {
 	if table == nil {
-		return -1, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return -1, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	index, exists := table.colNamesLookup[colName]
 	if exists {
@@ -2147,9 +2151,9 @@ func (table *GoTable) ColIndex(colName string) (int, error) {
 	We might just remove LastRowIndex() from the library.
 	We have made this private (23/07/2016)
 */
-func (table *GoTable) lastRowIndex() (int, error) {
+func (table *Table) lastRowIndex() (int, error) {
 	if table == nil {
-		return -1, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return -1, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var rowCount int = table.RowCount()
@@ -2160,34 +2164,34 @@ func (table *GoTable) lastRowIndex() (int, error) {
 	return table.RowCount() - 1, nil
 }
 
-func (table *GoTable) TableName() string {
+func (table *Table) TableName() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return ""
 	}
 	return table.tableName
 }
 
-func (table *GoTable) ColCount() int {
+func (table *Table) ColCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return -1
 	}
 	return len(table.colTypes)
 }
 
-func (table *GoTable) RowCount() int {
+func (table *Table) RowCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*GoTable) *GoTable is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return -1
 	}
 	return len(table.rows)
 }
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
-func (table *GoTable) RowMap(rowIndex int) (GoTableRow, error) {
+func (table *Table) RowMap(rowIndex int) (TableRow, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return nil, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
@@ -2196,208 +2200,208 @@ func (table *GoTable) RowMap(rowIndex int) (GoTableRow, error) {
 	return table.rows[rowIndex], nil
 }
 
-func (table *GoTable) SetString(colName string, rowIndex int, newValue string) error {
+func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetBool(colName string, rowIndex int, newValue bool) error {
+func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
+func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint(colName string, rowIndex int, newValue uint) error {
+func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt(colName string, rowIndex int, newValue int) error {
+func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint8(colName string, rowIndex int, newValue uint8) error {
+func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint16(colName string, rowIndex int, newValue uint16) error {
+func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint32(colName string, rowIndex int, newValue uint32) error {
+func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint64(colName string, rowIndex int, newValue uint64) error {
+func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt8(colName string, rowIndex int, newValue int8) error {
+func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt16(colName string, rowIndex int, newValue int16) error {
+func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt32(colName string, rowIndex int, newValue int32) error {
+func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt64(colName string, rowIndex int, newValue int64) error {
+func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
+func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
+func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
+func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
+func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
+func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
+func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
+func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
+func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
+func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetFloat32(colName string, rowIndex int, newValue float32) error {
+func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
-func (table *GoTable) SetFloat64(colName string, rowIndex int, newValue float64) error {
+func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
-func (table *GoTable) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotable data type or NaN.
-func (table *GoTable) GetVal(colName string, rowIndex int) (interface{}, error) {
+func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
 	if table == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
@@ -2421,9 +2425,9 @@ func (table *GoTable) GetVal(colName string, rowIndex int) (interface{}, error) 
 
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotable data type or NaN.
-func (table *GoTable) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
+func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
@@ -2452,9 +2456,9 @@ func (table *GoTable) GetValByColIndex(colIndex int, rowIndex int) (interface{},
 }
 
 // Returns true if this table has colName and has rowIndex.
-func (table *GoTable) HasCell(colName string, rowIndex int) (bool, error) {
+func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	hasCol, err := table.HasCol(colName)
 	if !hasCol {
@@ -2470,9 +2474,9 @@ func (table *GoTable) HasCell(colName string, rowIndex int) (bool, error) {
 }
 
 // Returns true if this table has colIndex and has rowIndex.
-func (table *GoTable) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) {
+func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex {
@@ -2487,9 +2491,9 @@ func (table *GoTable) HasCellByColIndex(colIndex int, rowIndex int) (bool, error
 	return true, nil
 }
 
-func (table *GoTable) HasRow(rowIndex int) (bool, error) {
+func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return false, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
@@ -2498,10 +2502,10 @@ func (table *GoTable) HasRow(rowIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *GoTable) GetString(colName string, rowIndex int) (string, error) {
+func (table *Table) GetString(colName string, rowIndex int) (string, error) {
 	const zeroVal = ""
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var interfaceType interface{}
@@ -2519,10 +2523,10 @@ func (table *GoTable) GetString(colName string, rowIndex int) (string, error) {
 	return val, err
 }
 
-func (table *GoTable) GetStringByColIndex(colIndex int, rowIndex int) (string, error) {
+func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	const zeroVal = ""
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2538,10 +2542,10 @@ func (table *GoTable) GetStringByColIndex(colIndex int, rowIndex int) (string, e
 	return val, nil
 }
 
-func (table *GoTable) GetFloat32(colName string, rowIndex int) (float32, error) {
+func (table *Table) GetFloat32(colName string, rowIndex int) (float32, error) {
 	const zeroVal = 0.0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2557,10 +2561,10 @@ func (table *GoTable) GetFloat32(colName string, rowIndex int) (float32, error) 
 	return val, err
 }
 
-func (table *GoTable) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32, error) {
+func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32, error) {
 	const zeroVal = 0.0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2576,10 +2580,10 @@ func (table *GoTable) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32,
 	return val, nil
 }
 
-func (table *GoTable) GetFloat64(colName string, rowIndex int) (float64, error) {
+func (table *Table) GetFloat64(colName string, rowIndex int) (float64, error) {
 	const zeroVal = 0.0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2595,10 +2599,10 @@ func (table *GoTable) GetFloat64(colName string, rowIndex int) (float64, error) 
 	return val, err
 }
 
-func (table *GoTable) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64, error) {
+func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64, error) {
 	const zeroVal = 0.0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2614,10 +2618,10 @@ func (table *GoTable) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64,
 	return val, nil
 }
 
-func (table *GoTable) GetUint(colName string, rowIndex int) (uint, error) {
+func (table *Table) GetUint(colName string, rowIndex int) (uint, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2633,10 +2637,10 @@ func (table *GoTable) GetUint(colName string, rowIndex int) (uint, error) {
 	return val, err
 }
 
-func (table *GoTable) GetUintByColIndex(colIndex int, rowIndex int) (uint, error) {
+func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (uint, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2652,10 +2656,10 @@ func (table *GoTable) GetUintByColIndex(colIndex int, rowIndex int) (uint, error
 	return val, nil
 }
 
-func (table *GoTable) GetInt(colName string, rowIndex int) (int, error) {
+func (table *Table) GetInt(colName string, rowIndex int) (int, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2671,10 +2675,10 @@ func (table *GoTable) GetInt(colName string, rowIndex int) (int, error) {
 	return val, err
 }
 
-func (table *GoTable) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
+func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2690,10 +2694,10 @@ func (table *GoTable) GetIntByColIndex(colIndex int, rowIndex int) (int, error) 
 	return val, nil
 }
 
-func (table *GoTable) GetUint8(colName string, rowIndex int) (uint8, error) {
+func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2709,10 +2713,10 @@ func (table *GoTable) GetUint8(colName string, rowIndex int) (uint8, error) {
 	return val, err
 }
 
-func (table *GoTable) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error) {
+func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2728,10 +2732,10 @@ func (table *GoTable) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, err
 	return val, nil
 }
 
-func (table *GoTable) GetUint16(colName string, rowIndex int) (uint16, error) {
+func (table *Table) GetUint16(colName string, rowIndex int) (uint16, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2747,10 +2751,10 @@ func (table *GoTable) GetUint16(colName string, rowIndex int) (uint16, error) {
 	return val, err
 }
 
-func (table *GoTable) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, error) {
+func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2766,10 +2770,10 @@ func (table *GoTable) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, e
 	return val, nil
 }
 
-func (table *GoTable) GetUint32(colName string, rowIndex int) (uint32, error) {
+func (table *Table) GetUint32(colName string, rowIndex int) (uint32, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2785,10 +2789,10 @@ func (table *GoTable) GetUint32(colName string, rowIndex int) (uint32, error) {
 	return val, err
 }
 
-func (table *GoTable) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, error) {
+func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2804,10 +2808,10 @@ func (table *GoTable) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, e
 	return val, nil
 }
 
-func (table *GoTable) GetUint64(colName string, rowIndex int) (uint64, error) {
+func (table *Table) GetUint64(colName string, rowIndex int) (uint64, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2823,10 +2827,10 @@ func (table *GoTable) GetUint64(colName string, rowIndex int) (uint64, error) {
 	return val, err
 }
 
-func (table *GoTable) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, error) {
+func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2842,10 +2846,10 @@ func (table *GoTable) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, e
 	return val, nil
 }
 
-func (table *GoTable) GetInt8(colName string, rowIndex int) (int8, error) {
+func (table *Table) GetInt8(colName string, rowIndex int) (int8, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2861,10 +2865,10 @@ func (table *GoTable) GetInt8(colName string, rowIndex int) (int8, error) {
 	return val, err
 }
 
-func (table *GoTable) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error) {
+func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2880,10 +2884,10 @@ func (table *GoTable) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error
 	return val, nil
 }
 
-func (table *GoTable) GetInt16(colName string, rowIndex int) (int16, error) {
+func (table *Table) GetInt16(colName string, rowIndex int) (int16, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2899,10 +2903,10 @@ func (table *GoTable) GetInt16(colName string, rowIndex int) (int16, error) {
 	return val, err
 }
 
-func (table *GoTable) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, error) {
+func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2918,10 +2922,10 @@ func (table *GoTable) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, err
 	return val, nil
 }
 
-func (table *GoTable) GetInt32(colName string, rowIndex int) (int32, error) {
+func (table *Table) GetInt32(colName string, rowIndex int) (int32, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2937,10 +2941,10 @@ func (table *GoTable) GetInt32(colName string, rowIndex int) (int32, error) {
 	return val, err
 }
 
-func (table *GoTable) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, error) {
+func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2956,10 +2960,10 @@ func (table *GoTable) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, err
 	return val, nil
 }
 
-func (table *GoTable) GetInt64(colName string, rowIndex int) (int64, error) {
+func (table *Table) GetInt64(colName string, rowIndex int) (int64, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2975,10 +2979,10 @@ func (table *GoTable) GetInt64(colName string, rowIndex int) (int64, error) {
 	return val, err
 }
 
-func (table *GoTable) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, error) {
+func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, error) {
 	const zeroVal = 0
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -2994,10 +2998,10 @@ func (table *GoTable) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, err
 	return val, nil
 }
 
-func (table *GoTable) GetBool(colName string, rowIndex int) (bool, error) {
+func (table *Table) GetBool(colName string, rowIndex int) (bool, error) {
 	const zeroVal = false
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -3013,10 +3017,10 @@ func (table *GoTable) GetBool(colName string, rowIndex int) (bool, error) {
 	return val, err
 }
 
-func (table *GoTable) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error) {
+func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error) {
 	const zeroVal = false
 	if table == nil {
-		return zeroVal, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3032,9 +3036,9 @@ func (table *GoTable) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error
 	return val, nil
 }
 
-func (table *GoTable) IsColType(colName string, typeNameQuestioning string) (bool, error) {
+func (table *Table) IsColType(colName string, typeNameQuestioning string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	colType, _ := table.ColType(colName)
 	if colType != typeNameQuestioning {
@@ -3045,9 +3049,9 @@ func (table *GoTable) IsColType(colName string, typeNameQuestioning string) (boo
 	return true, nil
 }
 
-func (table *GoTable) IsColTypeByColIndex(colIndex int, typeNameQuestioning string) (bool, error) {
+func (table *Table) IsColTypeByColIndex(colIndex int, typeNameQuestioning string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex {
@@ -3079,9 +3083,9 @@ type _RowAsInterface []interface{}
 
 // But for now we will use a map to store a Row for simplicity, even though it will take up more space.
 
-func (table *GoTable) SetTableName(tableName string) error {
+func (table *Table) SetTableName(tableName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if len(tableName) < 1 {
 		return errors.New("invalid table name has zero length")
@@ -3097,7 +3101,7 @@ func (table *GoTable) SetTableName(tableName string) error {
 	return nil
 }
 
-func (table *GoTableExported) setTableNameExported(tableName string) error {
+func (table *TableExported) setTableNameExported(tableName string) error {
 	if len(tableName) < 1 {
 		return errors.New("invalid table name has zero length")
 	}
@@ -3112,9 +3116,9 @@ func (table *GoTableExported) setTableNameExported(tableName string) error {
 	return nil
 }
 
-func (table *GoTable) RenameTable(tableName string) error {
+func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.SetTableName(tableName)
 }
@@ -3142,9 +3146,9 @@ func (goTableSet *TableSet) RenameTable(renameFrom string, renameTo string) erro
 }
 
 // Note: This may leave the table in an invalid or unstable state if an error is returned.
-func (table *GoTable) RenameCol(oldName string, newName string) error {
+func (table *Table) RenameCol(oldName string, newName string) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	// Make a copy of the table to reinstate in case there is an error that invalidates the table?
@@ -3180,7 +3184,7 @@ func (table *GoTable) RenameCol(oldName string, newName string) error {
 	// table.renameColCells()
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		// Get the row
-		var rowMap GoTableRow
+		var rowMap TableRow
 		rowMap, err := table.RowMap(rowIndex)
 		if err != nil {
 			return nil
@@ -3202,9 +3206,9 @@ func (table *GoTable) RenameCol(oldName string, newName string) error {
 	return nil
 }
 
-func (table *GoTable) ColName(colIndex int) (string, error) {
+func (table *Table) ColName(colIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		return "", errors.New(fmt.Sprintf("table [%s] has %d col%s. Col index out of range: %d",
@@ -3214,12 +3218,12 @@ func (table *GoTable) ColName(colIndex int) (string, error) {
 	return colName, nil
 }
 
-func (table *GoTable) IsValidRow(rowIndex int) (bool, error) {
+func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
-	var rowMap GoTableRow
+	var rowMap TableRow
 
 	rowMap, err = table.RowMap(rowIndex)
 	if err != nil {
@@ -3241,9 +3245,9 @@ func (table *GoTable) IsValidRow(rowIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *GoTable) IsValidTable() (bool, error) {
+func (table *Table) IsValidTable() (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var isValid bool
@@ -3286,7 +3290,7 @@ func (table *GoTable) IsValidTable() (bool, error) {
 		if isValid, err = table.IsValidRow(rowIndex); !isValid {
 			return false, err
 		}
-		var rowMap GoTableRow
+		var rowMap TableRow
 		rowMap, err = table.RowMap(rowIndex)
 		if err != nil {
 			return false, err
@@ -3340,7 +3344,7 @@ func Round(val float64, places int) (rounded float64) {
 }
 
 /* Type to encode:
-type GoTable struct {
+type Table struct {
 	tableName   string
 	colNames  []string
 	colTypes  []string
@@ -3351,15 +3355,15 @@ type GoTable struct {
 */
 
 // Prepare table for GOB encoding, by copying its contents to an exportable (public) table data structure.
-func (table *GoTable) exportGoTable() (*GoTableExported, error) {
+func (table *Table) exportTable() (*TableExported, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var elementCount int
-	var tableExported *GoTableExported
+	var tableExported *TableExported
 
-	tableExported, err = newGoTableExported(table.TableName())
+	tableExported, err = newTableExported(table.TableName())
 	if err != nil {
 		return nil, err
 	}
@@ -3368,26 +3372,26 @@ func (table *GoTable) exportGoTable() (*GoTableExported, error) {
 
 	tableExported.ColNames = make([]string, colCount)
 	if len(tableExported.ColNames) != colCount {
-		err = fmt.Errorf("exportGoTable() [%s] Could not make col names slice of size %d",
+		err = fmt.Errorf("exportTable() [%s] Could not make col names slice of size %d",
 			table.TableName(), colCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.ColNames, table.colNames)
 	if elementCount != colCount {
-		err = fmt.Errorf("exportGoTable() [%s] expecting to export %d col names but exported: %d",
+		err = fmt.Errorf("exportTable() [%s] expecting to export %d col names but exported: %d",
 			table.TableName(), colCount, elementCount)
 		return nil, err
 	}
 
 	tableExported.ColTypes = make([]string, colCount)
 	if len(tableExported.ColTypes) != colCount {
-		err = fmt.Errorf("exportGoTable() [%s] Could not make col types slice of size %d",
+		err = fmt.Errorf("exportTable() [%s] Could not make col types slice of size %d",
 			table.TableName(), colCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.ColTypes, table.colTypes)
 	if elementCount != colCount {
-		err = fmt.Errorf("exportGoTable() [%s] expecting to export %d col types but exported: %d",
+		err = fmt.Errorf("exportTable() [%s] expecting to export %d col types but exported: %d",
 			table.TableName(), colCount, elementCount)
 		return nil, err
 	}
@@ -3401,13 +3405,13 @@ func (table *GoTable) exportGoTable() (*GoTableExported, error) {
 
 	tableExported.Rows = make(goTableRows, rowCount)
 	if len(tableExported.Rows) != rowCount {
-		err = fmt.Errorf("exportGoTable() [%s] Could not make rows slice of size %d",
+		err = fmt.Errorf("exportTable() [%s] Could not make rows slice of size %d",
 			table.TableName(), rowCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.Rows, table.rows)
 	if elementCount != rowCount {
-		err = fmt.Errorf("exportGoTable() [%s] expecting to export %d rows but exported: %d",
+		err = fmt.Errorf("exportTable() [%s] expecting to export %d rows but exported: %d",
 			table.TableName(), rowCount, elementCount)
 		return nil, err
 	}
@@ -3425,16 +3429,16 @@ func (table *GoTable) exportGoTable() (*GoTableExported, error) {
 }
 
 // Reconstitute table from GOB decoding.
-func (tableExported *GoTableExported) importGoTable() (*GoTable, error) {
+func (tableExported *TableExported) importTable() (*Table, error) {
 	if tableExported == nil {
-		return nil, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var elementCount int
-	var table *GoTable
+	var table *Table
 
 	var tableName string = tableExported.TableName
-	table, err = NewGoTable(tableName)
+	table, err = NewTable(tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -3445,7 +3449,7 @@ func (tableExported *GoTableExported) importGoTable() (*GoTable, error) {
 	table.colNames = make([]string, colCount)
 	elementCount = copy(table.colNames, tableExported.ColNames)
 	if elementCount != colCount {
-		err = fmt.Errorf("importGoTable() [%s] expecting to import %d col names but imported: %d",
+		err = fmt.Errorf("importTable() [%s] expecting to import %d col names but imported: %d",
 			tableName, colCount, elementCount)
 		return nil, err
 	}
@@ -3453,7 +3457,7 @@ func (tableExported *GoTableExported) importGoTable() (*GoTable, error) {
 	table.colTypes = make([]string, colCount)
 	elementCount = copy(table.colTypes, tableExported.ColTypes)
 	if elementCount != colCount {
-		err = fmt.Errorf("importGoTable() [%s] expecting to import %d col types but imported: %d",
+		err = fmt.Errorf("importTable() [%s] expecting to import %d col types but imported: %d",
 			tableName, colCount, elementCount)
 		return nil, err
 	}
@@ -3468,7 +3472,7 @@ func (tableExported *GoTableExported) importGoTable() (*GoTable, error) {
 	table.rows = make(goTableRows, rowCount)
 	elementCount = copy(table.rows, tableExported.Rows)
 	if elementCount != rowCount {
-		err = fmt.Errorf("importGoTable() [%s] expecting to import %d rows but imported: %d",
+		err = fmt.Errorf("importTable() [%s] expecting to import %d rows but imported: %d",
 			table.TableName(), rowCount, elementCount)
 		return nil, err
 	}
@@ -3490,17 +3494,17 @@ func (tableExported *GoTableExported) importGoTable() (*GoTable, error) {
 	return table, nil
 }
 
-func (table *GoTable) GobEncode() (bytes.Buffer, error) {
+func (table *Table) GobEncode() (bytes.Buffer, error) {
 	if table == nil {
 		var blankBuffer bytes.Buffer
-		return blankBuffer, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return blankBuffer, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var buffer bytes.Buffer
 	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-	var goTableExported *GoTableExported
+	var goTableExported *TableExported
 
-	goTableExported, err = table.exportGoTable()
+	goTableExported, err = table.exportTable()
 	if err != nil {
 		var blankBuffer bytes.Buffer
 		return blankBuffer, err
@@ -3515,13 +3519,13 @@ func (table *GoTable) GobEncode() (bytes.Buffer, error) {
 	return buffer, nil
 }
 
-//func (table *GoTable) GobEncode() ([]byte, error) {
+//func (table *Table) GobEncode() ([]byte, error) {
 //	var err error
 //	var buffer bytes.Buffer
 //	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-//	var goTableExported *GoTableExported
+//	var goTableExported *TableExported
 //
-//	goTableExported, err = table.exportGoTable()
+//	goTableExported, err = table.exportTable()
 //	if err != nil {
 //		return buffer.Bytes(), err
 //	}
@@ -3540,7 +3544,7 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 	var err error
 
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-		var table *GoTable
+		var table *Table
 		table = tableSet.tables[tableIndex]
 		var encodedTable bytes.Buffer
 		encodedTable, err = table.GobEncode()
@@ -3583,7 +3587,7 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 //	var err error
 //
 //	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-//		var table *GoTable
+//		var table *Table
 //		table = tableSet.tables[tableIndex]
 ////		var encodedTable bytes.Buffer
 //		var encodedTable []byte
@@ -3627,7 +3631,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 		return nil, err
 	}
 
-	var table *GoTable
+	var table *Table
 	var tableCount = len(buffer) - 1 // The tail end buffer element is the header.
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
 		table, err = GobDecodeTable(buffer[tableIndex])
@@ -3663,7 +3667,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 //		return nil, err
 //	}
 //
-//	var table *GoTable
+//	var table *Table
 //	var tableCount = len(buffer)-1	// The tail end buffer element is the header.
 //	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
 //		table, err = GobDecodeTable(buffer[tableIndex])
@@ -3692,18 +3696,18 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 //	return tableSet, nil
 //}
 
-func GobDecodeTable(buffer bytes.Buffer) (*GoTable, error) {
+func GobDecodeTable(buffer bytes.Buffer) (*Table, error) {
 	var err error
-	var tableDecoded *GoTable
+	var tableDecoded *Table
 	var dec *gob.Decoder = gob.NewDecoder(&buffer)
-	var tableExported *GoTableExported
+	var tableExported *TableExported
 
 	err = dec.Decode(&tableExported)
 	if err != nil {
 		return nil, err
 	}
 
-	tableDecoded, err = tableExported.importGoTable()
+	tableDecoded, err = tableExported.importTable()
 	if err != nil {
 		return nil, err
 	}
@@ -3711,18 +3715,18 @@ func GobDecodeTable(buffer bytes.Buffer) (*GoTable, error) {
 	return tableDecoded, nil
 }
 
-//func GobDecodeTable(buffer []byte) (*GoTable, error) {
+//func GobDecodeTable(buffer []byte) (*Table, error) {
 //	var err error
-//	var tableDecoded *GoTable
+//	var tableDecoded *Table
 //	var dec *gob.Decoder = gob.NewDecoder(&buffer)
-//	var tableExported *GoTableExported
+//	var tableExported *TableExported
 //
 //	err = dec.Decode(&tableExported)
 //	if err != nil {
 //		return nil, err
 //	}
 //
-//	tableDecoded, err = tableExported.importGoTable()
+//	tableDecoded, err = tableExported.importTable()
 //	if err != nil {
 //		return nil, err
 //	}
@@ -3747,9 +3751,9 @@ func funcNameFull() string {
 	return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
 }
 
-func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
+func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	var sVal string
@@ -3832,12 +3836,12 @@ func (table *GoTable) GetValAsStringByColIndex(colIndex int, rowIndex int) (stri
 	return s, nil
 }
 
-func (table *GoTable) GetValAsString(colName string, rowIndex int) (string, error) {
+func (table *Table) GetValAsString(colName string, rowIndex int) (string, error) {
 	var colIndex int
 	var err error
 
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	colIndex, err = table.ColIndex(colName)
@@ -3848,18 +3852,18 @@ func (table *GoTable) GetValAsString(colName string, rowIndex int) (string, erro
 	return table.GetValAsStringByColIndex(colIndex, rowIndex)
 }
 
-func (table *GoTable) IsStructShape() (bool, error) {
+func (table *Table) IsStructShape() (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	return table.structShape, nil
 }
 
 // Will be ignored (when writing table as string) if table RowCount() is more than 1
-func (table *GoTable) SetStructShape(isStructShape bool) error {
+func (table *Table) SetStructShape(isStructShape bool) error {
 	if table == nil {
-		return fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	table.structShape = isStructShape
@@ -3868,9 +3872,9 @@ func (table *GoTable) SetStructShape(isStructShape bool) error {
 }
 
 // Join together a column of values. To compose a set of commands into a single command.
-func (table *GoTable) JoinColVals(colName string, separator string) (string, error) {
+func (table *Table) JoinColVals(colName string, separator string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	rowCount := table.RowCount()
@@ -3889,9 +3893,9 @@ func (table *GoTable) JoinColVals(colName string, separator string) (string, err
 }
 
 // Join together a column of values. To compose a set of commands into a single command.
-func (table *GoTable) JoinColValsByColIndex(colIndex int, separator string) (string, error) {
+func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s(*GoTable) *GoTable is <nil>", funcName())
+		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
 	colName, err := table.ColName(colIndex)
