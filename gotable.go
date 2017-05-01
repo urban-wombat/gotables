@@ -735,7 +735,7 @@ func NewTableWithCols(tableName string, colNames []string, colTypes []string) (*
 		return nil, err
 	}
 
-	err = newTable.AddColTypes(colTypes)
+	err = newTable.AppendColTypes(colTypes)
 	if err != nil {
 		return nil, err
 	}
@@ -2012,16 +2012,6 @@ func (table *Table) AppendColTypes(colTypes []string) error {
 	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
 
 	return nil
-}
-
-// Deprecated: Use AppendColTypes() instead.
-func (table *Table) AddColTypes(colTypes []string) error { // Deprecated: Use AppendColTypes() instead.
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColTypes() instead.\n", funcName())
-	return table.AppendColTypes(colTypes)
 }
 
 type colInfo struct {
