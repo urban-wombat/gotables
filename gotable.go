@@ -730,7 +730,7 @@ func NewTableWithCols(tableName string, colNames []string, colTypes []string) (*
 		return nil, err
 	}
 
-	err = newTable.AddColNames(colNames)
+	err = newTable.AppendColNames(colNames)
 	if err != nil {
 		return nil, err
 	}
@@ -1985,16 +1985,6 @@ func (table *Table) AppendColNames(colNames []string) error {
 	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
 
 	return nil
-}
-
-// Deprecated: Use AppendColNames() instead.
-func (table *Table) AddColNames(colNames []string) error {
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendColNames() instead.\n", funcName())
-	return table.AppendColNames(colNames)
 }
 
 /*
