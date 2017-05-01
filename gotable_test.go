@@ -412,8 +412,8 @@ fmt.Println("BEFORE")
 func TestReadString10(t *testing.T) {
 	table, err := NewTableFromString(
 		`[TableStruct]
-		i int
-		j int
+		i int =
+		j int =
 	`)
 	if err != nil {
 		t.Fatal(err)

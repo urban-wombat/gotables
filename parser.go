@@ -8,7 +8,7 @@ package gotable
 
 import (
 	"fmt"
-	//	"os"
+//	"os"
 	"bufio"
 	"bytes"
 	"errors"
@@ -313,7 +313,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
-					if table.RowCount() < 1 {
+					if table.RowCount() == 0 {
 						table.appendRowOfNil()
 					}
 
