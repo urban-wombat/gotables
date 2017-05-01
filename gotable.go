@@ -80,8 +80,6 @@ TableSet
 
 /*
 TableSet is an ordered set of *Table pointers.
-
-TableSet has a small number of roles. Most work is done with Table
 */
 type TableSet struct {
 	tableSetName string
@@ -340,6 +338,7 @@ func (tableSet *TableSet) SetTableSetName(tableSetName string) {
 	tableSet.tableSetName = tableSetName
 }
 
+// The file name if this TableSet has been created from a file. Otherwise ""
 func (tableSet *TableSet) FileName() string {
 	return tableSet.fileName
 }
@@ -2994,7 +2993,9 @@ func (table *TableExported) setTableNameExported(tableName string) error {
 	return nil
 }
 
-// alias of SetTableName()
+/*
+	Alias of SetTableName()
+*/
 func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
