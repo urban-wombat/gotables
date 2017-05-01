@@ -1,6 +1,6 @@
-/*
-Functions and methods for processing Table tables.
-*/
+// Copyright (c) 2017 Malcolm Gorman
+
+// Functions and methods for processing Table tables.
 package gotable
 
 import (

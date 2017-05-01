@@ -1,6 +1,7 @@
 /*
 Functions and methods for sorting Table tables.
 */
+
 package gotable
 
 import (

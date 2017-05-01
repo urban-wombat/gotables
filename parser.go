@@ -1,4 +1,5 @@
-// The Table parser reads text and parses it into a set of one or more tables in a TableSet.
+// The TableSet parser reads text and parses it into a set of one or more tables in a TableSet.
+
 package gotable
 
 /*
