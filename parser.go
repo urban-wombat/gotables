@@ -335,7 +335,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				if err != nil {
 					return nil, err
 				}
-				err = table.AppendColNames(parserColNames)
+				err = table.appendColNames(parserColNames)
 				if err != nil {
 					return nil, err
 				}
@@ -353,7 +353,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenColNames {
 				return nil, fmt.Errorf("%s expecting %d col type%s but found %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
-			table.AppendColTypes(parserColTypes)
+			table.appendColTypes(parserColTypes)
 			expecting = _COL_ROWS
 
 		case _COL_ROWS:
@@ -370,7 +370,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s expecting %d value%s but found %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-			table.AppendRowMap(rowMap)
+			table.appendRowMap(rowMap)
 			if err != nil {
 				return tables, err
 			}

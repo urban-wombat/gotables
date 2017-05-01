@@ -164,6 +164,10 @@ func NewTableSetFromString(s string) (*TableSet, error) {
 	return tables, nil
 }
 
+/*
+	This function expects exactly ONE table in the string. Otherwise it's an error.
+	If there's more than one table in the string, use NewTableFromStringByTableName() instead.
+*/
 func NewTableFromString(s string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
@@ -172,7 +176,7 @@ func NewTableFromString(s string) (*Table, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewTableFromString() expecting string to contain 1 table but found %d table%s", tableCount, plural(tableCount))
+		return nil, fmt.Errorf("%s() expecting string to contain 1 table but found %d table%s", funcName(), tableCount, plural(tableCount))
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
@@ -197,6 +201,10 @@ func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 	return table, nil
 }
 
+/*
+	This function expects exactly ONE table in the file. Otherwise it's an error.
+	If there's more than one table in the file, use NewTableFromFileByTableName() instead.
+*/
 func NewTableFromFile(fileName string) (*Table, error) {
 	tableSet, err := NewTableSetFromFile(fileName)
 	if err != nil {
@@ -205,8 +213,8 @@ func NewTableFromFile(fileName string) (*Table, error) {
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("NewTableFromString() expecting file to contain 1 table but found %d table%s: %s",
-			tableCount, plural(tableCount), fileName)
+		return nil, fmt.Errorf("%s() expecting file to contain 1 table but found %d table%s: %s",
+			funcName(), tableCount, plural(tableCount), fileName)
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
@@ -608,7 +616,7 @@ func (table *Table) SortKeys() (SortKeys, error) {
 	return table.sortKeys, nil
 }
 
-func (table *Table) ColNames() []string {
+func (table *Table) getColNames() []string {
 	if table == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return nil
@@ -616,7 +624,7 @@ func (table *Table) ColNames() []string {
 	return table.colNames
 }
 
-func (table *Table) ColTypes() []string {
+func (table *Table) getColTypes() []string {
 	if table == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
 		return nil
@@ -666,9 +674,11 @@ func newTableExported(tableName string) (*TableExported, error) {
 }
 
 /*
-	table, err := gotable.NewTableWithCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
+	table, err := gotable.newTableFromCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
+
+	This is a "helper" function that currently doesn't provide any help. But best not public. Would rather users use other functions.
 */
-func NewTableWithCols(tableName string, colNames []string, colTypes []string) (*Table, error) {
+func newTableFromCols(tableName string, colNames []string, colTypes []string) (*Table, error) {
 	var newTable *Table
 	var err error
 
@@ -677,12 +687,12 @@ func NewTableWithCols(tableName string, colNames []string, colTypes []string) (*
 		return nil, err
 	}
 
-	err = newTable.AppendColNames(colNames)
+	err = newTable.appendColNames(colNames)
 	if err != nil {
 		return nil, err
 	}
 
-	err = newTable.AppendColTypes(colTypes)
+	err = newTable.appendColTypes(colTypes)
 	if err != nil {
 		return nil, err
 	}
@@ -737,7 +747,7 @@ func (table *Table) AppendRow() error {
 	}
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
-	table.SetRowCellsToZero(rowIndex)
+	table.SetRowCellsToZeroValue(rowIndex)
 	return nil
 }
 
@@ -767,14 +777,14 @@ func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 }
 
 // Set all cells in this row to their zero value, such as 0, "", or false.
-func (table *Table) SetRowCellsToZero(rowIndex int) error {
+func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		err = table.SetCellToZeroByColIndex(colIndex, rowIndex)
+		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
 		if err != nil {
 			return err
 		}
@@ -784,7 +794,7 @@ func (table *Table) SetRowCellsToZero(rowIndex int) error {
 }
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
-func (table *Table) SetColCellsToZero(colName string) error {
+func (table *Table) SetColCellsToZeroValue(colName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -792,18 +802,18 @@ func (table *Table) SetColCellsToZero(colName string) error {
 	if err != nil {
 		return err
 	}
-	return table.SetColCellsToZeroByColIndex(colIndex)
+	return table.SetColCellsToZeroValueByColIndex(colIndex)
 }
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
-func (table *Table) SetColCellsToZeroByColIndex(colIndex int) error {
+func (table *Table) SetColCellsToZeroValueByColIndex(colIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		err = table.SetCellToZeroByColIndex(colIndex, rowIndex)
+		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
 		if err != nil {
 			return err
 		}
@@ -812,7 +822,7 @@ func (table *Table) SetColCellsToZeroByColIndex(colIndex int) error {
 	return nil
 }
 
-func (table *Table) SetCellToZero(colName string, rowIndex int) error {
+func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -824,7 +834,7 @@ func (table *Table) SetCellToZero(colName string, rowIndex int) error {
 		return err
 	}
 
-	err = table.SetCellToZeroByColIndex(colIndex, rowIndex)
+	err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
 	if err != nil {
 		return err
 	}
@@ -832,7 +842,7 @@ func (table *Table) SetCellToZero(colName string, rowIndex int) error {
 	return nil
 }
 
-func (table *Table) SetCellToZeroByColIndex(colIndex int, rowIndex int) error {
+func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
 	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -888,12 +898,12 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	var row gotable.TableRow = make(gotable.TableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
-	err = table.AppendRowMap(row)
+	err = table.appendRowMap(row)
 	if err != nil {
 	    panic(err)
 	}
 */
-func (table *Table) AppendRowMap(newRow TableRow) error {
+func (table *Table) appendRowMap(newRow TableRow) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -922,8 +932,8 @@ func (table *Table) AppendRowMap(newRow TableRow) error {
 			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
 			if !exists {
 				// Don't permit a misleading missing value to be present for ints, bools, strings.
-				return errors.New(fmt.Sprintf("AppendRowMap(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
-					table.tableName, colName, colType))
+				return errors.New(fmt.Sprintf("%s(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
+					funcName(), table.tableName, colName, colType))
 			}
 			newRow[colName] = missingValue
 		}
@@ -932,8 +942,8 @@ func (table *Table) AppendRowMap(newRow TableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-			return errors.New(fmt.Sprintf("AppendRowMap(): table [%s] col %s expecting type %s but found type %s",
-				table.tableName, colName, colType, valType))
+			return errors.New(fmt.Sprintf("%s(): table [%s] col %s expecting type %s but found type %s",
+				funcName(), table.tableName, colName, colType, valType))
 		}
 	}
 
@@ -1085,7 +1095,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		var rowMap TableRow
-		rowMap, err := table.RowMap(rowIndex)
+		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
 			os.Stderr.WriteString(err.Error())
@@ -1364,7 +1374,7 @@ func (table *Table) String() string {
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		var rowMap TableRow
-		rowMap, err := table.RowMap(rowIndex)
+		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
 			os.Stderr.WriteString(err.Error())
@@ -1623,7 +1633,7 @@ func (table *Table) StringCSV() string {
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		var rowSep = "\n"
 		var rowMap TableRow
-		rowMap, _ = table.RowMap(rowIndex)
+		rowMap, _ = table.rowMap(rowIndex)
 		var rowColSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal string
@@ -1726,7 +1736,7 @@ func (table *Table) StringCSV() string {
 	return s
 }
 
-// Add a column to this table, one column at a time.
+// Append a column to this table.
 /*
 	err = myTable.AppendCol(headingName, headingType)
 	if err != nil {
@@ -1757,7 +1767,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 	table.colNamesLookup[colName] = colIndex
 
-	err := table.SetColCellsToZero(colName)
+	err := table.SetColCellsToZeroValue(colName)
 	if err != nil {
 		return err
 	}
@@ -1865,7 +1875,7 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *Table) AppendColNames(colNames []string) error {
+func (table *Table) appendColNames(colNames []string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -1907,7 +1917,7 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *Table) AppendColTypes(colTypes []string) error {
+func (table *Table) appendColTypes(colTypes []string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -2056,7 +2066,7 @@ func (table *Table) RowCount() int {
 }
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
-func (table *Table) RowMap(rowIndex int) (TableRow, error) {
+func (table *Table) rowMap(rowIndex int) (TableRow, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -2950,6 +2960,7 @@ type _RowAsInterface []interface{}
 
 // But for now we will use a map to store a Row for simplicity, even though it will take up more space.
 
+// alias of RenameTable()
 func (table *Table) SetTableName(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -2983,6 +2994,7 @@ func (table *TableExported) setTableNameExported(tableName string) error {
 	return nil
 }
 
+// alias of SetTableName()
 func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -3052,7 +3064,7 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		// Get the row
 		var rowMap TableRow
-		rowMap, err := table.RowMap(rowIndex)
+		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			return nil
 		}
@@ -3085,19 +3097,19 @@ func (table *Table) ColName(colIndex int) (string, error) {
 	return colName, nil
 }
 
-func (table *Table) IsValidRow(rowIndex int) (bool, error) {
+func (table *Table) isValidRow(rowIndex int) (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
 	var rowMap TableRow
 
-	rowMap, err = table.RowMap(rowIndex)
+	rowMap, err = table.rowMap(rowIndex)
 	if err != nil {
 		return false, err
 	}
 
-	var colNames []string = table.ColNames()
+	var colNames []string = table.getColNames()
 	for colIndex := 0; colIndex < len(colNames); colIndex++ {
 		var ok bool
 		var colName string = colNames[colIndex]
@@ -3112,7 +3124,7 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *Table) IsValidTable() (bool, error) {
+func (table *Table) isValidTable() (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -3124,7 +3136,7 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 
-	var colNames []string = table.ColNames()
+	var colNames []string = table.getColNames()
 	for colIndex := 0; colIndex < len(colNames); colIndex++ {
 		var colName string = colNames[colIndex]
 		if isValid, err = IsValidColName(colName); !isValid {
@@ -3132,7 +3144,7 @@ func (table *Table) IsValidTable() (bool, error) {
 		}
 	}
 
-	var colTypes []string = table.ColTypes()
+	var colTypes []string = table.getColTypes()
 	for colIndex := 0; colIndex < len(colTypes); colIndex++ {
 		var colType string = colTypes[colIndex]
 		if isValid, err = IsValidColType(colType); !isValid {
@@ -3154,11 +3166,11 @@ func (table *Table) IsValidTable() (bool, error) {
 	}
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		if isValid, err = table.IsValidRow(rowIndex); !isValid {
+		if isValid, err = table.isValidRow(rowIndex); !isValid {
 			return false, err
 		}
 		var rowMap TableRow
-		rowMap, err = table.RowMap(rowIndex)
+		rowMap, err = table.rowMap(rowIndex)
 		if err != nil {
 			return false, err
 		}
@@ -3353,7 +3365,7 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 		table.sortKeys[keyIndex].sortFunc = tableExported.SortKeys[keyIndex].SortFunc
 	}
 
-	isValid, err = table.IsValidTable()
+	isValid, err = table.isValidTable()
 	if !isValid {
 		return nil, err
 	}
