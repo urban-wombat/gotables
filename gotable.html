@@ -994,26 +994,30 @@ If there&#39;s more than one table in the string, use NewTableFromStringByTableN
 		
 		
 			<p>Code:</p>
-			<pre class="code">tableString := `
-[MyTable]
-MyBool bool = true
-MyString string = &#34;The answer to life, the universe and everything&#34;
-MyInt int = 42
-`
+			<pre class="code"><span class="comment">// A table literal. Sometimes easier than constructing a table programmatically.</span>
+tableString := `[MyTable]
+    MyBool bool = true
+    MyString string = &#34;The answer to life, the universe and everything&#34;
+    MyInt int = 42`
 
 table, err := NewTableFromString(tableString)
 if err != nil {
     panic(err)
 }
 
+<span class="comment">// Print the table in its original struct shape.</span>
 fmt.Println(table)
 
+<span class="comment">// Now change its shape to tabular.</span>
 table.SetStructShape(false)
 if err != nil {
     panic(err)
 }
 
+<span class="comment">// The table is now printed as a single row of data.</span>
 fmt.Println(table)
+
+<span class="comment">// Note: The struct/tabular shape is for readability and has no impact on its internal structure.</span>
 
 <span class="comment"></pre>
 			

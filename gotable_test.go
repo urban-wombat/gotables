@@ -1733,26 +1733,30 @@ func TestDeleteRows(t *testing.T) {
 }
 
 func ExampleNewTableFromString() {
-	tableString := `
-	[MyTable]
-	MyBool bool = true
-	MyString string = "The answer to life, the universe and everything"
-	MyInt int = 42
-	`
+	// A table literal. Sometimes easier than constructing a table programmatically.
+	tableString := `[MyTable]
+		MyBool bool = true
+		MyString string = "The answer to life, the universe and everything"
+		MyInt int = 42`
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
 		panic(err)
 	}
 
+	// Print the table in its original struct shape.
 	fmt.Println(table)
 
+	// Now change its shape to tabular.
 	table.SetStructShape(false)
 	if err != nil {
 		panic(err)
 	}
 
+	// The table is now printed as a single row of data.
 	fmt.Println(table)
+
+	// Note: The struct/tabular shape is for readability and has no impact on its internal structure.
 
 	// Output:
 	// [MyTable]
