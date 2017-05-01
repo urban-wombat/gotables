@@ -644,16 +644,6 @@ func (table *Table) AppendSortKey(colName string) error {
 	return nil
 }
 
-// Deprecated: Use AppendSortKey() instead.
-func (table *Table) AddSortKey(colName string) error {
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendSortKey() instead.\n", funcName())
-	return table.AppendSortKey(colName)
-}
-
 func (table *Table) SortKeys() (SortKeys, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -1005,16 +995,6 @@ func (table *Table) AppendRowMap(newRow TableRow) error {
 	table.rows = append(table.rows, newRow)
 
 	return nil
-}
-
-// Deprecated: Use AppendRowMap() instead.
-func (table *Table) AddRowMap(newRow TableRow) error {
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRowMap() instead.\n", funcName())
-	return table.AppendRowMap(newRow)
 }
 
 func (table *Table) DeleteRow(rowIndex int) error {
