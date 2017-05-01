@@ -522,7 +522,7 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 		return nil, err
 	}
 	for rowIndex := 0; rowIndex < len(thisTable.sortKeys); rowIndex++ {
-		keysTable.AddRow()
+		keysTable.AppendRow()
 		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)
 		if err != nil {
 			return nil, err
@@ -792,18 +792,6 @@ func (table *Table) AppendRow() error {
 	rowIndex, _ = table.lastRowIndex()
 	table.SetRowCellsToZero(rowIndex)
 	return nil
-}
-
-// Deprecated: Use AppendRow() instead.
-//
-// All cells in the new added row will be set to their zero value, such as 0, "", or false.
-func (table *Table) AddRow() error {
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRow() instead.\n", funcName())
-	return table.AppendRow()
 }
 
 // Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
