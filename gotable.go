@@ -119,16 +119,6 @@ func NewTableSetFromFile(fileName string) (*TableSet, error) {
 	return tables, nil
 }
 
-/*
-// Deprecated: Use NewTableSetFromFile(fileName string) instead.
-//
-// Read and parse a gotable file into a TableSet.
-func ReadFile(fileName string) (*TableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use NewTableSetFromFile() instead.\n", funcName())
-	return NewTableSetFromFile(fileName)
-}
-*/
-
 // Write a TableSet to a text file.
 func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
 	var err error
@@ -1859,24 +1849,6 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	}
 
 	return nil
-}
-
-// Deprecated: AddCol() Use AppendCol() insead.
-//
-// Add a column to this table, one column at a time.
-/*
-	err = myTable.AddCol(headingName, headingType)
-	if err != nil {
-		panic(err)
-	}
-*/
-func (table *Table) AddCol(colName string, colType string) error {
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendCol() instead.\n", funcName())
-	return table.AppendCol(colName, colType)
 }
 
 func (table *Table) DeleteColByColIndex(colIndex int) error {

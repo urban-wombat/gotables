@@ -257,7 +257,7 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 					// Create a column.
 					colName = fmt.Sprintf("col_%d", colIndex)
 					//					where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
-					err = table.AddCol(colName, colType)
+					err = table.AppendCol(colName, colType)
 					if err != nil {
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
@@ -288,7 +288,7 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 						// Create additional column.
 						colName = fmt.Sprintf("col_%d", colIndex)
 						//						where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
-						err = table.AddCol(colName, colType)
+						err = table.AppendCol(colName, colType)
 						if err != nil {
 							return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 						}
