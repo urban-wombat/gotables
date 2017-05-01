@@ -206,14 +206,12 @@ func TestReadString1(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -290,14 +288,12 @@ func TestReadString5(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -335,14 +331,12 @@ func TestReadString6(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, tableName, test.colCount, colCount)
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			tableName := table.TableName()
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, tableName, test.rowCount, rowCount)
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 }
@@ -357,7 +351,7 @@ func TestReadString7(t *testing.T) {
 
 		[Empty]
 
-		`)
+	`)
 	if err == nil {
 		t.Error(err)
 	}
@@ -376,6 +370,75 @@ func TestReadString8(t *testing.T) {
 		`)
 	if err == nil {
 		t.Error(err)
+	}
+}
+
+// Testing struct using = with zero rows.
+func TestReadString9(t *testing.T) {
+fmt.Println("BEFORE")
+	table, err := NewTableFromString(
+		`[TableStruct]
+		i int =
+		j int =
+	`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		tableName string
+		colCount  int
+		rowCount  int
+		succeeds  bool
+	}{
+		{"TableStruct", 2, 0, true},
+	}
+
+	for i, test := range tests {
+
+		colCount := table.ColCount()
+		if colCount != test.colCount {
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+		}
+
+		rowCount := table.RowCount()
+		if rowCount != test.rowCount {
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+		}
+	}
+}
+
+// Testing struct without = having zero rows.
+func TestReadString10(t *testing.T) {
+	table, err := NewTableFromString(
+		`[TableStruct]
+		i int
+		j int
+	`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		tableName string
+		colCount  int
+		rowCount  int
+		succeeds  bool
+	}{
+		{"TableStruct", 2, 0, true},
+	}
+
+	for i, test := range tests {
+
+		colCount := table.ColCount()
+		if colCount != test.colCount {
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+		}
+
+		rowCount := table.RowCount()
+		if rowCount != test.rowCount {
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+		}
 	}
 }
 

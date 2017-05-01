@@ -264,7 +264,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*TableSet) *TableSet is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*TableSet) *TableSet is <nil>\n", funcName()))
 		return ""
 	}
 	var verticalSep string = ""
@@ -449,7 +449,7 @@ type SortKeys []SortKey
 
 func (keys SortKeys) String() string {
 	if keys == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(SortKeys) SortKeys is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(SortKeys) SortKeys is <nil>\n", funcName()))
 		return ""
 	}
 	// where(fmt.Sprintf("len(keys) = %d\n", len(keys)))
@@ -617,7 +617,7 @@ func (table *Table) SortKeys() (SortKeys, error) {
 
 func (table *Table) getColNames() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return nil
 	}
 	return table.colNames
@@ -625,7 +625,7 @@ func (table *Table) getColNames() []string {
 
 func (table *Table) getColTypes() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return nil
 	}
 	return table.colTypes
@@ -1052,7 +1052,7 @@ Return a parsable table as a string. Intended for internal library use.
 */
 func (table *Table) _String(horizontalSeparator byte) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -1305,7 +1305,7 @@ Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return ""
 	}
 
@@ -1537,7 +1537,7 @@ func (table *Table) String() string {
 
 func printStruct(table *Table) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 	}
 
 	var asString string
@@ -1612,7 +1612,7 @@ See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
 func (table *Table) StringCSV() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return ""
 	}
 	const comma = ","
@@ -2042,7 +2042,7 @@ func (table *Table) lastRowIndex() (int, error) {
 
 func (table *Table) TableName() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return ""
 	}
 	return table.tableName
@@ -2050,7 +2050,7 @@ func (table *Table) TableName() string {
 
 func (table *Table) ColCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.colTypes)
@@ -2058,7 +2058,7 @@ func (table *Table) ColCount() int {
 
 func (table *Table) RowCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.rows)
