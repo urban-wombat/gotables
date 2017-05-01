@@ -925,17 +925,6 @@ func (table *Table) SetCellToZeroByColIndex(colIndex int, rowIndex int) error {
 	return nil
 }
 
-// Deprecated: Use AppendRowMap() instead.
-//
-// Add (append) a row of data (newRow) to this table.
-func (table *Table) AddTableRow(newRow TableRow) error {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendRowMap() instead.\n", funcName())
-	if table == nil {
-		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-	}
-	return table.AppendRowMap(newRow)
-}
-
 /*
 This is for adding an entire new row of data to a table in bulk, so to speak.
 
