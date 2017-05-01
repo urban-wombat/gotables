@@ -449,7 +449,7 @@ func ExampleNewTableSet() {
 		panic(err)
 	}
 	tableCount := tableSet.TableCount()
-	name := tableSet.TableSetName()
+	name := tableSet.Name()
 	fmt.Println(tableCount)
 	fmt.Println(name)
 	// Output:

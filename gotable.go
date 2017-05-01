@@ -244,9 +244,9 @@ Returns a set of parsable elastic tabbed tables as a string.
 //	var verticalSep string = ""
 //	var s string
 //
-//	var tableSetName string = tableSet.TableSetName()
+//	var tableSetName string = tableSet.Name()
 //	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
+//		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
 //	}
 //
 //	var table *Table
@@ -270,9 +270,9 @@ func (tableSet *TableSet) String() string {
 	var verticalSep string = ""
 	var s string
 
-	var tableSetName string = tableSet.TableSetName()
+	var tableSetName string = tableSet.Name()
 	if tableSetName != "" {
-		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
+		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
 	}
 
 	var table *Table
@@ -315,9 +315,9 @@ Returns a set of parsable right aligned tables as a string.
 //	var verticalSep string = ""
 //	var s string
 //
-//	var tableSetName string = tableSet.TableSetName()
+//	var tableSetName string = tableSet.Name()
 //	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", tableSet.TableSetName())
+//		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
 //	}
 //
 //	var table *Table
@@ -330,7 +330,7 @@ Returns a set of parsable right aligned tables as a string.
 //	return s
 // }
 
-func (tableSet *TableSet) TableSetName() string {
+func (tableSet *TableSet) Name() string {
 	return tableSet.tableSetName
 }
 
