@@ -119,6 +119,7 @@ func NewTableSetFromFile(fileName string) (*TableSet, error) {
 	return tables, nil
 }
 
+/*
 // Deprecated: Use NewTableSetFromFile(fileName string) instead.
 //
 // Read and parse a gotable file into a TableSet.
@@ -126,6 +127,7 @@ func ReadFile(fileName string) (*TableSet, error) {
 	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use NewTableSetFromFile() instead.\n", funcName())
 	return NewTableSetFromFile(fileName)
 }
+*/
 
 // Write a TableSet to a text file.
 func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
