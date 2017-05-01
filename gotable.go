@@ -348,30 +348,7 @@ func (tableSet *TableSet) TableCount() int {
 	return len(tableSet.tables)
 }
 
-// Deprecated: Use AppendTable() instead.
-func (tableSet *TableSet) AddTable(newTable *Table) error {
-	if tableSet == nil {
-		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
-	return tableSet.AppendTable(newTable)
-}
-
-/*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
-// Deprecated: Use AppendTable() instead.
-func (tableSet *TableSet) AddTable(newTable *Table) error {
-	if tableSet == nil {
-		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
-	}
-
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use AppendTable() instead.\n", funcName())
-	return tableSet.AppendTable(newTable)
-}
-*/
-
 // Add a table to a table set.
-// This function may be deprecated later in favour of AddTable()
 func (tableSet *TableSet) AppendTable(newTable *Table) error {
 	if tableSet == nil {
 		return fmt.Errorf("%s(*TableSet) *Table is <nil>", funcName())
@@ -3540,7 +3517,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = tableSet.AddTable(table)
+		err = tableSet.AppendTable(table)
 		if err != nil {
 			return nil, err
 		}
@@ -3576,7 +3553,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 //		if err != nil {
 //			return nil, err
 //		}
-//		err = tableSet.AddTable(table)
+//		err = tableSet.AppendTable(table)
 //		if err != nil {
 //			return nil, err
 //		}

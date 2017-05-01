@@ -416,7 +416,7 @@ func startTheTable(tableIndex int, tableSet *TableSet) (int, *Table, *TableSet, 
 	if err != nil {
 		return tableIndex, table, tableSet, rowIndex, err
 	}
-	err = tableSet.AddTable(table)
+	err = tableSet.AppendTable(table)
 	if err != nil {
 		return tableIndex, table, tableSet, rowIndex, err
 	}
