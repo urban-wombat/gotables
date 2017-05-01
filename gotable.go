@@ -168,14 +168,6 @@ func NewTableSetFromString(s string) (*TableSet, error) {
 	return tables, nil
 }
 
-// Deprecated: Use NewTableSetFromString(fileName string) instead.
-//
-// Read and parse a gotable string into a TableSet.
-func ReadString(s string) (*TableSet, error) {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use NewTableSetFromString() instead.\n", funcName())
-	return NewTableSetFromString(s)
-}
-
 func NewTableFromString(s string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
