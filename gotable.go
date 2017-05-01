@@ -104,8 +104,6 @@ func NewTableSet(tableSetName string) (*TableSet, error) {
 }
 
 // Read and parse a gotable file into a TableSet.
-//
-// Replaces ReadFile(fileName string)
 func NewTableSetFromFile(fileName string) (*TableSet, error) {
 	var p parser
 	//	fmt.Printf("ReadFile(%q)\n", fileName)
@@ -157,8 +155,6 @@ func (table *Table) WriteFile(fileName string, mode os.FileMode) error {
 }
 
 // Read and parse a gotable string into a TableSet.
-//
-// Replaces ReadString(s string)
 func NewTableSetFromString(s string) (*TableSet, error) {
 	var p parser
 	tables, err := p.parseString(s)
@@ -397,14 +393,6 @@ func (tableSet *TableSet) TableByTableIndex(tableIndex int) (*Table, error) {
 
 	return tableSet.tables[tableIndex], nil
 }
-
-/*	DUPLICATES AddTable() after bulk rename of GoTable to Table.
-// Deprecated: Use Table() instead.
-func (tableSet *TableSet) Table(tableName string) (*Table, error) {
-	fmt.Fprintf(os.Stderr, "Warning: Deprecated method: %s() Use Table() instead.\n", funcName())
-	return tableSet.Table(tableName)
-}
-*/
 
 /*
 #####################################################################################
