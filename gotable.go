@@ -359,9 +359,9 @@ func (tableSet *TableSet) AppendTable(newTable *Table) error {
 
 	// Note: Could maintain a map in parallel for rapid lookup of table names.
 	for _, existingTable := range tableSet.tables {
-		//where(fmt.Sprintf("existingTable.TableName() = %s\n", existingTable.TableName()))
-		//where(fmt.Sprintf("newTable.TableName() = %s\n", newTable.TableName()))
-		if existingTable.TableName() == newTable.TableName() {
+		//where(fmt.Sprintf("existingTable.Name() = %s\n", existingTable.Name()))
+		//where(fmt.Sprintf("newTable.Name() = %s\n", newTable.Name()))
+		if existingTable.Name() == newTable.Name() {
 			return errors.New(fmt.Sprintf("table [%s] already exists: %s", newTable.tableName, newTable.tableName))
 		}
 	}
@@ -375,7 +375,7 @@ func (tableSet *TableSet) AppendTable(newTable *Table) error {
 func (tableSet *TableSet) HasTable(tableName string) (bool, error) {
 	//where(fmt.Sprintf("HasTable(%q)\n", tableName))
 	for _, table := range tableSet.tables {
-		if table.TableName() == tableName {
+		if table.Name() == tableName {
 			return true, nil
 		}
 	}
@@ -384,7 +384,7 @@ func (tableSet *TableSet) HasTable(tableName string) (bool, error) {
 
 func (tableSet *TableSet) Table(tableName string) (*Table, error) {
 	for _, table := range tableSet.tables {
-		if table.TableName() == tableName {
+		if table.Name() == tableName {
 			return table, nil
 		}
 	}
@@ -593,13 +593,13 @@ func (table *Table) AppendSortKey(colName string) error {
 
 	var colType = colInfo.colType
 	if len(colType) == 0 {
-		return errors.New(fmt.Sprintf("table [%s]: Unknown colType for col: %q", table.TableName(), colName))
+		return errors.New(fmt.Sprintf("table [%s]: Unknown colType for col: %q", table.Name(), colName))
 	}
 	key.colType = colType
 
 	sortFunc, exists := compareFuncs[colType]
 	if !exists { // Error occurs only during software development if a type has not been handled.
-		return errors.New(fmt.Sprintf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.TableName(), colName, colType, colType))
+		return errors.New(fmt.Sprintf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.Name(), colName, colType, colType))
 	}
 
 	key.sortFunc = sortFunc
@@ -724,7 +724,7 @@ func (table *Table) AppendRows(howMany int) error {
 	}
 
 	if howMany <= 0 {
-		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.TableName(), howMany, howMany)
+		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
 	}
 	for i := 0; i < howMany; i++ {
 		err := table.AppendRow()
@@ -1720,7 +1720,7 @@ func (table *Table) StringCSV() string {
 
 			if !exists {
 				log.Printf("func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
-					table.TableName(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
+					table.Name(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
 					rowMap[table.colNames[colIndex]])
 				return ""
 			}
@@ -1756,7 +1756,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	// Make sure this col name doesn't already exist.
 	_, exists := table.colNamesLookup[colName]
 	if exists {
-		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), colName))
+		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.Name(), colName))
 		return err
 	}
 
@@ -1828,7 +1828,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return errors.New(fmt.Sprintf("table [%s] col %q expecting type %q not type %q", table.TableName(), colName, colType, valType))
+		return errors.New(fmt.Sprintf("table [%s] col %q expecting type %q not type %q", table.Name(), colName, colType, valType))
 	}
 
 	// Set the val
@@ -1858,7 +1858,7 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
 		return errors.New(fmt.Sprintf("table [%s] col index %d col name %q expecting type %q not type %q",
-			table.TableName(), colIndex, colName, colType, valType))
+			table.Name(), colIndex, colName, colType, valType))
 	}
 
 	// Set the val
@@ -1898,7 +1898,7 @@ func (table *Table) appendColNames(colNames []string) error {
 		// Make sure this col name doesn't already exist.
 		_, exists := table.colNamesLookup[colName]
 		if exists {
-			err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), colName))
+			err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.Name(), colName))
 			return err
 		}
 
@@ -2034,13 +2034,13 @@ func (table *Table) lastRowIndex() (int, error) {
 	var err error
 	var rowCount int = table.RowCount()
 	if rowCount < 1 {
-		err = errors.New(fmt.Sprintf("table [%s] has zero rows", table.TableName()))
+		err = errors.New(fmt.Sprintf("table [%s] has zero rows", table.Name()))
 		return -1, err
 	}
 	return table.RowCount() - 1, nil
 }
 
-func (table *Table) TableName() string {
+func (table *Table) Name() string {
 	if table == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return ""
@@ -2071,7 +2071,7 @@ func (table *Table) rowMap(rowIndex int) (tableRow, error) {
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return nil, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
-			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
+			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return table.rows[rowIndex], nil
 }
@@ -2373,7 +2373,7 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return false, errors.New(fmt.Sprintf("table [%s] has %d row%s. Row index out of range: %d",
-			table.TableName(), table.RowCount(), plural(table.RowCount()), rowIndex))
+			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex))
 	}
 	return true, nil
 }
@@ -3041,7 +3041,7 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 
 	// Requires newCol to NOT be already in the table for renaming to.
 	if hasCol, _ := table.HasCol(newName); hasCol {
-		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.TableName(), newName))
+		err := errors.New(fmt.Sprintf("table [%s] col already exists: %s", table.Name(), newName))
 		return err
 	}
 
@@ -3075,7 +3075,7 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 		cellValue, ok := rowMap[oldName]
 		if !ok {
 			msg := fmt.Sprintf("SYSTEM ERROR: Table [%s] row %d col %q cell value does not exist!",
-				table.TableName(), rowIndex, oldName)
+				table.Name(), rowIndex, oldName)
 			err := errors.New(msg)
 			return err
 		}
@@ -3092,7 +3092,7 @@ func (table *Table) ColName(colIndex int) (string, error) {
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		return "", errors.New(fmt.Sprintf("table [%s] has %d col%s. Col index out of range: %d",
-			table.TableName(), table.ColCount(), plural(table.ColCount()), colIndex))
+			table.Name(), table.ColCount(), plural(table.ColCount()), colIndex))
 	}
 	colName := table.colNames[colIndex]
 	return colName, nil
@@ -3116,7 +3116,7 @@ func (table *Table) isValidRow(rowIndex int) (bool, error) {
 		var colName string = colNames[colIndex]
 		_, ok = rowMap[colName]
 		if !ok {
-			msg := fmt.Sprintf("table [%s] col %q row %d cell value is missing", table.TableName(), colName, rowIndex)
+			msg := fmt.Sprintf("table [%s] col %q row %d cell value is missing", table.Name(), colName, rowIndex)
 			err := errors.New(msg)
 			return false, err
 		}
@@ -3132,7 +3132,7 @@ func (table *Table) isValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
-	var tableName string = table.TableName()
+	var tableName string = table.Name()
 	if isValid, err = IsValidTableName(tableName); !isValid {
 		return false, err
 	}
@@ -3243,7 +3243,7 @@ func (table *Table) exportTable() (*TableExported, error) {
 	var elementCount int
 	var tableExported *TableExported
 
-	tableExported, err = newTableExported(table.TableName())
+	tableExported, err = newTableExported(table.Name())
 	if err != nil {
 		return nil, err
 	}
@@ -3253,26 +3253,26 @@ func (table *Table) exportTable() (*TableExported, error) {
 	tableExported.ColNames = make([]string, colCount)
 	if len(tableExported.ColNames) != colCount {
 		err = fmt.Errorf("exportTable() [%s] Could not make col names slice of size %d",
-			table.TableName(), colCount)
+			table.Name(), colCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.ColNames, table.colNames)
 	if elementCount != colCount {
 		err = fmt.Errorf("exportTable() [%s] expecting to export %d col names but exported: %d",
-			table.TableName(), colCount, elementCount)
+			table.Name(), colCount, elementCount)
 		return nil, err
 	}
 
 	tableExported.ColTypes = make([]string, colCount)
 	if len(tableExported.ColTypes) != colCount {
 		err = fmt.Errorf("exportTable() [%s] Could not make col types slice of size %d",
-			table.TableName(), colCount)
+			table.Name(), colCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.ColTypes, table.colTypes)
 	if elementCount != colCount {
 		err = fmt.Errorf("exportTable() [%s] expecting to export %d col types but exported: %d",
-			table.TableName(), colCount, elementCount)
+			table.Name(), colCount, elementCount)
 		return nil, err
 	}
 
@@ -3286,13 +3286,13 @@ func (table *Table) exportTable() (*TableExported, error) {
 	tableExported.Rows = make(tableRows, rowCount)
 	if len(tableExported.Rows) != rowCount {
 		err = fmt.Errorf("exportTable() [%s] Could not make rows slice of size %d",
-			table.TableName(), rowCount)
+			table.Name(), rowCount)
 		return nil, err
 	}
 	elementCount = copy(tableExported.Rows, table.rows)
 	if elementCount != rowCount {
 		err = fmt.Errorf("exportTable() [%s] expecting to export %d rows but exported: %d",
-			table.TableName(), rowCount, elementCount)
+			table.Name(), rowCount, elementCount)
 		return nil, err
 	}
 
@@ -3353,7 +3353,7 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 	elementCount = copy(table.rows, tableExported.Rows)
 	if elementCount != rowCount {
 		err = fmt.Errorf("importTable() [%s] expecting to import %d rows but imported: %d",
-			table.TableName(), rowCount, elementCount)
+			table.Name(), rowCount, elementCount)
 		return nil, err
 	}
 
@@ -3434,7 +3434,7 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 		encodedTableSet = append(encodedTableSet, encodedTable)
 		if len(encodedTableSet) != tableIndex+1 {
 			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
-				table.TableName())
+				table.Name())
 			return emptyBuffer, err
 		}
 	}
@@ -3478,7 +3478,7 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 //		encodedTableSet = append(encodedTableSet, encodedTable)
 //		if len(encodedTableSet) != tableIndex+1 {
 //			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
-//				table.TableName())
+//				table.Name())
 //			return emptyBuffer, err
 //		}
 //	}

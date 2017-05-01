@@ -82,7 +82,7 @@ SOFTWARE.
 //			t.Errorf("Error renaming to %q: %s", output, err)
 //		}
 //
-//		var tableName string = table.TableName()
+//		var tableName string = table.Name()
 //		if tableName != output {
 //			t.Errorf("Expected %q, not %q", output, tableName)
 //		}
@@ -117,7 +117,7 @@ func TestRenameTable(t *testing.T) {
 			t.Errorf("Error renaming to %q: %s", test.output, err)
 		}
 
-		var tableName string = table.TableName()
+		var tableName string = table.Name()
 		if tableName != test.output {
 			t.Errorf("Expected %q, not %q", test.output, tableName)
 		}

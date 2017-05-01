@@ -256,23 +256,23 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 				if insideRow && isFirstRow {
 					// Create a column.
 					colName = fmt.Sprintf("col_%d", colIndex)
-					//					where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+					//					where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.Name(), colName, colType))
 					err = table.AppendCol(colName, colType)
 					if err != nil {
 						return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
 					}
 				} else {
-					//					where(fmt.Sprintf("??? else NOT [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+					//					where(fmt.Sprintf("??? else NOT [%s].AddCol(%s, %s)", table.Name(), colName, colType))
 				}
 
 				// We can't reliably add rows after each <tr> because it may contain only <th> tags.
 				//				where(fmt.Sprintf("??? if   table.RowCount()=%d == rowIndex=%d == %t", table.RowCount(), rowIndex, table.RowCount() == rowIndex))
 				if table.RowCount() == rowIndex {
 					// Need exactly one new row.
-					//					where(fmt.Sprintf("??? then [%s].AddRow()", table.TableName()))
+					//					where(fmt.Sprintf("??? then [%s].AddRow()", table.Name()))
 					table.AppendRow()
 				} else {
-					//					where(fmt.Sprintf("??? else NOT [%s].AddRow()", table.TableName()))
+					//					where(fmt.Sprintf("??? else NOT [%s].AddRow()", table.Name()))
 				}
 			}
 
@@ -287,7 +287,7 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 						// This row has more cols than previous rows. Not good, but we'll accommodate that.
 						// Create additional column.
 						colName = fmt.Sprintf("col_%d", colIndex)
-						//						where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.TableName(), colName, colType))
+						//						where(fmt.Sprintf("??? then [%s].AddCol(%s, %s)", table.Name(), colName, colType))
 						err = table.AppendCol(colName, colType)
 						if err != nil {
 							return nil, fmt.Errorf("%s[%d] %v", sourceName, sourceLineNumber, err)
