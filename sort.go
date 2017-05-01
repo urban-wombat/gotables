@@ -233,7 +233,7 @@ var compareCount int
 type tableSortable struct {
 	table *Table
 	rows  tableRows
-	less  func(i, j TableRow) bool
+	less  func(i, j tableRow) bool
 }
 
 func (table tableSortable) Len() int { return len(table.rows) }
@@ -252,7 +252,7 @@ func (table *Table) Sort() {
 
 func (table *Table) SortByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
-	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow TableRow) bool {
+	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
 		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))

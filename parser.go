@@ -179,7 +179,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowMapOfStruct TableRow // Needs to persist over multiple lines.
+	var rowMapOfStruct tableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -359,7 +359,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		case _COL_ROWS:
 
 			// Found data.
-			var rowMap TableRow
+			var rowMap tableRow
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil {
 				//					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
@@ -536,10 +536,10 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowData(line string, colNames, colTypes []string) (TableRow, error) {
+func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow, error) {
 
 	var err error
-	rowMap := make(TableRow)
+	rowMap := make(tableRow)
 
 	remaining := line // Remainder of line left to parse.
 	var rangeFound []int

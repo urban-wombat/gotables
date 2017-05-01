@@ -632,8 +632,8 @@ func (table *Table) getColTypes() []string {
 	return table.colTypes
 }
 
-type TableRow map[string]interface{}
-type tableRows []TableRow
+type tableRow map[string]interface{}
+type tableRows []tableRow
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
@@ -655,7 +655,7 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
-	newTable.rows = make([]TableRow, 0)
+	newTable.rows = make([]tableRow, 0)
 	return newTable, nil
 }
 
@@ -669,7 +669,7 @@ func newTableExported(tableName string) (*TableExported, error) {
 	NewTableExported.ColNames = make([]string, 0)
 	NewTableExported.ColTypes = make([]string, 0)
 	NewTableExported.ColNamesLookup = map[string]int{}
-	NewTableExported.Rows = make([]TableRow, 0)
+	NewTableExported.Rows = make([]tableRow, 0)
 	return NewTableExported, nil
 }
 
@@ -714,7 +714,7 @@ func (table *Table) appendRowOfNil() error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
-	newRow := make(TableRow)
+	newRow := make(tableRow)
 	table.rows = append(table.rows, newRow)
 	return nil
 }
@@ -895,7 +895,7 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 /*
 This is for adding an entire new row of data to a table in bulk, so to speak.
 
-	var row gotable.TableRow = make(gotable.TableRow)
+	var row gotable.tableRow = make(gotable.tableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
 	err = table.appendRowMap(row)
@@ -903,7 +903,7 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	    panic(err)
 	}
 */
-func (table *Table) appendRowMap(newRow TableRow) error {
+func (table *Table) appendRowMap(newRow tableRow) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -1094,7 +1094,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowMap TableRow
+		var rowMap tableRow
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
@@ -1373,7 +1373,7 @@ func (table *Table) String() string {
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowMap TableRow
+		var rowMap tableRow
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
@@ -1632,7 +1632,7 @@ func (table *Table) StringCSV() string {
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		var rowSep = "\n"
-		var rowMap TableRow
+		var rowMap tableRow
 		rowMap, _ = table.rowMap(rowIndex)
 		var rowColSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -2066,7 +2066,7 @@ func (table *Table) RowCount() int {
 }
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
-func (table *Table) rowMap(rowIndex int) (TableRow, error) {
+func (table *Table) rowMap(rowIndex int) (tableRow, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -3063,7 +3063,7 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	// table.renameColCells()
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		// Get the row
-		var rowMap TableRow
+		var rowMap tableRow
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			return nil
@@ -3102,7 +3102,7 @@ func (table *Table) isValidRow(rowIndex int) (bool, error) {
 		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
-	var rowMap TableRow
+	var rowMap tableRow
 
 	rowMap, err = table.rowMap(rowIndex)
 	if err != nil {
@@ -3169,7 +3169,7 @@ func (table *Table) isValidTable() (bool, error) {
 		if isValid, err = table.isValidRow(rowIndex); !isValid {
 			return false, err
 		}
-		var rowMap TableRow
+		var rowMap tableRow
 		rowMap, err = table.rowMap(rowIndex)
 		if err != nil {
 			return false, err
