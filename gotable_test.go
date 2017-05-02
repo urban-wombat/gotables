@@ -375,11 +375,10 @@ func TestReadString8(t *testing.T) {
 
 // Testing struct using = with zero rows.
 func TestReadString9(t *testing.T) {
-fmt.Println("BEFORE")
 	table, err := NewTableFromString(
 		`[TableStruct]
-		i int =
-		j int =
+		i int
+		j int
 	`)
 	if err != nil {
 		t.Fatal(err)
@@ -408,15 +407,17 @@ fmt.Println("BEFORE")
 	}
 }
 
+// 02.05.2017
 // Testing struct without = having zero rows.
+// This is a struct format change to have = only if there is a value following it.
 func TestReadString10(t *testing.T) {
 	table, err := NewTableFromString(
-		`[TableStruct]
-		i int =
-		j int =
+		`[BlankTableStruct]
+		i int
+		j int
 	`)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 
 	tests := []struct {
@@ -425,7 +426,7 @@ func TestReadString10(t *testing.T) {
 		rowCount  int
 		succeeds  bool
 	}{
-		{"TableStruct", 2, 0, true},
+		{"BlankTableStruct", 2, 0, true},
 	}
 
 	for i, test := range tests {
@@ -439,6 +440,60 @@ func TestReadString10(t *testing.T) {
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
+	}
+// fmt.Println(table)
+}
+
+// 02.05.2017
+// Testing struct with name type = value
+// This is a struct format change to have = only if there is a value following it.
+func TestReadString11(t *testing.T) {
+	table, err := NewTableFromString(
+		`[ValuesTableStruct]
+		i int = 1
+		j int = 2
+		s string = "ABC"
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tests := []struct {
+		tableName string
+		colCount  int
+		rowCount  int
+		succeeds  bool
+	}{
+		{"ValuesTableStruct", 3, 1, true},
+	}
+
+	for i, test := range tests {
+
+		colCount := table.ColCount()
+		if colCount != test.colCount {
+			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+		}
+
+		rowCount := table.RowCount()
+		if rowCount != test.rowCount {
+			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+		}
+	}
+// fmt.Println(table)
+}
+
+// 02.05.2017
+// Testing struct with name type = value
+// This is a struct format change to have = only if there is a value following it.
+func TestReadString12(t *testing.T) {
+	_, err := NewTableFromString(
+		`[InvalidTableStruct]
+		i int =
+		j int =
+		s string =
+	`)
+	if err == nil {
+		t.Error(err)
 	}
 }
 
@@ -1389,20 +1444,20 @@ func BenchmarkGobDecode(b *testing.B) {
 func TestIsNumericColType(t *testing.T) {
 	tableString := `
     [table]
-	F_bool bool =
-	F_string string =
-	T_float32 float32 =
-	T_float64 float64 =
-	T_int int =
-	T_int16 int16 =
-	T_int32 int32 =
-	T_int64 int64 =
-	T_int8 int8 =
-	T_uint uint =
-	T_uint16 uint16 =
-	T_uint32 uint32 =
-	T_uint64 uint64 =
-	T_uint8 uint8 =
+	F_bool bool
+	F_string string
+	T_float32 float32
+	T_float64 float64
+	T_int int
+	T_int16 int16
+	T_int32 int32
+	T_int64 int64
+	T_int8 int8
+	T_uint uint
+	T_uint16 uint16
+	T_uint32 uint32
+	T_uint64 uint64
+	T_uint8 uint8
     `
 
 	tableSet, err := NewTableSetFromString(tableString)
@@ -1445,20 +1500,20 @@ func TestIsNumericColType(t *testing.T) {
 func TestAppendRow(t *testing.T) {
 	tableString := `
     [table]
-	F_bool bool =
-	F_string string =
-	T_float32 float32 =
-	T_float64 float64 =
-	T_int int =
-	T_int16 int16 =
-	T_int32 int32 =
-	T_int64 int64 =
-	T_int8 int8 =
-	T_uint uint =
-	T_uint16 uint16 =
-	T_uint32 uint32 =
-	T_uint64 uint64 =
-	T_uint8 uint8 =
+	F_bool bool
+	F_string string
+	T_float32 float32
+	T_float64 float64
+	T_int int
+	T_int16 int16
+	T_int32 int32
+	T_int64 int64
+	T_int8 int8
+	T_uint uint
+	T_uint16 uint16
+	T_uint32 uint32
+	T_uint64 uint64
+	T_uint8 uint8
     `
 
 	tableSet, err := NewTableSetFromString(tableString)
@@ -1500,20 +1555,20 @@ func TestAppendRow(t *testing.T) {
 func TestColCount(t *testing.T) {
 	tableString := `
     [table]
-	F_bool bool =
-	F_string string =
-	T_float32 float32 =
-	T_float64 float64 =
-	T_int int =
-	T_int16 int16 =
-	T_int32 int32 =
-	T_int64 int64 =
-	T_int8 int8 =
-	T_uint uint =
-	T_uint16 uint16 =
-	T_uint32 uint32 =
-	T_uint64 uint64 =
-	T_uint8 uint8 =
+	F_bool bool
+	F_string string
+	T_float32 float32
+	T_float64 float64
+	T_int int
+	T_int16 int16
+	T_int32 int32
+	T_int64 int64
+	T_int8 int8
+	T_uint uint
+	T_uint16 uint16
+	T_uint32 uint32
+	T_uint64 uint64
+	T_uint8 uint8
     `
 
 	tableSet, err := NewTableSetFromString(tableString)
@@ -1799,7 +1854,7 @@ func ExampleNewTableFromString() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
-		MyString string = "The answer to life, the universe and everything"
+		MyString string = "The answer to life, the universe and everything is forty-two."
 		MyInt int = 42`
 
 	table, err := NewTableFromString(tableString)
@@ -1824,13 +1879,13 @@ func ExampleNewTableFromString() {
 	// Output:
 	// [MyTable]
 	// MyBool bool = true
-	// MyString string = "The answer to life, the universe and everything"
+	// MyString string = "The answer to life, the universe and everything is forty-two."
 	// MyInt int = 42
 	//
 	// [MyTable]
-	// MyBool MyString                                          MyInt
-	// bool   string                                              int
-	// true   "The answer to life, the universe and everything"    42
+	// MyBool MyString                                                        MyInt
+	// bool   string                                                            int
+	// true   "The answer to life, the universe and everything is forty-two."    42
 }
 
 func ExampleNewTableFromFile() {

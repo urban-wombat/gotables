@@ -246,12 +246,37 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			const structNameIndex = 0
 			const structTypeIndex = 1
 			const structEqualsIndex = 2
-			const bareMinimumTokensForStructEquals = 3
-			const nameAndTypeOnlyTokenCount = bareMinimumTokensForStructEquals
+			const tokenCountForNameType = 2					// (a) name type
+			var isNameTypeStruct bool						// (a) name type
+			const minTokenCountForNameTypeEqualsValue = 4	// (b) name type = value
+			var isNameTypeEqualsValueStruct bool			// (b) name type = value
 
-			if len(lineSplit) >= bareMinimumTokensForStructEquals && lineSplit[structEqualsIndex] == "=" {
+			// This is a recognition step.
+			// Determine whether this is a candidate struct of either:
+			// (a) name type
+			// (b) name type = value
 
-				// (1) Get the table struct (name, type and optional value) of this line.
+			var lenLineSplit int = len(lineSplit)
+			var looksLikeStructShape bool
+			if lenLineSplit != tokenCountForNameType && lenLineSplit < minTokenCountForNameTypeEqualsValue {
+				looksLikeStructShape = false
+			} else if lenLineSplit == 2 {
+				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+				if secondTokenIsType {
+					isNameTypeStruct = true
+					looksLikeStructShape = true
+				}
+			} else {	// lenLineSplit must be >= 4
+				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+				if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
+					isNameTypeEqualsValueStruct = true
+					looksLikeStructShape = true
+				}
+			}
+
+			if looksLikeStructShape {
+
+				// (1) Get the table struct (name, type and optional equals value) of this line.
 
 				tableShape = _STRUCT_SHAPE
 				table.structShape = true
@@ -260,9 +285,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
 					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					return nil, fmt.Errorf("%s %s EXPECTING EQUALS", p.gotFilePos(), err)
-				}
-				if isValid, err = IsValidColType(colType); !isValid {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 				var colNameSlice []string = []string{colName}
@@ -275,18 +297,19 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 				// where(p.gotFilePos())
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
-				if table.ColCount() == 1 {
-					structHasRowData = len(lineSplit) > nameAndTypeOnlyTokenCount
+				if table.ColCount() == 1 {	// The first struct item.
+					structHasRowData = isNameTypeEqualsValueStruct
 					// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
 				}
 				// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
 
-				if structHasRowData && len(lineSplit) == nameAndTypeOnlyTokenCount {
-					// where("expecting SOME value")
-					return nil, fmt.Errorf("%s expecting a value after = but found: (nothing)", p.gotFilePos())
+				if structHasRowData && isNameTypeStruct {
+					return nil, fmt.Errorf("%s expecting: %s %s = <value> but found: %s %s",
+						p.gotFilePos(), colName, colType, lineSplit[0], lineSplit[1])
 				}
 
-				if !structHasRowData && len(lineSplit) > nameAndTypeOnlyTokenCount {
+/* Unreachable because len(lineSplit) here can only be 2 or 4.
+				if !structHasRowData && len(lineSplit) > tokenCountForNameType {
 					// An approximate way to construct text for the error message. Spacing may be different.
 					var remaining string
 					for i := 3; i < len(lineSplit); i++ {
@@ -294,6 +317,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					}
 					return nil, fmt.Errorf("%s expecting 0 values after = but found: %s", p.gotFilePos(), remaining)
 				}
+*/
 
 				if structHasRowData {
 					// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
@@ -302,6 +326,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					var rangeFound []int = equalsRegExp.FindStringIndex(line)
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
+//where()
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
 					// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
 					if err != nil {
@@ -309,6 +334,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						// where(err)
 						return nil, err
 					}
+//where()
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
@@ -352,7 +378,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColNames := len(parserColNames)
 			lenColTypes := len(parserColTypes)
 			if lenColTypes != lenColNames {
-				return nil, fmt.Errorf("%s expecting %d col type%s but found %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
+				return nil, fmt.Errorf("%s expecting: %d col type%s but found: %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
 			table.appendColTypes(parserColTypes)
 			expecting = _COL_ROWS
@@ -369,7 +395,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
-				return nil, fmt.Errorf("%s expecting %d value%s but found %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
+				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
 			table.appendRowMap(rowMap)
 			if err != nil {
@@ -395,6 +421,9 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 	}
 
 	tables, err := p.parseString(string(fileBytes))
+	if err != nil {
+		return nil, err
+	}
 
 	tables.SetFileName(fileName)
 
@@ -426,7 +455,7 @@ func (p *parser) getTableName(line string) (string, error) {
 
 	result := tableNameRegExp.MatchString(tableName)
 	if !result {
-		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name, eg [_Foo1Bar2] but found: %s", p.gotFilePos(), tableName)
+		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name, eg [_Foo2Bar3] but found: %s", p.gotFilePos(), tableName)
 	}
 
 	// Strip off surrounding []
@@ -441,7 +470,8 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 			if i == 1 {
 				_, contains := globalColTypesMap[colNames[1]]
 				if contains {
-					return nil, fmt.Errorf("%s %s Did you mean: %s %s =", p.gotFilePos(), err, colNames[0], colNames[1])
+					return nil, fmt.Errorf("%s %s did you perhaps mean either: %s %s or %s %s = <val>",
+						p.gotFilePos(), err, colNames[0], colNames[1], colNames[0], colNames[1])
 				} else {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) // Default error.
 				}
@@ -481,7 +511,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		msg := fmt.Sprintf("Invalid col type: %s (Valid types:", colType)
+		msg := fmt.Sprintf("invalid col type: %s (Valid types:", colType)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 		for typeName, _ := range globalColTypesMap {
 			msg += fmt.Sprintf(" %s", typeName)
@@ -517,12 +547,12 @@ func IsValidColName(colName string) (bool, error) {
 
 	result := colNameRegExp.MatchString(colName)
 	if !result {
-		return false, fmt.Errorf("Invalid col name: %q (Valid example: \"_Foo1Bar2\")", colName)
+		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
 	}
 
 	_, contains := globalColTypesMap[colName]
 	if contains {
-		return false, fmt.Errorf("Invalid col name: %s (cannot use Go builtin types as col names)", colName)
+		return false, fmt.Errorf("invalid col name: %s (cannot use Go types as col names)", colName)
 	}
 
 	return true, nil
@@ -532,7 +562,7 @@ func IsValidTableName(tableName string) (bool, error) {
 	// Same regular expression as table name without square brackets.
 	result := colNameRegExp.MatchString(tableName)
 	if !result {
-		return false, fmt.Errorf("Invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
+		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
 	}
 	return true, nil
 }
