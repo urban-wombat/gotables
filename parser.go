@@ -256,6 +256,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			// (a) name type
 			// (b) name type = value
 
+			// Note: strings can mean len(lineSplit) is > 4 but still valid. So can't just test for exactly 4.
 			var lenLineSplit int = len(lineSplit)
 			var looksLikeStructShape bool
 			if lenLineSplit != tokenCountForNameType && lenLineSplit < minTokenCountForNameTypeEqualsValue {
