@@ -334,7 +334,7 @@ func (tableSet *TableSet) Name() string {
 	return tableSet.tableSetName
 }
 
-func (tableSet *TableSet) SetTableSetName(tableSetName string) {
+func (tableSet *TableSet) SetName(tableSetName string) {
 	tableSet.tableSetName = tableSetName
 }
 

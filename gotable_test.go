@@ -2182,5 +2182,23 @@ func TestTableSet_FileName(t *testing.T) {
 	}
 }
 
-func TestTableSet_SetTableSetName(t *testing.T) {
+func TestTableSet_SetName(t *testing.T) {
+	expected := ""
+	tableSet, err := NewTableSet(expected)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableSetName := tableSet.Name()
+	if tableSetName != expected {
+		t.Error(fmt.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName))
+	}
+
+	
+	expected = "Musk"
+	tableSet.SetName(expected)
+	tableSetName = tableSet.Name()
+	if tableSetName != expected {
+		t.Error(fmt.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName))
+	}
 }
