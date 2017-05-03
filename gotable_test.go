@@ -2202,3 +2202,24 @@ func TestTableSet_SetName(t *testing.T) {
 		t.Error(fmt.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName))
 	}
 }
+
+func TestTable_SetName(t *testing.T) {
+	expected := ""
+	table, err := NewTable(expected)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableName := table.Name()
+	if tableName != expected {
+		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
+	}
+
+	
+	expected = "Elon"
+	table.SetName(expected)
+	tableName = table.Name()
+	if tableName != expected {
+		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
+	}
+}

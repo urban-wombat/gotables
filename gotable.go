@@ -650,7 +650,7 @@ type tableRows []tableRow
 func NewTable(tableName string) (*Table, error) {
 	var err error
 	var newTable *Table = new(Table)
-	err = newTable.SetTableName(tableName)
+	err = newTable.SetName(tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -2978,7 +2978,7 @@ type _RowAsInterface []interface{}
 // But for now we will use a map to store a Row for simplicity, even though it will take up more space.
 
 // alias of RenameTable()
-func (table *Table) SetTableName(tableName string) error {
+func (table *Table) SetName(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -3012,13 +3012,13 @@ func (table *TableExported) setTableNameExported(tableName string) error {
 }
 
 /*
-	Alias of SetTableName()
+	Alias of SetName()
 */
 func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
-	return table.SetTableName(tableName)
+	return table.SetName(tableName)
 }
 
 func (tableSet *TableSet) RenameTable(renameFrom string, renameTo string) error {
