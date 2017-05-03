@@ -270,7 +270,10 @@ func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, 
 				if table.RowCount() == rowIndex {
 					// Need exactly one new row.
 					//					where(fmt.Sprintf("??? then [%s].AddRow()", table.Name()))
-					table.AppendRow()
+					err = table.AppendRow()
+					if err != nil {
+						return nil, err
+					}
 				} else {
 					//					where(fmt.Sprintf("??? else NOT [%s].AddRow()", table.Name()))
 				}

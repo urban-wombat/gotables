@@ -572,7 +572,11 @@ func TestSetAndGetFunctions(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	table.AppendRow()
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
 
 	// Note: Tests are collected inside code blocks for human readability.
 
@@ -1387,8 +1391,12 @@ var tableSetString string = `
     `
 
 func BenchmarkNewTableSetFromString(b *testing.B) {
+	var err error
 	for i := 0; i < b.N; i++ {
-		NewTableSetFromString(tableSetString)
+		_, err = NewTableSetFromString(tableSetString)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -1866,7 +1874,7 @@ func ExampleNewTableFromString() {
 	fmt.Println(table)
 
 	// Now change its shape to tabular.
-	table.SetStructShape(false)
+	err = table.SetStructShape(false)
 	if err != nil {
 		panic(err)
 	}
@@ -1903,7 +1911,8 @@ func ExampleNewTableFromFile() {
 
 	// For testing, we need to write this out to a file so we can read it back.
 	fileName := "ExampleNewTableFromFile.txt"
-	err = ioutil.WriteFile(fileName, []byte(table1.String()), 0644)
+//	err = ioutil.WriteFile(fileName, []byte(table1.String()), 0644)
+	err = table1.WriteFile(fileName, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -1915,7 +1924,7 @@ func ExampleNewTableFromFile() {
 
 	fmt.Println(table2)
 
-	table2.SetStructShape(false)
+	err = table2.SetStructShape(false)
 	if err != nil {
 		panic(err)
 	}
@@ -2171,4 +2180,7 @@ func TestTableSet_FileName(t *testing.T) {
 	if fileName != actualFileName {
 		t.Error(fmt.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName))
 	}
+}
+
+func TestTableSet_SetTableSetName(t *testing.T) {
 }

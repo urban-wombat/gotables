@@ -341,7 +341,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
 					if table.RowCount() == 0 {
-						table.appendRowOfNil()
+						err = table.appendRowOfNil()
+						if err != nil {
+							return nil, err
+						}
 					}
 
 					var val interface{} = rowMapOfStruct[colName]
@@ -381,7 +384,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenColNames {
 				return nil, fmt.Errorf("%s expecting: %d col type%s but found: %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
-			table.appendColTypes(parserColTypes)
+			err = table.appendColTypes(parserColTypes)
+			if err != nil {
+				return nil, err
+			}
 			expecting = _COL_ROWS
 
 		case _COL_ROWS:
@@ -398,7 +404,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-			table.appendRowMap(rowMap)
+			err = table.appendRowMap(rowMap)
 			if err != nil {
 				return tables, err
 			}

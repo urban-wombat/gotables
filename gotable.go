@@ -146,7 +146,7 @@ func (table *Table) WriteFile(fileName string, mode os.FileMode) error {
 	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
-	where(fmt.Sprintf("mode = %v\n", mode))
+//	where(fmt.Sprintf("mode = %v\n", mode))
 	err = ioutil.WriteFile(fileName, table_Bytes, mode)
 
 	return err
@@ -486,7 +486,10 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 		return nil, err
 	}
 	for rowIndex := 0; rowIndex < len(thisTable.sortKeys); rowIndex++ {
-		keysTable.AppendRow()
+		err = keysTable.AppendRow()
+		if err != nil {
+			return nil, err
+		}
 		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)
 		if err != nil {
 			return nil, err
@@ -740,13 +743,19 @@ func (table *Table) AppendRow() error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
+
 	err := table.appendRowOfNil()
 	if err != nil {
 		return err
 	}
+
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
-	table.SetRowCellsToZeroValue(rowIndex)
+	err = table.SetRowCellsToZeroValue(rowIndex)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -1035,8 +1044,14 @@ func (table *Table) StringTabWriter() (string, error) {
 	//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
 	//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
 	fmt.Fprintf(tabWriter, table._String('\t')) // Write this table to tabWriter.
-	tabWriter.Flush()
-	bufWriter.Flush() // Necessary!
+	err := tabWriter.Flush()
+	if err != nil {
+		return "", err
+	}
+	err = bufWriter.Flush() // Necessary!
+	if err != nil {
+		return "", err
+	}
 	return buf.String(), nil
 }
 

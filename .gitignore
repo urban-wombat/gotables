@@ -224,3 +224,4 @@ ExampleNewGoTableFromFileByTableName.txt
 *.txt
 *.xml
 .idea/gotable.iml
+*.out
