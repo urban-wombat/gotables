@@ -2374,3 +2374,107 @@ func TestPrecisionOf(t *testing.T) {
 		}
 	}
 }
+
+func TestIsColTypeByColIndex(t *testing.T) {
+
+	tableString :=
+	`[ColTypes]
+	i int
+	b bool
+	s string
+	f64 float64
+	f32 float32
+	i32 int32
+	u64 uint64
+	u   uint
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		panic(err)	// We're not testing this function.
+	}
+
+	var tests = []struct {
+		colIndex int
+		colType string
+		expected bool
+	}{
+		{0, "int", true},
+		{1, "bool", true},
+		{2, "string", true},
+		{3, "float64", true},
+		{4, "float32", true},
+		{5, "int32", true},
+		{6, "uint64", true},
+		{7, "uint", true},
+		{0, "int15", false},
+		{1, "float64", false},
+		{2, "bool", false},
+		{3, "float", false},
+		{4, "String", false},
+		{5, "int16", false},
+		{6, "uint8", false},
+		{7, "int", false},
+	}
+
+	for _, test := range tests {
+		isColType, _ := table.IsColTypeByColIndex(test.colIndex, test.colType)
+		// Ignore err. Returns err if col type is false.
+		if isColType != test.expected {
+			t.Error(fmt.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t",
+				test.colIndex, test.colType, test.expected, isColType))
+		}
+	}
+}
+
+func TestIsColType(t *testing.T) {
+
+	tableString :=
+	`[ColTypes]
+	i int
+	b bool
+	s string
+	f64 float64
+	f32 float32
+	i32 int32
+	u64 uint64
+	u   uint
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		panic(err)	// We're not testing this function.
+	}
+
+	var tests = []struct {
+		colName string
+		colType string
+		expected bool
+	}{
+		{"i", "int", true},
+		{"b", "bool", true},
+		{"s", "string", true},
+		{"f64", "float64", true},
+		{"f32", "float32", true},
+		{"i32", "int32", true},
+		{"u64", "uint64", true},
+		{"u", "uint", true},
+		{"i", "int15", false},
+		{"b", "float64", false},
+		{"s", "bool", false},
+		{"f64", "float", false},
+		{"f32", "String", false},
+		{"i32", "int16", false},
+		{"u64", "uint8", false},
+		{"u", "int", false},
+	}
+
+	for _, test := range tests {
+		isColType, _ := table.IsColType(test.colName, test.colType)
+		// Ignore err. Returns err if col type is false.
+		if isColType != test.expected {
+			t.Error(fmt.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t",
+				test.colName, test.colType, test.expected, isColType))
+		}
+	}
+}
