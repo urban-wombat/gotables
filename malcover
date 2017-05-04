@@ -1,4 +1,6 @@
 # rm -f junk
   go test -coverprofile=c.out
 # go tool cover -func=c.out > junk; vi junk
-  go tool cover -func=c.out | more
+# go tool cover -func=c.out | more
+# go tool cover -func=c.out | sort -k 3 -n | more
+  go tool cover -func=c.out | egrep -v -f malcover-exclude.txt | sort -k 3 -n | more

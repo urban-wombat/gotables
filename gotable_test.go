@@ -1911,7 +1911,6 @@ func ExampleNewTableFromFile() {
 
 	// For testing, we need to write this out to a file so we can read it back.
 	fileName := "ExampleNewTableFromFile.txt"
-//	err = ioutil.WriteFile(fileName, []byte(table1.String()), 0644)
 	err = table1.WriteFile(fileName, 0644)
 	if err != nil {
 		panic(err)
@@ -1944,7 +1943,7 @@ func ExampleNewTableFromFile() {
 }
 
 func ExampleNewTableFromFileByTableName() {
-	tableString := `
+	tableSetString := `
 	[MyTable]
 	MyBool bool = true
 	MyString string = "The answer to life, the universe and everything"
@@ -1956,8 +1955,12 @@ func ExampleNewTableFromFileByTableName() {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
+	tableSet, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		panic(err)
+	}
 	fileName := "ExampleNewTableFromFileByTableName.txt"
-	err := ioutil.WriteFile(fileName, []byte(tableString), 0644)
+	err = tableSet.WriteFile(fileName, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -2204,7 +2207,7 @@ func TestTableSet_SetName(t *testing.T) {
 }
 
 func TestTable_SetName(t *testing.T) {
-	expected := ""
+	expected := "InitialName"
 	table, err := NewTable(expected)
 	if err != nil {
 		t.Error(err)
@@ -2221,5 +2224,71 @@ func TestTable_SetName(t *testing.T) {
 	tableName = table.Name()
 	if tableName != expected {
 		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
+	}
+}
+
+func TestMissingValueForType(t *testing.T) {
+	var tests = []struct {
+		typeName string
+		expected bool
+	}{
+		{"string", false},
+		{"bool", false},
+		{"int", false},
+		{"int32", false},
+		{"int64", false},
+		{"uint", false},
+		{"float32", true},
+		{"float64", true},
+	}
+
+	for _, test := range tests {
+
+		_, hasMissing := missingValueForType(test.typeName)
+		if hasMissing != test.expected {
+			t.Error(fmt.Errorf("Expecting missingValueForType(%q) = %t but found %t",
+				test.typeName, test.expected, hasMissing))
+		}
+	}
+}
+
+func TestPreNumberOf(t *testing.T) {
+	var tests = []struct {
+		sNumber string
+		expected int
+	}{
+		{"0.32", 1},
+		{"0.64", 1},
+		{"-0", 2},
+		{"0", 1},
+		{"0", 1},
+		{"0", 1},
+		{"1", 1},
+		{"1", 1},
+		{"-11", 3},
+		{"-11", 3},
+		{"1111", 4},
+		{"1111", 4},
+		{"0.1", 1},
+		{"0.1", 1},
+		{"0.11", 1},
+		{"0.11", 1},
+		{"-0.1112", 2},
+		{"0.1112", 1},
+		{"0.111236", 1},
+		{"0.11123", 1},
+		{"NaN", 3},
+		{"NaN", 3},
+		{"32", 2},
+		{"64", 2},
+	}
+
+	for _, test := range tests {
+
+		preNumber := preNumberOf(test.sNumber)
+		if preNumber != test.expected {
+			t.Error(fmt.Errorf("Expecting preNumberOf(%q) = %d but found %d",
+				test.expected, preNumber, preNumber))
+		}
 	}
 }

@@ -126,7 +126,7 @@ func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
 	if mode == 0 { // No permissions set.
 		mode = 0666
 	}
-	where(fmt.Sprintf("mode = %v\n", mode))
+	// where(fmt.Sprintf("mode = %v\n", mode))
 	err = ioutil.WriteFile(fileName, tableSet_Bytes, mode)
 
 	return err
@@ -1011,8 +1011,7 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 /*
 Return a missing value for a type. The only types that have a good enough missing value are float32 and float64 with NaN.
 */
-func missingValueForType(typeName string) (interface{}, bool) {
-	var missingValue interface{}
+func missingValueForType(typeName string) (missingValue interface{}, hasMissing bool) {
 	switch typeName {
 	case "float32", "float64":
 		missingValue = math.NaN()
@@ -1581,14 +1580,17 @@ func printStruct(table *Table) string {
 	return s
 }
 
-func prenumberOf(s string) (prenumber int) {
+// The number of chars before the decimal point (if any decimal point).
+// If no decimal point, that implies: the number of chars in the entire string.
+// Pretends that there is a decimal point to the right of the string.
+func preNumberOf(s string) (prenumber int) {
 	index := strings.Index(s, ".")
 	if index >= 0 {
 		prenumber = index
 	} else {
 		prenumber = len(s)
 	}
-	//	where(fmt.Sprintf("prenumber of %q = %d\n", s, prenumber))
+	// where(fmt.Sprintf("prenumber of %q = %d\n", s, prenumber))
 	return prenumber
 }
 
@@ -1615,7 +1617,7 @@ func precisionOf(s string) (precision int) {
 }
 
 func setWidths(s string, colIndex int, prenum []int, points []int, precis []int, width []int) {
-	prenum[colIndex] = max(prenum[colIndex], prenumberOf(s))
+	prenum[colIndex] = max(prenum[colIndex], preNumberOf(s))
 	points[colIndex] = max(points[colIndex], pointsOf(s))
 	precis[colIndex] = max(precis[colIndex], precisionOf(s))
 	thisWidth := prenum[colIndex] + points[colIndex] + precis[colIndex]
