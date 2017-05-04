@@ -2288,7 +2288,48 @@ func TestPreNumberOf(t *testing.T) {
 		preNumber := preNumberOf(test.sNumber)
 		if preNumber != test.expected {
 			t.Error(fmt.Errorf("Expecting preNumberOf(%q) = %d but found %d",
-				test.expected, preNumber, preNumber))
+				test.sNumber, test.expected, preNumber))
+		}
+	}
+}
+
+func TestPointsOf(t *testing.T) {
+	var tests = []struct {
+		sNumber string
+		expected int
+	}{
+		{"0.32", 1},
+		{"0.64", 1},
+		{"-0", 0},
+		{"0", 0},
+		{"0", 0},
+		{"0", 0},
+		{"1", 0},
+		{"1", 0},
+		{"-11", 0},
+		{"-11", 0},
+		{"1111", 0},
+		{"1111", 0},
+		{"0.1", 1},
+		{"0.1", 1},
+		{"0.11", 1},
+		{"0.11", 1},
+		{"-0.1112", 1},
+		{"0.1112", 1},
+		{"0.111236", 1},
+		{"0.11123", 1},
+		{"NaN", 0},
+		{"NaN", 0},
+		{"32", 0},
+		{"64", 0},
+	}
+
+	for _, test := range tests {
+
+		points := pointsOf(test.sNumber)
+		if points != test.expected {
+			t.Error(fmt.Errorf("Expecting pointsOf(%q) = %d but found %d",
+				test.sNumber, test.expected, points))
 		}
 	}
 }

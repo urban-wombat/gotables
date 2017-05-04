@@ -1580,7 +1580,7 @@ func printStruct(table *Table) string {
 	return s
 }
 
-// The number of chars before the decimal point (if any decimal point).
+// How many chars before the decimal point (if any decimal point) does this string have?
 // If no decimal point, that implies: the number of chars in the entire string.
 // Pretends that there is a decimal point to the right of the string.
 func preNumberOf(s string) (prenumber int) {
@@ -1594,6 +1594,7 @@ func preNumberOf(s string) (prenumber int) {
 	return prenumber
 }
 
+// How many decimal points (zero or one) does this string have?
 func pointsOf(s string) (points int) {
 	index := strings.Index(s, ".")
 	if index >= 0 {
@@ -1601,7 +1602,7 @@ func pointsOf(s string) (points int) {
 	} else {
 		points = 0
 	}
-	//	where(fmt.Sprintf("points of %q = %d\n", s, points))
+	// where(fmt.Sprintf("points of %q = %d\n", s, points))
 	return points
 }
 
@@ -1612,7 +1613,7 @@ func precisionOf(s string) (precision int) {
 	} else {
 		precision = 0
 	}
-	//	where(fmt.Sprintf("precision of %q = %d\n", s, precision))
+	// where(fmt.Sprintf("precision of %q = %d\n", s, precision))
 	return precision
 }
 
