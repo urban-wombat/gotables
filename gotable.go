@@ -434,6 +434,7 @@ type SortKey struct {
 	sortFunc compareFunc
 }
 
+// For GOB encoding and GOB decoding, which requires items to be exported.
 type SortKeyExported struct {
 	ColName  string
 	ColType  string
@@ -525,6 +526,7 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 		err := table.AppendSortKey(colName)
 		if err != nil {
 			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
+where(errSortKey)
 			return errSortKey
 		}
 	}
@@ -539,15 +541,15 @@ Example 1: SetSortKeysReverse("col1","col3")
 
 Example 2: SetSortKeysReverse([]string{"col1","col3"}...)
 */
-func (table *Table) SetSortKeysReverse(sortColNames ...string) error {
+func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 
-	for _, colName := range sortColNames {
+	for _, colName := range reverseSortColNames {
 		err := table.setSortKeyReverse(colName)
 		if err != nil {
-			errSortKey := errors.New(fmt.Sprintf("SetSortKeysReverse(%v): %v\n", sortColNames, err))
+			errSortKey := errors.New(fmt.Sprintf("SetSortKeysReverse(%v): %v\n", reverseSortColNames, err))
 			return errSortKey
 		}
 	}
@@ -564,14 +566,14 @@ func (table *Table) setSortKeyReverse(colName string) error {
 		return err
 	}
 	var found bool = false
-	//where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
+	// where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
 	for i, sortKey := range table.sortKeys {
 		if sortKey.colName == colName {
 			table.sortKeys[i].reverse = true
 			found = true
 		}
 	}
-	//where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
+	// where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
 	if !found {
 		err := errors.New(fmt.Sprintf("SortKey not found: %q", colName))
 		return err

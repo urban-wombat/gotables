@@ -2038,6 +2038,7 @@ func ExampleTable_DeleteRows() {
 }
 
 func ExampleTable_JoinColVals() {
+
 	tableString := `
 	[commands]
 	command
@@ -2071,6 +2072,7 @@ func ExampleTable_JoinColVals() {
 }
 
 func ExampleTable_JoinColValsByColIndex() {
+
 	tableString := `
 	[commands]
 	command
@@ -2477,4 +2479,252 @@ func TestIsColType(t *testing.T) {
 				test.colName, test.colType, test.expected, isColType))
 		}
 	}
+}
+
+func ExampleTable_SetSortKeys() {
+	tableString :=
+	`[planets]
+	name         mass distance
+	string    float64  float64
+	"Mercury"   0.055      0.4
+	"Venus"     0.815      0.7
+	"Earth"     1.000      1.0
+	"Mars"      0.107      1.5
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Unsorted table:")
+	fmt.Println(table)
+
+	// First let's sort the table by name.
+	table.SetSortKeys("name")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Sorted table by name:")
+	fmt.Println(table)
+
+	// Now let's sort the table by name but this time in reverse.
+	table.SetSortKeys("name")
+	if err != nil {
+		panic(err)
+	}
+	table.SetSortKeysReverse("name")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Sorted table by name in reverse:")
+	fmt.Println(table)
+
+	// Output:
+	// Unsorted table:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Mercury"   0.055      0.4
+	// "Venus"     0.815      0.7
+	// "Earth"     1.000      1.0
+	// "Mars"      0.107      1.5
+	//
+	// Sorted table by name:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Earth"     1.000      1.0
+	// "Mars"      0.107      1.5
+	// "Mercury"   0.055      0.4
+	// "Venus"     0.815      0.7
+	//
+	// Sorted table by name in reverse:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Venus"     0.815      0.7
+	// "Mercury"   0.055      0.4
+	// "Mars"      0.107      1.5
+	// "Earth"     1.000      1.0
+}
+
+func ExampleTable_Sort() {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(1) Unsorted table:")
+	fmt.Println(table)
+
+	// Sort the table by user.
+	table.SetSortKeys("user")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(2) Sorted by user:")
+	fmt.Println(table)
+
+	// Sort by user and lines.
+	table.SetSortKeys("user", "lines")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(3) Sorted by user and lines:")
+	fmt.Println(table)
+
+	// Sort the table by user but reverse lines.
+	table.SetSortKeys("user", "lines")
+	if err != nil {
+		panic(err)
+	}
+	table.SetSortKeysReverse("lines")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(4) Sort by user but reverse lines:")
+	fmt.Println(table)
+
+	// Sort the table by language and lines.
+	table.SetSortKeys("language", "lines")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(5) Sort by language and lines:")
+	fmt.Println(table)
+
+	// Sort the table by language and lines and user.
+	table.SetSortKeys("language", "lines", "user")
+	if err != nil {
+		panic(err)
+	}
+	table.Sort()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("(6) Sort by language and lines and user:")
+	fmt.Println(table)
+
+	// Output:
+	// (1) Unsorted table:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "gri"    "Go"          100
+	// "ken"    "C"           150
+	// "glenda" "Go"          200
+	// "rsc"    "Go"          200
+	// "r"      "Go"          100
+	// "ken"    "Go"          200
+	// "dmr"    "C"           100
+	// "r"      "C"           150
+	// "gri"    "Smalltalk"    80
+	// 
+	// (2) Sorted by user:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "glenda" "Go"          200
+	// "gri"    "Go"          100
+	// "gri"    "Smalltalk"    80
+	// "ken"    "C"           150
+	// "ken"    "Go"          200
+	// "r"      "Go"          100
+	// "r"      "C"           150
+	// "rsc"    "Go"          200
+	// 
+	// (3) Sorted by user and lines:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "glenda" "Go"          200
+	// "gri"    "Smalltalk"    80
+	// "gri"    "Go"          100
+	// "ken"    "C"           150
+	// "ken"    "Go"          200
+	// "r"      "Go"          100
+	// "r"      "C"           150
+	// "rsc"    "Go"          200
+	// 
+	// (4) Sort by user but reverse lines:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "glenda" "Go"          200
+	// "gri"    "Go"          100
+	// "gri"    "Smalltalk"    80
+	// "ken"    "Go"          200
+	// "ken"    "C"           150
+	// "r"      "C"           150
+	// "r"      "Go"          100
+	// "rsc"    "Go"          200
+	// 
+	// (5) Sort by language and lines:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "ken"    "C"           150
+	// "r"      "C"           150
+	// "r"      "Go"          100
+	// "gri"    "Go"          100
+	// "ken"    "Go"          200
+	// "glenda" "Go"          200
+	// "rsc"    "Go"          200
+	// "gri"    "Smalltalk"    80
+	// 
+	// (6) Sort by language and lines and user:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "ken"    "C"           150
+	// "r"      "C"           150
+	// "gri"    "Go"          100
+	// "r"      "Go"          100
+	// "glenda" "Go"          200
+	// "ken"    "Go"          200
+	// "rsc"    "Go"          200
+	// "gri"    "Smalltalk"    80
 }
