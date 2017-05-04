@@ -2333,3 +2333,44 @@ func TestPointsOf(t *testing.T) {
 		}
 	}
 }
+
+func TestPrecisionOf(t *testing.T) {
+	var tests = []struct {
+		sNumber string
+		expected int
+	}{
+		{"0.32", 2},
+		{"0.64", 2},
+		{"-0", 0},
+		{"0", 0},
+		{"0", 0},
+		{"0", 0},
+		{"1", 0},
+		{"1", 0},
+		{"-11", 0},
+		{"-11", 0},
+		{"1111", 0},
+		{"1111", 0},
+		{"0.1", 1},
+		{"0.1", 1},
+		{"0.11", 2},
+		{"0.11", 2},
+		{"-0.1112", 4},
+		{"0.1112", 4},
+		{"0.111236", 6},
+		{"0.11123", 5},
+		{"NaN", 0},
+		{"NaN", 0},
+		{"32", 0},
+		{"64", 0},
+	}
+
+	for _, test := range tests {
+
+		precision := precisionOf(test.sNumber)
+		if precision != test.expected {
+			t.Error(fmt.Errorf("Expecting precisionOf(%q) = %d but found %d",
+				test.sNumber, test.expected, precision))
+		}
+	}
+}
