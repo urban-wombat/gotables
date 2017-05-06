@@ -3,6 +3,7 @@ package gotable
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -501,7 +502,7 @@ func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
 	tableSet, err := NewTableSet(tableSetName)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	tableCount := tableSet.TableCount()
 	name := tableSet.Name()
@@ -1867,7 +1868,7 @@ func ExampleNewTableFromString() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	// Print the table in its original struct shape.
@@ -1876,7 +1877,7 @@ func ExampleNewTableFromString() {
 	// Now change its shape to tabular.
 	err = table.SetStructShape(false)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	// The table is now printed as a single row of data.
@@ -1906,26 +1907,26 @@ func ExampleNewTableFromFile() {
 
 	table1, err := NewTableFromStringByTableName(tableString, "MyTable")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	// For testing, we need to write this out to a file so we can read it back.
 	fileName := "ExampleNewTableFromFile.txt"
 	err = table1.WriteFile(fileName, 0644)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	table2, err := NewTableFromFile(fileName)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table2)
 
 	err = table2.SetStructShape(false)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table2)
@@ -1957,17 +1958,17 @@ func ExampleNewTableFromFileByTableName() {
 	// For testing, we need to write this out to a file so we can read it back.
 	tableSet, err := NewTableSetFromString(tableSetString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fileName := "ExampleNewTableFromFileByTableName.txt"
 	err = tableSet.WriteFile(fileName, 0644)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	table, err := NewTableFromFileByTableName(fileName, "MyTable")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table)
@@ -1998,14 +1999,14 @@ func ExampleTable_DeleteRows() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table)
 
 	err = table.DeleteRows(4, 6)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table)
@@ -2049,14 +2050,14 @@ func ExampleTable_JoinColVals() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table)
 
 	joined, err := table.JoinColVals("command", " | ")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(joined)
@@ -2083,7 +2084,7 @@ func ExampleTable_JoinColValsByColIndex() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(table)
@@ -2091,7 +2092,7 @@ func ExampleTable_JoinColValsByColIndex() {
 	colIndex := 0
 	joined, err := table.JoinColValsByColIndex(colIndex, " | ")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	fmt.Println(joined)
@@ -2173,12 +2174,12 @@ func TestTableSet_FileName(t *testing.T) {
 	actualFileName := funcName() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
-		panic(err)
+		t.Error(err)
 	}
 
 	tables, err := NewTableSetFromFile(actualFileName)
 	if err != nil {
-		panic(err)
+		t.Error(err)
 	}
 
 	fileName := tables.FileName()
@@ -2222,7 +2223,9 @@ func TestTable_SetName(t *testing.T) {
 
 	
 	expected = "Elon"
-	table.SetName(expected)
+	if err = table.SetName(expected); err != nil {
+		t.Error(err)
+	}
 	tableName = table.Name()
 	if tableName != expected {
 		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
@@ -2393,7 +2396,7 @@ func TestIsColTypeByColIndex(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)	// We're not testing this function.
+		t.Error(err)	// We're not testing this function.
 	}
 
 	var tests = []struct {
@@ -2445,7 +2448,7 @@ func TestIsColType(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)	// We're not testing this function.
+		t.Error(err)	// We're not testing this function.
 	}
 
 	var tests = []struct {
@@ -2481,7 +2484,7 @@ func TestIsColType(t *testing.T) {
 	}
 }
 
-func ExampleTable_SetSortKeys() {
+func ExampleTable_Sort() {
 	tableString :=
 	`[planets]
 	name         mass distance
@@ -2494,41 +2497,38 @@ func ExampleTable_SetSortKeys() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	fmt.Println("Unsorted table:")
+	fmt.Println("(1) Unsorted table:")
 	fmt.Println(table)
 
 	// First let's sort the table by name.
 	table.SetSortKeys("name")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	fmt.Println("Sorted table by name:")
+	fmt.Println("(2) Sorted table by name:")
 	fmt.Println(table)
 
 	// Now let's sort the table by name but this time in reverse.
-	table.SetSortKeys("name")
+	err = table.SetSortKeys("name")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	table.SetSortKeysReverse("name")
+	err = table.SetSortKeysReverse("name")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Sorted table by name in reverse:")
+	fmt.Println("(3) Sorted table by name in reverse:")
 	fmt.Println(table)
 
 	// Output:
-	// Unsorted table:
+	// (1) Unsorted table:
 	// [planets]
 	// name         mass distance
 	// string    float64  float64
@@ -2537,7 +2537,7 @@ func ExampleTable_SetSortKeys() {
 	// "Earth"     1.000      1.0
 	// "Mars"      0.107      1.5
 	//
-	// Sorted table by name:
+	// (2) Sorted table by name:
 	// [planets]
 	// name         mass distance
 	// string    float64  float64
@@ -2546,7 +2546,7 @@ func ExampleTable_SetSortKeys() {
 	// "Mercury"   0.055      0.4
 	// "Venus"     0.815      0.7
 	//
-	// Sorted table by name in reverse:
+	// (3) Sorted table by name in reverse:
 	// [planets]
 	// name         mass distance
 	// string    float64  float64
@@ -2556,7 +2556,7 @@ func ExampleTable_SetSortKeys() {
 	// "Earth"     1.000      1.0
 }
 
-func ExampleTable_Sort() {
+func ExampleTable_SetSortKeys() {
 	tableString :=
 	`[changes]
 	user     language    lines
@@ -2574,71 +2574,70 @@ func ExampleTable_Sort() {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(1) Unsorted table:")
 	fmt.Println(table)
 
 	// Sort the table by user.
-	table.SetSortKeys("user")
-	if err != nil {
-		panic(err)
+	if err = table.SetSortKeys("user"); err != nil {
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(2) Sorted by user:")
 	fmt.Println(table)
 
 	// Sort by user and lines.
-	table.SetSortKeys("user", "lines")
+	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(3) Sorted by user and lines:")
 	fmt.Println(table)
 
 	// Sort the table by user but reverse lines.
-	table.SetSortKeys("user", "lines")
+	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	table.SetSortKeysReverse("lines")
+	err = table.SetSortKeysReverse("lines")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(4) Sort by user but reverse lines:")
 	fmt.Println(table)
 
 	// Sort the table by language and lines.
-	table.SetSortKeys("language", "lines")
+	err = table.SetSortKeys("language", "lines")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(5) Sort by language and lines:")
 	fmt.Println(table)
 
 	// Sort the table by language and lines and user.
-	table.SetSortKeys("language", "lines", "user")
+	err = table.SetSortKeys("language", "lines", "user")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	table.Sort()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	fmt.Println("(6) Sort by language and lines and user:")
 	fmt.Println(table)

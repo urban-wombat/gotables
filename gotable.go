@@ -509,13 +509,17 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 }
 
 /*
-Call with an argument list, or a slice of string followed by ...
+Call with an argument list, or a slice of string followed by an ellipsis ...
 
-Pass sort keys as separate arguments:
-	SetSortKeys("col1","col2","col3")
+(1) Pass sort keys as separate arguments:
+	err = table.SetSortKeys("col1","col2","col3")
 
-Pass sort keys as a slice:
-	SetSortKeys([]string{"col1","col2","col3"}...)
+(2) Pass sort keys as a slice:
+	err = table.SetSortKeys([]string{"col1","col2","col3"}...)
+
+(3) Pass sort keys as a slice:
+	sortColNames := []string{"col1","col2","col3"}
+	err = table.SetSortKeys(sortColNames...)
 */
 func (table *Table) SetSortKeys(sortColNames ...string) error {
 	if table == nil {
@@ -526,7 +530,7 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 		err := table.AppendSortKey(colName)
 		if err != nil {
 			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
-where(errSortKey)
+			// where(fmt.Sprintf("ERROR IN SetSortKeys(): %v", errSortKey))
 			return errSortKey
 		}
 	}
