@@ -2642,6 +2642,13 @@ func ExampleTable_SetSortKeys() {
 	fmt.Println("(6) Sort by language and lines and user:")
 	fmt.Println(table)
 
+	keysTable, err := table.GetSortKeysAsTable()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(7) SortKeys as a table:")
+	fmt.Println(keysTable)
+
 	// Output:
 	// (1) Unsorted table:
 	// [changes]
@@ -2726,4 +2733,12 @@ func ExampleTable_SetSortKeys() {
 	// "ken"    "Go"          200
 	// "rsc"    "Go"          200
 	// "gri"    "Smalltalk"    80
+	// 
+	// (7) SortKeys as a table:
+	// [sortKeys]
+	// colName    colType  reverse
+	// string     string   bool
+	// "language" "string" false
+	// "lines"    "int"    false
+	// "user"     "string" false
 }

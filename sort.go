@@ -5,6 +5,9 @@ Functions and methods for sorting Table tables.
 package gotable
 
 import (
+	"errors"
+	"fmt"
+	"os"
 	"sort"
 	"strings"
 )
@@ -30,6 +33,211 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+type SortKey struct {
+	colName  string
+	colType  string
+	reverse  bool
+	sortFunc compareFunc
+}
+
+// For GOB encoding and GOB decoding, which requires items to be exported.
+type SortKeyExported struct {
+	ColName  string
+	ColType  string
+	Reverse  bool
+	SortFunc compareFunc
+}
+
+func (key SortKey) String() string {
+	return fmt.Sprintf("{colName:%q,colType:%q,reverse:%t}", key.colName, key.colType, key.reverse)
+}
+
+type SortKeys []SortKey
+
+func (keys SortKeys) String() string {
+	if keys == nil {
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(SortKeys) SortKeys is <nil>\n", funcName()))
+		return ""
+	}
+	// where(fmt.Sprintf("len(keys) = %d\n", len(keys)))
+	var s string = "SortKeys["
+	keySep := ""
+	for _, key := range keys {
+		s += keySep + key.String()
+		keySep = ","
+	}
+	s += "]"
+	return s
+}
+
+func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
+	if thisTable == nil {
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	var keysTable *Table
+	var err error
+	keysTable, err = NewTable("sortKeys")
+	if err != nil {
+		return nil, err
+	}
+	err = keysTable.AppendCol("colName", "string")
+	if err != nil {
+		return nil, err
+	}
+	err = keysTable.AppendCol("colType", "string")
+	if err != nil {
+		return nil, err
+	}
+	err = keysTable.AppendCol("reverse", "bool")
+	if err != nil {
+		return nil, err
+	}
+	for rowIndex := 0; rowIndex < len(thisTable.sortKeys); rowIndex++ {
+		err = keysTable.AppendRow()
+		if err != nil {
+			return nil, err
+		}
+		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)
+		if err != nil {
+			return nil, err
+		}
+		err = keysTable.SetString("colType", rowIndex, thisTable.sortKeys[rowIndex].colType)
+		if err != nil {
+			return nil, err
+		}
+		err = keysTable.SetBool("reverse", rowIndex, thisTable.sortKeys[rowIndex].reverse)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return keysTable, nil
+}
+
+/*
+Call with an argument list, or a slice of string followed by an ellipsis ...
+
+(1) Pass sort keys as separate arguments:
+	err = table.SetSortKeys("col1","col2","col3")
+
+(2) Pass sort keys as a slice:
+	err = table.SetSortKeys([]string{"col1","col2","col3"}...)
+
+(3) Pass sort keys as a slice:
+	sortColNames := []string{"col1","col2","col3"}
+	err = table.SetSortKeys(sortColNames...)
+*/
+func (table *Table) SetSortKeys(sortColNames ...string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	table.sortKeys = newSortKeys() // Replace any existing sort keys.
+	for _, colName := range sortColNames {
+		err := table.AppendSortKey(colName)
+		if err != nil {
+			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
+			// where(fmt.Sprintf("ERROR IN SetSortKeys(): %v", errSortKey))
+			return errSortKey
+		}
+	}
+	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
+	return nil
+}
+
+/*
+Call with an argument list, or a slice of string followed by ...
+
+Example 1: SetSortKeysReverse("col1","col3")
+
+Example 2: SetSortKeysReverse([]string{"col1","col3"}...)
+*/
+func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+
+	for _, colName := range reverseSortColNames {
+		err := table.setSortKeyReverse(colName)
+		if err != nil {
+			errSortKey := errors.New(fmt.Sprintf("SetSortKeysReverse(%v): %v\n", reverseSortColNames, err))
+			return errSortKey
+		}
+	}
+	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
+	return nil
+}
+
+func (table *Table) setSortKeyReverse(colName string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	if len(table.sortKeys) == 0 {
+		err := errors.New(fmt.Sprintf("must call SetSortKeys() before calling SetSortKeysReverse()"))
+		return err
+	}
+	var found bool = false
+	// where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
+	for i, sortKey := range table.sortKeys {
+		if sortKey.colName == colName {
+			table.sortKeys[i].reverse = true
+			found = true
+		}
+	}
+	// where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
+	if !found {
+		err := errors.New(fmt.Sprintf("SortKey not found: %q", colName))
+		return err
+	}
+
+	return nil
+}
+
+func (table *Table) AppendSortKey(colName string) error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	//	where(fmt.Sprintf("AppendSortKey(%q)\n", colName))
+	colInfo, err := table.colInfo(colName)
+	if err != nil {
+		// Col doesn't exist.
+		return err
+	}
+
+	var key SortKey
+	key.colName = colName
+
+	var colType = colInfo.colType
+	if len(colType) == 0 {
+		return errors.New(fmt.Sprintf("table [%s]: Unknown colType for col: %q", table.Name(), colName))
+	}
+	key.colType = colType
+
+	sortFunc, exists := compareFuncs[colType]
+	if !exists { // Error occurs only during software development if a type has not been handled.
+		return errors.New(fmt.Sprintf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.Name(), colName, colType, colType))
+	}
+
+	key.sortFunc = sortFunc
+	table.sortKeys = append(table.sortKeys, key)
+
+	return nil
+}
+
+func (table *Table) SortKeys() (SortKeys, error) {
+	if table == nil {
+		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	return table.sortKeys, nil
+}
+
+func (table *Table) getColNames() []string {
+	if table == nil {
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		return nil
+	}
+	return table.colNames
+}
 
 // Sorting functions:
 
