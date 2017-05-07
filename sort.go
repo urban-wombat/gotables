@@ -462,6 +462,11 @@ func (table tableSortable) Less(i, j int) bool {
 	return table.less(table.rows[i], table.rows[j])
 }
 
+/*
+	Sort this table by this table's currently-set sort keys.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+*/
 func (table *Table) Sort() {
 	table.sortByKeys(table.sortKeys)
 }

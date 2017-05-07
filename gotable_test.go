@@ -1,6 +1,7 @@
 package gotable
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -2741,4 +2742,113 @@ func ExampleTable_SetSortKeys() {
 	//   0 "language" "string" false
 	//   1 "lines"    "int"    false
 	//   2 "user"     "string" false
+}
+
+func ExampleTable_GobEncode_table() {
+	tableToEncode, err := NewTableFromString(`[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+	`)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(1) Table ready to encode into binary.")
+	fmt.Println(tableToEncode)
+
+	// Encode into binary.
+    var binary bytes.Buffer
+    binary, err = tableToEncode.GobEncode()
+    if err != nil {
+		log.Println(err)
+    }
+
+	// Now decode it back from binary to type *gotable.Table
+    tableDecoded, err := GobDecodeTable(binary)
+    if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(2) Table decoded from binary.")
+	fmt.Println(tableDecoded)
+
+	// Output:
+	// (1) Table ready to encode into binary.
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+	// 
+	// (2) Table decoded from binary.
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+}
+
+func ExampleTable_GobEncode_tableset() {
+	tableSetToEncode, err := NewTableSetFromString(`[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+
+	[Another_Table]
+	Fred int = 42
+	Wilma int = 39
+	Pebbles int = 2
+	`)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(1) TableSet ready to encode into binary.")
+	fmt.Println(tableSetToEncode)
+
+	// Encode into binary.
+    var binary []bytes.Buffer
+    binary, err = tableSetToEncode.GobEncode()
+    if err != nil {
+		log.Println(err)
+    }
+
+	// Now decode it back from binary to type *gotable.TableSet
+    tableSetDecoded, err := GobDecodeTableSet(binary)
+    if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(2) TableSet decoded from binary.")
+	fmt.Println(tableSetDecoded)
+
+	// Output:
+	// (1) TableSet ready to encode into binary.
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+	// 
+	// [Another_Table]
+	// Fred int = 42
+	// Wilma int = 39
+	// Pebbles int = 2
+	// 
+	// (2) TableSet decoded from binary.
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+	// 
+	// [Another_Table]
+	// Fred Wilma Pebbles
+	//  int   int     int
+	//   42    39       2
 }
