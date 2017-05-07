@@ -2745,13 +2745,14 @@ func ExampleTable_SetSortKeys() {
 }
 
 func ExampleTable_GobEncode_table() {
-	tableToEncode, err := NewTableFromString(`[sable_fur]
-    i   s       f           b
-    int string  float64     bool
-    1   "abc"   2.3         true
-    2   "xyz"   4.5         false
-    3   "ssss"  4.9         false
-	`)
+	s := `[sable_fur]
+    i   s      f       b
+    int string float64 bool
+    1   "abc"  2.3     true
+    2   "xyz"  4.5     false
+    3   "ssss" 4.9     false
+	`
+	tableToEncode, err := NewTableFromString(s)
 	if err != nil {
 		log.Println(err)
 	}
@@ -2792,7 +2793,7 @@ func ExampleTable_GobEncode_table() {
 }
 
 func ExampleTable_GobEncode_tableset() {
-	tableSetToEncode, err := NewTableSetFromString(`[sable_fur]
+	s := `[sable_fur]
     i   s       f           b
     int string  float64     bool
     1   "abc"   2.3         true
@@ -2803,7 +2804,8 @@ func ExampleTable_GobEncode_tableset() {
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
-	`)
+	`
+	tableSetToEncode, err := NewTableSetFromString(s)
 	if err != nil {
 		log.Println(err)
 	}
