@@ -2503,7 +2503,7 @@ func ExampleTable_Sort() {
 	fmt.Println(table)
 
 	// First let's sort the table by name.
-	table.SetSortKeys("name")
+	err = table.SetSortKeys("name")
 	if err != nil {
 		log.Println(err)
 	}

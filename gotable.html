@@ -424,9 +424,6 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.Sort">func (table *Table) Sort()</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Table.SortByKeys">func (table *Table) SortByKeys(sortKeys SortKeys)</a></dd>
-				
-					
 					<dd>&nbsp; &nbsp; <a href="#Table.SortKeys">func (table *Table) SortKeys() (SortKeys, error)</a></dd>
 				
 					
@@ -2574,7 +2571,7 @@ fmt.Println(&#34;(1) Unsorted table:&#34;)
 fmt.Println(table)
 
 <span class="comment">// First let&#39;s sort the table by name.</span>
-table.SetSortKeys(&#34;name&#34;)
+err = table.SetSortKeys(&#34;name&#34;)
 if err != nil {
     log.Println(err)
 }
@@ -2633,16 +2630,6 @@ string    float64  float64
 	</div>
 </div>
 
-				
-			
-				
-				<h3 id="Table.SortByKeys">func (*Table) <a href="/src/target/sort.go?s=11137:11186#L452">SortByKeys</a>
-					<a class="permalink" href="#Table.SortByKeys">&#xb6;</a>
-				</h3>
-				<pre>func (table *<a href="#Table">Table</a>) SortByKeys(sortKeys <a href="#SortKeys">SortKeys</a>)</pre>
-				
-				
-				
 				
 			
 				

@@ -209,7 +209,7 @@ func (table *Table) AppendSortKey(colName string) error {
 
 	var colType = colInfo.colType
 	if len(colType) == 0 {
-		return errors.New(fmt.Sprintf("table [%s]: Unknown colType for col: %q", table.Name(), colName))
+		return errors.New(fmt.Sprintf("table [%s]: unknown colType for col: %q", table.Name(), colName))
 	}
 	key.colType = colType
 
@@ -456,10 +456,10 @@ func (table tableSortable) Less(i, j int) bool {
 }
 
 func (table *Table) Sort() {
-	table.SortByKeys(table.sortKeys)
+	table.sortByKeys(table.sortKeys)
 }
 
-func (table *Table) SortByKeys(sortKeys SortKeys) {
+func (table *Table) sortByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
 		compareCount++
