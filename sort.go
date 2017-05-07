@@ -224,7 +224,7 @@ func (table *Table) AppendSortKey(colName string) error {
 	return nil
 }
 
-func (table *Table) SortKeys() (SortKeys, error) {
+func (table *Table) getSortKeys() (SortKeys, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
