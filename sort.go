@@ -71,6 +71,7 @@ func (keys SortKeys) String() string {
 	return s
 }
 
+// Returns a copy of the sort keys as a Table. Useful for debugging.
 func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	if thisTable == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -79,6 +80,9 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	var err error
 	keysTable, err = NewTable("sortKeys")
 	if err != nil {
+		return nil, err
+	}
+	if err = keysTable.AppendCol("key", "int"); err != nil {
 		return nil, err
 	}
 	err = keysTable.AppendCol("colName", "string")
@@ -96,6 +100,9 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	for rowIndex := 0; rowIndex < len(thisTable.sortKeys); rowIndex++ {
 		err = keysTable.AppendRow()
 		if err != nil {
+			return nil, err
+		}
+		if err = keysTable.SetInt("key", rowIndex, rowIndex); err != nil {
 			return nil, err
 		}
 		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)
@@ -476,18 +483,6 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
 				compared *= -1
-				//temp := compared
-				//temp *= -1	// Reverse the sign.
-				//				// Reverse the sign.
-				//				if compared < 0 {
-				//					compared = +1
-				//				} else if compared > 0 {
-				//					compared = -1
-				//				}
-				//if temp != compared {
-				//	err := errors.New("compared = %d and temp = %d")
-				//	panic(err)
-				//}
 			}
 			//where(fmt.Sprintf("... compared = %d\n", compared))
 			if compared != 0 {

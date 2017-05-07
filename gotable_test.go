@@ -2736,9 +2736,9 @@ func ExampleTable_SetSortKeys() {
 	// 
 	// (7) SortKeys as a table:
 	// [sortKeys]
-	// colName    colType  reverse
-	// string     string   bool
-	// "language" "string" false
-	// "lines"    "int"    false
-	// "user"     "string" false
+	// key colName    colType  reverse
+	// int string     string   bool
+	//   0 "language" "string" false
+	//   1 "lines"    "int"    false
+	//   2 "user"     "string" false
 }
