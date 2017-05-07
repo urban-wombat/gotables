@@ -2848,7 +2848,7 @@ func ExampleTable_GobEncode_tableset() {
 	//   3 "ssss"     4.9 false
 	// 
 	// [Another_Table]
-	// Fred Wilma Pebbles
-	//  int   int     int
-	//   42    39       2
+	// Fred int = 42
+	// Wilma int = 39
+	// Pebbles int = 2
 }

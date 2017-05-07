@@ -425,6 +425,7 @@ type TableExported struct {
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
 	Rows           tableRows
 	SortKeys       []SortKeyExported
+	StructShape    bool
 }
 
 func (table *Table) getColTypes() []string {
@@ -3122,6 +3123,8 @@ func (table *Table) exportTable() (*TableExported, error) {
 		tableExported.SortKeys[keyIndex].SortFunc = table.sortKeys[keyIndex].sortFunc
 	}
 
+	tableExported.StructShape = table.structShape
+
 	return tableExported, nil
 }
 
@@ -3182,6 +3185,8 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 		table.sortKeys[keyIndex].reverse = tableExported.SortKeys[keyIndex].Reverse
 		table.sortKeys[keyIndex].sortFunc = tableExported.SortKeys[keyIndex].SortFunc
 	}
+
+	table.structShape = tableExported.StructShape
 
 	isValid, err = table.isValidTable()
 	if !isValid {
