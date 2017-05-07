@@ -34,7 +34,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-type SortKey struct {
+type sortKey struct {
 	colName  string
 	colType  string
 	reverse  bool
@@ -49,11 +49,11 @@ type SortKeyExported struct {
 	SortFunc compareFunc
 }
 
-func (key SortKey) String() string {
+func (key sortKey) String() string {
 	return fmt.Sprintf("{colName:%q,colType:%q,reverse:%t}", key.colName, key.colType, key.reverse)
 }
 
-type SortKeys []SortKey
+type SortKeys []sortKey
 
 func (keys SortKeys) String() string {
 	if keys == nil {
@@ -186,7 +186,7 @@ func (table *Table) setSortKeyReverse(colName string) error {
 	}
 	// where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
 	if !found {
-		err := errors.New(fmt.Sprintf("SortKey not found: %q", colName))
+		err := errors.New(fmt.Sprintf("sortKey not found: %q", colName))
 		return err
 	}
 
@@ -204,7 +204,7 @@ func (table *Table) AppendSortKey(colName string) error {
 		return err
 	}
 
-	var key SortKey
+	var key sortKey
 	key.colName = colName
 
 	var colType = colInfo.colType
@@ -543,4 +543,9 @@ func (tableRows tableRows) Less(i, j int) bool {
 	}
 	//	where(fmt.Sprintf("*** return false\n"))
 	return false
+}
+
+// Factory function to generate a slice of SortKeys.
+func newSortKeys() SortKeys {
+	return make([]sortKey, 0)
 }
