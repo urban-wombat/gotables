@@ -285,7 +285,7 @@ func (tableSet *TableSet) String() string {
 	return s
 }
 
-func (tableSet *TableSet) StringSpacePadded() string {
+func (tableSet *TableSet) StringUnpadded() string {
 	var horizontalSeparator byte = ' '
 	return tableSet._String(horizontalSeparator)
 }
@@ -821,7 +821,7 @@ func missingValueForType(typeName string) (missingValue interface{}, hasMissing 
 /*
 Returns a parsable elastic tabbed table as a string.
 */
-func (table *Table) StringTabWriter() (string, error) {
+func (table *Table) stringTabWriter() (string, error) {
 	if table == nil {
 		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -851,7 +851,7 @@ func (table *Table) StringTabWriter() (string, error) {
 	return buf.String(), nil
 }
 
-func (table *Table) StringSpacePadded() (string, error) {
+func (table *Table) StringUnpadded() (string, error) {
 	if table == nil {
 		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
@@ -875,160 +875,165 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	var s string
 	var buf bytes.Buffer
 
-	// Table name
-	buf.WriteByte('[')
-	buf.WriteString(table.tableName)
-	buf.WriteString("]\n")
-
-	// Col names
-	if len(table.colNames) > 0 {
-		horizontalSep = ""
-		for _, colName := range table.colNames {
-			buf.WriteString(horizontalSep)
-			buf.WriteString(colName)
-			horizontalSep = string(horizontalSeparator)
+	// Print as struct shape or table shape.
+	if table.structShape && table.RowCount() <= 1 {
+		s = printStruct(table)
+	} else {
+		// Table name
+		buf.WriteByte('[')
+		buf.WriteString(table.tableName)
+		buf.WriteString("]\n")
+	
+		// Col names
+		if len(table.colNames) > 0 {
+			horizontalSep = ""
+			for _, colName := range table.colNames {
+				buf.WriteString(horizontalSep)
+				buf.WriteString(colName)
+				horizontalSep = string(horizontalSeparator)
+			}
+			buf.WriteByte(verticalSep)
 		}
-		buf.WriteByte(verticalSep)
-	}
-
-	// Col types
-	if len(table.colTypes) > 0 {
-		horizontalSep = ""
-		for _, colType := range table.colTypes {
-			buf.WriteString(horizontalSep)
-			buf.WriteString(colType)
-			horizontalSep = string(horizontalSeparator)
+	
+		// Col types
+		if len(table.colTypes) > 0 {
+			horizontalSep = ""
+			for _, colType := range table.colTypes {
+				buf.WriteString(horizontalSep)
+				buf.WriteString(colType)
+				horizontalSep = string(horizontalSeparator)
+			}
+			buf.WriteByte(verticalSep)
 		}
-		buf.WriteByte(verticalSep)
-	}
-
-	// Rows of data
-	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowMap tableRow
-		rowMap, err := table.rowMap(rowIndex)
-		if err != nil {
-			// Admittedly, a rowIndex error can't happen here. This is paranoid.
-			os.Stderr.WriteString(err.Error())
-			return ""
-		}
-		horizontalSep = ""
-		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-			var sVal string
-			var tVal bool
-			var ui8Val uint8
-			var ui16Val uint16
-			var ui32Val uint32
-			var ui64Val uint64
-			var uiVal uint
-			var iVal int
-			var i8Val int8
-			var i16Val int16
-			var i32Val int32
-			var i64Val int64
-			var f32Val float32
-			var f64Val float64
-			var exists bool
-			buf.WriteString(horizontalSep)
-			switch table.colTypes[colIndex] {
-			case "string":
-				sVal, exists = rowMap[table.colNames[colIndex]].(string)
-				if !exists {
-					sVal = ""
-				}
-				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
-				var replicatedPercentChars string
-				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-				buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
-			case "bool":
-				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-				if !exists {
-					tVal = false
-				}
-				buf.WriteString(fmt.Sprintf("%t", tVal))
-			case "uint8":
-				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-				if !exists {
-					ui8Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", ui8Val))
-			case "uint16":
-				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-				if !exists {
-					ui16Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", ui16Val))
-			case "uint32":
-				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-				if !exists {
-					ui32Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", ui32Val))
-			case "uint64":
-				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-				if !exists {
-					ui64Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", ui64Val))
-			case "uint":
-				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-				if !exists {
-					uiVal = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", uiVal))
-			case "int":
-				iVal, exists = rowMap[table.colNames[colIndex]].(int)
-				if !exists {
-					iVal = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", iVal))
-			case "int8":
-				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-				if !exists {
-					i8Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", i8Val))
-			case "int16":
-				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-				if !exists {
-					i16Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", i16Val))
-			case "int32":
-				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-				if !exists {
-					i32Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", i32Val))
-			case "int64":
-				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-				if !exists {
-					i64Val = 0
-				}
-				buf.WriteString(fmt.Sprintf("%d", i64Val))
-			case "float32":
-				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
-				if !exists {
-					f32Val = 0.0
-				}
-				var f64ValForFormatFloat float64 = float64(f32Val)
-				buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
-			case "float64":
-				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
-				if !exists {
-					f64Val = 0.0
-				}
-				buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
-			default:
-				log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+	
+		// Rows of data
+		for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+			var rowMap tableRow
+			rowMap, err := table.rowMap(rowIndex)
+			if err != nil {
+				// Admittedly, a rowIndex error can't happen here. This is paranoid.
+				os.Stderr.WriteString(err.Error())
 				return ""
 			}
-
-			horizontalSep = string(horizontalSeparator)
+			horizontalSep = ""
+			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+				var sVal string
+				var tVal bool
+				var ui8Val uint8
+				var ui16Val uint16
+				var ui32Val uint32
+				var ui64Val uint64
+				var uiVal uint
+				var iVal int
+				var i8Val int8
+				var i16Val int16
+				var i32Val int32
+				var i64Val int64
+				var f32Val float32
+				var f64Val float64
+				var exists bool
+				buf.WriteString(horizontalSep)
+				switch table.colTypes[colIndex] {
+				case "string":
+					sVal, exists = rowMap[table.colNames[colIndex]].(string)
+					if !exists {
+						sVal = ""
+					}
+					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
+					var replicatedPercentChars string
+					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
+					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
+				case "bool":
+					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+					if !exists {
+						tVal = false
+					}
+					buf.WriteString(fmt.Sprintf("%t", tVal))
+				case "uint8":
+					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+					if !exists {
+						ui8Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", ui8Val))
+				case "uint16":
+					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+					if !exists {
+						ui16Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", ui16Val))
+				case "uint32":
+					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+					if !exists {
+						ui32Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", ui32Val))
+				case "uint64":
+					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+					if !exists {
+						ui64Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", ui64Val))
+				case "uint":
+					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+					if !exists {
+						uiVal = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", uiVal))
+				case "int":
+					iVal, exists = rowMap[table.colNames[colIndex]].(int)
+					if !exists {
+						iVal = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", iVal))
+				case "int8":
+					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+					if !exists {
+						i8Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", i8Val))
+				case "int16":
+					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+					if !exists {
+						i16Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", i16Val))
+				case "int32":
+					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+					if !exists {
+						i32Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", i32Val))
+				case "int64":
+					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+					if !exists {
+						i64Val = 0
+					}
+					buf.WriteString(fmt.Sprintf("%d", i64Val))
+				case "float32":
+					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+					if !exists {
+						f32Val = 0.0
+					}
+					var f64ValForFormatFloat float64 = float64(f32Val)
+					buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
+				case "float64":
+					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+					if !exists {
+						f64Val = 0.0
+					}
+					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+				default:
+					log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+					return ""
+				}
+	
+				horizontalSep = string(horizontalSeparator)
+			}
+			buf.WriteByte(verticalSep)
 		}
-		buf.WriteByte(verticalSep)
+	
+		s = buf.String()
 	}
-
-	s = buf.String()
 
 	return s
 }

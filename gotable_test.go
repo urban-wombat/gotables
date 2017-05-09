@@ -2800,10 +2800,17 @@ func ExampleTable_GobEncode_tableset() {
     2   "xyz"   4.5         false
     3   "ssss"  4.9         false
 
-	[Another_Table]
+	[Struct_With_Data]
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
+
+	[Empty_Struct]
+	Fred int
+
+	[Empty_Table]
+	Fred
+	int
 	`
 	tableSetToEncode, err := NewTableSetFromString(s)
 	if err != nil {
@@ -2836,10 +2843,17 @@ func ExampleTable_GobEncode_tableset() {
 	//   2 "xyz"      4.5 false
 	//   3 "ssss"     4.9 false
 	// 
-	// [Another_Table]
+	// [Struct_With_Data]
 	// Fred int = 42
 	// Wilma int = 39
 	// Pebbles int = 2
+	//
+	// [Empty_Struct]
+	// Fred int
+	//
+	// [Empty_Table]
+	// Fred
+	//  int
 	// 
 	// (2) TableSet decoded from binary.
 	// [sable_fur]
@@ -2849,8 +2863,90 @@ func ExampleTable_GobEncode_tableset() {
 	//   2 "xyz"      4.5 false
 	//   3 "ssss"     4.9 false
 	// 
-	// [Another_Table]
+	// [Struct_With_Data]
 	// Fred int = 42
 	// Wilma int = 39
 	// Pebbles int = 2
+	//
+	// [Empty_Struct]
+	// Fred int
+	//
+	// [Empty_Table]
+	// Fred
+	//  int
+}
+
+func ExampleTableSet_String() {
+	s := `[sable_fur]
+    i s f b
+    int string float64 bool
+    1 "abc" 2.3 true
+    2 "xyz" 4.5 false
+    3 "ssss" 4.9 false
+	`
+	tableSet, err := NewTableSetFromString(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("(1) TableSet (and Table) default String() output:")
+	fmt.Println(tableSet.String())
+
+	fmt.Println("(2) TableSet (and Table) same as default String() output:")
+	fmt.Println(tableSet)
+
+	// Notice that the default String() output for both TableSet and Table objects
+	// is padded into easy to read columns, with numeric columns aligned right.
+	// The design is: readability trumps compactness.
+	// There are alternatives where size matters, such as compression, and StringUnpadded()
+
+	// Output:
+	// (1) TableSet (and Table) default String() output:
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+	// 
+	// (2) TableSet (and Table) same as default String() output:
+	// [sable_fur]
+	//   i s            f b
+	// int string float64 bool
+	//   1 "abc"      2.3 true
+	//   2 "xyz"      4.5 false
+	//   3 "ssss"     4.9 false
+}
+
+func ExampleTableSet_StringUnpadded() {
+	s := `[sable_fur]
+	  i s            f b
+	int string float64 bool
+	  1 "abc"      2.3 true
+	  2 "xyz"      4.5 false
+	  3 "s  s"     4.9 false
+	`
+	tableSet, err := NewTableSetFromString(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("TableSet (and Table) StringUnpadded() output:")
+	fmt.Println(tableSet.StringUnpadded())
+
+	// Note: the default String() output for both TableSet and Table objects
+	// is padded into easy to read columns, with numeric columns aligned right.
+	// The design is: readability trumps compactness.
+	// There are alternatives where size matters, such as compression, and StringUnpadded()
+
+	// This is an example of StringUnpadded() which uses minimal spacing between values.
+
+	// Output:
+	// TableSet (and Table) StringUnpadded() output:
+	// [sable_fur]
+	// i s f b
+	// int string float64 bool
+	// 1 "abc" 2.3 true
+	// 2 "xyz" 4.5 false
+	// 3 "s  s" 4.9 false
 }
