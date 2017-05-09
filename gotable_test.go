@@ -2877,6 +2877,7 @@ func ExampleTable_GobEncode_tableset() {
 }
 
 func ExampleTableSet_String() {
+	// Deliberately unpadded (by hand) for contrast.
 	s := `[sable_fur]
     i s f b
     int string float64 bool
@@ -2889,16 +2890,19 @@ func ExampleTableSet_String() {
 		log.Println(err)
 	}
 
-	fmt.Println("(1) TableSet (and Table) default String() output:")
-	fmt.Println(tableSet.String())
-
-	fmt.Println("(2) TableSet (and Table) same as default String() output:")
-	fmt.Println(tableSet)
+	// Imagine this function (in both TableSet and Table) is called StringPaddedAndAligned()
+	// It isn't, because it has to be called String(), but that's the functionality.
 
 	// Notice that the default String() output for both TableSet and Table objects
 	// is padded into easy to read columns, with numeric columns aligned right.
 	// The design is: readability trumps compactness.
 	// There are alternatives where size matters, such as compression, and StringUnpadded()
+
+	fmt.Println("(1) TableSet (and Table) default String() output:")
+	fmt.Println(tableSet.String())
+
+	fmt.Println("(2) TableSet (and Table) same as default String() output:")
+	fmt.Println(tableSet)
 
 	// Output:
 	// (1) TableSet (and Table) default String() output:
@@ -2919,6 +2923,7 @@ func ExampleTableSet_String() {
 }
 
 func ExampleTableSet_StringUnpadded() {
+	// Deliberately padded (by hand) for contrast.
 	s := `[sable_fur]
 	  i s            f b
 	int string float64 bool
@@ -2931,15 +2936,15 @@ func ExampleTableSet_StringUnpadded() {
 		log.Println(err)
 	}
 
-	fmt.Println("TableSet (and Table) StringUnpadded() output:")
-	fmt.Println(tableSet.StringUnpadded())
-
 	// Note: the default String() output for both TableSet and Table objects
 	// is padded into easy to read columns, with numeric columns aligned right.
 	// The design is: readability trumps compactness.
 	// There are alternatives where size matters, such as compression, and StringUnpadded()
 
 	// This is an example of StringUnpadded() which uses minimal spacing between values.
+
+	fmt.Println("TableSet (and Table) StringUnpadded() output:")
+	fmt.Println(tableSet.StringUnpadded())
 
 	// Output:
 	// TableSet (and Table) StringUnpadded() output:

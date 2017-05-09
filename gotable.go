@@ -1362,17 +1362,14 @@ func printStruct(table *Table) string {
 
 	s = fmt.Sprintf("[%s]\n", table.tableName)
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-//		s += table.colNames[colIndex] + " " + table.colTypes[colIndex] + " ="
 		s += table.colNames[colIndex] + " " + table.colTypes[colIndex]
 		if structHasRowData {
 			const RowIndexZero = 0
 			asString, _ = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
 			if table.colTypes[colIndex] == "string" {
 				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
-//				s += " " + fmt.Sprintf("%q", asString)
 				s += " = " + fmt.Sprintf("%q", asString)
 			} else {
-//				s += " " + asString
 				s += " = " + asString
 			}
 		}
