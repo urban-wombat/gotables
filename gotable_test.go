@@ -1043,10 +1043,33 @@ func TestSetAndGetFunctions(t *testing.T) {
 		}
 	}
 
-	/*
-		table.SetStructShape(true)
-		where(table)
-	*/
+	var shape bool
+	var expected bool
+	expected = true
+	err = table.SetStructShape(expected)
+	if err != nil {
+		t.Error(err)
+	}
+	shape, err = table.IsStructShape()
+	if err != nil {
+		t.Error(err)
+	}
+	if shape != expected {
+		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
+	}
+
+	expected = false
+	err = table.SetStructShape(expected)
+	if err != nil {
+		t.Error(err)
+	}
+	shape, err = table.IsStructShape()
+	if err != nil {
+		t.Error(err)
+	}
+	if shape != expected {
+		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
+	}
 }
 
 func TestSetIntegerMinAndMax(t *testing.T) {
