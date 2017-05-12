@@ -501,6 +501,11 @@ func newTableFromCols(tableName string, colNames []string, colTypes []string) (*
 		return nil, err
 	}
 
+	_, err = newTable.IsValidTable()
+	if err != nil {
+		return nil, err
+	}
+
 	return newTable, nil
 }
 
@@ -2918,10 +2923,15 @@ func (table *Table) ColName(colIndex int) (string, error) {
 	return colName, nil
 }
 
-func (table *Table) isValidRow(rowIndex int) (bool, error) {
+/*
+	Check for missing values in this row.
+	That means completely missing values, not just empty strings or NaN floats.
+*/
+func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
+
 	var err error
 	var rowMap tableRow
 
@@ -2945,10 +2955,20 @@ func (table *Table) isValidRow(rowIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *Table) isValidTable() (bool, error) {
+/*
+	Test internal consistency of this table:
+		Valid table name?
+		Valid col names?
+		Valid col types?
+		Valid (equal) lengths of internal slices of col names, col types?
+		Valid data in each cell of each row?
+		Valid sort keys (if any are set)?
+*/
+func (table *Table) IsValidTable() (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
+
 	var err error
 	var isValid bool
 
@@ -2987,7 +3007,7 @@ func (table *Table) isValidTable() (bool, error) {
 	}
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		if isValid, err = table.isValidRow(rowIndex); !isValid {
+		if isValid, err = table.IsValidRow(rowIndex); !isValid {
 			return false, err
 		}
 		var rowMap tableRow
@@ -3190,7 +3210,7 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 
 	table.structShape = tableExported.StructShape
 
-	isValid, err = table.isValidTable()
+	isValid, err = table.IsValidTable()
 	if !isValid {
 		return nil, err
 	}

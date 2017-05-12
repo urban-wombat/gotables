@@ -2978,3 +2978,56 @@ func ExampleTableSet_StringUnpadded() {
 	// 2 "xyz" 4.5 false
 	// 3 "s  s" 4.9 false
 }
+
+func TestNewTableFromCols(t *testing.T) {
+
+	var table *Table
+	var err error
+
+	var tests = []struct {
+		colNames []string
+		colTypes []string
+		expected bool
+	}{
+		{[]string{"Age", "Mothballs", "delims", "tags"}, []string{"int", "bool", "string", "string"}, true},
+		{[]string{"Age", "Mothballs", "delims"}, []string{"int", "bool", "string", "string"}, false},	// Missing name
+		{[]string{"Age", "Mothballs", "delims", "tags"}, []string{"int", "bool", "string",}, false},		// Missing type
+		{[]string{}, []string{"int", "bool", "string", "string"}, false},	// Empty name slice
+		{[]string{"Age", "Mothballs", "delims", "tags"}, []string{}, false},	// Empty type slice
+		{[]string{}, []string{}, true},	// Empty table is allowed
+	}
+
+	for _, test := range tests {
+
+		table, err = newTableFromCols("Moviegoers", test.colNames, test.colTypes)
+		if (err == nil) != test.expected {
+			if err != nil {
+				t.Error(err)
+			} else {
+				t.Error(fmt.Errorf("Expecting fail: NewTableFromCols(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes))
+			}
+		}
+
+		_, err = table.IsValidTable()
+		if (err == nil) != test.expected {
+			t.Error(err)
+		}
+
+		err = table.AppendRows(1)
+		if (err == nil) != test.expected {
+			t.Error(err)
+		}
+
+		if table != nil {
+			rowCount := table.RowCount()
+			if (rowCount == 1) != test.expected {
+				t.Error(err)
+			}
+		}
+
+		_, err = table.IsValidRow(0)
+		if (err == nil) != test.expected {
+			t.Error(err)
+		}
+	}
+}

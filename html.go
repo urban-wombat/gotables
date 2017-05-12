@@ -434,7 +434,7 @@ func endTheTable(tableSet *TableSet, table *Table) (string, int, bool, bool, err
 	//	where(fmt.Sprintf("rowIndex = %d", rowIndex))
 	isFirstRowDone := false
 	insideTable := false
-	if isValid, err := table.isValidTable(); !isValid {
+	if isValid, err := table.IsValidTable(); !isValid {
 		return prevTableTag, rowIndex, isFirstRowDone, insideTable, err
 	}
 
