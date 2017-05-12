@@ -1881,9 +1881,13 @@ func (table *Table) ColCount() int {
 	return len(table.colTypes)
 }
 
+/*
+	Return the number of rows in this table.
+	Returns -1 if there is an error (namely: the table variable is nil).
+*/
 func (table *Table) RowCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		// os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.rows)

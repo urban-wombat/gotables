@@ -502,32 +502,44 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 }
 
 /*
-func (tableRows tableRows) Less(i, j int) bool {
-compareCount++
-////	where(fmt.Sprintf("len(table.sortKeys) = %d\n", len(table.sortKeys)))
-	var sortKeyCount = len(table.sortKeys)
-	for i, sortKey := range table.sortKeys {
-//	//	where(fmt.Sprintf("i = %d, sortKey = %v\n", i, sortKey))
-		var colName string = sortKey.colName
-		var sortFunc compareFunc = sortKey.sortFunc
-		var compared int = sortFunc(table, colName, i, j)
-		if compared != 0 {
-		//	where(fmt.Sprintf("not equal\n"))
-		//	where(fmt.Sprintf("Less = %v\n", compared < 0))
-			return compared < 0
-		}
-		if i == sortKeyCount - 1 {	// Final iteration through sort keys.
-		//	where(fmt.Sprintf("Final iteration through sort keys.\n"))
-		//	where(fmt.Sprintf("Less = %v\n", compared < 0))
-			return compared < 0
-		}
-	}
+	Search this table by this table's currently-set sort keys.
 
-//	where(fmt.Sprintf("***** End of function.\n"))
-//	where(fmt.Sprintf("Less = false\n"))
-	return false
-}
+	To see the currently-set sort keys use GetSortKeysAsTable()
 */
+func (table *Table) Search(searchKeys ...interface{}) {
+	table.searchByKeys(table.sortKeys)
+}
+
+func (table *Table) searchByKeys(sortKeys SortKeys) {
+	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
+	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
+		compareCount++
+		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
+		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
+		for _, sortKey := range table.sortKeys {
+			var colName string = sortKey.colName
+			var sortFunc compareFunc = sortKey.sortFunc
+			var iInterface interface{} = iRow[colName]
+			var jInterface interface{} = jRow[colName]
+			var compared int = sortFunc(iInterface, jInterface)
+			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
+			//where(fmt.Sprintf("compared = %d ...\n", compared))
+			if sortKey.reverse {
+				// Reverse the sign to reverse the sort.
+				compared *= -1
+			}
+			//where(fmt.Sprintf("... compared = %d\n", compared))
+			if compared != 0 {
+				//	where(fmt.Sprintf("not equal"))
+				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
+				return compared < 0
+			}
+			//	where(fmt.Sprintf("*** return false\n"))
+		}
+		return false
+	}})
+}
+
 
 func (tableRows tableRows) Less(i, j int) bool {
 	compareCount++
