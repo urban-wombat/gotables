@@ -589,7 +589,8 @@ func TestSetAndGetFunctions(t *testing.T) {
 			t.Error(err)
 		}
 
-		err = table.SetBool("bVal", rowIndex, true)
+		expected := true
+		err = table.SetBool("bVal", rowIndex, expected)
 		if err != nil {
 			t.Error(err)
 		}
@@ -597,11 +598,12 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bVal != true {
-			t.Errorf("expecting GetBool() value %t, not %t\n", true, bVal)
+		if bVal != expected {
+			t.Errorf("expecting GetBool() value %t, not %t\n", expected, bVal)
 		}
 
-		err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+		expected = false
+		err = table.SetBoolByColIndex(colIndex, rowIndex, expected)
 		if err != nil {
 			t.Error(err)
 		}
@@ -609,8 +611,8 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bVal != false {
-			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", true, bVal)
+		if bVal != expected {
+			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", expected, bVal)
 		}
 	}
 
@@ -1044,8 +1046,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 	}
 
 	var shape bool
-	var expected bool
-	expected = true
+	var expected bool = true
 	err = table.SetStructShape(expected)
 	if err != nil {
 		t.Error(err)

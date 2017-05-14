@@ -5,7 +5,6 @@ Functions and methods for sorting Table tables.
 package gotable
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -143,7 +142,8 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 	for _, colName := range sortColNames {
 		err := table.AppendSortKey(colName)
 		if err != nil {
-			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
+//			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
+			errSortKey := fmt.Errorf("SetSortKeys(%v): %v\n", sortColNames, err)
 			// where(fmt.Sprintf("ERROR IN SetSortKeys(): %v", errSortKey))
 			return errSortKey
 		}
@@ -167,7 +167,7 @@ func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 	for _, colName := range reverseSortColNames {
 		err := table.setSortKeyReverse(colName)
 		if err != nil {
-			errSortKey := errors.New(fmt.Sprintf("SetSortKeysReverse(%v): %v\n", reverseSortColNames, err))
+			errSortKey := fmt.Errorf("SetSortKeysReverse(%v): %v\n", reverseSortColNames, err)
 			return errSortKey
 		}
 	}
@@ -180,7 +180,7 @@ func (table *Table) setSortKeyReverse(colName string) error {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if len(table.sortKeys) == 0 {
-		err := errors.New(fmt.Sprintf("must call SetSortKeys() before calling SetSortKeysReverse()"))
+		err := fmt.Errorf("must call SetSortKeys() before calling SetSortKeysReverse()")
 		return err
 	}
 	var found bool = false
@@ -193,7 +193,7 @@ func (table *Table) setSortKeyReverse(colName string) error {
 	}
 	// where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
 	if !found {
-		err := errors.New(fmt.Sprintf("sortKey not found: %q", colName))
+		err := fmt.Errorf("sortKey not found: %q", colName)
 		return err
 	}
 
@@ -216,13 +216,14 @@ func (table *Table) AppendSortKey(colName string) error {
 
 	var colType = colInfo.colType
 	if len(colType) == 0 {
-		return errors.New(fmt.Sprintf("table [%s]: unknown colType for col: %q", table.Name(), colName))
+		return fmt.Errorf("table [%s]: unknown colType for col: %q", table.Name(), colName)
 	}
 	key.colType = colType
 
 	sortFunc, exists := compareFuncs[colType]
 	if !exists { // Error occurs only during software development if a type has not been handled.
-		return errors.New(fmt.Sprintf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q", table.Name(), colName, colType, colType))
+		return fmt.Errorf("table [%s] col %q: compareFunc compare_%s has not been defined for colType: %q",
+			table.Name(), colName, colType, colType)
 	}
 
 	key.sortFunc = sortFunc
@@ -444,7 +445,7 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 	}
 }
 
-var compareCount int
+//var compareCount int
 
 type tableSortable struct {
 	table *Table
@@ -474,7 +475,7 @@ func (table *Table) Sort() {
 func (table *Table) sortByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
-		compareCount++
+//		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		for _, sortKey := range table.sortKeys {
@@ -513,7 +514,7 @@ func (table *Table) Search(searchKeys ...interface{}) {
 func (table *Table) searchByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
-		compareCount++
+//		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		for _, sortKey := range table.sortKeys {
@@ -542,7 +543,7 @@ func (table *Table) searchByKeys(sortKeys SortKeys) {
 
 
 func (tableRows tableRows) Less(i, j int) bool {
-	compareCount++
+//	compareCount++
 	sortFunc := compare_int
 	colName := "SortOrder"
 	var iInterface interface{} = tableRows[i][colName]

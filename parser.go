@@ -161,8 +161,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		_COL_TYPES  _TableSection = "_COL_TYPES"
 		_COL_ROWS   _TableSection = "_COL_ROWS"
 	)
-	var expecting _TableSection
-	expecting = _TABLE_NAME
+	var expecting _TableSection = _TABLE_NAME
 
 	type _TableShape string
 	const (
@@ -170,8 +169,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		_STRUCT_SHAPE    _TableShape = "_STRUCT_SHAPE"
 		_UNDEFINED_SHAPE _TableShape = "_UNDEFINED_SHAPE"
 	)
-	var tableShape _TableShape
-	tableShape = _UNDEFINED_SHAPE
+	var tableShape _TableShape = _UNDEFINED_SHAPE
 	// Note: tableShape variable is used for parsing. Not sure it's needed.
 	// Note: It's not worth the trouble of printing a table as a struct.
 	// Let's give it a try ... 29/03/2017
@@ -824,7 +822,8 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("%s Unreachable code in getRowCol()", p.gotFilePos())
 		}
-		remaining = remaining[rangeFound[1]:len(remaining)]
+//		remaining = remaining[rangeFound[1]:len(remaining)]
+		remaining = remaining[rangeFound[1]:]
 		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading spaces.
 		colCount++
 	}

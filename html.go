@@ -454,7 +454,7 @@ func endTheRow(isTdRow bool, isFirstRow bool, isFirstRowDone bool) (string, stri
 	insideCol := false // For good measure. In case </td> not encountered.
 	colIndex := -1
 	//	where(fmt.Sprintf("colIndex = %d", colIndex))
-	if isFirstRow == true {
+	if isFirstRow {
 		if isTdRow {
 			isFirstRow = false
 			isFirstRowDone = true
