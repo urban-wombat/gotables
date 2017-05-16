@@ -2503,7 +2503,7 @@ func TestIsColType(t *testing.T) {
 		isColType, _ := table.IsColType(test.colName, test.colType)
 		// Ignore err. Returns err if col type is false.
 		if isColType != test.expected {
-			t.Error(fmt.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t",
+			t.Error(fmt.Errorf("Expecting table.IsColType(%s, %q) = %t but found %t",
 				test.colName, test.colType, test.expected, isColType))
 		}
 	}

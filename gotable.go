@@ -486,6 +486,12 @@ func newTableFromCols(tableName string, colNames []string, colTypes []string) (*
 	var newTable *Table
 	var err error
 
+	// Check for invalid input.
+	if len(colNames) != len(colTypes) {
+		return nil, fmt.Errorf("%s(colNames, colTypes) len(colNames)=%d != len(colTypes)=%d",
+			funcName(), len(colNames), len(colTypes))
+	}
+
 	newTable, err = NewTable(tableName)
 	if err != nil {
 		return nil, err
