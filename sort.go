@@ -249,14 +249,17 @@ func (table *Table) getColNames() []string {
 
 // Sorting functions:
 
+/*
 func (tableRows tableRows) Len() int {
 	return len(tableRows)
 }
+*/
 
-// func (table *Table) Swap(i, j int) {
+/*
 func (tableRows tableRows) Swap(i, j int) {
 	tableRows[i], tableRows[j] = tableRows[j], tableRows[i]
 }
+*/
 
 var compareAlphabetic_string compareFunc = func(i, j interface{}) int {
 	var si_string string = i.(string)

@@ -10,7 +10,7 @@ import (
 	"fmt"
 //	"os"
 	"bufio"
-	"bytes"
+//	"bytes"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -139,18 +139,6 @@ var globalNumericColTypesMap = map[string]int{
 	"uint32":  0,
 	"uint64":  0,
 	"uint8":   0,
-}
-
-func (p *parser) parseString0(s string) (*TableSet, error) {
-	tables, err := NewTableSet("")
-	if err != nil {
-		return nil, err
-	}
-
-	var stringReader *strings.Reader = strings.NewReader(s)
-	fmt.Printf("stringReader = %v\n", stringReader)
-
-	return tables, err
 }
 
 func (p *parser) parseString(s string) (*TableSet, error) {
@@ -851,20 +839,27 @@ func (p *parser) SetFileName(fileName string) {
 	p.fileName = fileName
 }
 
+/*
 func (p parser) String() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("table.parser: ")
 	buffer.WriteString(fmt.Sprintf("fileName='%s' ", p.fileName))
 	return buffer.String()
 }
+*/
 
+/*
 func (p *parser) Parse() (*TableSet, error) {
 	return p.parseFile(p.fileName)
 }
+*/
 
 func plural(items int) string {
 	if items == 1 || items == -1 {
+		// Singular
 		return ""
+	} else {
+		// Plural
+		return "s"
 	}
-	return "s"
 }

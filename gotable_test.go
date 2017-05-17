@@ -3240,3 +3240,25 @@ func ternString(itIs bool, ifTrue string, ifFalse string) string {
 		return ifFalse
 	}
 }
+
+func TestPlural(t *testing.T) {
+
+	var tests = []struct {
+		in int
+		expected string
+	}{
+		{ 1, ""},
+		{-1, ""},
+		{-2, "s"},
+		{ 2, "s"},
+	}
+
+	for _, test := range tests {
+
+		var result string = plural(test.in)
+		if (result != test.expected) {
+			t.Error(fmt.Errorf("Expecting plural(%d) = %q but found: %q",
+				test.in, test.expected, result))
+		}
+	}
+}
