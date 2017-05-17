@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+//	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -2946,14 +2947,55 @@ func ExampleTableSet_String() {
 	//   3 "ssss"     4.9 false
 }
 
-func ExampleTableSet_StringUnpadded() {
+func ExampleTable_StringUnpadded() {
 	// Deliberately padded (by hand) for contrast.
 	s := `[sable_fur]
+	  i s            f  b		ff
+	int string float32  bool	float64
+	  1 "abc"      2.34 true	7.899
+	  2 "xyz"      4.5  false	6
+	  3 "s  s"     4.9  false	5.5
+	`
+	table, err := NewTableFromString(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Note: the default String() output for both TableSet and Table objects
+	// is padded into easy to read columns, with numeric columns aligned right.
+	// The design is: readability trumps compactness.
+	// There are alternatives where size matters, such as compression, and StringUnpadded()
+
+	// This is an example of StringUnpadded() which uses minimal spacing between values.
+
+	fmt.Println("TableSet (and Table) StringUnpadded() output:")
+	fmt.Println(table.StringUnpadded())
+
+	// Output:
+	// TableSet (and Table) StringUnpadded() output:
+	// [sable_fur]
+	// i s f b ff
+	// int string float32 bool float64
+	// 1 "abc" 2.34 true 7.899
+	// 2 "xyz" 4.5 false 6
+	// 3 "s  s" 4.9 false 5.5
+}
+
+func ExampleTableSet_StringUnpadded() {
+	// Deliberately padded (by hand) for contrast.
+	s :=
+	`[wombat_fur]
 	  i s            f b
 	int string float64 bool
 	  1 "abc"      2.3 true
 	  2 "xyz"      4.5 false
 	  3 "s  s"     4.9 false
+
+	[various]
+	i	f		u		s
+	int	float32	uint	string
+	3	44.55	2		"Here I am!"
+	4	22.99	255		"And now I'm not ..."
 	`
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
@@ -2972,12 +3014,18 @@ func ExampleTableSet_StringUnpadded() {
 
 	// Output:
 	// TableSet (and Table) StringUnpadded() output:
-	// [sable_fur]
+	// [wombat_fur]
 	// i s f b
 	// int string float64 bool
 	// 1 "abc" 2.3 true
 	// 2 "xyz" 4.5 false
 	// 3 "s  s" 4.9 false
+	// 
+	// [various]
+	// i f u s
+	// int float32 uint string
+	// 3 44.55 2 "Here I am!"
+	// 4 22.99 255 "And now I'm not ..."
 }
 
 func TestNewTableFromCols(t *testing.T) {
@@ -3029,6 +3077,156 @@ func TestNewTableFromCols(t *testing.T) {
 		_, err = table.IsValidRow(0)
 		if (err == nil) != test.expected {
 			t.Error(err)
+		}
+	}
+}
+
+func ExampleTable_SetRowFloatCellsToNaN() {
+	s := `[three_rows]
+	  i s            f b	 f2
+	int string float32 bool  float64
+	  0 "abc"      2.3 true  42.0
+	  1 "xyz"      4.5 false 43.0
+	  2 "s  s"     4.9 false 44.0
+	`
+	table, err := NewTableFromString(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	rowIndex := 1	// The middle row.
+	err = table.SetRowFloatCellsToNaN(rowIndex)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [three_rows]
+	//   i s            f b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      2.3 true       42
+	//   1 "xyz"      NaN false     NaN
+	//   2 "s  s"     4.9 false      44
+}
+
+func ExampleTable_SetCellToZeroValue() {
+	s := `[three_rows]
+	i    s        f1 	b	 f2
+	int  string float32 bool  float64
+	  0  "abc"      2.3 true  42.0
+	  1  "xyz"      4.5 false 43.0
+	  2  "s  s"     4.9 false 44.0
+	`
+	table, err := NewTableFromString(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("Initial table:")
+	fmt.Println(table)
+
+	err = table.SetCellToZeroValue("s", 1)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("table.SetCellToZeroValue(\"s\", 1)")
+	fmt.Println(table)
+
+	err = table.SetCellToZeroValue("f1", 0)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("table.SetCellToZeroValue(\"f1\", 0)")
+	fmt.Println(table)
+
+	err = table.SetCellToZeroValue("b", 0)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("table.SetCellToZeroValue(\"b\", 0)")
+	fmt.Println(table)
+
+	err = table.SetCellToZeroValue("i", 2)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("table.SetCellToZeroValue(\"i\", 2)")
+	fmt.Println(table)
+
+	// Output:
+	// Initial table:
+	// [three_rows]
+	//   i s           f1 b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      2.3 true       42
+	//   1 "xyz"      4.5 false      43
+	//   2 "s  s"     4.9 false      44
+	// 
+	// table.SetCellToZeroValue("s", 1)
+	// [three_rows]
+	//   i s           f1 b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      2.3 true       42
+	//   1 ""         4.5 false      43
+	//   2 "s  s"     4.9 false      44
+	// 
+	// table.SetCellToZeroValue("f1", 0)
+	// [three_rows]
+	//   i s           f1 b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      0.0 true       42
+	//   1 ""         4.5 false      43
+	//   2 "s  s"     4.9 false      44
+	// 
+	// table.SetCellToZeroValue("b", 0)
+	// [three_rows]
+	//   i s           f1 b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      0.0 false      42
+	//   1 ""         4.5 false      43
+	//   2 "s  s"     4.9 false      44
+	// 
+	// table.SetCellToZeroValue("i", 2)
+	// [three_rows]
+	//   i s           f1 b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      0.0 false      42
+	//   1 ""         4.5 false      43
+	//   0 "s  s"     4.9 false      44
+}
+
+func TestTable_RenameCol(t *testing.T) {
+
+	tableString :=
+	`[Renaming]
+	i int
+	j int
+	k int
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var tests = []struct {
+		from string
+		to string
+		expected bool
+	}{
+		{"i", "m", true},
+		{"i", "i", false},
+		{"i", "j", false},
+		{"f", "m", false},
+	}
+
+	for _, test := range tests {
+
+		err = table.RenameCol(test.from, test.to)
+		if (err == nil) != test.expected {
+			t.Error(fmt.Errorf("Expecting table.RenameCol(%q, %q) = %t but found %t",
+				test.from, test.to, test.expected))
 		}
 	}
 }

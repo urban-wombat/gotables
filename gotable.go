@@ -862,11 +862,14 @@ func (table *Table) stringTabWriter() (string, error) {
 	return buf.String(), nil
 }
 
-func (table *Table) StringUnpadded() (string, error) {
+func (table *Table) StringUnpadded() string {
+
 	if table == nil {
-		return "", fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s() *Table is <nil>\n", funcName()))
+		return ""
 	}
-	return table._String(' '), nil
+
+	return table._String(' ')
 }
 
 /*
