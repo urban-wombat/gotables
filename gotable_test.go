@@ -3205,10 +3205,6 @@ func TestTable_RenameCol(t *testing.T) {
 	j int
 	k int
 	`
-	table, err := NewTableFromString(tableString)
-	if err != nil {
-		t.Error(err)
-	}
 
 	var tests = []struct {
 		from string
@@ -3223,10 +3219,24 @@ func TestTable_RenameCol(t *testing.T) {
 
 	for _, test := range tests {
 
+		// Reinstate table for each test. For cognitive simplicity.
+		table, err := NewTableFromString(tableString)
+		if err != nil {
+			t.Error(err)
+		}
+
 		err = table.RenameCol(test.from, test.to)
 		if (err == nil) != test.expected {
-			t.Error(fmt.Errorf("Expecting table.RenameCol(%q, %q) = %t but found %t",
-				test.from, test.to, test.expected))
+			t.Error(fmt.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
+				test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err))
 		}
+	}
+}
+
+func ternString(itIs bool, ifTrue string, ifFalse string) string {
+	if (itIs) {
+		return ifTrue
+	} else {
+		return ifFalse
 	}
 }
