@@ -46,26 +46,6 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-// type compareFunc func(table Table, colName string, i, j int) int
-type compareFunc func(i, j interface{}) int
-
-var compareFuncs = map[string]compareFunc{
-	"bool":    compare_bool,
-	"float32": compare_float32,
-	"float64": compare_float64,
-	"uint":    compare_uint,
-	"int":     compare_int,
-	"int16":   compare_int16,
-	"int32":   compare_int32,
-	"int64":   compare_int64,
-	"int8":    compare_int8,
-	"string":  compareAlphabetic_string,
-	"uint16":  compare_uint16,
-	"uint32":  compare_uint32,
-	"uint64":  compare_uint64,
-	"uint8":   compare_uint8,
-}
-
 /*
 #####################################################################################
 TableSet

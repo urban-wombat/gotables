@@ -33,6 +33,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+type compareFunc func(i interface{}, j interface{}) int
+
+var compareFuncs = map[string]compareFunc{
+	"bool":    compare_bool,
+	"float32": compare_float32,
+	"float64": compare_float64,
+	"uint":    compare_uint,
+	"int":     compare_int,
+	"int16":   compare_int16,
+	"int32":   compare_int32,
+	"int64":   compare_int64,
+	"int8":    compare_int8,
+	"string":  compareAlphabetic_string,
+	"uint16":  compare_uint16,
+	"uint32":  compare_uint32,
+	"uint64":  compare_uint64,
+	"uint8":   compare_uint8,
+}
+
 type sortKey struct {
 	colName  string
 	colType  string
@@ -455,16 +474,16 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 type tableSortable struct {
 	table *Table
 	rows  tableRows
-	less  func(i, j tableRow) bool
+	less  func(i tableRow, j tableRow) bool
 }
 
 func (table tableSortable) Len() int { return len(table.rows) }
 
-func (table tableSortable) Swap(i, j int) {
+func (table tableSortable) Swap(i int, j int) {
 	table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 }
 
-func (table tableSortable) Less(i, j int) bool {
+func (table tableSortable) Less(i int, j int) bool {
 	return table.less(table.rows[i], table.rows[j])
 }
 
@@ -486,20 +505,21 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
-			var iInterface interface{} = iRow[colName]
-			var jInterface interface{} = jRow[colName]
-			var compared int = sortFunc(iInterface, jInterface)
+			var iVal interface{} = iRow[colName]
+			var jVal interface{} = jRow[colName]
+			var compared int = sortFunc(iVal, jVal)
 			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
 			//where(fmt.Sprintf("compared = %d ...\n", compared))
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
+				// Reverse is intended to be descending, not a toggle between ascending and descending.
 				compared *= -1
 			}
 			//where(fmt.Sprintf("... compared = %d\n", compared))
 			if compared != 0 {
 				//	where(fmt.Sprintf("not equal"))
 				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
-				return compared < 0
+				return compared < 0		// Less is true if compared < 0
 			}
 			//	where(fmt.Sprintf("*** return false\n"))
 		}
@@ -525,9 +545,9 @@ func (table *Table) searchByKeys(sortKeys SortKeys) {
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
-			var iInterface interface{} = iRow[colName]
-			var jInterface interface{} = jRow[colName]
-			var compared int = sortFunc(iInterface, jInterface)
+			var iVal interface{} = iRow[colName]
+			var jVal interface{} = jRow[colName]
+			var compared int = sortFunc(iVal, jVal)
 			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
 			//where(fmt.Sprintf("compared = %d ...\n", compared))
 			if sortKey.reverse {
