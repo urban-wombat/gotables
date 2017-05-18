@@ -565,18 +565,19 @@ func (table *Table) Search(searchValues ...interface{}) (int, error) {
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
+	// Check that searchValues are the right type.
+	for sortIndex, sortKey := range table.sortKeys {
+where(fmt.Sprintf("key[%d] = %v", sortIndex, sortKey))
+where(fmt.Sprintf("val[%d] = %v", sortIndex, searchValues[sortIndex]))
+	}
+
 	table.searchByKeys(searchValues)
 
 	return -1, nil
 }
 
-
 func (table *Table) searchByKeys(searchValues ...interface{}) {
-	//	where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
-
-	// Check that searchValues are the right number and the right type.
-	if len(searchValues) != len(table.sortKeys) {
-	}
+where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
 	sort.Search(table.RowCount(), func(rowIndex int) bool {
 //		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))

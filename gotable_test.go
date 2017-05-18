@@ -3312,15 +3312,21 @@ func TestSearch(t *testing.T) {
 		t.Error(err)
 	}
 
-	err = table.SetSortKeys("user", "language")	// Note: sort keys count 2
+	err = table.SetSortKeys("user")	// Note: sort keys count 1
 	if err != nil {
 		t.Error(err)
 	}
 
-	_, err = table.Search()	// Note: zero search values passed to Search()
+	_, err = table.Search()	// Note: 0 search values passed to Search()
 	if err == nil {
-		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 2"))
+		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 1"))
 	}
+
+	_, err = table.Search("glenda")
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func ExampleTable_Search() {
