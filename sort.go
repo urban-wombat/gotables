@@ -152,12 +152,18 @@ Call with an argument list, or a slice of string followed by an ellipsis ...
 (3) Pass sort keys as a slice:
 	sortColNames := []string{"col1","col2","col3"}
 	err = table.SetSortKeys(sortColNames...)
+
+(4) Clear sort keys (if any) by calling with empty argument list:
+	err = table.SetSortKeys()
 */
 func (table *Table) SetSortKeys(sortColNames ...string) error {
+
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
+
 	table.sortKeys = newSortKeys() // Replace any existing sort keys.
+
 	for _, colName := range sortColNames {
 		err := table.AppendSortKey(colName)
 		if err != nil {
@@ -168,6 +174,7 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 		}
 	}
 	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
+
 	return nil
 }
 
@@ -492,8 +499,19 @@ func (table tableSortable) Less(i int, j int) bool {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-func (table *Table) Sort() {
+func (table *Table) Sort() error {
+
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+
+	if len(table.sortKeys) == 0 {
+		return fmt.Errorf("cannot sort table that has 0 sort keys - use SetSortKeys()")
+	}
+
 	table.sortByKeys(table.sortKeys)
+
+	return nil
 }
 
 func (table *Table) sortByKeys(sortKeys SortKeys) {
@@ -532,13 +550,33 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-func (table *Table) Search(searchValues ...interface{}) {
+func (table *Table) Search(searchValues ...interface{}) (int, error) {
+
+	if table == nil {
+		return -1, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+
+	if len(table.sortKeys) == 0 {
+		return -1, fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
+	}
+
+	if len(searchValues) != len(table.sortKeys) {
+		return -1, fmt.Errorf("%s(...) searchValues count %d != sort keys count %d",
+			funcName(), len(searchValues), len(table.sortKeys))
+	}
+
 	table.searchByKeys(searchValues)
+
+	return -1, nil
 }
 
 
 func (table *Table) searchByKeys(searchValues ...interface{}) {
 	//	where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
+
+	// Check that searchValues are the right number and the right type.
+	if len(searchValues) != len(table.sortKeys) {
+	}
 	sort.Search(table.RowCount(), func(rowIndex int) bool {
 //		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))

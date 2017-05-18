@@ -2533,7 +2533,7 @@ func ExampleTable_Sort() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -2549,7 +2549,10 @@ func ExampleTable_Sort() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
 	fmt.Println("(3) Sorted table by name in reverse:")
 	fmt.Println(table)
 
@@ -2609,7 +2612,7 @@ func ExampleTable_SetSortKeys() {
 	if err = table.SetSortKeys("user"); err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -2621,7 +2624,7 @@ func ExampleTable_SetSortKeys() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -2637,7 +2640,7 @@ func ExampleTable_SetSortKeys() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -2649,7 +2652,7 @@ func ExampleTable_SetSortKeys() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -2661,7 +2664,7 @@ func ExampleTable_SetSortKeys() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -3263,6 +3266,63 @@ func TestPlural(t *testing.T) {
 	}
 }
 
+func TestSort(t *testing.T) {
+
+	table, err := NewTable("HasZeroSortKeys")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.Sort()
+	if err == nil {
+		t.Error(fmt.Errorf("Expecting table.Sort() err because of 0 sort keys"))
+	}
+}
+
+func TestSearch(t *testing.T) {
+
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = table.Search()
+	if err == nil {
+		t.Error(fmt.Errorf("Expecting table.Search() err because of 0 sort keys"))
+	}
+
+	// Clear sort keys (if any) by calling with empty argument list.
+	err = table.SetSortKeys()	// Note: sort keys count 0
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetSortKeys("user", "language")	// Note: sort keys count 2
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = table.Search()	// Note: zero search values passed to Search()
+	if err == nil {
+		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 2"))
+	}
+}
+
 func ExampleTable_Search() {
 	tableString :=
 	`[planets]
@@ -3286,7 +3346,7 @@ func ExampleTable_Search() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
 	if err != nil {
 		log.Println(err)
 	}
@@ -3302,7 +3362,10 @@ func ExampleTable_Search() {
 	if err != nil {
 		log.Println(err)
 	}
-	table.Sort()
+	err = table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
 	fmt.Println("(3) Sorted table by name in reverse:")
 	fmt.Println(table)
 
