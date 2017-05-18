@@ -3262,3 +3262,75 @@ func TestPlural(t *testing.T) {
 		}
 	}
 }
+
+func ExampleTable_Search() {
+	tableString :=
+	`[planets]
+	name         mass distance
+	string    float64  float64
+	"Mercury"   0.055      0.4
+	"Venus"     0.815      0.7
+	"Earth"     1.000      1.0
+	"Mars"      0.107      1.5
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(1) Unsorted table:")
+	fmt.Println(table)
+
+	// First let's sort the table by name.
+	err = table.SetSortKeys("name")
+	if err != nil {
+		log.Println(err)
+	}
+	table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(2) Sorted table by name:")
+	fmt.Println(table)
+
+	// Now let's sort the table by name but this time in reverse.
+	err = table.SetSortKeys("name")
+	if err != nil {
+		log.Println(err)
+	}
+	err = table.SetSortKeysReverse("name")
+	if err != nil {
+		log.Println(err)
+	}
+	table.Sort()
+	fmt.Println("(3) Sorted table by name in reverse:")
+	fmt.Println(table)
+
+	// Output:
+	// (1) Unsorted table:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Mercury"   0.055      0.4
+	// "Venus"     0.815      0.7
+	// "Earth"     1.000      1.0
+	// "Mars"      0.107      1.5
+	//
+	// (2) Sorted table by name:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Earth"     1.000      1.0
+	// "Mars"      0.107      1.5
+	// "Mercury"   0.055      0.4
+	// "Venus"     0.815      0.7
+	//
+	// (3) Sorted table by name in reverse:
+	// [planets]
+	// name         mass distance
+	// string    float64  float64
+	// "Venus"     0.815      0.7
+	// "Mercury"   0.055      0.4
+	// "Mars"      0.107      1.5
+	// "Earth"     1.000      1.0
+}

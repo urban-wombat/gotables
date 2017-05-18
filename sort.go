@@ -532,16 +532,18 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-func (table *Table) Search(searchKeys ...interface{}) {
-	table.searchByKeys(table.sortKeys)
+func (table *Table) Search(searchValues ...interface{}) {
+	table.searchByKeys(searchValues)
 }
 
-func (table *Table) searchByKeys(sortKeys SortKeys) {
-	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
-	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
+
+func (table *Table) searchByKeys(searchValues ...interface{}) {
+	//	where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
+	sort.Search(table.RowCount(), func(rowIndex int) bool {
 //		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
+/*
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
@@ -562,8 +564,9 @@ func (table *Table) searchByKeys(sortKeys SortKeys) {
 			}
 			//	where(fmt.Sprintf("*** return false\n"))
 		}
+*/
 		return false
-	}})
+	})
 }
 
 
