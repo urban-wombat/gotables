@@ -3,9 +3,9 @@
 Table data format and utilities
 
 
-## What Is A GoTable?
+## What Is A gotable.Table?
 
-A GoTable is a table of data with the following sections:
+A gotable.Table is a table of data with the following sections:
 1. A table name in square brackets.
 2. A row of 1 or more column names and data types.
 3. Rows of data.
@@ -21,7 +21,7 @@ Here's an example:
 
 Many of the Go data types can be used. (Not yet implemented: complex64, complex128, rune, byte.)
 
-Here is a simple program that parses the table into a GoTableSet (a set of tables -- in this case one table) and echoes it back out:
+Here is a simple program that parses the table into a gotable.TableSet (a set of tables -- in this case one table) and echoes it back out:
 
     package main
 
@@ -40,7 +40,7 @@ Here is a simple program that parses the table into a GoTableSet (a set of table
     `
 
     func main() {
-        tables, err := gotable.NewGoTableSetFromString(myTable)
+        tables, err := gotable.NewTableSetFromString(myTable)
         if err != nil {
             panic(err)
         }

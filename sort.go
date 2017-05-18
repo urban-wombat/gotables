@@ -232,12 +232,14 @@ func (table *Table) AppendSortKey(colName string) error {
 	return nil
 }
 
+/*
 func (table *Table) getSortKeys() (SortKeys, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	return table.sortKeys, nil
 }
+*/
 
 func (table *Table) getColNames() []string {
 	if table == nil {
@@ -545,6 +547,7 @@ func (table *Table) searchByKeys(sortKeys SortKeys) {
 }
 
 
+/*
 func (tableRows tableRows) Less(i, j int) bool {
 //	compareCount++
 	sortFunc := compare_int
@@ -560,6 +563,7 @@ func (tableRows tableRows) Less(i, j int) bool {
 	//	where(fmt.Sprintf("*** return false\n"))
 	return false
 }
+*/
 
 // Factory function to generate a slice of SortKeys.
 func newSortKeys() SortKeys {
