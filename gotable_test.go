@@ -3323,7 +3323,8 @@ func TestSearch(t *testing.T) {
 	}
 
 	where("sort by user")
-	where(table)
+	where()
+	fmt.Println(table)
 
 	_, err = table.Search()	// Note: 0 search values passed to Search()
 	if err == nil {
@@ -3331,7 +3332,7 @@ func TestSearch(t *testing.T) {
 	}
 
 //	_, err = table.Search("glenda")
-	_, err = table.Search(true)
+	_, err = table.Search(55.5)
 	if err != nil {
 		t.Error(err)
 	}
@@ -3419,6 +3420,7 @@ func TestIsValidColValue (t *testing.T) {
 	i int
 	b bool
 	f64 float64
+	f32 float32
 	s string
 	`
 	table, err := NewTableFromString(tableString)
@@ -3429,7 +3431,7 @@ func TestIsValidColValue (t *testing.T) {
 	var tests = []struct {
 		col string
 		val interface{}
-		expected bool
+		expecting bool
 	}{
 		{"i", 8, true},
 		{"b", true, true},
@@ -3439,14 +3441,16 @@ func TestIsValidColValue (t *testing.T) {
 		{"b", 67.8, false},
 		{"f64", 23, false},
 		{"s", 8, false},
+		{"f32", 23.4, false},			// Floating point constant is float64
+		{"f32", float32(23.4), true},	// It's now a float32
 	}
 
 	for _, test := range tests {
 
 		result, err := table.IsValidColValue(test.col, test.val)
-		if (result != test.expected) {
+		if (result != test.expecting) {
 			t.Error(fmt.Errorf("Expecting IsValidColValue(%q, %v) = %t but found: %t, err: %v",
-				test.col, test.val, test.expected, result, err))
+				test.col, test.val, test.expecting, result, err))
 		}
 	}
 }

@@ -572,7 +572,16 @@ where(fmt.Sprintf("val[%d] = %v", sortIndex, searchValues[sortIndex]))
 		colName := sortKey.colName
 		value := searchValues[sortIndex]
 		isValid, err := table.IsValidColValue(colName, value)
-		fmt.Printf("isValid = %t err = %v\n", isValid, err)
+		if !isValid {
+			// Append key name and type information to end of err.
+			var keyInfo string
+			sep := ""
+			for _, sortKey := range table.sortKeys {
+				keyInfo += fmt.Sprintf("%s%s %s", sep, sortKey.colName, sortKey.colType)
+				sep = ", "
+			}
+			return -1, fmt.Errorf("%v (valid key type%s: %s)", err, plural(len(table.sortKeys)), keyInfo)
+		}
 	}
 
 	table.searchByKeys(searchValues)

@@ -3626,6 +3626,7 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 	return table.JoinColVals(colName, separator)
 }
 
+// Test that this value is a valid type for this column.
 func (table *Table) IsValidColValue(colName string, value interface{}) (bool, error) {
 	valueType := reflect.TypeOf(value)
 	valueTypeName := valueType.Name()
@@ -3638,6 +3639,6 @@ func (table *Table) IsValidColValue(colName string, value interface{}) (bool, er
 	if valueTypeName == colType {
 		return true, nil
 	} else {
-		return false, fmt.Errorf("table[%s] invalid value for col=%s type=%s: %v", table.Name(), colName, colType, value)
+		return false, fmt.Errorf("table[%s] col=%s type=%s invalid value: %v", table.Name(), colName, colType, value)
 	}
 }
