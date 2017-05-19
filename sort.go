@@ -569,6 +569,10 @@ func (table *Table) Search(searchValues ...interface{}) (int, error) {
 	for sortIndex, sortKey := range table.sortKeys {
 where(fmt.Sprintf("key[%d] = %v", sortIndex, sortKey))
 where(fmt.Sprintf("val[%d] = %v", sortIndex, searchValues[sortIndex]))
+		colName := sortKey.colName
+		value := searchValues[sortIndex]
+		isValid, err := table.IsValidColValue(colName, value)
+		fmt.Printf("isValid = %t err = %v\n", isValid, err)
 	}
 
 	table.searchByKeys(searchValues)

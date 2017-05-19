@@ -14,6 +14,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
@@ -2197,11 +2198,14 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 }
 
 func (table *Table) GetString(colName string, rowIndex int) (string, error) {
+
+	var err error
 	const zeroVal = ""
+
 	if table == nil {
 		return zeroVal, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
-	var err error
+
 	var interfaceType interface{}
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil {
@@ -2210,7 +2214,7 @@ func (table *Table) GetString(colName string, rowIndex int) (string, error) {
 
 	val, valid := interfaceType.(string)
 	if !valid {
-		_, err = table.IsColType(colName, "string")
+		_, err = table.IsColType(colName, "string")	// Get an error message.
 		return zeroVal, err
 	}
 
@@ -3620,4 +3624,20 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 	}
 
 	return table.JoinColVals(colName, separator)
+}
+
+func (table *Table) IsValidColValue(colName string, value interface{}) (bool, error) {
+	valueType := reflect.TypeOf(value)
+	valueTypeName := valueType.Name()
+
+	colType, err := table.ColType(colName)
+	if err != nil {
+		return false, err
+	}
+
+	if valueTypeName == colType {
+		return true, nil
+	} else {
+		return false, fmt.Errorf("table[%s] invalid value for col=%s type=%s: %v", table.Name(), colName, colType, value)
+	}
 }

@@ -3317,12 +3317,21 @@ func TestSearch(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+
+	where("sort by user")
+	where(table)
+
 	_, err = table.Search()	// Note: 0 search values passed to Search()
 	if err == nil {
 		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 1"))
 	}
 
-	_, err = table.Search("glenda")
+//	_, err = table.Search("glenda")
+	_, err = table.Search(true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -3402,4 +3411,42 @@ func ExampleTable_Search() {
 	// "Mercury"   0.055      0.4
 	// "Mars"      0.107      1.5
 	// "Earth"     1.000      1.0
+}
+
+func TestIsValidColValue (t *testing.T) {
+	tableString :=
+	`[Types]
+	i int
+	b bool
+	f64 float64
+	s string
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var tests = []struct {
+		col string
+		val interface{}
+		expected bool
+	}{
+		{"i", 8, true},
+		{"b", true, true},
+		{"f64", 23.4, true},
+		{"s", "sss", true},
+		{"i", false, false},
+		{"b", 67.8, false},
+		{"f64", 23, false},
+		{"s", 8, false},
+	}
+
+	for _, test := range tests {
+
+		result, err := table.IsValidColValue(test.col, test.val)
+		if (result != test.expected) {
+			t.Error(fmt.Errorf("Expecting IsValidColValue(%q, %v) = %t but found: %t, err: %v",
+				test.col, test.val, test.expected, result, err))
+		}
+	}
 }
