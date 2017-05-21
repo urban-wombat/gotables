@@ -551,7 +551,7 @@ Functions and methods for processing Table tables.
 			
 			<dd><a class="exampleLink" href="#example_Table_JoinColValsByColIndex">Table.JoinColValsByColIndex</a></dd>
 			
-			<dd><a class="exampleLink" href="#example_Table_Search">Table.Search</a></dd>
+			<dd><a class="exampleLink" href="#example_Table_Search_1key">Table.Search (1key)</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Table_SetCellToZeroValue">Table.SetCellToZeroValue</a></dd>
 			
@@ -729,7 +729,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SortKeyExported">type <a href="/src/target/sort.go?s=1846:1948#L53">SortKeyExported</a>
+			<h2 id="SortKeyExported">type <a href="/src/target/sort.go?s=1847:1949#L53">SortKeyExported</a>
 				<a class="permalink" href="#SortKeyExported">&#xb6;</a>
 			</h2>
 			<p>
@@ -757,7 +757,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 		
 			
 			
-			<h2 id="SortKeys">type <a href="/src/target/sort.go?s=2087:2110#L64">SortKeys</a>
+			<h2 id="SortKeys">type <a href="/src/target/sort.go?s=2088:2111#L64">SortKeys</a>
 				<a class="permalink" href="#SortKeys">&#xb6;</a>
 			</h2>
 			
@@ -775,7 +775,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 
 			
 				
-				<h3 id="SortKeys.String">func (SortKeys) <a href="/src/target/sort.go?s=2112:2148#L66">String</a>
+				<h3 id="SortKeys.String">func (SortKeys) <a href="/src/target/sort.go?s=2113:2149#L66">String</a>
 					<a class="permalink" href="#SortKeys.String">&#xb6;</a>
 				</h3>
 				<pre>func (keys <a href="#SortKeys">SortKeys</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
@@ -1082,7 +1082,7 @@ All cells in the new added row will be set to their zero value, such as 0, &#34;
 				
 			
 				
-				<h3 id="Table.AppendSortKey">func (*Table) <a href="/src/target/sort.go?s=6234:6289#L219">AppendSortKey</a>
+				<h3 id="Table.AppendSortKey">func (*Table) <a href="/src/target/sort.go?s=6235:6290#L219">AppendSortKey</a>
 					<a class="permalink" href="#Table.AppendSortKey">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendSortKey(colName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1417,7 +1417,7 @@ item
 				
 			
 				
-				<h3 id="Table.GetSortKeysAsTable">func (*Table) <a href="/src/target/sort.go?s=2539:2599#L83">GetSortKeysAsTable</a>
+				<h3 id="Table.GetSortKeysAsTable">func (*Table) <a href="/src/target/sort.go?s=2540:2600#L83">GetSortKeysAsTable</a>
 					<a class="permalink" href="#Table.GetSortKeysAsTable">&#xb6;</a>
 				</h3>
 				<pre>func (thisTable *<a href="#Table">Table</a>) GetSortKeysAsTable() (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2078,7 +2078,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=13655:13723#L543">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=13649:13717#L539">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2090,12 +2090,12 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 </p>
 
 				
-				<div id="example_Table_Search" class="toggle">
+				<div id="example_Table_Search_1key" class="toggle">
 	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example (1key)</span></p>
 	</div>
 	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example (1key)</span></p>
 		
 		
 		
@@ -2129,21 +2129,10 @@ if err != nil {
 fmt.Println(&#34;(2) Sorted table by name:&#34;)
 fmt.Println(table)
 
-<span class="comment">// Now let&#39;s sort the table by name but this time in reverse.</span>
-err = table.SetSortKeys(&#34;name&#34;)
-if err != nil {
-    log.Println(err)
-}
-err = table.SetSortKeysReverse(&#34;name&#34;)
-if err != nil {
-    log.Println(err)
-}
-err = table.Sort()
-if err != nil {
-    log.Println(err)
-}
-fmt.Println(&#34;(3) Sorted table by name in reverse:&#34;)
-fmt.Println(table)
+searchValue := &#34;Mercury&#34;
+fmt.Printf(&#34;(3) Search for name: %s\n&#34;, searchValue)
+rowIndex, err := table.Search(searchValue)
+fmt.Printf(&#34;Found %s at rowIndex = %d\n&#34;, searchValue, rowIndex)
 
 <span class="comment"></pre>
 			
@@ -2166,14 +2155,8 @@ string    float64  float64
 &#34;Mercury&#34;   0.055      0.4
 &#34;Venus&#34;     0.815      0.7
 
-(3) Sorted table by name in reverse:
-[planets]
-name         mass distance
-string    float64  float64
-&#34;Venus&#34;     0.815      0.7
-&#34;Mercury&#34;   0.055      0.4
-&#34;Mars&#34;      0.107      1.5
-&#34;Earth&#34;     1.000      1.0
+(3) Search for name: Mercury
+Found Mercury at rowIndex = 2
 </pre>
 			
 		
@@ -2572,7 +2555,7 @@ int string float32 bool  float64
 				
 			
 				
-				<h3 id="Table.SetSortKeys">func (*Table) <a href="/src/target/sort.go?s=4269:4330#L149">SetSortKeys</a>
+				<h3 id="Table.SetSortKeys">func (*Table) <a href="/src/target/sort.go?s=4270:4331#L149">SetSortKeys</a>
 					<a class="permalink" href="#Table.SetSortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeys(sortColNames ...<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2807,7 +2790,7 @@ int string     string   bool
 				
 			
 				
-				<h3 id="Table.SetSortKeysReverse">func (*Table) <a href="/src/target/sort.go?s=5094:5169#L178">SetSortKeysReverse</a>
+				<h3 id="Table.SetSortKeysReverse">func (*Table) <a href="/src/target/sort.go?s=5095:5170#L178">SetSortKeysReverse</a>
 					<a class="permalink" href="#Table.SetSortKeysReverse">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysReverse(reverseSortColNames ...<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2987,7 +2970,7 @@ Requires a val of valid type for the col in the table.
 				
 			
 				
-				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=12031:12063#L492">Sort</a>
+				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=12025:12057#L488">Sort</a>
 					<a class="permalink" href="#Table.Sort">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Sort() <a href="/pkg/builtin/#error">error</a></pre>
