@@ -3500,24 +3500,31 @@ func TestTable_Search_1key(t *testing.T) {
 		t.Error(err)
 	}
 
-	searchValue := "Uranus"
-	expecting := 6
-	rowIndex, err := table.Search(searchValue)
-	if rowIndex != expecting {
-		t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
-	}
-	if err != nil {
-		t.Error(err)
-	}
-	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
+	var searchValue string
+	var expecting int
+	var rowIndex int
 
-	searchValue = "Pluto" // -1
-	expecting = -1
-	rowIndex, err = table.Search(searchValue)
-	if rowIndex != expecting {
-		t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+	// Search for entries that exist in the table.
+	for i := 0; i < table.RowCount(); i++ {
+		searchValue, err = table.GetString("name", i)
+		if err != nil {
+			t.Error(err)
+		}
+		expecting := i
+		rowIndex, _ := table.Search(searchValue)
+		if rowIndex != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+		}
 	}
-	if err == nil {
-		t.Error(err)
+//	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
+
+	// Search for entries that don't exist.
+	for _, item := range []string{"Sun", "Pluto"} {
+		searchValue = item
+		expecting = -1
+		rowIndex, err = table.Search(searchValue)
+		if rowIndex != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+		}
 	}
 }
