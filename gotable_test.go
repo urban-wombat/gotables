@@ -3781,3 +3781,165 @@ func TestTable_Search_2keys(t *testing.T) {
 		}
 	}
 }
+
+func TestTable_Search_2keys_reverse2nd(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// First let's sort the table by name.
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.SetSortKeysReverse("lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+// fmt.Printf("here:\n%s", table)
+
+// where("SEARCHING")
+	var searchValues []interface{} = make([]interface{}, 2)
+	var expecting int
+	var found int
+
+	// Search for entries that exist in the table.
+	for i := 0; i < table.RowCount(); i++ {
+		searchValues[0], err = table.GetString("user", i)
+		if err != nil {
+			t.Error(err)
+		}
+		searchValues[1], err = table.GetInt("lines", i)
+		if err != nil {
+			t.Error(err)
+		}
+// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
+// where(fmt.Sprintf("test searchValues = %v", searchValues))
+		expecting := i
+// where()
+		found, err := table.Search(searchValues...)
+		if err != nil {
+			t.Error(err)
+		}
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+		}
+	}
+//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
+
+	// Search for entries that don't exist.
+	dontExist := [][]interface{}{
+		{"steve",   42},
+		{"bill",  42},
+		{"larry", 42},
+	}
+	for _, item := range dontExist {
+		searchValues = item
+		expecting = -1
+// where()
+		found, err = table.Search(searchValues...)
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
+		}
+	}
+}
+
+func TestTable_Search_2keys_reverseBoth(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// First let's sort the table by name.
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.SetSortKeysReverse("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+// fmt.Printf("here:\n%s", table)
+
+// where("SEARCHING")
+	var searchValues []interface{} = make([]interface{}, 2)
+	var expecting int
+	var found int
+
+	// Search for entries that exist in the table.
+	for i := 0; i < table.RowCount(); i++ {
+		searchValues[0], err = table.GetString("user", i)
+		if err != nil {
+			t.Error(err)
+		}
+		searchValues[1], err = table.GetInt("lines", i)
+		if err != nil {
+			t.Error(err)
+		}
+// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
+// where(fmt.Sprintf("test searchValues = %v", searchValues))
+		expecting := i
+// where()
+		found, err := table.Search(searchValues...)
+		if err != nil {
+			t.Error(err)
+		}
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+		}
+	}
+//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
+
+	// Search for entries that don't exist.
+	dontExist := [][]interface{}{
+		{"steve",   42},
+		{"bill",  42},
+		{"larry", 42},
+	}
+	for _, item := range dontExist {
+		searchValues = item
+		expecting = -1
+// where()
+		found, err = table.Search(searchValues...)
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
+		}
+	}
+}
