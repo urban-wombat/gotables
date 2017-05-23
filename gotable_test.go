@@ -3484,7 +3484,6 @@ func TestTable_Search_1key(t *testing.T) {
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
 	`
-
 	table, err := NewTableFromString(tableString)
 	if err != nil {
 		t.Error(err)
@@ -3519,7 +3518,12 @@ func TestTable_Search_1key(t *testing.T) {
 //	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
 
 	// Search for entries that don't exist.
-	for _, item := range []string{"Sun", "Pluto"} {
+	dontExist := []string{
+		"Sun",
+		"Moon",
+		"Pluto",
+	}
+	for _, item := range dontExist {
 		searchValue = item
 		expecting = -1
 		rowIndex, err = table.Search(searchValue)

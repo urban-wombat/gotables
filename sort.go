@@ -594,8 +594,10 @@ where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
 func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
 // where(fmt.Sprintf("searchValues values %v type %T", searchValues, searchValues))
+
 	var searchIndex int = -1
-	var err error
+	var errOuter error
+
 	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
 where()
 where(fmt.Sprintf("rowIndex = %d", rowIndex))
@@ -609,8 +611,8 @@ where(fmt.Sprintf("rowIndex = %d", rowIndex))
 			var sortFunc compareFunc = sortKey.sortFunc
 			var searchVal interface{} = searchValues[keyIndex]
 			var cellVal interface{}
-			cellVal, err = table.GetVal(colName, rowIndex)
-			if err != nil {
+			cellVal, errOuter = table.GetVal(colName, rowIndex)
+			if errOuter != nil {
 				break	// Out to searchByKeys() enclosing function.
 			}
 // where(fmt.Sprintf("searchVal value = %v and type = %T", searchVal, searchVal))
@@ -635,8 +637,31 @@ where(fmt.Sprintf("compared: %d (final)", compared))
 		return false
 	})
 
-where(fmt.Sprintf("return %d, %v", searchIndex, err))
-	return searchIndex, err
+where(fmt.Sprintf("return %d, %v", searchIndex, errOuter))
+	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
+fmt.Printf("*** searchIndex %d < table.RowCount() %d\n", searchIndex, table.RowCount())
+		return searchIndex, nil
+	} else {
+fmt.Printf("*** return -1, errOuter\n")
+		return -1, errOuter
+	}
+}
+
+// Compare search values with row values to determine if search was successful or not.
+func searchValuesMatchRowValues(table *Table, searchValues []interface{}, searchIndex int) bool {
+	for i := 0; i < len(table.sortKeys); i++ {
+		colName := table.sortKeys[i].colName
+		sortFunc := table.sortKeys[i].sortFunc
+		cellVal, _ := table.GetVal(colName, searchIndex)
+		searchVal := searchValues[i]
+		compared := sortFunc(cellVal, searchVal)
+		if compared != 0 {
+			// At least one search value doesn't match a cell value.
+			return false
+		}
+	}
+
+	return true
 }
 
 
