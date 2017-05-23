@@ -290,26 +290,26 @@ func (tableRows tableRows) Swap(i, j int) {
 */
 
 var compare_Alphabetic_string compareFunc = func(i, j interface{}) int {
-where(fmt.Sprintf("*string* comparing %v AND %v", i, j))
+// where(fmt.Sprintf("*string* comparing %v AND %v", i, j))
 	var si_string string = i.(string)
 	var sj_string string = j.(string)
 	var si_lower string = strings.ToLower(si_string)
 	var sj_lower string = strings.ToLower(sj_string)
 	if si_lower < sj_lower {
-		where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
+		// where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 		return -1
 	} else if si_lower > sj_lower {
-		where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
+		// where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 		return +1
 	} else { // si_lower == sj_lower
 		if si_string < sj_string {
-			where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
+			// where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 			return -1
 		} else if si_string > sj_string {
-			where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
+			// where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 			return +1
 		} else {
-			where(fmt.Sprintf("%q == %q\n", si_string, sj_string))
+			// where(fmt.Sprintf("%q == %q\n", si_string, sj_string))
 			return 0
 		}
 	}
@@ -328,7 +328,7 @@ var compare_uint compareFunc = func(i, j interface{}) int {
 }
 
 var compare_int compareFunc = func(i, j interface{}) int {
-where(fmt.Sprintf("*int* comparing %v AND %v", i, j))
+// where(fmt.Sprintf("*int* comparing %v AND %v", i, j))
 	var inti int = i.(int)
 	var intj int = j.(int)
 	if inti < intj {
@@ -546,8 +546,10 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-func (table *Table) Search(searchValues ...interface{}) (int, error) {
-// where(fmt.Sprintf("searchValues values %v type %T", searchValues, searchValues))
+   func (table *Table) Search(searchValues ...interface{}) (int, error) {
+//   where(fmt.Sprintf("yyy Search() searchValues values %v type %T", searchValues, searchValues))
+//   where(fmt.Sprintf("yyy Search() len(searchValues) = %d", len(searchValues)))
+//   where(fmt.Sprintf("yyy Search() len(table.sortKeys) = %d", len(table.sortKeys)))
 
 	if table == nil {
 		return -1, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -555,15 +557,25 @@ func (table *Table) Search(searchValues ...interface{}) (int, error) {
 
 // where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
+// where(fmt.Sprintf("yyy Search() cannot search table using 0 search values: keys %v", table.sortKeys))
 		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
 	}
 
 	if len(table.sortKeys) == 0 {
+// where("yyy cannot search table that has 0 sort keys - use SetSortKeys()")
 		return -1, fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
 	}
 
+	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
+	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
+// where(fmt.Sprintf("searchValues type %T", searchValues))
+		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax Search(mySliceOfKeys...)",
+			funcName(), len(searchValues), len(table.sortKeys))
+	}
+
 	if len(searchValues) != len(table.sortKeys) {
-		return -1, fmt.Errorf("%s(...) searchValues count %d != sort keys count %d",
+// where(fmt.Sprintf("searchValues type %T", searchValues))
+		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d",
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
@@ -585,26 +597,26 @@ func (table *Table) Search(searchValues ...interface{}) (int, error) {
 	}
 
 	rowIndex, err := table.searchByKeys(searchValues)
-where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
+// where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
 
 	return rowIndex, err
 }
 
-// This argument needs to be []interface{} NOT ...interface{} to avoid strange nesting phenomenon.
 func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
-where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
-// where(fmt.Sprintf("searchValues values %v type %T", searchValues, searchValues))
+//where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
+//where(fmt.Sprintf("searchByKeys() searchValues values %v type %T", searchValues, searchValues))
 
 	var searchIndex int = -1
 	var errOuter error
 
 	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
-where()
-where(fmt.Sprintf("rowIndex = %d", rowIndex))
+// where()
+// where(fmt.Sprintf("rowIndex = %d", rowIndex))
 //		compareCount++
 		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
 		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		var keyCount = len(table.sortKeys)
+		var keyLast = keyCount - 1
 		var compared int
 		for keyIndex, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
@@ -612,55 +624,63 @@ where(fmt.Sprintf("rowIndex = %d", rowIndex))
 			var searchVal interface{} = searchValues[keyIndex]
 			var cellVal interface{}
 			cellVal, errOuter = table.GetVal(colName, rowIndex)
+// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
 			if errOuter != nil {
 				break	// Out to searchByKeys() enclosing function.
 			}
-// where(fmt.Sprintf("searchVal value = %v and type = %T", searchVal, searchVal))
 			compared = sortFunc(cellVal, searchVal)
-			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
-			//where(fmt.Sprintf("compared = %d ...\n", compared))
+
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
 				compared *= -1
 			}
-where(fmt.Sprintf("compared: %d", compared))
-			//where(fmt.Sprintf("... compared = %d\n", compared))
-			searchIndex = rowIndex
-			if compared >= 0 {
-				//	where(fmt.Sprintf("not equal"))
-				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
-where(fmt.Sprintf("keyIndex %d keyCount %d", keyIndex, keyCount))
+
+			if compared > 0 {	// Definite result.
+//				where(fmt.Sprintf("xxx rowIndex %d definite result", rowIndex))
 				return true
+			} else if compared < 0 {
+				return false
 			}
+
+			if keyIndex == keyLast {
+//				where(fmt.Sprintf("xxx rowIndex %d last key %d result", rowIndex, keyIndex))
+				return compared >= 0
+			}
+
+			// Otherwise keep looping through keys.
 		}
 where(fmt.Sprintf("compared: %d (final)", compared))
+		where(fmt.Sprintf("xxx rowIndex %d return false result", rowIndex))
 		return false
 	})
 
-where(fmt.Sprintf("return %d, %v", searchIndex, errOuter))
+// where(fmt.Sprintf("return %d, %v", searchIndex, errOuter))
+	// See logic at: https://golang.org/pkg/sort/#Search
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
-fmt.Printf("*** searchIndex %d < table.RowCount() %d\n", searchIndex, table.RowCount())
+		// fmt.Printf("*** searchIndex %d < table.RowCount() %d\n", searchIndex, table.RowCount())
 		return searchIndex, nil
 	} else {
-fmt.Printf("*** return -1, errOuter\n")
+		// fmt.Printf("*** return -1, errOuter\n")
 		return -1, errOuter
 	}
 }
 
 // Compare search values with row values to determine if search was successful or not.
 func searchValuesMatchRowValues(table *Table, searchValues []interface{}, searchIndex int) bool {
+	// Loop through the parallel lists of sort keys and search values.
 	for i := 0; i < len(table.sortKeys); i++ {
-		colName := table.sortKeys[i].colName
-		sortFunc := table.sortKeys[i].sortFunc
+		colName    := table.sortKeys[i].colName
+		sortFunc   := table.sortKeys[i].sortFunc
 		cellVal, _ := table.GetVal(colName, searchIndex)
-		searchVal := searchValues[i]
-		compared := sortFunc(cellVal, searchVal)
+		searchVal  := searchValues[i]
+		compared   := sortFunc(cellVal, searchVal)
 		if compared != 0 {
 			// At least one search value doesn't match a cell value.
 			return false
 		}
 	}
 
+	// They all match.
 	return true
 }
 

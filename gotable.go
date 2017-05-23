@@ -2740,7 +2740,7 @@ func (table *Table) IsColType(colName string, typeNameQuestioning string) (bool,
 	}
 	colType, _ := table.ColType(colName)
 	if colType != typeNameQuestioning {
-		err := fmt.Errorf("table [%s] col name %q type is %q not %q",
+		err := fmt.Errorf("table [%s] col name %q type is %q, not %q",
 			table.tableName, colName, colType, typeNameQuestioning)
 		return false, err
 	}
@@ -2761,7 +2761,7 @@ func (table *Table) IsColTypeByColIndex(colIndex int, typeNameQuestioning string
 	isColType, err := table.IsColType(colName, typeNameQuestioning)
 	if !isColType {
 		colType, _ := table.ColType(colName)
-		err := fmt.Errorf("table [%s] col %q col index %d type is %q not %q",
+		err := fmt.Errorf("table [%s] col %q col index %d type is %q, not %q",
 			table.tableName, colName, colIndex, colType, typeNameQuestioning)
 		return false, err
 	}

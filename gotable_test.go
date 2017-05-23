@@ -2510,6 +2510,7 @@ func TestIsColType(t *testing.T) {
 	}
 }
 
+/*
 func ExampleTable_Sort() {
 	tableString :=
 	`[planets]
@@ -2584,6 +2585,7 @@ func ExampleTable_Sort() {
 	// "Mars"      0.107      1.5
 	// "Earth"     1.000      1.0
 }
+*/
 
 func ExampleTable_SetSortKeys() {
 	tableString :=
@@ -3322,10 +3324,6 @@ func TestSearch(t *testing.T) {
 		t.Error(err)
 	}
 
-	where("sort by user")
-	where()
-	fmt.Println(table)
-
 	_, err = table.Search()	// Note: 0 search values passed to Search()
 	if err == nil {
 		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 1"))
@@ -3379,7 +3377,6 @@ func TestIsValidColValue (t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_Search_1key() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -3431,7 +3428,7 @@ func ExampleTable_Search_1key() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
+	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
 
 	// Output:
 	// (1) Unsorted table:
@@ -3463,9 +3460,98 @@ func ExampleTable_Search_1key() {
 	// (3) Search for name: Mars
 	// Found Mars at rowIndex = 2
 	// (4) Search for name: Pluto
-	// Found Pluto at rowIndex = -1
+	// Found Pluto at rowIndex = -1 (missing)
 }
-*/
+
+func ExampleTable_Search_1key_reverse() {
+	// mass:     Earth = 1 (relative to Earth)
+	// distance: Earth = 1 (relative to Earth - AU)
+	// http://www.windows2universe.org/our_solar_system/planets_table.html
+	tableString :=
+	`[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.000      5.2    67     4 "just"
+	"Saturn"   95.000     29.4    62     5 "sat"
+	"Uranus"   15.000     84.0    27     6 "upon"
+	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(1) Unsorted table:")
+	fmt.Println(table)
+
+	// First let's sort the table by name in reverse.
+	err = table.SetSortKeys("name")
+	if err != nil {
+		log.Println(err)
+	}
+	err = table.SetSortKeysReverse("name")
+	if err != nil {
+		log.Println(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(2) Sorted table by name in reverse order:")
+	fmt.Println(table)
+
+	searchValue := "Mars" // 5
+	fmt.Printf("(3) Search for name: %s\n", searchValue)
+	rowIndex, err := table.Search(searchValue)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
+
+	searchValue = "Pluto" // -1
+	fmt.Printf("(4) Search for name: %s\n", searchValue)
+	rowIndex, err = table.Search(searchValue)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
+
+	// Output:
+	// (1) Unsorted table:
+	// [planets]
+	// name         mass distance moons index mnemonic
+	// string    float64  float64   int   int string
+	// "Mercury"   0.055      0.4     0     0 "my"
+	// "Venus"     0.815      0.7     0     1 "very"
+	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Mars"      0.107      1.5     2     3 "mother"
+	// "Jupiter" 318.000      5.2    67     4 "just"
+	// "Saturn"   95.000     29.4    62     5 "sat"
+	// "Uranus"   15.000     84.0    27     6 "upon"
+	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// 
+	// (2) Sorted table by name in reverse order:
+	// [planets]
+	// name         mass distance moons index mnemonic
+	// string    float64  float64   int   int string
+	// "Venus"     0.815      0.7     0     1 "very"
+	// "Uranus"   15.000     84.0    27     6 "upon"
+	// "Saturn"   95.000     29.4    62     5 "sat"
+	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// "Mercury"   0.055      0.4     0     0 "my"
+	// "Mars"      0.107      1.5     2     3 "mother"
+	// "Jupiter" 318.000      5.2    67     4 "just"
+	// "Earth"     1.000      1.0     1     2 "elegant"
+	// 
+	// (3) Search for name: Mars
+	// Found Mars at rowIndex = 5
+	// (4) Search for name: Pluto
+	// Found Pluto at rowIndex = -1 (missing)
+}
 
 func TestTable_Search_1key(t *testing.T) {
 	// mass:     Earth = 1 (relative to Earth)
@@ -3510,7 +3596,10 @@ func TestTable_Search_1key(t *testing.T) {
 			t.Error(err)
 		}
 		expecting := i
-		rowIndex, _ := table.Search(searchValue)
+		rowIndex, err := table.Search(searchValue)
+		if err != nil {
+			t.Error(err)
+		}
 		if rowIndex != expecting {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
 		}
@@ -3527,8 +3616,168 @@ func TestTable_Search_1key(t *testing.T) {
 		searchValue = item
 		expecting = -1
 		rowIndex, err = table.Search(searchValue)
+		if err != nil {
+			t.Error(err)
+		}
 		if rowIndex != expecting {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+		}
+	}
+}
+
+func TestTable_Search_1key_reverse(t *testing.T) {
+	// mass:     Earth = 1 (relative to Earth)
+	// distance: Earth = 1 (relative to Earth - AU)
+	// http://www.windows2universe.org/our_solar_system/planets_table.html
+	tableString :=
+	`[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.000      5.2    67     4 "just"
+	"Saturn"   95.000     29.4    62     5 "sat"
+	"Uranus"   15.000     84.0    27     6 "upon"
+	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// First let's sort the table by name - in reverse order.
+	err = table.SetSortKeys("name")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.SetSortKeysReverse("name")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+
+	var searchValue string
+	var expecting int
+	var rowIndex int
+
+	// Search for entries that exist in the table.
+	for i := 0; i < table.RowCount(); i++ {
+		searchValue, err = table.GetString("name", i)
+		if err != nil {
+			t.Error(err)
+		}
+		expecting := i
+
+		rowIndex, err := table.Search(searchValue)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if rowIndex != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+		}
+	}
+//	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
+
+	// Search for entries that don't exist.
+	dontExist := []string{
+		"Sun",
+		"Moon",
+		"Pluto",
+	}
+	for _, item := range dontExist {
+		searchValue = item
+		expecting = -1
+
+		rowIndex, err = table.Search(searchValue)
+		if err != nil {
+			t.Error(err)
+		}
+		if rowIndex != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+		}
+	}
+}
+
+func TestTable_Search_2keys(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+// where("SORTING")
+	// First let's sort the table by name.
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+// fmt.Printf("here:\n%s", table)
+
+// where("SEARCHING")
+	var searchValues []interface{} = make([]interface{}, 2)
+	var expecting int
+	var found int
+
+	// Search for entries that exist in the table.
+	for i := 0; i < table.RowCount(); i++ {
+		searchValues[0], err = table.GetString("user", i)
+		if err != nil {
+			t.Error(err)
+		}
+		searchValues[1], err = table.GetInt("lines", i)
+		if err != nil {
+			t.Error(err)
+		}
+// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
+// where(fmt.Sprintf("test searchValues = %v", searchValues))
+		expecting := i
+// where()
+		found, err := table.Search(searchValues...)
+		if err != nil {
+			t.Error(err)
+		}
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+		}
+	}
+//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
+
+	// Search for entries that don't exist.
+	dontExist := [][]interface{}{
+		{"steve",   42},
+		{"bill",  42},
+		{"larry", 42},
+	}
+	for _, item := range dontExist {
+		searchValues = item
+		expecting = -1
+// where()
+		found, err = table.Search(searchValues...)
+		if found != expecting {
+			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
 		}
 	}
 }
