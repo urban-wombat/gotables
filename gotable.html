@@ -553,6 +553,8 @@ Functions and methods for processing Table tables.
 			
 			<dd><a class="exampleLink" href="#example_Table_Search_1key">Table.Search (1key)</a></dd>
 			
+			<dd><a class="exampleLink" href="#example_Table_Search_1keyReverse">Table.Search (1keyReverse)</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_Table_SetCellToZeroValue">Table.SetCellToZeroValue</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Table_SetRowFloatCellsToNaN">Table.SetRowFloatCellsToNaN</a></dd>
@@ -684,7 +686,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="Round">func <a href="/src/target/gotable.go?s=85298:85351#L3038">Round</a>
+			<h2 id="Round">func <a href="/src/target/gotable.go?s=85300:85353#L3038">Round</a>
 				<a class="permalink" href="#Round">&#xb6;</a>
 			</h2>
 			<pre>func Round(val <a href="/pkg/builtin/#float64">float64</a>, places <a href="/pkg/builtin/#int">int</a>) (rounded <a href="/pkg/builtin/#float64">float64</a>)</pre>
@@ -805,7 +807,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 
 			
 				
-				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=96279:96335#L3409">GobDecodeTable</a>
+				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=96281:96337#L3409">GobDecodeTable</a>
 					<a class="permalink" href="#GobDecodeTable">&#xb6;</a>
 				</h3>
 				<pre>func GobDecodeTable(buffer <a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1112,7 +1114,7 @@ All cells in the new added row will be set to their zero value, such as 0, &#34;
 				
 			
 				
-				<h3 id="Table.ColName">func (*Table) <a href="/src/target/gotable.go?s=81148:81205#L2901">ColName</a>
+				<h3 id="Table.ColName">func (*Table) <a href="/src/target/gotable.go?s=81150:81207#L2901">ColName</a>
 					<a class="permalink" href="#Table.ColName">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColName(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1564,7 +1566,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=99882:99962#L3549">GetValAsString</a>
+				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=99884:99964#L3549">GetValAsString</a>
 					<a class="permalink" href="#Table.GetValAsString">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1574,7 +1576,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=97567:97655#L3464">GetValAsStringByColIndex</a>
+				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=97569:97657#L3464">GetValAsStringByColIndex</a>
 					<a class="permalink" href="#Table.GetValAsStringByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1598,7 +1600,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=90589:90642#L3208">GobEncode</a>
+				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=90591:90644#L3208">GobEncode</a>
 					<a class="permalink" href="#Table.GobEncode">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GobEncode() (<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1840,7 +1842,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=76981:77076#L2740">IsColTypeByColIndex</a>
+				<h3 id="Table.IsColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=76982:77077#L2740">IsColTypeByColIndex</a>
 					<a class="permalink" href="#Table.IsColTypeByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsColTypeByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, typeNameQuestioning <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1850,7 +1852,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=100229:100278#L3565">IsStructShape</a>
+				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=100231:100280#L3565">IsStructShape</a>
 					<a class="permalink" href="#Table.IsStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsStructShape() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1860,7 +1862,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=101711:101795#L3620">IsValidColValue</a>
+				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=101713:101797#L3620">IsValidColValue</a>
 					<a class="permalink" href="#Table.IsValidColValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidColValue(colName <a href="/pkg/builtin/#string">string</a>, value interface{}) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1873,7 +1875,7 @@ Test that this value is a valid type for this column.
 				
 			
 				
-				<h3 id="Table.IsValidRow">func (*Table) <a href="/src/target/gotable.go?s=81684:81742#L2917">IsValidRow</a>
+				<h3 id="Table.IsValidRow">func (*Table) <a href="/src/target/gotable.go?s=81686:81744#L2917">IsValidRow</a>
 					<a class="permalink" href="#Table.IsValidRow">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidRow(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1887,7 +1889,7 @@ That means completely missing values, not just empty strings or NaN floats.
 				
 			
 				
-				<h3 id="Table.IsValidTable">func (*Table) <a href="/src/target/gotable.go?s=82580:82628#L2954">IsValidTable</a>
+				<h3 id="Table.IsValidTable">func (*Table) <a href="/src/target/gotable.go?s=82582:82630#L2954">IsValidTable</a>
 					<a class="permalink" href="#Table.IsValidTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidTable() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1907,7 +1909,7 @@ Valid sort keys (if any are set)?
 				
 			
 				
-				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=100780:100861#L3585">JoinColVals</a>
+				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=100782:100863#L3585">JoinColVals</a>
 					<a class="permalink" href="#Table.JoinColVals">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColVals(colName <a href="/pkg/builtin/#string">string</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1967,7 +1969,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=101345:101434#L3606">JoinColValsByColIndex</a>
+				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=101347:101436#L3606">JoinColValsByColIndex</a>
 					<a class="permalink" href="#Table.JoinColValsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColValsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2038,7 +2040,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.RenameCol">func (*Table) <a href="/src/target/gotable.go?s=79395:79462#L2841">RenameCol</a>
+				<h3 id="Table.RenameCol">func (*Table) <a href="/src/target/gotable.go?s=79397:79464#L2841">RenameCol</a>
 					<a class="permalink" href="#Table.RenameCol">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) RenameCol(oldName <a href="/pkg/builtin/#string">string</a>, newName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2051,7 +2053,7 @@ Note: This may leave the table in an invalid or unstable state if an error is re
 				
 			
 				
-				<h3 id="Table.RenameTable">func (*Table) <a href="/src/target/gotable.go?s=78688:78743#L2811">RenameTable</a>
+				<h3 id="Table.RenameTable">func (*Table) <a href="/src/target/gotable.go?s=78690:78745#L2811">RenameTable</a>
 					<a class="permalink" href="#Table.RenameTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) RenameTable(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2078,7 +2080,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=13649:13717#L539">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=13673:13741#L539">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2100,14 +2102,21 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 		
 		
 			<p>Code:</p>
-			<pre class="code">tableString :=
+			<pre class="code"><span class="comment">// mass:     Earth = 1 (relative to Earth)</span>
+<span class="comment">// distance: Earth = 1 (relative to Earth - AU)</span>
+<span class="comment">// http://www.windows2universe.org/our_solar_system/planets_table.html</span>
+tableString :=
     `[planets]
-name         mass distance
-string    float64  float64
-&#34;Mercury&#34;   0.055      0.4
-&#34;Venus&#34;     0.815      0.7
-&#34;Earth&#34;     1.000      1.0
-&#34;Mars&#34;      0.107      1.5
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
 `
 
 table, err := NewTableFromString(tableString)
@@ -2129,34 +2138,153 @@ if err != nil {
 fmt.Println(&#34;(2) Sorted table by name:&#34;)
 fmt.Println(table)
 
-searchValue := &#34;Mercury&#34;
+searchValue := &#34;Mars&#34; <span class="comment">// 2</span>
 fmt.Printf(&#34;(3) Search for name: %s\n&#34;, searchValue)
 rowIndex, err := table.Search(searchValue)
+if err != nil {
+    log.Println(err)
+}
 fmt.Printf(&#34;Found %s at rowIndex = %d\n&#34;, searchValue, rowIndex)
+
+searchValue = &#34;Pluto&#34; <span class="comment">// -1</span>
+fmt.Printf(&#34;(4) Search for name: %s\n&#34;, searchValue)
+rowIndex, _ = table.Search(searchValue)
+fmt.Printf(&#34;Found %s at rowIndex = %d (missing)\n&#34;, searchValue, rowIndex)
 
 <span class="comment"></pre>
 			
 			<p>Output:</p>
 			<pre class="output">(1) Unsorted table:
 [planets]
-name         mass distance
-string    float64  float64
-&#34;Mercury&#34;   0.055      0.4
-&#34;Venus&#34;     0.815      0.7
-&#34;Earth&#34;     1.000      1.0
-&#34;Mars&#34;      0.107      1.5
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
 
 (2) Sorted table by name:
 [planets]
-name         mass distance
-string    float64  float64
-&#34;Earth&#34;     1.000      1.0
-&#34;Mars&#34;      0.107      1.5
-&#34;Mercury&#34;   0.055      0.4
-&#34;Venus&#34;     0.815      0.7
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
 
-(3) Search for name: Mercury
-Found Mercury at rowIndex = 2
+(3) Search for name: Mars
+Found Mars at rowIndex = 2
+(4) Search for name: Pluto
+Found Pluto at rowIndex = -1 (missing)
+</pre>
+			
+		
+	</div>
+</div>
+<div id="example_Table_Search_1keyReverse" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example (1keyReverse)</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example (1keyReverse)</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code"><span class="comment">// mass:     Earth = 1 (relative to Earth)</span>
+<span class="comment">// distance: Earth = 1 (relative to Earth - AU)</span>
+<span class="comment">// http://www.windows2universe.org/our_solar_system/planets_table.html</span>
+tableString :=
+    `[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+`
+
+table, err := NewTableFromString(tableString)
+if err != nil {
+    log.Println(err)
+}
+fmt.Println(&#34;(1) Unsorted table:&#34;)
+fmt.Println(table)
+
+<span class="comment">// First let&#39;s sort the table by name in reverse.</span>
+err = table.SetSortKeys(&#34;name&#34;)
+if err != nil {
+    log.Println(err)
+}
+err = table.SetSortKeysReverse(&#34;name&#34;)
+if err != nil {
+    log.Println(err)
+}
+err = table.Sort()
+if err != nil {
+    log.Println(err)
+}
+fmt.Println(&#34;(2) Sorted table by name in reverse order:&#34;)
+fmt.Println(table)
+
+searchValue := &#34;Mars&#34; <span class="comment">// 5</span>
+fmt.Printf(&#34;(3) Search for name: %s\n&#34;, searchValue)
+rowIndex, err := table.Search(searchValue)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;Found %s at rowIndex = %d\n&#34;, searchValue, rowIndex)
+
+searchValue = &#34;Pluto&#34; <span class="comment">// -1</span>
+fmt.Printf(&#34;(4) Search for name: %s\n&#34;, searchValue)
+rowIndex, _ = table.Search(searchValue)
+fmt.Printf(&#34;Found %s at rowIndex = %d (missing)\n&#34;, searchValue, rowIndex)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">(1) Unsorted table:
+[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+
+(2) Sorted table by name in reverse order:
+[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+
+(3) Search for name: Mars
+Found Mars at rowIndex = 5
+(4) Search for name: Pluto
+Found Pluto at rowIndex = -1 (missing)
 </pre>
 			
 		
@@ -2472,7 +2600,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetName">func (*Table) <a href="/src/target/gotable.go?s=78039:78090#L2775">SetName</a>
+				<h3 id="Table.SetName">func (*Table) <a href="/src/target/gotable.go?s=78041:78092#L2775">SetName</a>
 					<a class="permalink" href="#Table.SetName">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetName(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2829,7 +2957,7 @@ Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
 				
 			
 				
-				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=100492:100552#L3574">SetStructShape</a>
+				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=100494:100554#L3574">SetStructShape</a>
 					<a class="permalink" href="#Table.SetStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetStructShape(isStructShape <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -2970,7 +3098,7 @@ Requires a val of valid type for the col in the table.
 				
 			
 				
-				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=12025:12057#L488">Sort</a>
+				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=12046:12078#L488">Sort</a>
 					<a class="permalink" href="#Table.Sort">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Sort() <a href="/pkg/builtin/#error">error</a></pre>
@@ -3227,7 +3355,7 @@ TableSet is an ordered set of *Table pointers.
 
 			
 				
-				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=94313:94377#L3336">GobDecodeTableSet</a>
+				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=94315:94379#L3336">GobDecodeTableSet</a>
 					<a class="permalink" href="#GobDecodeTableSet">&#xb6;</a>
 				</h3>
 				<pre>func GobDecodeTableSet(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3356,7 +3484,7 @@ The file name if this TableSet has been created from a file. Otherwise &#34;&#34
 				
 			
 				
-				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=91565:91626#L3252">GobEncode</a>
+				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=91567:91628#L3252">GobEncode</a>
 					<a class="permalink" href="#TableSet.GobEncode">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) GobEncode() ([]<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3389,7 +3517,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.RenameTable">func (*TableSet) <a href="/src/target/gotable.go?s=78866:78945#L2818">RenameTable</a>
+				<h3 id="TableSet.RenameTable">func (*TableSet) <a href="/src/target/gotable.go?s=78868:78947#L2818">RenameTable</a>
 					<a class="permalink" href="#TableSet.RenameTable">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) RenameTable(renameFrom <a href="/pkg/builtin/#string">string</a>, renameTo <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>

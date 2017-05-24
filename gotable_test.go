@@ -2510,7 +2510,6 @@ func TestIsColType(t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_Sort() {
 	tableString :=
 	`[planets]
@@ -2585,7 +2584,6 @@ func ExampleTable_Sort() {
 	// "Mars"      0.107      1.5
 	// "Earth"     1.000      1.0
 }
-*/
 
 func ExampleTable_SetSortKeys() {
 	tableString :=
@@ -3460,7 +3458,7 @@ func ExampleTable_Search_1key() {
 	// Found Pluto at rowIndex = -1 (missing)
 }
 
-func ExampleTable_Search_1key_reverse() {
+func ExampleTable_Search_1keyReverse() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
 	// http://www.windows2universe.org/our_solar_system/planets_table.html
