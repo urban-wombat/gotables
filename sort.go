@@ -603,18 +603,12 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 }
 
 func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
-//where(fmt.Sprintf("Calling searchByKeys(%v)\n", searchValues))
-//where(fmt.Sprintf("searchByKeys() searchValues values %v type %T", searchValues, searchValues))
 
 	var searchIndex int = -1
-	var errOuter error
 
+	// sort.Search() is enclosed here so it can access table values.
 	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
-// where()
-// where(fmt.Sprintf("rowIndex = %d", rowIndex))
 //		compareCount++
-		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
-		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		var keyCount = len(table.sortKeys)
 		var keyLast = keyCount - 1
 		var compared int
@@ -623,9 +617,10 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 			var sortFunc compareFunc = sortKey.sortFunc
 			var searchVal interface{} = searchValues[keyIndex]
 			var cellVal interface{}
-			cellVal, errOuter = table.GetVal(colName, rowIndex)
-// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
-			if errOuter != nil {
+			cellVal, err := table.GetVal(colName, rowIndex)
+			// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
+			if err != nil {
+				// Should never happen. Hasn't been tested.
 				break	// Out to searchByKeys() enclosing function.
 			}
 			compared = sortFunc(cellVal, searchVal)
@@ -635,33 +630,28 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 				compared *= -1
 			}
 
-			if compared > 0 {	// Definite result.
-//				where(fmt.Sprintf("xxx rowIndex %d definite result", rowIndex))
-				return true
-			} else if compared < 0 {
-				return false
-			}
-
-			if keyIndex == keyLast {
-//				where(fmt.Sprintf("xxx rowIndex %d last key %d result", rowIndex, keyIndex))
+			// Most searches will be single-key searches, so last key is the most common.
+			if keyIndex == keyLast {	// Last key is the deciding key because all previous matched.
 				return compared >= 0
+			} else {
+				if compared > 0 {	// Definite result regardless of subsequent keys: no match.
+					return true
+				} else if compared < 0 {
+					return false	// Definite result regardless of subsequent keys: no match.
+				}
 			}
-
-			// Otherwise keep looping through keys.
+			// Otherwise the first keys are equal, so keep looping through keys.
 		}
-where(fmt.Sprintf("compared: %d (final)", compared))
-		where(fmt.Sprintf("xxx rowIndex %d return false result", rowIndex))
+
+		// Should never be reached. Hasn't been tested.
 		return false
 	})
 
-// where(fmt.Sprintf("return %d, %v", searchIndex, errOuter))
 	// See logic at: https://golang.org/pkg/sort/#Search
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
-		// fmt.Printf("*** searchIndex %d < table.RowCount() %d\n", searchIndex, table.RowCount())
 		return searchIndex, nil
 	} else {
-		// fmt.Printf("*** return -1, errOuter\n")
-		return -1, errOuter
+		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table", table.Name(), searchValues, plural(len(searchValues)))
 	}
 }
 

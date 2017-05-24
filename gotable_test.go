@@ -3424,10 +3424,7 @@ func ExampleTable_Search_1key() {
 
 	searchValue = "Pluto" // -1
 	fmt.Printf("(4) Search for name: %s\n", searchValue)
-	rowIndex, err = table.Search(searchValue)
-	if err != nil {
-		log.Println(err)
-	}
+	rowIndex, _ = table.Search(searchValue)
 	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
 
 	// Output:
@@ -3514,10 +3511,7 @@ func ExampleTable_Search_1key_reverse() {
 
 	searchValue = "Pluto" // -1
 	fmt.Printf("(4) Search for name: %s\n", searchValue)
-	rowIndex, err = table.Search(searchValue)
-	if err != nil {
-		log.Println(err)
-	}
+	rowIndex, _ = table.Search(searchValue)
 	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
 
 	// Output:
@@ -3604,7 +3598,6 @@ func TestTable_Search_1key(t *testing.T) {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
 		}
 	}
-//	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
 
 	// Search for entries that don't exist.
 	dontExist := []string{
@@ -3616,8 +3609,8 @@ func TestTable_Search_1key(t *testing.T) {
 		searchValue = item
 		expecting = -1
 		rowIndex, err = table.Search(searchValue)
-		if err != nil {
-			t.Error(err)
+		if err == nil {
+			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValue))
 		}
 		if rowIndex != expecting {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
@@ -3695,8 +3688,8 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 		expecting = -1
 
 		rowIndex, err = table.Search(searchValue)
-		if err != nil {
-			t.Error(err)
+		if err == nil {
+			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValue))
 		}
 		if rowIndex != expecting {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
@@ -3883,7 +3876,6 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 		t.Error(err)
 	}
 
-	// First let's sort the table by name.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
 		t.Error(err)
@@ -3896,9 +3888,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-// fmt.Printf("here:\n%s", table)
 
-// where("SEARCHING")
 	var searchValues []interface{} = make([]interface{}, 2)
 	var expecting int
 	var found int
@@ -3913,10 +3903,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
-// where(fmt.Sprintf("test searchValues = %v", searchValues))
-		expecting := i
-// where()
+		expecting = i
 		found, err := table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
@@ -3925,7 +3912,6 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
 		}
 	}
-//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
 
 	// Search for entries that don't exist.
 	dontExist := [][]interface{}{
@@ -3936,8 +3922,10 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	for _, item := range dontExist {
 		searchValues = item
 		expecting = -1
-// where()
 		found, err = table.Search(searchValues...)
+		if err == nil {
+			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValues))
+		}
 		if found != expecting {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
 		}
