@@ -7,8 +7,9 @@ Table data format and utilities
 1. Sometimes the data you want to represent is intrinsically tabular.
 2. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
 3. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
+   Data name and type are mentioned only once in a gotable Table.
 4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
-But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
+   But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
 
 ## What Is A gotable.Table?
 
