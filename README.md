@@ -10,6 +10,7 @@ Table data format and utilities
    Data name and type are mentioned only once in a gotable Table.
 4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
    But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
+   And if they are, you want it to be obvious.
 
 ## What Is A gotable.Table?
 
@@ -38,7 +39,7 @@ Here is a simple program that parses the table into a gotable.TableSet (a set of
         "fmt"
     )
 
-    var myTable string = `
+    var tableString string = `
         [my_table]
         Flintstone Age Married Height
         string     int bool    float32
@@ -48,11 +49,11 @@ Here is a simple program that parses the table into a gotable.TableSet (a set of
     `
 
     func main() {
-        tables, err := gotable.NewTableSetFromString(myTable)
+        table, err := gotable.NewTableFromString(tableString)
         if err != nil {
             panic(err)
         }
-        fmt.Println(tables)
+        fmt.Println(table)
     }
 
 The output is:
