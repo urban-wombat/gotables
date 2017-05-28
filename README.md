@@ -70,4 +70,4 @@ This reflects the opinion that human readability is paramount.
 
 For unpadded output:
 
-    fmt.Println(tables.Unpadded())
+    fmt.Println(table.StringUnpadded())
