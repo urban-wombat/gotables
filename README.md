@@ -63,3 +63,10 @@ The output is:
     "Fred"      33 true        1.8
     "Wilma"     31 true        1.6
     "Pebbles"    4 false       0.8
+
+Notice that the columns of data are padded with spaces and numeric types are right-aligned.
+This reflects the opinion that human readability is paramount.
+
+For unpadded output:
+
+    fmt.Println(tables.Unpadded())
