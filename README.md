@@ -21,16 +21,21 @@ A gotable.Table is a table of data with the following sections:
 
 Here's an example:
 
-    [my_table]
-    Flintstone Age Married Height
-    string     int bool    float32
-    "Fred"     33  true    1.8
-    "Wilma"    31  true    1.6
-    "Pebbles"   4  false   0.8
+    [planets]
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    "Mercury"   0.055      0.4     0     0 "my"
+    "Venus"     0.815      0.7     0     1 "very"
+    "Earth"     1.000      1.0     1     2 "elegant"
+    "Mars"      0.107      1.5     2     3 "mother"
+    "Jupiter" 318.000      5.2    67     4 "just"
+    "Saturn"   95.000     29.4    62     5 "sat"
+    "Uranus"   15.000     84.0    27     6 "upon"
+    "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
 
-Many of the Go data types can be used. (Not yet implemented: complex64, complex128, rune, byte.)
+Most of the Go builtin data types can be used. (But not yet: complex64, complex128, rune, byte.)
 
-Here is a simple program that parses the table into a gotable.TableSet (a set of tables -- in this case one table) and echoes it back out:
+Here is a simple program that parses the table into a gotable.Table and echoes it back out:
 
     package main
 
@@ -39,35 +44,55 @@ Here is a simple program that parses the table into a gotable.TableSet (a set of
         "fmt"
     )
 
-    var tableString string = `
-        [my_table]
-        Flintstone Age Married Height
-        string     int bool    float32
-        "Fred"     33  true    1.8
-        "Wilma"    31  true    1.6
-        "Pebbles"   4  false   0.8
+    tableString :=
+    `[planets]
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    "Mercury"   0.055      0.4     0     0 "my"
+    "Venus"     0.815      0.7     0     1 "very"
+    "Earth"     1.000      1.0     1     2 "elegant"
+    "Mars"      0.107      1.5     2     3 "mother"
+    "Jupiter" 318.000      5.2    67     4 "just"
+    "Saturn"   95.000     29.4    62     5 "sat"
+    "Uranus"   15.000     84.0    27     6 "upon"
+    "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
     `
 
-    func main() {
-        table, err := gotable.NewTableFromString(tableString)
-        if err != nil {
-            panic(err)
-        }
-        fmt.Println(table)
+    table, err := gotable.NewTableFromString(tableString)
+    if err != nil {
+        log.Println(err)
     }
 
-The output is:
+    // Simply echo it back out.
+    fmt.Println(table)
 
-    [my_table]
-    Flintstone Age Married  Height
-    string     int bool    float32
-    "Fred"      33 true        1.8
-    "Wilma"     31 true        1.6
-    "Pebbles"    4 false       0.8
+    // Notice that the columns of data are padded with spaces and numeric types are right-aligned.
+    // This reflects the opinion that human readability is as important as compactness and efficiency.
 
-Notice that the columns of data are padded with spaces and numeric types are right-aligned.
-This reflects the opinion that human readability is paramount.
-
-For unpadded output:
-
+    // For unpadded output:
     fmt.Println(table.StringUnpadded())
+
+    // Output:
+    // [planets]
+    // name         mass distance moons index mnemonic
+    // string    float64  float64   int   int string
+    // "Mercury"   0.055      0.4     0     0 "my"
+    // "Venus"     0.815      0.7     0     1 "very"
+    // "Earth"     1.000      1.0     1     2 "elegant"
+    // "Mars"      0.107      1.5     2     3 "mother"
+    // "Jupiter" 318.000      5.2    67     4 "just"
+    // "Saturn"   95.000     29.4    62     5 "sat"
+    // "Uranus"   15.000     84.0    27     6 "upon"
+    // "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+    //
+    // [planets]
+    // name mass distance moons index mnemonic
+    // string float64 float64 int int string
+    // "Mercury" 0.055 0.4 0 0 "my"
+    // "Venus" 0.815 0.7 0 1 "very"
+    // "Earth" 1 1 1 2 "elegant"
+    // "Mars" 0.107 1.5 2 3 "mother"
+    // "Jupiter" 318 5.2 67 4 "just"
+    // "Saturn" 95 29.4 62 5 "sat"
+    // "Uranus" 15 84 27 6 "upon"
+    // "Neptune" 17 164 13 7 "nine ... porcupines"
