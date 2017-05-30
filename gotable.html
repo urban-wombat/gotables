@@ -71,6 +71,9 @@ Functions and methods for processing Table tables.
 				<dd><a href="#IsValidTableName">func IsValidTableName(tableName string) (bool, error)</a></dd>
 			
 				
+				<dd><a href="#PadTrailingZeros">func PadTrailingZeros(s string) string</a></dd>
+			
+				
 				<dd><a href="#Round">func Round(val float64, places int) (rounded float64)</a></dd>
 			
 			
@@ -682,6 +685,23 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 			</h2>
 			<pre>func IsValidTableName(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 			
+			
+			
+
+		
+			
+			
+			<h2 id="PadTrailingZeros">func <a href="/src/target/gotable.go?s=102309:102347#L3641">PadTrailingZeros</a>
+				<a class="permalink" href="#PadTrailingZeros">&#xb6;</a>
+			</h2>
+			<pre>func PadTrailingZeros(s <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#string">string</a></pre>
+			<p>
+- Pad trailing zeros on a string which is a floating point number.
+</p>
+<p>
+- Pad trailing zeros on the fractional part of a floating point number (which looks like an integer).
+</p>
+
 			
 			
 

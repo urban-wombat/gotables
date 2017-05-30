@@ -1089,6 +1089,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					//					width[col] = max(width[col], len(toWrite))
 				}
 				//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
+				toWrite = PadTrailingZeros(toWrite)
 				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
@@ -3641,4 +3642,23 @@ func (table *Table) IsValidColValue(colName string, value interface{}) (bool, er
 	} else {
 		return false, fmt.Errorf("table[%s] col=%s type=%s invalid value: %v", table.Name(), colName, colType, value)
 	}
+}
+
+/*
+	- Pad trailing zeros on a string which is a floating point number.
+
+	- Pad trailing zeros on the fractional part of a floating point number (which looks like an integer).
+*/
+func PadTrailingZeros(s string) string {
+	bytes := []byte(s)
+	for i := len(bytes)-1; i > 0; i-- {
+		if (bytes[i-1] == '.' || bytes[i] != '0') {
+			return string(bytes)
+		}
+		if (bytes[i] == '0') {
+			bytes[i] = ' '
+		}
+	}
+
+	return string(bytes)
 }

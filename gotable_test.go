@@ -2406,6 +2406,29 @@ func TestPrecisionOf(t *testing.T) {
 	}
 }
 
+func TestPadTrailingZeros(t *testing.T) {
+	var tests = []struct {
+		trailing string
+		expected string
+	}{
+		{"0.0",    "0.0"},		// Leave as is.
+		{"0.00",   "0.0 "},		// Pad with space.
+		{"0.0000", "0.0   "},	// Pad with spaces.
+		{ "0",  "0"},			// Integer. This is good if it's the fractional part of a float.
+		{ "10", "1 "},			// Integer. This is good if it's the fractional part of a float.
+		{"100", "1  "},			// Integer. This is good if it's the fractional part of a float.
+	}
+
+	for _, test := range tests {
+
+		trimmed := PadTrailingZeros(test.trailing)
+		if trimmed != test.expected {
+			t.Error(fmt.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q",
+				test.trailing, test.expected, trimmed))
+		}
+	}
+}
+
 func TestIsColTypeByColIndex(t *testing.T) {
 
 	tableString :=
