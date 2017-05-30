@@ -1,1 +1,1 @@
-godoc -html -index . > gotable.html
+godoc -v -html -index . > gotable.html

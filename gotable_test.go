@@ -1885,7 +1885,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 }
 
-func ExampleNewTableFromString() {
+func ExampleNewTableFromString_struct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
@@ -3928,4 +3928,44 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
 		}
 	}
+}
+
+func ExampleNewTableFromString_planets() {
+	// mass:     Earth = 1 (relative to Earth)
+	// distance: Earth = 1 (relative to Earth - AU)
+	// http://www.windows2universe.org/our_solar_system/planets_table.html
+	tableString :=
+	`[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.000      5.2    67     4 "just"
+	"Saturn"   95.000     29.4    62     5 "sat"
+	"Uranus"   15.000     84.0    27     6 "upon"
+	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Simply echo it back out.
+	fmt.Println(table)
+
+	// Output:
+	// [planets]
+	// name         mass distance moons index mnemonic
+	// string    float64  float64   int   int string
+	// "Mercury"   0.055      0.4     0     0 "my"
+	// "Venus"     0.815      0.7     0     1 "very"
+	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Mars"      0.107      1.5     2     3 "mother"
+	// "Jupiter" 318.000      5.2    67     4 "just"
+	// "Saturn"   95.000     29.4    62     5 "sat"
+	// "Uranus"   15.000     84.0    27     6 "upon"
+	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
 }
