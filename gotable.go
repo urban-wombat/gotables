@@ -1089,11 +1089,16 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					//					width[col] = max(width[col], len(toWrite))
 				}
 				//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
-				toWrite = PadTrailingZeros(toWrite)
-				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
+				if col == rightmostCol {
+					toWrite = trimTrailingZeros(toWrite)
+					s = fmt.Sprintf("%s%-*s", sep, width[col], toWrite) // Align left ?
+				} else {
+					toWrite = padTrailingZeros(toWrite)
+					s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
+				}
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
-			} else { // Left-aligned col.
+			} else { // Left-aligned col. Cells in non-numeric cols are treated the same as left-aligned, eg string and bool.
 				if col == rightmostCol {
 					// Don't pad (unnecessarily) to the right of rightmost col if it is left-aligned.
 					// (Right-aligned (numeric) cols don't have padding to their right.)
@@ -3649,16 +3654,36 @@ func (table *Table) IsValidColValue(colName string, value interface{}) (bool, er
 
 	- Pad trailing zeros on the fractional part of a floating point number (which looks like an integer).
 */
-func PadTrailingZeros(s string) string {
-	bytes := []byte(s)
-	for i := len(bytes)-1; i > 0; i-- {
-		if (bytes[i-1] == '.' || bytes[i] != '0') {
-			return string(bytes)
+func padTrailingZeros(s string) string {
+	b := []byte(s)
+	for i := len(b)-1; i > 0; i-- {
+		if (b[i-1] == '.' || b[i] != '0') {
+			return string(b)
 		}
-		if (bytes[i] == '0') {
-			bytes[i] = ' '
+		if (b[i] == '0') {
+			b[i] = ' '
 		}
 	}
 
-	return string(bytes)
+	return string(b)
+}
+
+/*
+	- Trim trailing zeros on a string which is a floating point number.
+
+	- Trim trailing zeros on the fractional part of a floating point number (which looks like an integer).
+*/
+func trimTrailingZeros(s string) string {
+	b := []byte(s)
+	for i := len(b)-1; i > 0; i-- {
+		if (b[i-1] == '.' || b[i] != '0') {
+			return string(b)
+		}
+		if (b[i] == '0') {
+			b[i] = ' '
+			b = bytes.TrimSuffix(b, []byte(" "))
+		}
+	}
+
+	return string(b)
 }

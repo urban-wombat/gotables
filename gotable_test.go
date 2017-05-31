@@ -2421,7 +2421,30 @@ func TestPadTrailingZeros(t *testing.T) {
 
 	for _, test := range tests {
 
-		trimmed := PadTrailingZeros(test.trailing)
+		trimmed := padTrailingZeros(test.trailing)
+		if trimmed != test.expected {
+			t.Error(fmt.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q",
+				test.trailing, test.expected, trimmed))
+		}
+	}
+}
+
+func TestTrimTrailingZeros(t *testing.T) {
+	var tests = []struct {
+		trailing string
+		expected string
+	}{
+		{"0.0",    "0.0"},	// Leave as is.
+		{"0.00",   "0.0"},	// Trim space.
+		{"0.0000", "0.0"},	// Trim spaces.
+		{ "0",  "0"},		// Integer. This is good if it's the fractional part of a float.
+		{ "10", "1"},		// Integer. This is good if it's the fractional part of a float.
+		{"100", "1"},		// Integer. This is good if it's the fractional part of a float.
+	}
+
+	for _, test := range tests {
+
+		trimmed := trimTrailingZeros(test.trailing)
 		if trimmed != test.expected {
 			t.Error(fmt.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q",
 				test.trailing, test.expected, trimmed))
