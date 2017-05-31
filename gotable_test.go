@@ -2609,14 +2609,14 @@ func ExampleTable_Sort() {
 	// string    float64  float64
 	// "Mercury"   0.055      0.4
 	// "Venus"     0.815      0.7
-	// "Earth"     1.000      1.0
+	// "Earth"     1.0        1.0
 	// "Mars"      0.107      1.5
 	//
 	// (2) Sorted table by name:
 	// [planets]
 	// name         mass distance
 	// string    float64  float64
-	// "Earth"     1.000      1.0
+	// "Earth"     1.0        1.0
 	// "Mars"      0.107      1.5
 	// "Mercury"   0.055      0.4
 	// "Venus"     0.815      0.7
@@ -2628,7 +2628,7 @@ func ExampleTable_Sort() {
 	// "Venus"     0.815      0.7
 	// "Mercury"   0.055      0.4
 	// "Mars"      0.107      1.5
-	// "Earth"     1.000      1.0
+	// "Earth"     1.0        1.0
 }
 
 func ExampleTable_SetSortKeys() {
@@ -3478,24 +3478,24 @@ func ExampleTable_Search_1key() {
 	// string    float64  float64   int   int string
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Venus"     0.815      0.7     0     1 "very"
-	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.000      5.2    67     4 "just"
-	// "Saturn"   95.000     29.4    62     5 "sat"
-	// "Uranus"   15.000     84.0    27     6 "upon"
-	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Uranus"   15.0       84.0    27     6 "upon"
+	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	// 
 	// (2) Sorted table by name:
 	// [planets]
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
-	// "Earth"     1.000      1.0     1     2 "elegant"
-	// "Jupiter" 318.000      5.2    67     4 "just"
+	// "Earth"     1.0        1.0     1     2 "elegant"
+	// "Jupiter" 318.0        5.2    67     4 "just"
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-	// "Saturn"   95.000     29.4    62     5 "sat"
-	// "Uranus"   15.000     84.0    27     6 "upon"
+	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Venus"     0.815      0.7     0     1 "very"
 	// 
 	// (3) Search for name: Mars
@@ -3565,25 +3565,25 @@ func ExampleTable_Search_1keyReverse() {
 	// string    float64  float64   int   int string
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Venus"     0.815      0.7     0     1 "very"
-	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.000      5.2    67     4 "just"
-	// "Saturn"   95.000     29.4    62     5 "sat"
-	// "Uranus"   15.000     84.0    27     6 "upon"
-	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Uranus"   15.0       84.0    27     6 "upon"
+	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	// 
 	// (2) Sorted table by name in reverse order:
 	// [planets]
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
 	// "Venus"     0.815      0.7     0     1 "very"
-	// "Uranus"   15.000     84.0    27     6 "upon"
-	// "Saturn"   95.000     29.4    62     5 "sat"
-	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// "Uranus"   15.0       84.0    27     6 "upon"
+	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.000      5.2    67     4 "just"
-	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Earth"     1.0        1.0     1     2 "elegant"
 	// 
 	// (3) Search for name: Mars
 	// Found Mars at rowIndex = 5
@@ -4014,12 +4014,12 @@ func ExampleNewTableFromString_planets() {
 	// string    float64  float64   int   int string
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Venus"     0.815      0.7     0     1 "very"
-	// "Earth"     1.000      1.0     1     2 "elegant"
+	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.000      5.2    67     4 "just"
-	// "Saturn"   95.000     29.4    62     5 "sat"
-	// "Uranus"   15.000     84.0    27     6 "upon"
-	// "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Uranus"   15.0       84.0    27     6 "upon"
+	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	//
 	// [planets]
 	// name mass distance moons index mnemonic

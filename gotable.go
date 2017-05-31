@@ -1089,19 +1089,19 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					//					width[col] = max(width[col], len(toWrite))
 				}
 				//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
-				if col == rightmostCol {
-					toWrite = trimTrailingZeros(toWrite)
-					s = fmt.Sprintf("%s%-*s", sep, width[col], toWrite) // Align left ?
-				} else {
+				if colTypes[col] == "float32" || colTypes[col] == "float64" {
 					toWrite = padTrailingZeros(toWrite)
-					s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
+				}
+				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
+				if col == rightmostCol {
+					// Remove any jagged space padding to the right of decimal point.
+					s = strings.TrimRight(s, " ")
 				}
 				//				where(fmt.Sprintf("width[%d] = %d\n", col, width[col]))
 				buf.WriteString(s)
-			} else { // Left-aligned col. Cells in non-numeric cols are treated the same as left-aligned, eg string and bool.
+			} else { // Left-aligned col. Cells in non-numeric cols are treated as left-aligned, eg string and bool.
 				if col == rightmostCol {
 					// Don't pad (unnecessarily) to the right of rightmost col if it is left-aligned.
-					// (Right-aligned (numeric) cols don't have padding to their right.)
 					s = fmt.Sprintf("%s%s", sep, matrix[col][row]) // With no padding, doesn't need align left with -
 				} else {
 					s = fmt.Sprintf("%s%-*s", sep, width[col], matrix[col][row]) // Align left with -
