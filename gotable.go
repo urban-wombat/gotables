@@ -1090,10 +1090,13 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				}
 				//				s = fmt.Sprintf("%s%*s", sep, width[col], matrix[col][row])	// Align right
 				if colTypes[col] == "float32" || colTypes[col] == "float64" {
+					// Replace trailing zeros with space padding here.
+					// The padding is to ensure the next column to the right is aligned along a straight edge.
 					toWrite = padTrailingZeros(toWrite)
 				}
 				s = fmt.Sprintf("%s%*s", sep, width[col], toWrite) // Align right
 				if col == rightmostCol {
+					// Padding to the right of the rightmost column is unnecessary. Remove it here.
 					// Remove any jagged space padding to the right of decimal point.
 					s = strings.TrimRight(s, " ")
 				}
