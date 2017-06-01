@@ -3425,10 +3425,12 @@ func ExampleTable_Search_1key() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
 	// http://www.windows2universe.org/our_solar_system/planets_table.html
+	// http://www.space.com/17001-how-big-is-the-sun-size-of-the-sun.html
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic
-	string    float64  float64   int   int string
+	string    float64   float64   int   int string
+	"Sun"      333333        0     0    -1 ""
 	"Mercury"   0.055      0.4     0     0 "my"
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
@@ -3465,6 +3467,7 @@ func ExampleTable_Search_1key() {
 		log.Println(err)
 	}
 	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
+	fmt.Println()
 
 	searchValue = "Pluto" // -1
 	fmt.Printf("(4) Search for name: %s\n", searchValue)
@@ -3474,32 +3477,35 @@ func ExampleTable_Search_1key() {
 	// Output:
 	// (1) Unsorted table:
 	// [planets]
-	// name         mass distance moons index mnemonic
-	// string    float64  float64   int   int string
-	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Venus"     0.815      0.7     0     1 "very"
-	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Jupiter"    318.0        5.2    67     4 "just"
+	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
 	// 
 	// (2) Sorted table by name:
 	// [planets]
-	// name         mass distance moons index mnemonic
-	// string    float64  float64   int   int string
-	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Venus"     0.815      0.7     0     1 "very"
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Jupiter"    318.0        5.2    67     4 "just"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Venus"        0.815      0.7     0     1 "very"
 	// 
 	// (3) Search for name: Mars
 	// Found Mars at rowIndex = 2
+	// 
 	// (4) Search for name: Pluto
 	// Found Pluto at rowIndex = -1 (missing)
 }
