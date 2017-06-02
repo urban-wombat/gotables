@@ -69,6 +69,13 @@ Here is a simple program that parses the table into a gotable.Table and echoes i
     
         // Simply echo it back out.
         fmt.Println(table)
+
+        // Notice that the columns of data are padded with spaces, and numeric types are right-aligned.
+        // This reflects the opinion that human readability is important.
+    
+        // For unpadded output:
+        fmt.Println(table.StringUnpadded())
+
     }
 
     // Output:
