@@ -76,8 +76,8 @@ Here is a simple program that parses the table into a gotable.Table and echoes i
         fmt.Println("For unpadded output use StringUnpadded()\n")
         fmt.Println(table.StringUnpadded())
     }
-    
-    
+
+
     Default String() padded output
     
     [planets]
