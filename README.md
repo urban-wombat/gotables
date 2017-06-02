@@ -67,38 +67,41 @@ Here is a simple program that parses the table into a gotable.Table and echoes i
             log.Println(err)
         }
     
-        // Simply echo it back out.
+        fmt.Println("Default String() padded output\n")
         fmt.Println(table)
-
+    
         // Notice that the columns of data are padded with spaces, and numeric types are right-aligned.
         // This reflects the opinion that human readability is important.
     
-        // For unpadded output:
+        fmt.Println("For unpadded output use StringUnpadded()\n")
         fmt.Println(table.StringUnpadded())
-
     }
-
-    // Output:
-    // [planets]
-    // name         mass distance moons index mnemonic
-    // string    float64  float64   int   int string
-    // "Mercury"   0.055      0.4     0     0 "my"
-    // "Venus"     0.815      0.7     0     1 "very"
-    // "Earth"     1.000      1.0     1     2 "elegant"
-    // "Mars"      0.107      1.5     2     3 "mother"
-    // "Jupiter" 318.000      5.2    67     4 "just"
-    // "Saturn"   95.000     29.4    62     5 "sat"
-    // "Uranus"   15.000     84.0    27     6 "upon"
-    // "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-    //
-    // [planets]
-    // name mass distance moons index mnemonic
-    // string float64 float64 int int string
-    // "Mercury" 0.055 0.4 0 0 "my"
-    // "Venus" 0.815 0.7 0 1 "very"
-    // "Earth" 1 1 1 2 "elegant"
-    // "Mars" 0.107 1.5 2 3 "mother"
-    // "Jupiter" 318 5.2 67 4 "just"
-    // "Saturn" 95 29.4 62 5 "sat"
-    // "Uranus" 15 84 27 6 "upon"
-    // "Neptune" 17 164 13 7 "nine ... porcupines"
+    
+    
+    Default String() padded output
+    
+    [planets]
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    "Mercury"   0.055      0.4     0     0 "my"
+    "Venus"     0.815      0.7     0     1 "very"
+    "Earth"     1.0        1.0     1     2 "elegant"
+    "Mars"      0.107      1.5     2     3 "mother"
+    "Jupiter" 318.0        5.2    67     4 "just"
+    "Saturn"   95.0       29.4    62     5 "sat"
+    "Uranus"   15.0       84.0    27     6 "upon"
+    "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+    
+    For unpadded output use StringUnpadded()
+    
+    [planets]
+    name mass distance moons index mnemonic
+    string float64 float64 int int string
+    "Mercury" 0.055 0.4 0 0 "my"
+    "Venus" 0.815 0.7 0 1 "very"
+    "Earth" 1 1 1 2 "elegant"
+    "Mars" 0.107 1.5 2 3 "mother"
+    "Jupiter" 318 5.2 67 4 "just"
+    "Saturn" 95 29.4 62 5 "sat"
+    "Uranus" 15 84 27 6 "upon"
+    "Neptune" 17 164 13 7 "nine ... porcupines"
