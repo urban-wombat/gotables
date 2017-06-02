@@ -225,3 +225,5 @@ ExampleNewGoTableFromFileByTableName.txt
 *.xml
 .idea/gotable.iml
 *.out
+junk1
+junk2

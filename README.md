@@ -37,40 +37,39 @@ Most of the Go builtin data types can be used. (But not yet: complex64, complex1
 
 Here is a simple program that parses the table into a gotable.Table and echoes it back out:
 
+    // main_echo.go
+    
     package main
-
+    
     import (
         "github.com/urban-wombat/gotable"
         "fmt"
+        "log"
     )
-
-    tableString :=
-    `[planets]
-    name         mass distance moons index mnemonic
-    string    float64  float64   int   int string
-    "Mercury"   0.055      0.4     0     0 "my"
-    "Venus"     0.815      0.7     0     1 "very"
-    "Earth"     1.000      1.0     1     2 "elegant"
-    "Mars"      0.107      1.5     2     3 "mother"
-    "Jupiter" 318.000      5.2    67     4 "just"
-    "Saturn"   95.000     29.4    62     5 "sat"
-    "Uranus"   15.000     84.0    27     6 "upon"
-    "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-    `
-
-    table, err := gotable.NewTableFromString(tableString)
-    if err != nil {
-        log.Println(err)
+    
+    func main() {
+        tableString :=
+        `[planets]
+        name         mass distance moons index mnemonic
+        string    float64  float64   int   int string
+        "Mercury"   0.055      0.4     0     0 "my"
+        "Venus"     0.815      0.7     0     1 "very"
+        "Earth"     1.000      1.0     1     2 "elegant"
+        "Mars"      0.107      1.5     2     3 "mother"
+        "Jupiter" 318.000      5.2    67     4 "just"
+        "Saturn"   95.000     29.4    62     5 "sat"
+        "Uranus"   15.000     84.0    27     6 "upon"
+        "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+        `
+    
+        table, err := gotable.NewTableFromString(tableString)
+        if err != nil {
+            log.Println(err)
+        }
+    
+        // Simply echo it back out.
+        fmt.Println(table)
     }
-
-    // Simply echo it back out.
-    fmt.Println(table)
-
-    // Notice that the columns of data are padded with spaces and numeric types are right-aligned.
-    // This reflects the opinion that human readability is as important as compactness and efficiency.
-
-    // For unpadded output:
-    fmt.Println(table.StringUnpadded())
 
     // Output:
     // [planets]
