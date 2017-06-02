@@ -77,6 +77,7 @@ Here is a simple program that parses the table into a gotable.Table and echoes i
         fmt.Println(table.StringUnpadded())
     }
 
+Here's the output:
 
     Default String() padded output
     
