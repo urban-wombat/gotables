@@ -3658,13 +3658,17 @@ func (table *Table) IsValidColValue(colName string, value interface{}) (bool, er
 	- Pad trailing zeros on the fractional part of a floating point number (which looks like an integer).
 */
 func padTrailingZeros(s string) string {
+	hasPoint := strings.Index(s, ".") >= 0
 	b := []byte(s)
 	for i := len(b)-1; i > 0; i-- {
 		if (b[i-1] == '.' || b[i] != '0') {
 			return string(b)
 		}
-		if (b[i] == '0') {
-			b[i] = ' '
+		if hasPoint {
+			// We don't want to remove zeros from floats with no decimal places (that look like an int).
+			if (b[i] == '0') {
+				b[i] = ' '
+			}
 		}
 	}
 
