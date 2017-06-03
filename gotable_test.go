@@ -2414,9 +2414,12 @@ func TestPadTrailingZeros(t *testing.T) {
 		{  "0.0",    "0.0"},	// Leave as is.
 		{  "0.00",   "0.0 "},	// Pad with space.
 		{  "0.0000", "0.0   "},	// Pad with spaces.
-		{  "0",      "0"},		// Integer. This is useful if it's the fractional part of a float.
-		{ "10",      "1 "},		// Integer. This is useful if it's the fractional part of a float.
-		{"100",      "1  "},	// Integer. This is useful if it's the fractional part of a float.
+		{   ".0",     ".0"},	// Pad.
+		{   ".10",    ".1 "},	// Pad.
+		{   ".100",   ".1  "},	// Pad.
+		{  "0",      "0"},		// Integer. Don't pad trailing zeros in int-like floats.
+		{ "10",      "10"},		// Integer. Don't pad trailing zeros in int-like floats.
+		{"100",      "100"},	// Integer. Don't pad trailing zeros in int-like floats.
 	}
 
 	for _, test := range tests {
@@ -2435,11 +2438,14 @@ func TestTrimTrailingZeros(t *testing.T) {
 		expected string
 	}{
 		{  "0.0",    "0.0"},	// Leave as is.
-		{  "0.00",   "0.0"},	// Trim space.
-		{  "0.0000", "0.0"},	// Trim spaces.
-		{  "0",      "0"},		// Integer. This is useful if it's the fractional part of a float.
-		{ "10",      "1"},		// Integer. This is useful if it's the fractional part of a float.
-		{"100",      "1"},		// Integer. This is useful if it's the fractional part of a float.
+		{  "0.00",   "0.0"},	// Trim zeros.
+		{  "0.0000", "0.0"},	// Trim zeros.
+		{   ".0",     ".0"},	// Trim.
+		{   ".10",    ".1"},	// Trim.
+		{   ".100",   ".1"},	// Trim.
+		{  "0",      "0"},		// Integer. Don't pad trailing zeros in int-like floats.
+		{ "10",     "10"},		// Integer. Don't pad trailing zeros in int-like floats.
+		{"100",    "100"},		// Integer. Don't pad trailing zeros in int-like floats.
 	}
 
 	for _, test := range tests {

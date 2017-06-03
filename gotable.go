@@ -3665,7 +3665,7 @@ func padTrailingZeros(s string) string {
 			return string(b)
 		}
 		if hasPoint {
-			// We don't want to remove zeros from floats with no decimal places (that look like an int).
+			// We don't want to remove zeros from floats with no decimal places (that look like an ints).
 			if (b[i] == '0') {
 				b[i] = ' '
 			}
@@ -3681,14 +3681,18 @@ func padTrailingZeros(s string) string {
 	- Trim trailing zeros on the fractional part of a floating point number (which looks like an integer).
 */
 func trimTrailingZeros(s string) string {
+	hasPoint := strings.Index(s, ".") >= 0
 	b := []byte(s)
 	for i := len(b)-1; i > 0; i-- {
 		if (b[i-1] == '.' || b[i] != '0') {
 			return string(b)
 		}
-		if (b[i] == '0') {
-			b[i] = ' '
-			b = bytes.TrimSuffix(b, []byte(" "))
+		if hasPoint {
+			// We don't want to remove zeros from floats with no decimal places (that look like an ints).
+			if (b[i] == '0') {
+				b[i] = ' '
+				b = bytes.TrimSuffix(b, []byte(" "))
+			}
 		}
 	}
 
