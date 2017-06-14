@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"strings"
 	"text/tabwriter"
+	"unicode"
 )
 
 /*
@@ -1018,7 +1019,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					}
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
-					log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+					log.Printf("func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 					return ""
 				}
 	
@@ -1312,7 +1313,7 @@ func (table *Table) String() string {
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
-				log.Printf("ERROR IN func String(): Unknown type: %s\n", table.colTypes[colIndex])
+				log.Printf("func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
@@ -1538,7 +1539,7 @@ func (table *Table) StringCSV() string {
 					exists = true                    // To not trigger following test of missing value for other types.
 				}
 			default:
-				log.Printf("ERROR IN func StringCSV(): Unknown type: %s\n", table.colTypes[colIndex])
+				log.Printf("func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 
@@ -3556,7 +3557,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		err = fmt.Errorf("ERROR IN func String(): unknown type: %s\n", table.colTypes[colIndex])
+		err = fmt.Errorf("func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
 		return "", err
 	}
 
@@ -3697,4 +3698,132 @@ func trimTrailingZeros(s string) string {
 	}
 
 	return string(b)
+}
+
+// A helper function not used.
+func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, error) {
+
+	var colType string
+	var typeOfCol reflect.Type
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	switch (colType) {
+	case "string":
+		typeOfCol = reflect.TypeOf(string(""))
+	case "bool":
+		typeOfCol = reflect.TypeOf(bool(false))
+	case "uint8":
+		typeOfCol = reflect.TypeOf(uint8(0))
+	case "uint16":
+		typeOfCol = reflect.TypeOf(uint16(0))
+	case "uint32":
+		typeOfCol = reflect.TypeOf(uint32(0))
+	case "uint64":
+		typeOfCol = reflect.TypeOf(uint64(0))
+	case "uint":
+		typeOfCol = reflect.TypeOf(uint(0))
+	case "int":
+		typeOfCol = reflect.TypeOf(int(0))
+	case "int8":
+		typeOfCol = reflect.TypeOf(int8(0))
+	case "int16":
+		typeOfCol = reflect.TypeOf(int16(0))
+	case "int32":
+		typeOfCol = reflect.TypeOf(int32(0))
+	case "int64":
+		typeOfCol = reflect.TypeOf(int64(0))
+	case "float32":
+		typeOfCol = reflect.TypeOf(float32(0))
+	case "float64":
+		typeOfCol = reflect.TypeOf(float64(0))
+	default:
+		err = fmt.Errorf("func %s(%q): unknown type: %s\n", funcName(), colType, table.colTypes[colIndex])
+		return nil, err
+	}
+
+	return typeOfCol, nil
+}
+
+/*
+// Doesn't work.
+func (table *Table) AsSliceOfStruct(instanceOfStruct interface{}) (interface{}, error) {
+	// See https://golang.org/pkg/reflect (search for: package path)
+	var err error
+
+	var val reflect.Value = reflect.ValueOf(instanceOfStruct)
+//	fmt.Printf("val %T = %v\n", val, val)
+	kind := val.Kind()
+	fmt.Printf("kind = %T %v\n", kind, kind)
+	if kind != reflect.Struct {
+		err = fmt.Errorf("[%s].%s() is expecting a variable of type struct, not type %v", table.Name(), funcName(), kind)
+		return instanceOfStruct, err
+	}
+
+//	valType := reflect.TypeOf(val)
+	var sliceOfStruct []interface{}
+	sliceOfStruct = reflect.MakeSlice(reflect.TypeOf(val), table.RowCount())
+
+//	var emptySlice []reflect.Value
+//
+//	// Each column cell becomes a struct field.
+//    fields := make([]reflect.StructField, table.ColCount())
+//
+//    for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+//
+//        colName, err := table.ColName(colIndex)
+//        if err != nil {
+//            return emptySlice, err
+//        }
+//
+//		if !IsExportableName(colName) {
+//			err = fmt.Errorf("[%s].%s() cannot make struct: col name %s is an unexported (lowercase) identifier: %s",
+//				table.Name(), funcName(), colName, colName)
+//			return emptySlice, err
+//		}
+//
+//        fields[colIndex].Name = colName
+//
+//        colReflectType, err := table.ReflectTypeOfColByColIndex(colIndex)
+//        if err != nil {
+//            return emptySlice, err
+//        }
+//        fields[colIndex].Type = colReflectType
+//
+//		// Add json tags for good measure. For later use.
+//		tag := fmt.Sprintf("`json:%q`", colName)
+//		fields[colIndex].Tag = reflect.StructTag(tag)
+//    }
+//
+//	typ := reflect.StructOf(fields)
+//	sliceOfStructOfFields := make([]reflect.Value, table.RowCount())
+//
+//	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+//		structOfFields := reflect.New(typ).Elem()
+//		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+//			var value interface{}
+//			value, err = table.GetValByColIndex(colIndex, rowIndex)
+//			if err != nil {
+//				return emptySlice, err
+//			}
+//			var reflectValue reflect.Value
+//			reflectValue = reflect.ValueOf(value)
+//			structOfFields.Field(colIndex).Set(reflectValue)
+//		}
+//	}
+
+	return instanceOfStruct, err
+}
+*/
+
+// Helper function not used.
+func isExportableName(name string) bool {
+	rune0 := rune(name[0])
+	if unicode.IsUpper(rune0) {
+		return true
+	} else {
+		return false
+	}
 }
