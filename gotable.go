@@ -246,7 +246,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*TableSet) *TableSet is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *TableSet.%s() *TableSet is <nil>\n", funcName()))
 		return ""
 	}
 	var verticalSep string = ""
@@ -412,7 +412,7 @@ type TableExported struct {
 
 func (table *Table) getColTypes() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return nil
 	}
 	return table.colTypes
@@ -847,7 +847,7 @@ func (table *Table) stringTabWriter() (string, error) {
 func (table *Table) StringUnpadded() string {
 
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s() *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
 	}
 
@@ -859,7 +859,7 @@ Return a parsable table as a string. Intended for internal library use.
 */
 func (table *Table) _String(horizontalSeparator byte) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -1126,7 +1126,7 @@ Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
 	}
 
@@ -1358,7 +1358,7 @@ func (table *Table) String() string {
 
 func printStruct(table *Table) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 	}
 
 	var asString string
@@ -1437,7 +1437,7 @@ See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
 func (table *Table) StringCSV() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
 	}
 	const comma = ","
@@ -1867,7 +1867,7 @@ func (table *Table) lastRowIndex() (int, error) {
 
 func (table *Table) Name() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
 	}
 	return table.tableName
@@ -1875,7 +1875,7 @@ func (table *Table) Name() string {
 
 func (table *Table) ColCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.colTypes)
@@ -1887,7 +1887,7 @@ func (table *Table) ColCount() int {
 */
 func (table *Table) RowCount() int {
 	if table == nil {
-		// os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(*Table) *Table is <nil>\n", funcName()))
+		// os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.rows)
@@ -3826,4 +3826,90 @@ func isExportableName(name string) bool {
 	} else {
 		return false
 	}
+}
+
+/*
+	A strict table comparison:
+	- Column count must match.
+	- Row count must match.
+	- Column names must match.
+	- Column types must match.
+	- Rows order must match.
+	- Cell values must match.
+	- Column order need NOT match.
+
+	Useful for testing.
+*/
+func (table1 *Table) Equals(table2 *Table) (bool, error) {
+	var err error
+
+	if table1 == nil {
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", funcName())
+		return false, err
+	}
+
+	if table2 == nil {
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", funcName())
+		return false, err
+	}
+
+	if table1.RowCount() != table2.RowCount() {
+		err = fmt.Errorf("[%s].%s([%s]): [%s].RowCount() %d != [%s].RowCount() %d\n",
+			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.RowCount(), table2.Name(), table2.RowCount())
+		return false, err
+	}
+
+	if table1.ColCount() != table2.ColCount() {
+		err = fmt.Errorf("[%s].%s([%s]): [%s].ColCount() %d != [%s].ColCount() %d\n",
+			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.ColCount(), table2.Name(), table2.ColCount())
+		return false, err
+	}
+
+	// Compare column types.
+	// This has the side-effect of comparing all column names.
+	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
+		colName, err := table1.ColName(colIndex)
+		if err != nil {
+			return false, err
+		}
+		type1, err := table1.ColTypeByColIndex(colIndex)
+		if err != nil {
+			return false, err
+		}
+		type2, err := table2.ColType(colName)
+		if err != nil {
+			return false, err
+		}
+		if type1 != type2 {
+			err = fmt.Errorf("[%s].%s([%s]): [%s].ColType(%q) %s != [%s].ColType(%q) %s\n",
+				table1.Name(), funcName(), table2.Name(), table1.Name(), colName, type1, table2.Name(), colName, type2)
+			return false, err
+		}
+	}
+
+	// Compare cell values.
+	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
+		colName, err := table1.ColName(colIndex)
+		if err != nil {
+			return false, err
+		}
+
+		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
+			val1, err := table1.GetValByColIndex(colIndex, rowIndex)
+			if err != nil {
+				return false, err
+			}
+			val2, err := table2.GetVal(colName, rowIndex)
+			if err != nil {
+				return false, err
+			}
+			if val1 != val2 {
+				err = fmt.Errorf("[%s].%s([%s]): [%s].ColType(%q) %v != [%s].ColType(%q) %v\n",
+					table1.Name(), funcName(), table2.Name(), table1.Name(), colName, val1, table2.Name(), colName, val2)
+				return false, err
+			}
+		}
+	}
+
+	return true, nil
 }
