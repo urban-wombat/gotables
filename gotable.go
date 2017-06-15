@@ -1019,7 +1019,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					}
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
-					log.Printf("func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+					log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 					return ""
 				}
 	
@@ -1313,7 +1313,7 @@ func (table *Table) String() string {
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
-				log.Printf("func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+				log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
@@ -1539,12 +1539,12 @@ func (table *Table) StringCSV() string {
 					exists = true                    // To not trigger following test of missing value for other types.
 				}
 			default:
-				log.Printf("func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
+				log.Printf("ERROR IN func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 
 			if !exists {
-				log.Printf("func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
+				log.Printf("ERROR IN func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
 					table.Name(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
 					rowMap[table.colNames[colIndex]])
 				return ""
