@@ -25,10 +25,65 @@ SOFTWARE.
 
 
 import (
-//	"fmt"
+	"fmt"
 )
 
 func (table1 *Table) Merge(table2 *Table) (*Table, error) {
 
-	return nil, nil
+	var err error
+	var merged *Table
+
+	sortMerged := func (mergedLocal *Table) (*Table, error) {
+		// TODO: Copy sort keys from table1 or table2 to merged
+		err = mergedLocal.Sort()
+		if err != nil {
+			return nil, err
+		}
+
+		return mergedLocal, nil
+	}
+
+	if table1 == nil {
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", funcName())
+		return merged, err
+	}
+
+	if table2 == nil {
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", funcName())
+		return merged, err
+	}
+
+	if table1.RowCount() == 0 {
+		merged, err = sortMerged(table2)
+		if err != nil {
+			return nil, err
+		}
+		return table2, nil
+	}
+
+	if table2.RowCount() == 0 {
+		merged, err = sortMerged(table2)
+		if err != nil {
+			return nil, err
+		}
+		return table1, nil
+	}
+
+	if table1.ColCount() == 0 {
+		merged, err = sortMerged(table2)
+		if err != nil {
+			return nil, err
+		}
+		return table2, nil
+	}
+
+	if table2.ColCount() == 0 {
+		merged, err = sortMerged(table2)
+		if err != nil {
+			return nil, err
+		}
+		return table1, nil
+	}
+
+	return merged, nil
 }

@@ -511,6 +511,7 @@ func (table *Table) appendRowOfNil() error {
 	return nil
 }
 
+// Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRows(howMany int) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -529,6 +530,7 @@ func (table *Table) AppendRows(howMany int) error {
 }
 
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
+// Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -3830,13 +3832,13 @@ func isExportableName(name string) bool {
 
 /*
 	A strict table comparison:
-	- Column count must match.
-	- Row count must match.
-	- Column names must match.
-	- Column types must match.
-	- Rows order must match.
-	- Cell values must match.
-	- Column order need NOT match.
+	Column count must match.
+	Row count must match.
+	Column names must match.
+	Column types must match.
+	Rows order must match.
+	Cell values must match.
+	Column order need NOT match.
 
 	Useful for testing.
 */
