@@ -4045,3 +4045,53 @@ func ExampleNewTableFromString_planets() {
 	// "Uranus" 15 84 27 6 "upon"
 	// "Neptune" 17 164 13 7 "nine ... porcupines"
 }
+
+// This is not a comprehensive test.
+func TestTable_Equals(t *testing.T) {
+    var err error
+    var table1, table2 *Table
+
+	_, err = table1.Equals(table2)
+    if err == nil {
+		t.Error(fmt.Errorf("Expecting an error calling Equals() on nil table"))
+    }
+//	fmt.Println(err)
+
+    t1string :=
+    `[T1]
+    i   s       f       ui
+    int string  float64 uint
+    1   "abc"   5.50    50
+    2   "def"   6.66    60
+    `
+    table1, err = NewTableFromString(t1string)
+    if err != nil {
+        t.Error(err)
+    }
+
+	_, err = table1.Equals(table2)
+    if err == nil {
+		t.Error(fmt.Errorf("Expecting an error calling Equals() with nil table"))
+	}
+//	fmt.Println(err)
+
+    t2string :=
+    `[T2]
+    ui      i   s       f
+    uint    int string  float64
+    50      1   "abc"   5.5
+    60      2   "def"   6.6600
+    `
+    table2, err = NewTableFromString(t2string)
+    if err != nil {
+        t.Error(err)
+    }
+
+	equals, err := table1.Equals(table2)
+    if !equals {
+		t.Error(fmt.Errorf("Expecting table1.Equals(table2) = true but found %t", equals))
+	}
+    if err != nil {
+        t.Error(err)
+    }
+}
