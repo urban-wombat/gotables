@@ -33,26 +33,58 @@ func (table1 *Table) Merge(table2 *Table) (*Table, error) {
 	var err error
 	var merged *Table
 
-	sortMerged := func (mergedLocal *Table) (*Table, error) {
+	// Local function.
+	// Make sort keys of both input tables the same.
+	setSortKeysBetweenTables := func () error {
+		if table1.SortKeysCount() > 0 {
+			// Table1 is dominant.
+			err = table2.SetSortKeysFromTable(table1)
+			if err != nil {
+				return err
+			}
+		} else if table2.SortKeysCount() > 0 {
+			err = table1.SetSortKeysFromTable(table2)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = fmt.Errorf("[%s].Merge([%s]) needs at least [%s] or [%s] to have sort keys",
+				table1.Name(), table2.Name(), table1.Name(), table2.Name())
+			return err
+		}
+		return nil
+	}
+
+where()
+	// Local function.
+	sortMerged := func (localMerged *Table) (*Table, error) {
 		// TODO: Copy sort keys from table1 or table2 to merged
-		err = mergedLocal.Sort()
+		if localMerged.SortKeysCount() == 0 {
+			setSortKeysBetweenTables()
+		}
+
+		err = localMerged.Sort()
 		if err != nil {
 			return nil, err
 		}
 
-		return mergedLocal, nil
+where()
+		return localMerged, nil
 	}
 
+where()
 	if table1 == nil {
 		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", funcName())
 		return merged, err
 	}
 
+where()
 	if table2 == nil {
 		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", funcName())
 		return merged, err
 	}
 
+where()
 	if table1.RowCount() == 0 {
 		merged, err = sortMerged(table2)
 		if err != nil {
@@ -61,29 +93,22 @@ func (table1 *Table) Merge(table2 *Table) (*Table, error) {
 		return table2, nil
 	}
 
+where()
 	if table2.RowCount() == 0 {
-		merged, err = sortMerged(table2)
+		merged, err = sortMerged(table1)
 		if err != nil {
 			return nil, err
 		}
 		return table1, nil
 	}
 
-	if table1.ColCount() == 0 {
-		merged, err = sortMerged(table2)
-		if err != nil {
-			return nil, err
-		}
-		return table2, nil
+where()
+	// Check that table1 and table2 have the same sort columns.
+	err = setSortKeysBetweenTables()
+	if err != nil {
+		return nil, err
 	}
 
-	if table2.ColCount() == 0 {
-		merged, err = sortMerged(table2)
-		if err != nil {
-			return nil, err
-		}
-		return table1, nil
-	}
-
+where()
 	return merged, nil
 }

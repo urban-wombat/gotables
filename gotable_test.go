@@ -4095,3 +4095,174 @@ func TestTable_Equals(t *testing.T) {
         t.Error(err)
     }
 }
+
+func ExampleTable_GetSortKeysAsTable() {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Sort the table by user but reverse lines.
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = table.SetSortKeysReverse("lines")
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("(1) GetSortKeysAsTable():")
+	sortKeysTable, err := table.GetSortKeysAsTable()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(sortKeysTable)
+
+	err = table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("(2) Sort by user but reverse lines:")
+	fmt.Println(table)
+
+	// Output:
+	// (1) GetSortKeysAsTable():
+	// [sortKeys]
+	// key colName colType  reverse
+	// int string  string   bool
+	//   0 "user"  "string" false
+	//   1 "lines" "int"    true
+	// 
+	// (2) Sort by user but reverse lines:
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "dmr"    "C"           100
+	// "glenda" "Go"          200
+	// "gri"    "Go"          100
+	// "gri"    "Smalltalk"    80
+	// "ken"    "Go"          200
+	// "ken"    "C"           150
+	// "r"      "C"           150
+	// "r"      "Go"          100
+	// "rsc"    "Go"          200
+}
+
+func TestTable_SortKeysCount(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// First let's sort the table by name.
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+
+	expecting := 2
+	count := table.SortKeysCount()
+	if count != expecting {
+		t.Error(fmt.Errorf("Expecting table.SortKeysCount() = %d but found %d", expecting, count))
+	}
+}
+
+func TestTable_SetSortKeysFromTable(t *testing.T) {
+	fromTableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	fromTable, err := NewTableFromString(fromTableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// First let's sort the table by name.
+	err = fromTable.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = fromTable.SetSortKeysReverse("lines")
+	if err != nil {
+		t.Error(err)
+	}
+
+	toTableString :=
+	`[ToTable]
+	user	string
+	lines	int
+	`
+	toTable, err := NewTableFromString(toTableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = toTable.SetSortKeysFromTable(fromTable)
+	if err != nil {
+		t.Error(err)
+	}
+
+	keysTable1, err := fromTable.GetSortKeysAsTable()
+	if err != nil {
+		t.Error(err)
+	}
+
+	keysTable2, err := toTable.GetSortKeysAsTable()
+	if err != nil {
+		t.Error(err)
+	}
+
+	expecting := true
+
+	equals, err := keysTable1.Equals(keysTable2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if equals != expecting {
+		t.Error(fmt.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals))
+	}
+}

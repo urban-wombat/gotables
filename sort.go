@@ -697,3 +697,58 @@ func (tableRows tableRows) Less(i, j int) bool {
 func newSortKeys() SortKeys {
 	return make([]sortKey, 0)
 }
+
+func (table *Table) SortKeysCount() int {
+	return len(table.sortKeys)
+}
+
+// Copy sort keys into table from fromTable.
+func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	if fromTable == nil {
+		return fmt.Errorf("%s(*Table) *fromTable is <nil>", funcName())
+	}
+	if fromTable.SortKeysCount() == 0 {
+		return fmt.Errorf("%s(*Table) *fromTable.SortKeysCount() == 0", funcName())
+	}
+
+	var err error
+	var ascending []string	// They start out ascending, and may be later reversed.
+	var descending []string
+
+	keysTable, err := fromTable.GetSortKeysAsTable()
+	if err != nil {
+		return err
+	}
+
+	for rowIndex := 0; rowIndex < keysTable.RowCount(); rowIndex++ {
+		colName, err := keysTable.GetString("colName", rowIndex)
+		if err != nil {
+			return err
+		}
+
+		reverse, err := keysTable.GetBool("reverse", rowIndex)
+		if err != nil {
+			return err
+		}
+
+		ascending = append(ascending, colName)
+		if reverse {
+			descending = append(descending, colName)
+		}
+	}
+
+	err = table.SetSortKeys(ascending...)
+	if err != nil {
+		return err
+	}
+
+	err = table.SetSortKeysReverse(descending...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

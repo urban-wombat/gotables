@@ -245,6 +245,10 @@ Returns a set of parsable elastic tabbed tables as a string.
 Returns a set of parsable tables with format right-aligned (numbers) as a string.
 */
 func (tableSet *TableSet) String() string {
+	return tableSet.StringPadded()
+}
+
+func (tableSet *TableSet) StringPadded() string {
 	if tableSet == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: *TableSet.%s() *TableSet is <nil>\n", funcName()))
 		return ""
@@ -261,7 +265,7 @@ func (tableSet *TableSet) String() string {
 	for i := 0; i < len(tableSet.tables); i++ {
 		table = tableSet.tables[i]
 		s += verticalSep
-		s += table.String()
+		s += table.StringPadded()
 		verticalSep = "\n"
 	}
 	return s
@@ -1127,6 +1131,10 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
+	return table.StringPadded()
+}
+
+func (table *Table) StringPadded() string {
 	if table == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
 		return ""
