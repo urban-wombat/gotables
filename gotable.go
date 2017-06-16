@@ -245,6 +245,10 @@ Returns a set of parsable elastic tabbed tables as a string.
 Returns a set of parsable tables with format right-aligned (numbers) as a string.
 */
 func (tableSet *TableSet) String() string {
+	if tableSet == nil {
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *TableSet.%s() *TableSet is <nil>\n", funcName()))
+		return ""
+	}
 	return tableSet.StringPadded()
 }
 
@@ -1131,6 +1135,10 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
+	if table == nil {
+		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
+		return ""
+	}
 	return table.StringPadded()
 }
 
@@ -1817,6 +1825,63 @@ func (table *Table) colInfo(colName string) (colInfo, error) {
 	cInfo.colName = colName
 	cInfo.colType = table.colTypes[index]
 	return cInfo, nil
+}
+
+func (table *Table) GetColInfoAsTable() (*Table, error) {
+	if table == nil {
+		return nil, fmt.Errorf("*Table.%s(): *Table is <nil>", funcName())
+	}
+	var err error
+	var colsTable *Table
+
+	colsTable, err = NewTable("ColInfo")
+	if err != nil {
+		return nil, err
+	}
+
+	if err = colsTable.AppendCol("colIndex", "int"); err != nil {
+		return nil, err
+	}
+	if err = colsTable.AppendCol("colName", "string"); err != nil {
+		return nil, err
+	}
+	if err = colsTable.AppendCol("colType", "string"); err != nil {
+		return nil, err
+	}
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+
+		err = colsTable.AppendRow()
+		if err != nil {
+			return nil, err
+		}
+
+		rowIndex := colIndex	// An output table row for each input table column.
+
+		if err = colsTable.SetInt("colIndex", rowIndex, rowIndex); err != nil {
+			return nil, err
+		}
+
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			return nil, err
+		}
+
+		colInfo, err := table.colInfo(colName)
+		if err != nil {
+			return nil, err
+		}
+
+		if err = colsTable.SetString("colName", rowIndex, colInfo.colName); err != nil {
+			return nil, err
+		}
+
+		if err = colsTable.SetString("colType", rowIndex, colInfo.colType); err != nil {
+			return nil, err
+		}
+	}
+
+	return colsTable, nil
 }
 
 func (table *Table) ColType(colName string) (string, error) {
@@ -3922,4 +3987,51 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// Append the columns from fromTable to table.
+func (table *Table) AppendColsFromTable(fromTable *Table) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() *Table is <nil>", funcName())
+	}
+	if fromTable == nil {
+		return fmt.Errorf("fromTable.%s() *Table is <nil>", funcName())
+	}
+
+	colsTable, err := fromTable.GetColInfoAsTable()
+	if err != nil {
+		return err
+	}
+
+	for rowIndex := 0; rowIndex < colsTable.RowCount(); rowIndex++ {
+		colName, err := colsTable.GetString("colName", rowIndex)
+		if err != nil {
+			return err
+		}
+		colType, err := colsTable.GetString("colType", rowIndex)
+		if err != nil {
+			return err
+		}
+
+		err = table.AppendCol(colName, colType)
+		if err != nil {
+			if hasCol, _ := table.HasCol(colName); hasCol {
+				// Skip duplicate column name, but only if it has same type.
+				colInfo, err := table.colInfo(colName)
+				if err != nil {
+					return err
+				}
+				if colType != colInfo.colType {
+					// Not the same type!
+					return fmt.Errorf("[%s].%s([%s]): skipping duplicate colName %q (is okay), but expecting type %q, not %q",
+						table.Name(), funcName(), fromTable.Name(), colName, colInfo.colType, colType)
+				}
+			} else {
+				// Must be some other error.
+				return err
+			}
+		}
+	}
+	
+	return nil
 }

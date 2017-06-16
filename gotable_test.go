@@ -2816,12 +2816,12 @@ func ExampleTable_SetSortKeys() {
 	// "gri"    "Smalltalk"    80
 	// 
 	// (7) SortKeys as a table:
-	// [sortKeys]
-	// key colName    colType  reverse
-	// int string     string   bool
-	//   0 "language" "string" false
-	//   1 "lines"    "int"    false
-	//   2 "user"     "string" false
+	// [SortKeys]
+	// keyIndex colName    colType  reverse
+	//      int string     string   bool
+	//        0 "language" "string" false
+	//        1 "lines"    "int"    false
+	//        2 "user"     "string" false
 }
 
 func ExampleTable_GobEncode_table() {
@@ -4145,11 +4145,11 @@ func ExampleTable_GetSortKeysAsTable() {
 
 	// Output:
 	// (1) GetSortKeysAsTable():
-	// [sortKeys]
-	// key colName colType  reverse
-	// int string  string   bool
-	//   0 "user"  "string" false
-	//   1 "lines" "int"    true
+	// [SortKeys]
+	// keyIndex colName colType  reverse
+	//      int string  string   bool
+	//        0 "user"  "string" false
+	//        1 "lines" "int"    true
 	// 
 	// (2) Sort by user but reverse lines:
 	// [changes]

@@ -92,15 +92,15 @@ func (keys SortKeys) String() string {
 // Returns a copy of the sort keys as a Table. Useful for debugging.
 func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	if thisTable == nil {
-		return nil, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+		return nil, fmt.Errorf("*Table.%s(): *Table is <nil>", funcName())
 	}
 	var keysTable *Table
 	var err error
-	keysTable, err = NewTable("sortKeys")
+	keysTable, err = NewTable("SortKeys")
 	if err != nil {
 		return nil, err
 	}
-	if err = keysTable.AppendCol("key", "int"); err != nil {
+	if err = keysTable.AppendCol("keyIndex", "int"); err != nil {
 		return nil, err
 	}
 	err = keysTable.AppendCol("colName", "string")
@@ -120,7 +120,7 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 		if err != nil {
 			return nil, err
 		}
-		if err = keysTable.SetInt("key", rowIndex, rowIndex); err != nil {
+		if err = keysTable.SetInt("keyIndex", rowIndex, rowIndex); err != nil {
 			return nil, err
 		}
 		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)

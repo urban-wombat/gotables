@@ -28,10 +28,10 @@ import (
 	"fmt"
 )
 
-func (table1 *Table) Merge(table2 *Table) (*Table, error) {
+func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
-	var err error
-	var merged *Table
+//	var err error
+//	var merged *Table
 
 	// Local function.
 	// Make sort keys of both input tables the same.
@@ -108,6 +108,35 @@ where()
 	if err != nil {
 		return nil, err
 	}
+
+	// Okay. They're compatible, now set up for merging.
+
+where()
+	// Add all columns from table1 and table2 into merged.
+	colsTable, err := table1.GetColInfoAsTable()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(colsTable)
+
+where()
+	merged, err = NewTable("Merged")
+	if err != nil {
+		return nil, err
+	}
+
+where()
+	err = merged.AppendColsFromTable(table1)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(merged)
+
+	err = merged.AppendColsFromTable(table2)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(merged)
 
 where()
 	return merged, nil
