@@ -1839,7 +1839,7 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 		return nil, err
 	}
 
-	if err = colsTable.AppendCol("colIndex", "int"); err != nil {
+	if err = colsTable.AppendCol("index", "int"); err != nil {
 		return nil, err
 	}
 	if err = colsTable.AppendCol("colName", "string"); err != nil {
@@ -1858,7 +1858,7 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 
 		rowIndex := colIndex	// An output table row for each input table column.
 
-		if err = colsTable.SetInt("colIndex", rowIndex, rowIndex); err != nil {
+		if err = colsTable.SetInt("index", rowIndex, rowIndex); err != nil {
 			return nil, err
 		}
 

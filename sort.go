@@ -100,7 +100,7 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err = keysTable.AppendCol("keyIndex", "int"); err != nil {
+	if err = keysTable.AppendCol("index", "int"); err != nil {
 		return nil, err
 	}
 	err = keysTable.AppendCol("colName", "string")
@@ -120,7 +120,7 @@ func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 		if err != nil {
 			return nil, err
 		}
-		if err = keysTable.SetInt("keyIndex", rowIndex, rowIndex); err != nil {
+		if err = keysTable.SetInt("index", rowIndex, rowIndex); err != nil {
 			return nil, err
 		}
 		err = keysTable.SetString("colName", rowIndex, thisTable.sortKeys[rowIndex].colName)
@@ -715,7 +715,7 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	}
 
 	var err error
-	var ascending []string	// They start out ascending, and may be later reversed.
+	var ascending []string	// They default to ascending, and may be later reversed.
 	var descending []string
 
 	keysTable, err := fromTable.GetSortKeysAsTable()
@@ -724,6 +724,7 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	}
 
 	for rowIndex := 0; rowIndex < keysTable.RowCount(); rowIndex++ {
+
 		colName, err := keysTable.GetString("colName", rowIndex)
 		if err != nil {
 			return err
