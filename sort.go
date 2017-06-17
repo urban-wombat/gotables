@@ -754,7 +754,11 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	return nil
 }
 
-// Move sort key columns to the left of the table, and in sort key order.
+/*
+	Move sort key columns to the left of the table, and into sort key order.
+
+	Note: This is purely for human readability. It is not required for sorting.
+*/
 func (table *Table) OrderColsBySortKeys() error {
 	var err error
 

@@ -2866,7 +2866,12 @@ type _RowAsInterface []interface{}
 
 // But for now we will use a map to store a Row for simplicity, even though it will take up more space.
 
-// alias of RenameTable()
+/*
+	alias of RenameTable()
+
+	Note: If this table is inside a TableSet, be sure to not set the table name the same as another table in the TableSet.
+	To avoid this, use the TableSet.SetName() method.
+*/
 func (table *Table) SetName(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
@@ -2902,6 +2907,9 @@ func (table *TableExported) setTableNameExported(tableName string) error {
 
 /*
 	Alias of SetName()
+
+	Note: If this table is inside a TableSet, be sure to not set the table name the same as another table in the TableSet.
+	To avoid this, use the TableSet.RenameTable() method.
 */
 func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
