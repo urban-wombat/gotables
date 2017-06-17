@@ -3904,14 +3904,15 @@ func isExportableName(name string) bool {
 }
 
 /*
-	A strict table comparison:
-	Column count must match.
-	Row count must match.
-	Column names must match.
-	Column types must match.
-	Rows order must match.
-	Cell values must match.
-	Column order need NOT match.
+		A fairy strict table comparison:
+		1 Column count must match.
+		2 Row count must match.
+		3 Column names must match.
+		4 Column types must match.
+		5 Rows order must match.
+		6 Cell values must match.
+		7 Column order need NOT match.
+		8 Table name need NOT match.
 
 	Useful for testing.
 */

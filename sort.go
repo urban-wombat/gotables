@@ -698,7 +698,7 @@ func newSortKeys() SortKeys {
 	return make([]sortKey, 0)
 }
 
-func (table *Table) SortKeysCount() int {
+func (table *Table) SortKeyCount() int {
 	return len(table.sortKeys)
 }
 
@@ -710,8 +710,8 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	if fromTable == nil {
 		return fmt.Errorf("%s(*Table) *fromTable is <nil>", funcName())
 	}
-	if fromTable.SortKeysCount() == 0 {
-		return fmt.Errorf("%s(*Table) *fromTable.SortKeysCount() == 0", funcName())
+	if fromTable.SortKeyCount() == 0 {
+		return fmt.Errorf("%s(*Table) *fromTable.SortKeyCount() == 0", funcName())
 	}
 
 	var err error
@@ -752,4 +752,34 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	}
 
 	return nil
+}
+
+// Move sort key columns to the left of the table, and in sort key order.
+func (table *Table) OrderColsBySortKeys() error {
+	var err error
+
+	// Create parallel arrays ready to swap colNames values around.
+	var old []int = make([]int, table.SortKeyCount())	// List of old colName indexes.
+	var new []int = make([]int, table.SortKeyCount())	// List of new colName indexes.
+
+	for key := 0; key < table.SortKeyCount(); key++ {
+		for col := 0; col < table.ColCount(); col++ {
+			keyName := table.sortKeys[key].colName
+			colName := table.colNames[col]
+//			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+			if colName == keyName {
+//				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+				old[key] = col
+				new[key] = key
+			}
+		}
+	}
+
+	for key := 0; key < table.SortKeyCount(); key++ {
+//		fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
+		// Swap colName values using Go assignment swapping syntax: x, y = y, x
+		table.colNames[old[key]], table.colNames[new[key]] = table.colNames[new[key]], table.colNames[old[key]]
+	}
+
+	return err
 }

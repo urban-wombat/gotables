@@ -4166,7 +4166,7 @@ func ExampleTable_GetSortKeysAsTable() {
 	// "rsc"    "Go"          200
 }
 
-func TestTable_SortKeysCount(t *testing.T) {
+func TestTable_SortKeyCount(t *testing.T) {
 	tableString :=
 	`[changes]
 	user     language    lines
@@ -4193,9 +4193,9 @@ func TestTable_SortKeysCount(t *testing.T) {
 	}
 
 	expecting := 2
-	count := table.SortKeysCount()
+	count := table.SortKeyCount()
 	if count != expecting {
-		t.Error(fmt.Errorf("Expecting table.SortKeysCount() = %d but found %d", expecting, count))
+		t.Error(fmt.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count))
 	}
 }
 
@@ -4265,4 +4265,57 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	if equals != expecting {
 		t.Error(fmt.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals))
 	}
+}
+
+func ExampleTable_OrderColsBySortKeys() {
+	tableString :=
+	`[MyTable]
+	ColA   ColB Key2      ColC Key1 ColD ColE
+	string  int string float64  int  int bool
+	`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = table.SetSortKeys("Key1", "Key2")
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("(1) Here is the table in its original column order:")
+	fmt.Println(table)
+
+	fmt.Println("(2) Here are the keys:")
+	sortKeysTable, err := table.GetSortKeysAsTable()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(sortKeysTable)
+
+	fmt.Println("(3) Order the sort key columns to the left:")
+	err = table.OrderColsBySortKeys()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	// Output:
+	// (1) Here is the table in its original column order:
+	// [MyTable]
+	// ColA   ColB Key2      ColC Key1 ColD ColE
+	// string  int string float64  int  int bool
+	// 
+	// (2) Here are the keys:
+	// [SortKeys]
+	// index colName colType  reverse
+	//   int string  string   bool
+	//     0 "Key1"  "int"    false
+	//     1 "Key2"  "string" false
+	// 
+	// (3) Order the sort key columns to the left:
+	// [MyTable]
+	// Key1   Key2 ColB      ColC ColA ColD ColE
+	// string  int string float64  int  int bool
 }

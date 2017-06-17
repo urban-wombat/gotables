@@ -36,13 +36,13 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	// Local function.
 	// Make sort keys of both input tables the same.
 	setSortKeysBetweenTables := func () error {
-		if table1.SortKeysCount() > 0 {
+		if table1.SortKeyCount() > 0 {
 			// Table1 is dominant.
 			err = table2.SetSortKeysFromTable(table1)
 			if err != nil {
 				return err
 			}
-		} else if table2.SortKeysCount() > 0 {
+		} else if table2.SortKeyCount() > 0 {
 			err = table1.SetSortKeysFromTable(table2)
 			if err != nil {
 				return err
@@ -59,7 +59,7 @@ where()
 	// Local function.
 	sortMerged := func (localMerged *Table) (*Table, error) {
 		// TODO: Copy sort keys from table1 or table2 to merged
-		if localMerged.SortKeysCount() == 0 {
+		if localMerged.SortKeyCount() == 0 {
 			setSortKeysBetweenTables()
 		}
 
@@ -130,13 +130,23 @@ where()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(merged)
+//	fmt.Println(merged)
 
 	err = merged.AppendColsFromTable(table2)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(merged)
+//	fmt.Println(merged)
+
+	err = merged.SetSortKeysFromTable(table1)
+	if err != nil {
+		return nil, err
+	}
+
+	err = merged.OrderColsBySortKeys()
+	if err != nil {
+		return nil, err
+	}
 
 where()
 	return merged, nil
