@@ -60,7 +60,10 @@ where()
 	sortMerged := func (localMerged *Table) (*Table, error) {
 		// TODO: Copy sort keys from table1 or table2 to merged
 		if localMerged.SortKeyCount() == 0 {
-			setSortKeysBetweenTables()
+			err = setSortKeysBetweenTables()
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		err = localMerged.Sort()
@@ -143,11 +146,75 @@ where()
 		return nil, err
 	}
 
+merged.AppendRow()
+if err != nil {
+	return nil, err
+}
+	// This is purely aesthetic for human readability.
 	err = merged.OrderColsBySortKeys()
 	if err != nil {
 		return nil, err
 	}
 
+/*
+	// Add a column to keep track of which columns came from which table.
+	err = merged.AppendCol("_TNUM_", "int")
+	if err != nil {
+		return nil, err
+	}
+*/
+
+/*
+	// Make space for both tables.
+	err = merged.AppendRows(table1.RowCount() + table2.RowCount())
+	if err != nil {
+		return nil, err
+	}
+*/
+
+/*
+	// Set floats to NaN values.
+	err = merged.SetAllFloatCellsToNaN()
+	if err != nil {
+		return nil, err
+	}
+*/
+
+/*
+	// Copy table1 into merged.
+	beginRow := 0
+	err = table1.CopyTableCells(beginRow, merged)
+	if err != nil {
+		return nil, err
+	}
+*/
+
 where()
 	return merged, nil
+}
+
+func (srcTable *Table) CopyTableCells(beginRow int, targTable *Table) error {
+	for srcCol := 0; srcCol < srcTable.ColCount(); srcCol++ {
+		colName, err := srcTable.ColName(srcCol)
+		fmt.Printf("srcTable.ColName(%d) = %q\n", srcCol, colName)
+		if err != nil {
+			return err
+		}
+		// Note: multiple assignment syntax in for loop.
+		for srcRow, targRow := 0, beginRow; targRow < (beginRow + srcTable.RowCount()); srcRow, targRow = srcRow+1, targRow+1 {
+			cellVal, err := srcTable.GetValByColIndex(srcCol, srcRow)
+			fmt.Printf("srcTable.GetValByColIndex(%d, %d) = %v\n", srcCol, srcRow, cellVal)
+			if err != nil {
+				return err
+			}
+			err = targTable.SetVal(colName, targRow, cellVal)
+			fmt.Printf("targTable.SetVal(%q, %d, %v)\n", colName, targRow, cellVal)
+			if err != nil {
+				return err
+			}
+			fmt.Println()
+		}
+	}
+
+	return nil
 }

@@ -584,6 +584,22 @@ func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 	return nil
 }
 
+// Set all float cells in this table to NaN. This is a convenience function to use NaN as a proxy for a missing value.
+func (table *Table) SetAllFloatCellsToNaN() error {
+	if table == nil {
+		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+	}
+	var err error
+
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+		err = table.SetRowFloatCellsToNaN(rowIndex)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Set all cells in this row to their zero value, such as 0, "", or false.
 func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 	if table == nil {

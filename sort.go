@@ -770,19 +770,22 @@ func (table *Table) OrderColsBySortKeys() error {
 		for col := 0; col < table.ColCount(); col++ {
 			keyName := table.sortKeys[key].colName
 			colName := table.colNames[col]
-//			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
 			if colName == keyName {
-//				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
 				old[key] = col
 				new[key] = key
+				break	// Go on to next key.
 			}
 		}
 	}
 
 	for key := 0; key < table.SortKeyCount(); key++ {
-//		fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
-		// Swap colName values using Go assignment swapping syntax: x, y = y, x
+		fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
+		// Swap colNames values using Go assignment swapping syntax: x, y = y, x
 		table.colNames[old[key]], table.colNames[new[key]] = table.colNames[new[key]], table.colNames[old[key]]
+		// Swap colTypes values using Go assignment swapping syntax: x, y = y, x
+		table.colTypes[old[key]], table.colTypes[new[key]] = table.colTypes[new[key]], table.colTypes[old[key]]
 	}
 
 	return err
