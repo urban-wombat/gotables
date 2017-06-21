@@ -1682,12 +1682,15 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 
 	colType, err := table.ColType(colName)
+where(fmt.Sprintf("table.ColType(%q) = %q\n", colName, colType))
 	if err != nil {
 		return err
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return fmt.Errorf("table [%s] col %q expecting type %q not type %q", table.Name(), colName, colType, valType)
+where()
+		return fmt.Errorf("table [%s] col %q expecting val of type %q, not type %q: %v",
+			table.Name(), colName, colType, valType, val)
 	}
 
 	// Set the val

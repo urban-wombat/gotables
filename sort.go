@@ -770,23 +770,78 @@ func (table *Table) OrderColsBySortKeys() error {
 		for col := 0; col < table.ColCount(); col++ {
 			keyName := table.sortKeys[key].colName
 			colName := table.colNames[col]
-			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+//			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
 			if colName == keyName {
-				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
+//				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
 				old[key] = col
 				new[key] = key
 				break	// Go on to next key.
 			}
 		}
 	}
+where(fmt.Sprintf("(1) table.colNamesLookup = %v", table.colNamesLookup))
 
 	for key := 0; key < table.SortKeyCount(); key++ {
-		fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
+fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
+
+/*
 		// Swap colNames values using Go assignment swapping syntax: x, y = y, x
 		table.colNames[old[key]], table.colNames[new[key]] = table.colNames[new[key]], table.colNames[old[key]]
+
 		// Swap colTypes values using Go assignment swapping syntax: x, y = y, x
 		table.colTypes[old[key]], table.colTypes[new[key]] = table.colTypes[new[key]], table.colTypes[old[key]]
+
+		// Swap colNamesLookup values using Go assignment swapping syntax: x, y = y, x
+		table.colNamesLookup[table.colNames[old[key]]], table.colNamesLookup[table.colNames[new[key]]] =
+		table.colNamesLookup[table.colNames[new[key]]], table.colNamesLookup[table.colNames[old[key]]]
+*/
+		err = table.swapColsByColIndex(old[key], new[key])
+		if err != nil {
+			return err
+		}
 	}
+where(fmt.Sprintf("(2) table.colNamesLookup = %v", table.colNamesLookup))
 
 	return err
+}
+
+func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
+	var err error
+	table.colNames[colIndex1], table.colNames[colIndex2] = table.colNames[colIndex2], table.colNames[colIndex1]
+
+	table.colTypes[colIndex1], table.colTypes[colIndex2] = table.colTypes[colIndex2], table.colTypes[colIndex1]
+
+	colName1, err := table.ColName(colIndex1)
+	if err != nil {
+		return err
+	}
+	colName2, err := table.ColName(colIndex2)
+	if err != nil {
+		return err
+	}
+	table.colNamesLookup[colName1], table.colNamesLookup[colName2] =
+	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
+	return nil
+}
+
+func (table *Table) swapCols(colName1 string, colName2 string) error {
+	var err error
+
+	col1, err := table.ColIndex(colName1)
+	if err != nil {
+		return err
+	}
+	col2, err := table.ColIndex(colName2)
+	if err != nil {
+		return err
+	}
+
+	table.colNames[col1], table.colNames[col2] = table.colNames[col2], table.colNames[col1]
+
+	table.colTypes[col1], table.colTypes[col2] = table.colTypes[col2], table.colTypes[col1]
+
+	table.colNamesLookup[colName1], table.colNamesLookup[colName2] =
+	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
+
+	return nil
 }

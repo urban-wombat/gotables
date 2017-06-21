@@ -146,54 +146,44 @@ where()
 		return nil, err
 	}
 
-merged.AppendRow()
-if err != nil {
-	return nil, err
-}
 	// This is purely aesthetic for human readability.
 	err = merged.OrderColsBySortKeys()
 	if err != nil {
 		return nil, err
 	}
 
-/*
 	// Add a column to keep track of which columns came from which table.
 	err = merged.AppendCol("_TNUM_", "int")
 	if err != nil {
 		return nil, err
 	}
-*/
 
-/*
 	// Make space for both tables.
 	err = merged.AppendRows(table1.RowCount() + table2.RowCount())
 	if err != nil {
 		return nil, err
 	}
-*/
 
-/*
 	// Set floats to NaN values.
 	err = merged.SetAllFloatCellsToNaN()
 	if err != nil {
 		return nil, err
 	}
-*/
 
-/*
+fmt.Println(merged)
+
 	// Copy table1 into merged.
 	beginRow := 0
-	err = table1.CopyTableCells(beginRow, merged)
+	err = table1.copyTableCells(beginRow, merged)
 	if err != nil {
 		return nil, err
 	}
-*/
 
 where()
 	return merged, nil
 }
 
-func (srcTable *Table) CopyTableCells(beginRow int, targTable *Table) error {
+func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 	for srcCol := 0; srcCol < srcTable.ColCount(); srcCol++ {
 		colName, err := srcTable.ColName(srcCol)
 		fmt.Printf("srcTable.ColName(%d) = %q\n", srcCol, colName)
