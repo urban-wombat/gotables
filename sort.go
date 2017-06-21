@@ -779,10 +779,10 @@ func (table *Table) OrderColsBySortKeys() error {
 			}
 		}
 	}
-where(fmt.Sprintf("(1) table.colNamesLookup = %v", table.colNamesLookup))
+//	where(fmt.Sprintf("(1) table.colNamesLookup = %v", table.colNamesLookup))
 
 	for key := 0; key < table.SortKeyCount(); key++ {
-fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
+//	fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
 
 /*
 		// Swap colNames values using Go assignment swapping syntax: x, y = y, x
@@ -800,7 +800,7 @@ fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
 			return err
 		}
 	}
-where(fmt.Sprintf("(2) table.colNamesLookup = %v", table.colNamesLookup))
+	// where(fmt.Sprintf("(2) table.colNamesLookup = %v", table.colNamesLookup))
 
 	return err
 }

@@ -153,7 +153,8 @@ where()
 	}
 
 	// Add a column to keep track of which columns came from which table.
-	err = merged.AppendCol("_TNUM_", "int")
+	const tableNumberColName = "_TNUM_"
+	err = merged.AppendCol(tableNumberColName, "int")
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +174,36 @@ where()
 fmt.Println(merged)
 
 	// Copy table1 into merged.
-	beginRow := 0
+	var beginRow = 0
 	err = table1.copyTableCells(beginRow, merged)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set table number in merged of table1.
+	for rowIndex := beginRow; rowIndex < table1.RowCount(); rowIndex++ {
+		err = merged.SetInt(tableNumberColName, rowIndex, 1)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Copy table2 into merged.
+	beginRow = table1.RowCount()
+	err = table2.copyTableCells(beginRow, merged)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set table number in merged of table2.
+	for rowIndex := beginRow; rowIndex < merged.RowCount(); rowIndex++ {
+		err = merged.SetInt(tableNumberColName, rowIndex, 2)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = merged.Sort()
 	if err != nil {
 		return nil, err
 	}
@@ -183,26 +212,27 @@ where()
 	return merged, nil
 }
 
+// This copies from left (srcTable) to right (targTable) beginning at beginRow in targTable.
 func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 	for srcCol := 0; srcCol < srcTable.ColCount(); srcCol++ {
 		colName, err := srcTable.ColName(srcCol)
-		fmt.Printf("srcTable.ColName(%d) = %q\n", srcCol, colName)
+		where(fmt.Sprintf("srcTable.ColName(%d) = %q\n", srcCol, colName))
 		if err != nil {
 			return err
 		}
 		// Note: multiple assignment syntax in for loop.
 		for srcRow, targRow := 0, beginRow; targRow < (beginRow + srcTable.RowCount()); srcRow, targRow = srcRow+1, targRow+1 {
 			cellVal, err := srcTable.GetValByColIndex(srcCol, srcRow)
-			fmt.Printf("srcTable.GetValByColIndex(%d, %d) = %v\n", srcCol, srcRow, cellVal)
+			where(fmt.Sprintf("srcTable.GetValByColIndex(%d, %d) = %v\n", srcCol, srcRow, cellVal))
 			if err != nil {
 				return err
 			}
 			err = targTable.SetVal(colName, targRow, cellVal)
-			fmt.Printf("targTable.SetVal(%q, %d, %v)\n", colName, targRow, cellVal)
+			where(fmt.Sprintf("targTable.SetVal(%q, %d, %v)\n", colName, targRow, cellVal))
 			if err != nil {
 				return err
 			}
-			fmt.Println()
+			where(fmt.Sprintln())
 		}
 	}
 
