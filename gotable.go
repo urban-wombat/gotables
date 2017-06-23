@@ -782,11 +782,6 @@ func (table *Table) DeleteRow(rowIndex int) error {
 		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		/*
-			err := errors.New(fmt.Sprintf("in table [%s] with %d rows, row index %d does not exist",
-				table.tableName, table.RowCount(), rowIndex))
-			return err
-		*/
 		return fmt.Errorf("in table [%s] with %d rows, row index %d does not exist",
 			table.tableName, table.RowCount(), rowIndex)
 	}

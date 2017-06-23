@@ -4316,6 +4316,6 @@ func ExampleTable_OrderColsBySortKeys() {
 	// 
 	// (3) Order the sort key columns to the left:
 	// [MyTable]
-	// Key1   Key2 ColB      ColC ColA ColD ColE
-	// string  int string float64  int  int bool
+	// Key1 Key2   ColB    ColC ColA   ColD ColE
+	//  int string  int float64 string  int bool
 }
