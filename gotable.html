@@ -155,6 +155,9 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.DeleteRows">func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="#Table.DeleteSortKey">func (table *Table) DeleteSortKey(keyName string) error</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="#Table.Equals">func (table1 *Table) Equals(table2 *Table) (bool, error)</a></dd>
 				
 					
@@ -963,7 +966,15 @@ true   &#34;The answer to life, the universe and everything&#34;    42
 		
 		
 			<p>Code:</p>
-			<pre class="code">tableSetString := `
+			<pre class="code"><span class="comment">/*
+    NewTableFromFileByTableName() is for when you want just one table from
+    (possibly) multiple tables in a file, and you don&#39;t want to bother with
+    NewTableSetFromFile().
+
+    See also NewTableFromStringByTableName().
+*/</span>
+
+tableSetString := `
 [MyTable]
 MyBool bool = true
 MyString string = &#34;The answer to life, the universe and everything&#34;
@@ -1274,7 +1285,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=18857:18931#L678">CompareRows</a>
+				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19584:19658#L701">CompareRows</a>
 					<a class="permalink" href="#Table.CompareRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) CompareRows(rowIndex1 <a href="/pkg/builtin/#int">int</a>, rowIndex2 <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1404,6 +1415,19 @@ item
 	</div>
 </div>
 
+				
+			
+				
+				<h3 id="Table.DeleteSortKey">func (*Table) <a href="/src/target/sort.go?s=7409:7464#L256">DeleteSortKey</a>
+					<a class="permalink" href="#Table.DeleteSortKey">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) DeleteSortKey(keyName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+Delete a sort key by name.
+</p>
+
+				
+				
 				
 			
 				
@@ -2315,7 +2339,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=22354:22401#L803">OrderColsBySortKeys</a>
+				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23081:23128#L826">OrderColsBySortKeys</a>
 					<a class="permalink" href="#Table.OrderColsBySortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) OrderColsBySortKeys() <a href="/pkg/builtin/#error">error</a></pre>
@@ -2442,7 +2466,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=14005:14073#L544">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=14732:14800#L567">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3303,7 +3327,7 @@ index colName    colType  reverse
 				
 			
 				
-				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=20958:21022#L745">SetSortKeysFromTable</a>
+				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=21685:21749#L768">SetSortKeysFromTable</a>
 					<a class="permalink" href="#Table.SetSortKeysFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3496,7 +3520,7 @@ Requires a val of valid type for the col in the table.
 				
 			
 				
-				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=12377:12409#L493">Sort</a>
+				<h3 id="Table.Sort">func (*Table) <a href="/src/target/sort.go?s=13104:13136#L516">Sort</a>
 					<a class="permalink" href="#Table.Sort">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Sort() <a href="/pkg/builtin/#error">error</a></pre>
@@ -3601,7 +3625,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=20841:20879#L740">SortKeyCount</a>
+				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21568:21606#L763">SortKeyCount</a>
 					<a class="permalink" href="#Table.SortKeyCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortKeyCount() <a href="/pkg/builtin/#int">int</a></pre>

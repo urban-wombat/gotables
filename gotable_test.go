@@ -1970,6 +1970,15 @@ func ExampleNewTableFromFile() {
 }
 
 func ExampleNewTableFromFileByTableName() {
+
+	/*
+		NewTableFromFileByTableName() is for when you want just one table from
+		(possibly) multiple tables in a file, and you don't want to bother with
+		NewTableSetFromFile().
+
+		See also NewTableFromStringByTableName().
+	*/
+
 	tableSetString := `
 	[MyTable]
 	MyBool bool = true

@@ -208,7 +208,15 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		}
 	}
 
+	err = merged.AppendSortKey("_TNUM_")
+	if err != nil {
+		return nil, err
+	}
 	err = merged.Sort()
+	if err != nil {
+		return nil, err
+	}
+	err = merged.DeleteSortKey("_TNUM_")
 	if err != nil {
 		return nil, err
 	}

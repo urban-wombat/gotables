@@ -262,6 +262,29 @@ func (table *Table) AppendSortKey(colName string) error {
 	return nil
 }
 
+// Delete a sort key by name.
+func (table *Table) DeleteSortKey(keyName string) error {
+	if table == nil {
+		return fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
+	}
+//	where(fmt.Sprintf("[%s].%s(%q)\n", table.Name(), funcName(), keyName))
+	_, err := table.colInfo(keyName)
+	if err != nil {
+		// Col doesn't exist.
+		return err
+	}
+
+	for keyIndex := 0; keyIndex < len(table.sortKeys); keyIndex++ {
+		if table.sortKeys[keyIndex].colName == keyName {
+			// From Ivo Balbaert p182 for deleting a single element.
+			table.sortKeys = append(table.sortKeys[:keyIndex], table.sortKeys[keyIndex+1:]...)
+			return nil
+		}
+	}
+
+	return fmt.Errorf("[%s].%s(%q) sort key not found: %q", table.Name(), funcName(), keyName, keyName)
+}
+
 /*
 func (table *Table) getSortKeys() (SortKeys, error) {
 	if table == nil {
