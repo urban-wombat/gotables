@@ -213,6 +213,13 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return nil, err
 	}
 
+	// Add a column to keep track of which columns are duplicates, to be deleted.
+	const deleteColName = "_DELETE_"
+	err = merged.AppendCol(deleteColName, "bool")
+	if err != nil {
+		return nil, err
+	}
+
 where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 
 	// Loop through to second-last row, comparing each row with the row after it.
@@ -223,6 +230,9 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 		(b)			zero		non-zero	copy val2 to val1	Assumes zero is a missing value
 		(c)			non-zero	zero		copy val1 to val2	Assumes zero is a missing value
 		(d)			non-zero	non-zero	copy val1 to val2	(table1 takes precedence)
+		There are 2 further possibilities with float32 and float64:
+		(e)			zero		NaN			copy val1 to val2	Assumes zero is NOT a missing value
+		(f)			NaN			zero		copy val2 to val1	Assumes zero is NOT a missing value
 	*/
 	for rowIndex := 0; rowIndex < merged.RowCount()-1; rowIndex++ {
 		comparison, err := merged.CompareRows(rowIndex, rowIndex+1)
@@ -395,6 +405,10 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 							return nil, fmt.Errorf("What? We seem to have an unlisted type: %s", colType)
 						}
 				}
+			}
+			err = merged.SetBool(deleteColName, rowIndex+1, true)
+			if err != nil {
+				return nil, err
 			}
 		}
 	}
