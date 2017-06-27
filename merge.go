@@ -157,12 +157,15 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return nil, err
 	}
 
+	var tempColCount int	// To ignore temporary columns.
+
 	// Add a column to keep track of which columns came from which table.
 	const tableNumberColName = "_TNUM_"
 	err = merged.AppendCol(tableNumberColName, "int")
 	if err != nil {
 		return nil, err
 	}
+	tempColCount++
 
 	// Make space for both tables.
 	err = merged.AppendRows(table1.RowCount() + table2.RowCount())
@@ -208,7 +211,9 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		}
 	}
 
-	err = merged.AppendSortKey("_TNUM_")
+	// We want the table sorted with the matching (by keys) rows from each table contiguous.
+	// Use tableNumberColName in sort to put table 1 row before matching table 2 row.
+	err = merged.AppendSortKey(tableNumberColName)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +221,8 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	if err != nil {
 		return nil, err
 	}
-	err = merged.DeleteSortKey("_TNUM_")
+	// Revert to previous sort keys.
+	err = merged.DeleteSortKey(tableNumberColName)
 	if err != nil {
 		return nil, err
 	}
@@ -227,6 +233,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	if err != nil {
 		return nil, err
 	}
+	tempColCount++
 
 where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 
@@ -250,8 +257,8 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 //		where(fmt.Sprintf("[%s].CompareRows(%d, %d) = %d\n", merged.Name(), rowIndex, rowIndex+1, comparison))
 		if comparison == 0 {
 			// They are equal.
-			// Loop through columns, one short of the last column which is the (temporary) table number column.
-			for colIndex := 0; colIndex < merged.ColCount()-1; colIndex++ {
+			// Loop through columns, short of the last (temporary) column(s).
+			for colIndex := 0; colIndex < merged.ColCount()-tempColCount; colIndex++ {
 				colType, err := merged.ColTypeByColIndex(colIndex)
 				if err != nil {
 					return nil, err

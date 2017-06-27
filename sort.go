@@ -569,6 +569,11 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 	}})
 }
 
+func (table *Table) SearchGE(searchValues ...interface{}) (int, error) {
+	// Note: Go's sort.Search() already returns the first index if there are multiple matches.
+	return table.Search(searchValues...)
+}
+
 /*
 	Search this table by this table's currently-set sort keys.
 
@@ -632,7 +637,7 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 
 	var searchIndex int = -1
 
-	// sort.Search() is enclosed here so it can access table values.
+	// sort.Search() is enclosed (enclosure) here so it can access table values.
 	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
 //		compareCount++
 		var keyCount = len(table.sortKeys)
@@ -657,12 +662,15 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 			}
 
 			// Most searches will be single-key searches, so last key is the most common.
-			if keyIndex == keyLast {	// Last key is the deciding key because all previous matched.
+			if keyIndex == keyLast {	// Last key is the deciding key because all previous keys matched.
+//where(fmt.Sprintf("return compared >= 0 (%d)", compared))
 				return compared >= 0
 			} else {
 				if compared > 0 {	// Definite result regardless of subsequent keys: no match.
+//where("return true (0)")
 					return true
 				} else if compared < 0 {
+//where("return false (1)")
 					return false	// Definite result regardless of subsequent keys: no match.
 				}
 			}
@@ -670,14 +678,17 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 		}
 
 		// Should never be reached. Hasn't been tested.
+//where("return false (2)")
 		return false
 	})
 
 	// See logic at: https://golang.org/pkg/sort/#Search
+	// See Search() source code at: https://golang.org/src/sort/search.go?s=2247:2287#L49
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
-		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table", table.Name(), searchValues, plural(len(searchValues)))
+		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table: %v",
+			table.Name(), searchValues, plural(len(searchValues)), searchValues)
 	}
 }
 
@@ -920,4 +931,142 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
 
 	return nil
+}
+
+/*
+	Search this table by this table's currently-set sort keys.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+*/
+   func (table *Table) SearchLAST(searchValues ...interface{}) (int, error) {
+//   where(fmt.Sprintf("yyy Search() searchValues values %v type %T", searchValues, searchValues))
+//   where(fmt.Sprintf("yyy Search() len(searchValues) = %d", len(searchValues)))
+//   where(fmt.Sprintf("yyy Search() len(table.sortKeys) = %d", len(table.sortKeys)))
+
+	if table == nil {
+		return -1, fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
+	}
+
+// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
+	if len(searchValues) == 0 {
+		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
+	}
+
+	if len(table.sortKeys) == 0 {
+		return -1, fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
+	}
+
+	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
+	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
+// where(fmt.Sprintf("searchValues type %T", searchValues))
+		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
+			funcName(), len(searchValues), len(table.sortKeys))
+	}
+
+	if len(searchValues) != len(table.sortKeys) {
+// where(fmt.Sprintf("searchValues type %T", searchValues))
+		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d",
+			funcName(), len(searchValues), len(table.sortKeys))
+	}
+
+	// Check that searchValues are the right type.
+	for sortIndex, sortKey := range table.sortKeys {
+		colName := sortKey.colName
+		value := searchValues[sortIndex]
+		isValid, err := table.IsValidColValue(colName, value)
+		if !isValid {
+			// Append key name and type information to end of err.
+			var keyInfo string
+			sep := ""
+			for _, sortKey := range table.sortKeys {
+				keyInfo += fmt.Sprintf("%s%s %s", sep, sortKey.colName, sortKey.colType)
+				sep = ", "
+			}
+			return -1, fmt.Errorf("%v (valid key type%s: %s)", err, plural(len(table.sortKeys)), keyInfo)
+		}
+	}
+
+	rowIndex, err := table.searchByKeysLAST(searchValues)
+// where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
+
+	return rowIndex, err
+}
+
+func (table *Table) searchByKeysLAST(searchValues []interface{}) (int, error) {
+
+	var searchIndex int = -1
+
+	// sort.Search() is enclosed (enclosure) here so it can access table values.
+//	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
+	searchIndex = Search(table.RowCount(), func(rowIndex int) bool {	// Locally-defined Search() function
+//		compareCount++
+		var keyCount = len(table.sortKeys)
+		var keyLast = keyCount - 1
+		var compared int
+		for keyIndex, sortKey := range table.sortKeys {
+			var colName string = sortKey.colName
+			var sortFunc compareFunc = sortKey.sortFunc
+			var searchVal interface{} = searchValues[keyIndex]
+			var cellVal interface{}
+			cellVal, err := table.GetVal(colName, rowIndex)
+			// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
+			if err != nil {
+				// Should never happen. Hasn't been tested.
+				break	// Out to searchByKeys() enclosing function.
+			}
+			compared = sortFunc(cellVal, searchVal)
+
+			if sortKey.reverse {
+				// Reverse the sign to reverse the sort.
+				compared *= -1
+			}
+
+			// Most searches will be single-key searches, so last key is the most common.
+			if keyIndex == keyLast {	// Last key is the deciding key because all previous keys matched.
+//where(fmt.Sprintf("return compared >= 0 (%d)", compared))
+				return compared >= 0
+			} else {
+				if compared > 0 {	// Definite result regardless of subsequent keys: no match.
+//where("return true (0)")
+					return true
+				} else if compared < 0 {
+//where("return false (1)")
+					return false	// Definite result regardless of subsequent keys: no match.
+				}
+			}
+			// Otherwise the first keys are equal, so keep looping through keys.
+		}
+
+		// Should never be reached. Hasn't been tested.
+//where("return false (2)")
+		return false
+	})
+
+	// See logic at: https://golang.org/pkg/sort/#Search
+	// See Search() source code at: https://golang.org/src/sort/search.go?s=2247:2287#L49
+	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
+		return searchIndex, nil
+	} else {
+		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table: %v",
+			table.Name(), searchValues, plural(len(searchValues)), searchValues)
+	}
+}
+
+// Adapt this to search for the last index.
+func Search(n int, f func(int) bool) int {
+	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
+	// Define f(-1) == false and f(n) == true.
+	// Invariant: f(i-1) == false, f(j) == true.
+	i, j := 0, n
+	for i < j {
+		h := i + (j-i)/2 // avoid overflow when computing h
+		// i ≤ h < j
+		if !f(h) {
+			i = h + 1 // preserves f(i-1) == false
+		} else {
+			j = h // preserves f(j) == true
+		}
+	}
+	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+	return i
 }
