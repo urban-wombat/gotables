@@ -687,8 +687,8 @@ func (table *Table) searchByKeys(searchValues []interface{}) (int, error) {
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
-		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table: %v",
-			table.Name(), searchValues, plural(len(searchValues)), searchValues)
+		return -1, fmt.Errorf("(1) [%s].Search(%v) search values not in table: %v",
+			table.Name(), searchValues, searchValues)
 	}
 }
 
@@ -938,7 +938,7 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-   func (table *Table) SearchLAST(searchValues ...interface{}) (int, error) {
+   func (table *Table) SearchLast(searchValues ...interface{}) (int, error) {
 //   where(fmt.Sprintf("yyy Search() searchValues values %v type %T", searchValues, searchValues))
 //   where(fmt.Sprintf("yyy Search() len(searchValues) = %d", len(searchValues)))
 //   where(fmt.Sprintf("yyy Search() len(table.sortKeys) = %d", len(table.sortKeys)))
@@ -947,7 +947,9 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 		return -1, fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
 	}
 
-// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
+fmt.Println()
+where(fmt.Sprintf("searchValues = %v", searchValues))
+	// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
 		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
 	}
@@ -986,19 +988,19 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 		}
 	}
 
-	rowIndex, err := table.searchByKeysLAST(searchValues)
+	rowIndex, err := table.searchByKeysLast(searchValues)
 // where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
 
 	return rowIndex, err
 }
 
-func (table *Table) searchByKeysLAST(searchValues []interface{}) (int, error) {
+func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 
 	var searchIndex int = -1
 
 	// sort.Search() is enclosed (enclosure) here so it can access table values.
 //	searchIndex = sort.Search(table.RowCount(), func(rowIndex int) bool {
-	searchIndex = Search(table.RowCount(), func(rowIndex int) bool {	// Locally-defined Search() function
+	searchIndex = SearchLast(table.RowCount(), func(rowIndex int) bool {	// Locally-defined Search() function
 //		compareCount++
 		var keyCount = len(table.sortKeys)
 		var keyLast = keyCount - 1
@@ -1007,6 +1009,7 @@ func (table *Table) searchByKeysLAST(searchValues []interface{}) (int, error) {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
 			var searchVal interface{} = searchValues[keyIndex]
+where(fmt.Sprintf("searchVal = %v", searchVal))
 			var cellVal interface{}
 			cellVal, err := table.GetVal(colName, rowIndex)
 			// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
@@ -1024,12 +1027,12 @@ func (table *Table) searchByKeysLAST(searchValues []interface{}) (int, error) {
 			// Most searches will be single-key searches, so last key is the most common.
 			if keyIndex == keyLast {	// Last key is the deciding key because all previous keys matched.
 //where(fmt.Sprintf("return compared >= 0 (%d)", compared))
-				return compared >= 0
+				return compared <= 0
 			} else {
-				if compared > 0 {	// Definite result regardless of subsequent keys: no match.
+				if compared < 0 {	// Definite result regardless of subsequent keys: no match.
 //where("return true (0)")
 					return true
-				} else if compared < 0 {
+				} else if compared > 0 {
 //where("return false (1)")
 					return false	// Definite result regardless of subsequent keys: no match.
 				}
@@ -1044,11 +1047,13 @@ func (table *Table) searchByKeysLAST(searchValues []interface{}) (int, error) {
 
 	// See logic at: https://golang.org/pkg/sort/#Search
 	// See Search() source code at: https://golang.org/src/sort/search.go?s=2247:2287#L49
+where(fmt.Sprintf("searchValues = %v", searchValues))
+where(fmt.Sprintf("searchIndex = %d", searchIndex))
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
-		return -1, fmt.Errorf("[%s].Search(%v) search value%s not in table: %v",
-			table.Name(), searchValues, plural(len(searchValues)), searchValues)
+		return -1, fmt.Errorf("(2) [%s].Search(%v) search values not in table: %v",
+			table.Name(), searchValues, searchValues)
 	}
 }
 
@@ -1057,15 +1062,65 @@ func Search(n int, f func(int) bool) int {
 	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
 	// Define f(-1) == false and f(n) == true.
 	// Invariant: f(i-1) == false, f(j) == true.
+	where("i is low. j is high. h is middle.")
 	i, j := 0, n
+	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
+	fmt.Println()
 	for i < j {
 		h := i + (j-i)/2 // avoid overflow when computing h
+		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
 		// i ≤ h < j
 		if !f(h) {
 			i = h + 1 // preserves f(i-1) == false
+			where(fmt.Sprintf("h%d is too low: i%d = h%d + 1", h, i, h))
 		} else {
 			j = h // preserves f(j) == true
+			where(fmt.Sprintf("h%d is equal or higher than first: j%d = h%d", h, j, h))
 		}
+		where(fmt.Sprintf("i%d < j%d = %t", i, j, i < j))
+		fmt.Println()
+	}
+	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+	return i
+}
+
+// Adapt this to search for the last index.
+func SearchLast(n int, f func(int) bool) int {
+	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
+	// Define f(-1) == false and f(n) == true.
+	// Invariant: f(i-1) == false, f(j) == true.
+	where("i is low. j is high. h is middle.")
+	stopLimit := 8
+	stopCount := 0
+	i, j := 0, n
+//	prevh := -1
+	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
+	fmt.Println()
+//	for i < j && stopCount < stopLimit {
+	for i < j-1 && stopCount < stopLimit {
+		h := i + (j-i)/2 // avoid overflow when computing h
+		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
+		// i ≤ h < j
+		if !f(h) {
+			j = h // preserves f(j) == true
+			where(fmt.Sprintf("h%d is too high: j%d = h%d", h, j, h))
+		} else {
+			i = h // preserves f(i-1) == false
+			where(fmt.Sprintf("h%d is equal or lower than last: i%d = h%d", h, i, h))
+		}
+		where(fmt.Sprintf("i%d < j%d-1 = %t", i, j, i < j-1))
+		stopCount++
+/*
+		if h == prevh {
+			fmt.Println("h == prevh")
+			break
+		}
+		prevh = h
+*/
+		fmt.Println()
+	}
+	if stopCount == stopLimit {
+		fmt.Println("STOPPING")
 	}
 	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
 	return i
