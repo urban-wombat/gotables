@@ -6,10 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"math/rand"
 //	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"testing"
+//	"time"
 )
 
 /*
@@ -1522,7 +1525,7 @@ func TestIsNumericColType(t *testing.T) {
 		hasPrefixT := strings.HasPrefix(colName, "T_")
 		hasPrefixF := strings.HasPrefix(colName, "F_")
 		if !hasPrefixT && !hasPrefixF {
-			t.Error(fmt.Errorf("expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName))
+			t.Errorf("expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName)
 		}
 
 		if isNumeric != hasPrefixT {
@@ -1563,7 +1566,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount := table.RowCount()
 	if rowCount != 0 {
-		t.Error(fmt.Errorf("expecting row count of 0, not: %d", rowCount))
+		t.Errorf("expecting row count of 0, not: %d", rowCount)
 	}
 
 	err = table.AppendRow()
@@ -1573,7 +1576,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount = table.RowCount()
 	if rowCount != 1 {
-		t.Error(fmt.Errorf("expecting row count of 1, not: %d", rowCount))
+		t.Errorf("expecting row count of 1, not: %d", rowCount)
 	}
 
 	err = table.DeleteRow(0)
@@ -1583,7 +1586,7 @@ func TestAppendRow(t *testing.T) {
 
 	rowCount = table.RowCount()
 	if rowCount != 0 {
-		t.Error(fmt.Errorf("expecting row count of 0, not: %d", rowCount))
+		t.Errorf("expecting row count of 0, not: %d", rowCount)
 	}
 }
 
@@ -1620,7 +1623,7 @@ func TestColCount(t *testing.T) {
 
 	colCount := table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 
 	err = table.AppendCol("ExtraCol", "bool")
@@ -1630,7 +1633,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount))
+		t.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount)
 	}
 
 	lastCol := colCount - 1
@@ -1641,7 +1644,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 
 	err = table.AppendCol("AnotherCol", "string")
@@ -1651,7 +1654,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount))
+		t.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount)
 	}
 
 	err = table.DeleteCol("AnotherCol")
@@ -1661,7 +1664,7 @@ func TestColCount(t *testing.T) {
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Error(fmt.Errorf("expecting col count of %d, not: %d", initialColCount, colCount))
+		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 }
 
@@ -1697,7 +1700,7 @@ func TestDeleteRow(t *testing.T) {
 
 	rowCount := table.RowCount()
 	if rowCount != initialRowCount-1 {
-		t.Error(fmt.Errorf("expecting 1 row less than %d after DeleteRow(%d) but found %d", initialRowCount, deleteRow, rowCount))
+		t.Errorf("expecting 1 row less than %d after DeleteRow(%d) but found %d", initialRowCount, deleteRow, rowCount)
 	}
 
 	// fmt.Println(table)
@@ -1708,7 +1711,7 @@ func TestDeleteRow(t *testing.T) {
 			t.Error(err)
 		}
 		if item == deleteRow {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow))
+			t.Errorf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow)
 		}
 	}
 
@@ -1771,8 +1774,7 @@ func TestDeleteRows(t *testing.T) {
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
-			items, initialRowCount, first, last, rowCount))
+		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
@@ -1780,8 +1782,7 @@ func TestDeleteRows(t *testing.T) {
 			t.Error(err)
 		}
 		if item == first {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				first, first, last, first))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 	}
 
@@ -1800,8 +1801,7 @@ func TestDeleteRows(t *testing.T) {
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
-			items, initialRowCount, first, last, rowCount))
+		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
@@ -1809,12 +1809,10 @@ func TestDeleteRows(t *testing.T) {
 			t.Error(err)
 		}
 		if item == first {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				first, first, last, first))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				last, first, last, last))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 
@@ -1833,8 +1831,7 @@ func TestDeleteRows(t *testing.T) {
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
-			items, initialRowCount, first, last, rowCount))
+		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
@@ -1842,12 +1839,10 @@ func TestDeleteRows(t *testing.T) {
 			t.Error(err)
 		}
 		if item == first {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				first, first, last, first))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				last, first, last, last))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 
@@ -1866,8 +1861,7 @@ func TestDeleteRows(t *testing.T) {
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Error(fmt.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d",
-			items, initialRowCount, first, last, rowCount))
+		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
@@ -1875,12 +1869,10 @@ func TestDeleteRows(t *testing.T) {
 			t.Error(err)
 		}
 		if item == first {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				first, first, last, first))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Error(fmt.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d",
-				last, first, last, last))
+			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 }
@@ -2165,7 +2157,7 @@ func TestGetValAsString(t *testing.T) {
 		t.Error(err)
 	}
 	if found != expecting {
-		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+		t.Errorf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "true"
@@ -2174,7 +2166,7 @@ func TestGetValAsString(t *testing.T) {
 		t.Error(err)
 	}
 	if found != expecting {
-		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+		t.Errorf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "23"
@@ -2183,7 +2175,7 @@ func TestGetValAsString(t *testing.T) {
 		t.Error(err)
 	}
 	if found != expecting {
-		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+		t.Errorf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "55.5"
@@ -2192,7 +2184,7 @@ func TestGetValAsString(t *testing.T) {
 		t.Error(err)
 	}
 	if found != expecting {
-		t.Error(fmt.Errorf("expecting %s but found: %s", expecting, found))
+		t.Errorf("expecting %s but found: %s", expecting, found)
 	}
 }
 
@@ -2219,7 +2211,7 @@ func TestTableSet_FileName(t *testing.T) {
 
 	fileName := tables.FileName()
 	if fileName != actualFileName {
-		t.Error(fmt.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName))
+		t.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName)
 	}
 }
 
@@ -2232,7 +2224,7 @@ func TestTableSet_SetName(t *testing.T) {
 
 	tableSetName := tableSet.Name()
 	if tableSetName != expected {
-		t.Error(fmt.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName))
+		t.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName)
 	}
 
 	
@@ -2240,7 +2232,7 @@ func TestTableSet_SetName(t *testing.T) {
 	tableSet.SetName(expected)
 	tableSetName = tableSet.Name()
 	if tableSetName != expected {
-		t.Error(fmt.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName))
+		t.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName)
 	}
 }
 
@@ -2253,7 +2245,7 @@ func TestTable_SetName(t *testing.T) {
 
 	tableName := table.Name()
 	if tableName != expected {
-		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
+		t.Errorf("Expecting tableName = %q but found %q", expected, tableName)
 	}
 
 	
@@ -2263,7 +2255,7 @@ func TestTable_SetName(t *testing.T) {
 	}
 	tableName = table.Name()
 	if tableName != expected {
-		t.Error(fmt.Errorf("Expecting tableName = %q but found %q", expected, tableName))
+		t.Errorf("Expecting tableName = %q but found %q", expected, tableName)
 	}
 }
 
@@ -2286,8 +2278,7 @@ func TestMissingValueForType(t *testing.T) {
 
 		_, hasMissing := missingValueForType(test.typeName)
 		if hasMissing != test.expected {
-			t.Error(fmt.Errorf("Expecting missingValueForType(%q) = %t but found %t",
-				test.typeName, test.expected, hasMissing))
+			t.Errorf("Expecting missingValueForType(%q) = %t but found %t", test.typeName, test.expected, hasMissing)
 		}
 	}
 }
@@ -2327,8 +2318,7 @@ func TestPreNumberOf(t *testing.T) {
 
 		preNumber := preNumberOf(test.sNumber)
 		if preNumber != test.expected {
-			t.Error(fmt.Errorf("Expecting preNumberOf(%q) = %d but found %d",
-				test.sNumber, test.expected, preNumber))
+			t.Errorf("Expecting preNumberOf(%q) = %d but found %d", test.sNumber, test.expected, preNumber)
 		}
 	}
 }
@@ -2368,8 +2358,7 @@ func TestPointsOf(t *testing.T) {
 
 		points := pointsOf(test.sNumber)
 		if points != test.expected {
-			t.Error(fmt.Errorf("Expecting pointsOf(%q) = %d but found %d",
-				test.sNumber, test.expected, points))
+			t.Errorf("Expecting pointsOf(%q) = %d but found %d", test.sNumber, test.expected, points)
 		}
 	}
 }
@@ -2409,8 +2398,7 @@ func TestPrecisionOf(t *testing.T) {
 
 		precision := precisionOf(test.sNumber)
 		if precision != test.expected {
-			t.Error(fmt.Errorf("Expecting precisionOf(%q) = %d but found %d",
-				test.sNumber, test.expected, precision))
+			t.Errorf("Expecting precisionOf(%q) = %d but found %d", test.sNumber, test.expected, precision)
 		}
 	}
 }
@@ -2435,8 +2423,7 @@ func TestPadTrailingZeros(t *testing.T) {
 
 		trimmed := padTrailingZeros(test.trailing)
 		if trimmed != test.expected {
-			t.Error(fmt.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q",
-				test.trailing, test.expected, trimmed))
+			t.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
 		}
 	}
 }
@@ -2461,8 +2448,7 @@ func TestTrimTrailingZeros(t *testing.T) {
 
 		trimmed := trimTrailingZeros(test.trailing)
 		if trimmed != test.expected {
-			t.Error(fmt.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q",
-				test.trailing, test.expected, trimmed))
+			t.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
 		}
 	}
 }
@@ -2513,8 +2499,7 @@ func TestIsColTypeByColIndex(t *testing.T) {
 		isColType, _ := table.IsColTypeByColIndex(test.colIndex, test.colType)
 		// Ignore err. Returns err if col type is false.
 		if isColType != test.expected {
-			t.Error(fmt.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t",
-				test.colIndex, test.colType, test.expected, isColType))
+			t.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t", test.colIndex, test.colType, test.expected, isColType)
 		}
 	}
 }
@@ -2565,8 +2550,7 @@ func TestIsColType(t *testing.T) {
 		isColType, _ := table.IsColType(test.colName, test.colType)
 		// Ignore err. Returns err if col type is false.
 		if isColType != test.expected {
-			t.Error(fmt.Errorf("Expecting table.IsColType(%s, %q) = %t but found %t",
-				test.colName, test.colType, test.expected, isColType))
+			t.Errorf("Expecting table.IsColType(%s, %q) = %t but found %t", test.colName, test.colType, test.expected, isColType)
 		}
 	}
 }
@@ -3117,7 +3101,7 @@ func TestNewTableFromCols(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			} else {
-				t.Error(fmt.Errorf("Expecting fail: NewTableFromCols(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes))
+				t.Errorf("Expecting fail: NewTableFromCols(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes)
 			}
 		}
 
@@ -3291,8 +3275,7 @@ func TestTable_RenameCol(t *testing.T) {
 
 		err = table.RenameCol(test.from, test.to)
 		if (err == nil) != test.expected {
-			t.Error(fmt.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
-				test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err))
+			t.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v", test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
 		}
 	}
 }
@@ -3321,8 +3304,7 @@ func TestPlural(t *testing.T) {
 
 		var result string = plural(test.in)
 		if (result != test.expected) {
-			t.Error(fmt.Errorf("Expecting plural(%d) = %q but found: %q",
-				test.in, test.expected, result))
+			t.Errorf("Expecting plural(%d) = %q but found: %q", test.in, test.expected, result)
 		}
 	}
 }
@@ -3336,7 +3318,7 @@ func TestSort(t *testing.T) {
 
 	err = table.Sort()
 	if err == nil {
-		t.Error(fmt.Errorf("Expecting table.Sort() err because of 0 sort keys"))
+		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
 	}
 }
 
@@ -3364,7 +3346,7 @@ func TestSearch(t *testing.T) {
 
 	_, err = table.Search()
 	if err == nil {
-		t.Error(fmt.Errorf("Expecting table.Search() err because of 0 sort keys"))
+		t.Errorf("Expecting table.Search() err because of 0 sort keys")
 	}
 
 	// Clear sort keys (if any) by calling with empty argument list.
@@ -3385,7 +3367,7 @@ func TestSearch(t *testing.T) {
 
 	_, err = table.Search()	// Note: 0 search values passed to Search()
 	if err == nil {
-		t.Error(fmt.Errorf("Expecting searchValues count 0 != sort keys count 1"))
+		t.Errorf("Expecting searchValues count 0 != sort keys count 1")
 	}
 
 	_, err = table.Search("glenda")
@@ -3430,13 +3412,12 @@ func TestIsValidColValue (t *testing.T) {
 
 		result, err := table.IsValidColValue(test.col, test.val)
 		if (result != test.expecting) {
-			t.Error(fmt.Errorf("Expecting IsValidColValue(%q, %v) = %t but found: %t, err: %v",
-				test.col, test.val, test.expecting, result, err))
+			t.Errorf("Expecting IsValidColValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
 		}
 	}
 }
 
-func ExampleTable_Search_1key() {
+func ExampleTable_Search_keys1() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
 	// http://www.windows2universe.org/our_solar_system/planets_table.html
@@ -3525,7 +3506,7 @@ func ExampleTable_Search_1key() {
 	// Found Pluto at rowIndex = -1 (missing)
 }
 
-func ExampleTable_Search_1keyReverse() {
+func ExampleTable_Search_keys1Reverse() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
 	// http://www.windows2universe.org/our_solar_system/planets_table.html
@@ -3660,7 +3641,7 @@ func TestTable_Search_1key(t *testing.T) {
 			t.Error(err)
 		}
 		if rowIndex != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 
@@ -3675,10 +3656,10 @@ func TestTable_Search_1key(t *testing.T) {
 		expecting = -1
 		rowIndex, err = table.Search(searchValue)
 		if err == nil {
-			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValue))
+			t.Errorf("Expecting an error with Search(%v)", searchValue)
 		}
 		if rowIndex != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 }
@@ -3737,7 +3718,7 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 		}
 
 		if rowIndex != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 //	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
@@ -3754,10 +3735,10 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 
 		rowIndex, err = table.Search(searchValue)
 		if err == nil {
-			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValue))
+			t.Errorf("Expecting an error with Search(%v)", searchValue)
 		}
 		if rowIndex != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 }
@@ -3818,7 +3799,7 @@ func TestTable_Search_2keys(t *testing.T) {
 			t.Error(err)
 		}
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 //	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
@@ -3835,7 +3816,7 @@ func TestTable_Search_2keys(t *testing.T) {
 // where()
 		found, err = table.Search(searchValues...)
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 }
@@ -3899,7 +3880,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 			t.Error(err)
 		}
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 //	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
@@ -3916,7 +3897,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 // where()
 		found, err = table.Search(searchValues...)
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 }
@@ -3974,7 +3955,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 			t.Error(err)
 		}
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 
@@ -3989,10 +3970,10 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 		expecting = -1
 		found, err = table.Search(searchValues...)
 		if err == nil {
-			t.Error(fmt.Errorf("Expecting an error with Search(%v)", searchValues))
+			t.Errorf("Expecting an error with Search(%v)", searchValues)
 		}
 		if found != expecting {
-			t.Error(fmt.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found))
+			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 }
@@ -4062,7 +4043,7 @@ func TestTable_Equals(t *testing.T) {
 
 	_, err = table1.Equals(table2)
     if err == nil {
-		t.Error(fmt.Errorf("Expecting an error calling Equals() on nil table"))
+		t.Errorf("Expecting an error calling Equals() on nil table")
     }
 //	fmt.Println(err)
 
@@ -4080,7 +4061,7 @@ func TestTable_Equals(t *testing.T) {
 
 	_, err = table1.Equals(table2)
     if err == nil {
-		t.Error(fmt.Errorf("Expecting an error calling Equals() with nil table"))
+		t.Errorf("Expecting an error calling Equals() with nil table")
 	}
 //	fmt.Println(err)
 
@@ -4098,7 +4079,7 @@ func TestTable_Equals(t *testing.T) {
 
 	equals, err := table1.Equals(table2)
     if !equals {
-		t.Error(fmt.Errorf("Expecting table1.Equals(table2) = true but found %t", equals))
+		t.Errorf("Expecting table1.Equals(table2) = true but found %t", equals)
 	}
     if err != nil {
         t.Error(err)
@@ -4204,7 +4185,7 @@ func TestTable_SortKeyCount(t *testing.T) {
 	expecting := 2
 	count := table.SortKeyCount()
 	if count != expecting {
-		t.Error(fmt.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count))
+		t.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
 	}
 }
 
@@ -4272,7 +4253,7 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	}
 
 	if equals != expecting {
-		t.Error(fmt.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals))
+		t.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
 	}
 }
 
@@ -4327,4 +4308,56 @@ func ExampleTable_OrderColsBySortKeys() {
 	// [MyTable]
 	// Key1 Key2   ColB    ColC ColA   ColD ColE
 	//  int string  int float64 string  int bool
+}
+
+func Test_SearchLast(t *testing.T) {
+
+	sliceString := func(slice []int) string {
+		var s string
+		for i := 0; i < len(slice); i++ {
+			s += fmt.Sprintf("%3d", slice[i])
+		}
+		return s
+	}
+
+	const tests = 18
+	const elements = 20
+	const intRange = 10
+	slice := make([]int, elements)
+	indices := make([]int, elements)
+
+	for i := 0; i < elements; i++ {
+		indices[i] = i
+	}
+
+//	rand.Seed(time.Now().UnixNano())
+
+	for i := 0; i < tests; i++ {
+		for j := 0; j < elements; j++ {
+			slice[j] = rand.Intn(intRange)
+		}
+		sort.Ints(slice)
+		fmt.Println()
+		fmt.Printf("test[%2d] %s\n", i, sliceString(slice))
+		fmt.Printf("test[%2d] %s\n", i, sliceString(indices))
+		var index int
+		for searchFor := 0; searchFor < intRange; searchFor++ {
+			index = SearchLast(elements, func(element int) bool {
+				return slice[element] <= searchFor
+			})
+			fmt.Printf("index for %d is %2d\n", searchFor, index)
+			if slice[index] != searchFor {
+				// Have we found at the very least A right element, or if it is missing, an element less than it.
+				if slice[index] > searchFor {
+					t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
+						i, index, searchFor, searchFor, slice[index]))
+				}
+			}
+			if index < elements-1 && slice[index+1] == searchFor {
+				// Have we found THE right element.
+				t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d to be greatest index, but found slice[%d+1] = %d greater",
+					i, index, searchFor, index, slice[index+1]))
+			}
+		}
+	}
 }

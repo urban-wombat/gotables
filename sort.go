@@ -947,8 +947,8 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 		return -1, fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
 	}
 
-fmt.Println()
-where(fmt.Sprintf("searchValues = %v", searchValues))
+//fmt.Println()
+//where(fmt.Sprintf("searchValues = %v", searchValues))
 	// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
 		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
@@ -1009,7 +1009,7 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 			var colName string = sortKey.colName
 			var sortFunc compareFunc = sortKey.sortFunc
 			var searchVal interface{} = searchValues[keyIndex]
-where(fmt.Sprintf("searchVal = %v", searchVal))
+//where(fmt.Sprintf("searchVal = %v", searchVal))
 			var cellVal interface{}
 			cellVal, err := table.GetVal(colName, rowIndex)
 			// where(fmt.Sprintf("cellVal [%s].GetVal(%q, %d) = %v", table.Name(), colName, rowIndex, cellVal))
@@ -1047,8 +1047,8 @@ where(fmt.Sprintf("searchVal = %v", searchVal))
 
 	// See logic at: https://golang.org/pkg/sort/#Search
 	// See Search() source code at: https://golang.org/src/sort/search.go?s=2247:2287#L49
-where(fmt.Sprintf("searchValues = %v", searchValues))
-where(fmt.Sprintf("searchIndex = %d", searchIndex))
+//where(fmt.Sprintf("searchValues = %v", searchValues))
+//where(fmt.Sprintf("searchIndex = %d", searchIndex))
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
@@ -1057,6 +1057,7 @@ where(fmt.Sprintf("searchIndex = %d", searchIndex))
 	}
 }
 
+/*
 // Adapt this to search for the last index.
 func Search(n int, f func(int) bool) int {
 	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
@@ -1083,45 +1084,59 @@ func Search(n int, f func(int) bool) int {
 	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
 	return i
 }
-
-// Adapt this to search for the last index.
-func SearchLast(n int, f func(int) bool) int {
-	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
-	// Define f(-1) == false and f(n) == true.
-	// Invariant: f(i-1) == false, f(j) == true.
-	where("i is low. j is high. h is middle.")
-	stopLimit := 8
-	stopCount := 0
-	i, j := 0, n
-//	prevh := -1
-	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
-	fmt.Println()
-//	for i < j && stopCount < stopLimit {
-	for i < j-1 && stopCount < stopLimit {
-		h := i + (j-i)/2 // avoid overflow when computing h
-		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
-		// i ≤ h < j
-		if !f(h) {
-			j = h // preserves f(j) == true
-			where(fmt.Sprintf("h%d is too high: j%d = h%d", h, j, h))
-		} else {
-			i = h // preserves f(i-1) == false
-			where(fmt.Sprintf("h%d is equal or lower than last: i%d = h%d", h, i, h))
-		}
-		where(fmt.Sprintf("i%d < j%d-1 = %t", i, j, i < j-1))
-		stopCount++
-/*
-		if h == prevh {
-			fmt.Println("h == prevh")
-			break
-		}
-		prevh = h
 */
-		fmt.Println()
+
+//	// Adapted to search for the last index. sort.Search() searches for the first index.
+//	func SearchLast(n int, f func(int) bool) int {
+//		// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
+//		// Define f(-1) == false and f(n) == true.
+//		// Invariant: f(i-1) == false, f(j) == true.
+//	//	where("i is low. j is high. h is middle.")
+//		stopLimit := 8
+//		stopCount := 0
+//		i, j := 0, n
+//	//	prevh := -1
+//	//	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
+//	//	fmt.Println()
+//	//	for i < j && stopCount < stopLimit {
+//		for i < j-1 && stopCount < stopLimit {
+//			h := i + (j-i)/2 // avoid overflow when computing h
+//	//		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
+//			// i ≤ h < j
+//			if !f(h) {
+//				j = h // preserves f(j) == true
+//	//			where(fmt.Sprintf("h%d is too high: j%d = h%d", h, j, h))
+//			} else {
+//				i = h // preserves f(i-1) == false
+//	//			where(fmt.Sprintf("h%d is equal or lower than last: i%d = h%d", h, i, h))
+//			}
+//	//		where(fmt.Sprintf("i%d < j%d-1 = %t", i, j, i < j-1))
+//	//		stopCount++
+//	/*
+//			if h == prevh {
+//				fmt.Println("h == prevh")
+//				break
+//			}
+//			prevh = h
+//	*/
+//	//		fmt.Println()
+//		}
+//	//	if stopCount == stopLimit {
+//	//		fmt.Println("STOPPING")
+//	//	}
+//		// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+//		return i
+//	}
+
+func SearchLast(n int, f func(int) bool) int {
+	i, j := 0, n
+	for i < j-1 {
+		h := i + (j-i)/2
+		if !f(h) {
+			j = h
+		} else {
+			i = h
+		}
 	}
-	if stopCount == stopLimit {
-		fmt.Println("STOPPING")
-	}
-	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
 	return i
 }
