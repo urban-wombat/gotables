@@ -1128,15 +1128,67 @@ func Search(n int, f func(int) bool) int {
 //		return i
 //	}
 
-func SearchLast(n int, f func(int) bool) int {
+func Search(n int, f func(int) bool) int {
+	// Define f(-1) == false and f(n) == true.
+	// Invariant: f(i-1) == false, f(j) == true.
 	i, j := 0, n
+	var h int
+	for i < j {
+		h = i + (j-i)/2 // avoid overflow when computing h
+		// i ≤ h < j
+		if !f(h) {
+			i = h + 1 // preserves f(i-1) == false
+		} else {
+			j = h // preserves f(j) == true
+		}
+	}
+	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+//	fmt.Printf("%2d %2d %2d\n", i, h, j)
+	return i
+}
+
+/*
+		gotable.SearchLast() mirrors Go library sort.Search()
+
+		sort.Search() does a GE (Greater than or Equal) search.
+
+		It finds the FIRST instance of the search term.
+
+		The search term, if present, is at the found index,
+		and any other instances of the search term will be ABOVE
+		the found index. 
+
+		if the search term is larger than any in the list, the
+		index returned will be ONE BEYOND the top end of the list.
+
+		A non-existent location in the list - potential bounds error.
+	
+		gotable.SearchLast() does a LE (Less than or Equal) search.
+
+		It finds the LAST instance of the search term.
+
+		The search term, if present, is at the found index,
+		and any other instances of the search term will be BELOW
+		the found index.
+
+		if the search term is smaller than any in the list, the
+		index returned will be ONE BEYOND the bottom end of the list.
+
+		A non-existent location in the list - potential bounds error.
+
+		In a zero-based list, the index will be -1.
+*/
+func SearchLast(n int, f func(int) bool) int {
+	i, j := -1, n
+	var h int
 	for i < j-1 {
-		h := i + (j-i)/2
+		h = i + (j-i)/2
 		if !f(h) {
 			j = h
 		} else {
 			i = h
 		}
 	}
+//	fmt.Printf("%2d %2d %2d\n", i, h, j)
 	return i
 }

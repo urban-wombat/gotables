@@ -4310,15 +4310,20 @@ func ExampleTable_OrderColsBySortKeys() {
 	//  int string  int float64 string  int bool
 }
 
-func Test_SearchLast(t *testing.T) {
+/*
+	This tests a copy gotable.Search() of sort.Search()
+	to confirm that SearchLast() is a mirror image in
+	behaviour: Search() is GE and SearchLast is LE.
+*/
+func Test_Search(t *testing.T) {
 
-	sliceString := func(slice []int) string {
-		var s string
-		for i := 0; i < len(slice); i++ {
-			s += fmt.Sprintf("%3d", slice[i])
-		}
-		return s
-	}
+	// sliceToString := func(slice []int) string {
+	// 	var s string
+	// 	for i := 0; i < len(slice); i++ {
+	// 		s += fmt.Sprintf("%3d", slice[i])
+	// 	}
+	// 	return s
+	// }
 
 	const tests = 18
 	const elements = 20
@@ -4337,25 +4342,95 @@ func Test_SearchLast(t *testing.T) {
 			slice[j] = rand.Intn(intRange)
 		}
 		sort.Ints(slice)
-		fmt.Println()
-		fmt.Printf("test[%2d] %s\n", i, sliceString(slice))
-		fmt.Printf("test[%2d] %s\n", i, sliceString(indices))
+		// fmt.Println()
+		// fmt.Printf("%s()\n", funcName())
+		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
+		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
-		for searchFor := 0; searchFor < intRange; searchFor++ {
+		for searchFor := -1; searchFor <= intRange; searchFor++ {
+			index = Search(elements, func(element int) bool {
+				return slice[element] >= searchFor
+			})
+
+			// fmt.Printf("index for %d is %2d\n", searchFor, index)
+
+			if index >= elements {
+				// fmt.Printf("%d is missing but would be at index %d\n", searchFor, index)
+			} else {
+				if slice[index] != searchFor {
+					// Have we found at the very least A right element, or if it is missing, an element less than it.
+					if slice[index] < searchFor {
+						t.Error(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d or more than %d, but found %d",
+							i, index, searchFor, searchFor, slice[index]))
+					}
+				}
+			}
+
+			if index > 0 && slice[index-1] == searchFor {
+				// Have we found THE right element.
+				t.Error(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d to be lowest index, but found slice[%d-1] = %d lower",
+					i, index, searchFor, index, slice[index-1]))
+			}
+		}
+	}
+}
+
+// LE: Less than or equal.
+func Test_SearchLast(t *testing.T) {
+
+	// Inner function to convert a slice to a string.
+	// sliceToString := func(slice []int) string {
+	// 	var s string
+	// 	for i := 0; i < len(slice); i++ {
+	// 		s += fmt.Sprintf("%3d", slice[i])
+	// 	}
+	// 	return s
+	// }
+
+	const tests = 50
+	const elements = 20
+	const intRange = 10
+	slice := make([]int, elements)
+	indices := make([]int, elements)
+
+	for i := 0; i < elements; i++ {
+		indices[i] = i
+	}
+
+//	rand.Seed(time.Now().UnixNano())
+
+	for i := 0; i < tests; i++ {
+		for j := 0; j < elements; j++ {
+			slice[j] = rand.Intn(intRange)
+		}
+		sort.Ints(slice)
+		// fmt.Println()
+		// fmt.Printf("%s()\n", funcName())
+		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
+		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
+		var index int
+		for searchFor := -1; searchFor <= intRange; searchFor++ {
 			index = SearchLast(elements, func(element int) bool {
 				return slice[element] <= searchFor
 			})
-			fmt.Printf("index for %d is %2d\n", searchFor, index)
-			if slice[index] != searchFor {
-				// Have we found at the very least A right element, or if it is missing, an element less than it.
-				if slice[index] > searchFor {
-					t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
-						i, index, searchFor, searchFor, slice[index]))
+
+			// fmt.Printf("index for %d is %2d\n", searchFor, index)
+
+			if index < 0 {
+				// fmt.Printf("%d is missing but would be at index %d\n", searchFor, index)
+			} else {
+				if slice[index] != searchFor {
+					// Have we found at the very least A right element, or if it is missing, an element less than it.
+					if slice[index] > searchFor {
+						t.Error(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
+							i, index, searchFor, searchFor, slice[index]))
+					}
 				}
 			}
+
 			if index < elements-1 && slice[index+1] == searchFor {
 				// Have we found THE right element.
-				t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d to be greatest index, but found slice[%d+1] = %d greater",
+				t.Error(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d to be greatest index, but found slice[%d+1] = %d greater",
 					i, index, searchFor, index, slice[index+1]))
 			}
 		}
