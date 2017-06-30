@@ -587,6 +587,8 @@ Functions and methods for processing Table tables.
 			
 			<dd><a class="exampleLink" href="#example_Round">Round</a></dd>
 			
+			<dd><a class="exampleLink" href="#example_SearchLast">SearchLast</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_TableSet_String">TableSet.String</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_TableSet_StringUnpadded">TableSet.StringUnpadded</a></dd>
@@ -797,7 +799,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=35171:35215#L1171">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=35483:35527#L1181">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -843,8 +845,130 @@ A non-existent location in the list - potential bounds error.
 <p>
 In a zero-based list, the index will be -1.
 </p>
+<p>
+x := 23
+i := gotable.SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+if i &gt;= 0 &amp;&amp; data[i] == x {
+</p>
+<pre>// x is present at data[i]
+</pre>
+<p>
+} else {
+</p>
+<pre>// x is not present in data,
+// but i is the index where it would be inserted.
+// Note that i can be -1 which does not exist in the data.
+</pre>
+<p>
+}
+</p>
 
+			<div id="example_SearchLast" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">var data []int = []int{4, 8, 10, 10, 10, 20, 23, 29}
+fmt.Printf(&#34;data: %v\n&#34;, data)
+fmt.Println()
+
+fmt.Printf(&#34;(1) Find an element that is present:\n&#34;)
+x := 23
+fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
+i := SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+
+<span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
+if i &gt;= 0 &amp;&amp; data[i] == x {
+    fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
+} else {
+    fmt.Printf(&#34;x is not present in data, but i is the index where it would be inserted.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+}
+fmt.Println()
+
+fmt.Printf(&#34;(2) This time find an x that is present multiple times:\n&#34;)
+x = 10
+fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
+i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+
+<span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
+if i &gt;= 0 &amp;&amp; data[i] == x {
+    fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
+} else {
+    fmt.Printf(&#34;x is not present in data, but i is the index where it would be inserted.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+}
+fmt.Println()
+
+fmt.Printf(&#34;(3) This time find an x that is missing:\n&#34;)
+x = 7
+fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
+i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+
+<span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
+if i &gt;= 0 &amp;&amp; data[i] == x {
+    fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
+} else {
+    fmt.Printf(&#34;x is not present in data, but i is the index where it would be inserted.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+}
+fmt.Println()
+
+fmt.Printf(&#34;(4) This time find an x that is below all items in data:\n&#34;)
+x = 3
+fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
+i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+
+<span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
+if i &gt;= 0 &amp;&amp; data[i] == x {
+    fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
+} else {
+    fmt.Printf(&#34;x is not present in data, but i is the index where it would be inserted.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+}
+fmt.Println()
+
+<span class="comment"></pre>
 			
+			<p>Output:</p>
+			<pre class="output">data: [4 8 10 10 10 20 23 29]
+
+(1) Find an element that is present:
+Searching for x: 23
+x 23 is or would be at index i: 6
+x 23 is present at data[6]
+
+(2) This time find an x that is present multiple times:
+Searching for x: 10
+x 10 is or would be at index i: 4
+x 10 is present at data[4]
+
+(3) This time find an x that is missing:
+Searching for x: 7
+x 7 is or would be at index i: 0
+x is not present in data, but i is the index where it would be inserted.
+Note that i can be -1 which does not exist in the data.
+
+(4) This time find an x that is below all items in data:
+Searching for x: 3
+x 3 is or would be at index i: -1
+x is not present in data, but i is the index where it would be inserted.
+Note that i can be -1 which does not exist in the data.
+</pre>
+			
+		
+	</div>
+</div>
+
 			
 
 		

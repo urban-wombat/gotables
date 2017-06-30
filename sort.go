@@ -1177,6 +1177,16 @@ func Search(n int, f func(int) bool) int {
 		A non-existent location in the list - potential bounds error.
 
 		In a zero-based list, the index will be -1.
+
+		x := 23
+		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] <= x })
+		if i >= 0 && data[i] == x {
+			// x is present at data[i]
+		} else {
+			// x is not present in data,
+			// but i is the index where it would be inserted.
+			// Note that i can be -1 which does not exist in the data.
+		}
 */
 func SearchLast(n int, f func(int) bool) int {
 	i, j := -1, n
