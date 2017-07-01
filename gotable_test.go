@@ -4317,16 +4317,18 @@ func ExampleTable_OrderColsBySortKeys() {
 */
 func Test_Search(t *testing.T) {
 
-	// sliceToString := func(slice []int) string {
-	// 	var s string
-	// 	for i := 0; i < len(slice); i++ {
-	// 		s += fmt.Sprintf("%3d", slice[i])
-	// 	}
-	// 	return s
-	// }
+/*
+	sliceToString := func(slice []int) string {
+		var s string
+		for i := 0; i < len(slice); i++ {
+			s += fmt.Sprintf("%3d", slice[i])
+		}
+		return s
+	}
+*/
 
-	const tests = 20		// Make this 20 for realism.
-	const elements = 20
+	const tests = 40		// Make this 20 for realism.
+	const elements = 10
 	const intRange = 10
 	slice := make([]int, elements)
 	indices := make([]int, elements)
@@ -4355,13 +4357,15 @@ func Test_Search(t *testing.T) {
 			// fmt.Printf("index for %d is %2d\n", searchFor, index)
 
 			if index >= elements {
-				// fmt.Printf("%d is missing but would be at index %d\n", searchFor, index)
+				// fmt.Printf("%d is missing but would be at (nonexistent) index %d (insert before %d)\n", searchFor, index, index)
 			} else {
 				if slice[index] != searchFor {
 					// Have we found at the very least A right element, or if it is missing, an element less than it.
 					if slice[index] < searchFor {
 						t.Error(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d or more than %d, but found %d",
 							i, index, searchFor, searchFor, slice[index]))
+					} else {
+						// fmt.Printf("%d is missing but would be at index %d (insert before %d)\n", searchFor, index, index)
 					}
 				}
 			}
@@ -4378,17 +4382,19 @@ func Test_Search(t *testing.T) {
 // LE: Less than or equal.
 func TestSearchLast(t *testing.T) {
 
+/*
 	// Inner function to convert a slice to a string.
-	// sliceToString := func(slice []int) string {
-	// 	var s string
-	// 	for i := 0; i < len(slice); i++ {
-	// 		s += fmt.Sprintf("%3d", slice[i])
-	// 	}
-	// 	return s
-	// }
+	sliceToString := func(slice []int) string {
+		var s string
+		for i := 0; i < len(slice); i++ {
+			s += fmt.Sprintf("%3d", slice[i])
+		}
+		return s
+	}
+*/
 
-	const tests = 20		// Make this 20 for realism.
-	const elements = 20
+	const tests = 40		// Make this 20 for realism.
+	const elements = 10
 	const intRange = 10
 	slice := make([]int, elements)
 	indices := make([]int, elements)
@@ -4417,13 +4423,15 @@ func TestSearchLast(t *testing.T) {
 			// fmt.Printf("index for %d is %2d\n", searchFor, index)
 
 			if index < 0 {
-				// fmt.Printf("%d is missing but would be at index %d\n", searchFor, index)
+			// fmt.Printf("%d is missing but would be at (nonexistent) index %d (insert after %d)\n", searchFor, index, index)
 			} else {
 				if slice[index] != searchFor {
 					// Have we found at the very least A right element, or if it is missing, an element less than it.
 					if slice[index] > searchFor {
 						t.Error(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
 							i, index, searchFor, searchFor, slice[index]))
+					} else {
+						// fmt.Printf("%d is missing but would be at index %d (insert after %d)\n", searchFor, index, index)
 					}
 				}
 			}
@@ -4441,6 +4449,7 @@ func ExampleSearchLast() {
 
 	var data []int = []int { 4, 8, 10, 10, 10, 20, 23, 29 }
 	fmt.Printf("data: %v\n", data)
+	fmt.Println("       0 1  2  3  4  5  6  7")
 	fmt.Println()
 
 	fmt.Printf("(1) Find an element that is present:\n")
@@ -4505,6 +4514,7 @@ func ExampleSearchLast() {
 
 	// Output:
 	// data: [4 8 10 10 10 20 23 29]
+	//        0 1  2  3  4  5  6  7
 	// 
 	// (1) Find an element that is present:
 	// Searching for x: 23

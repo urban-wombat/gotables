@@ -1148,35 +1148,24 @@ func Search(n int, f func(int) bool) int {
 }
 
 /*
-		gotable.SearchLast() mirrors Go library sort.Search()
+	gotable.SearchLast() mirrors the Go library function sort.Search()
 
-		sort.Search() does a GE (Greater than or Equal) search.
-
-		It finds the FIRST instance of the search term.
-
-		The search term, if present, is at the found index,
-		and any other instances of the search term will be ABOVE
-		the found index. 
-
-		if the search term is larger than any in the list, the
-		index returned will be ONE BEYOND the top end of the list.
-
-		A non-existent location in the list - potential bounds error.
-	
-		gotable.SearchLast() does a LE (Less than or Equal) search.
-
-		It finds the LAST instance of the search term.
-
-		The search term, if present, is at the found index,
-		and any other instances of the search term will be BELOW
-		the found index.
-
-		if the search term is smaller than any in the list, the
-		index returned will be ONE BEYOND the bottom end of the list.
-
-		A non-existent location in the list - potential bounds error.
-
-		In a zero-based list, the index will be -1.
+    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+		Assume data is a zero-based array/slice of elements sorted in ascending order.
+		Each search function returns an index into data.
+		-------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         gotable.SearchLast()
+		-------------------------------------------------------------------------------------------------
+		GE greater than or equal to search term.         LE less than or equal to search term.
+		Finds index of FIRST instance.                   Finds index of LAST instance.
+		Multiple instances will be AFTER index.          Multiple instances will be BEFORE index.
+		if term is missing, where it WOULD be            If term is missing, where it WOULD be
+		  is insert BEFORE index.                          is insert AFTER index.
+		Missing at high end of data returns              Missing at low end of data returns
+		  index 1 greater than last element: len(data)     index 1 less than first element: -1
+		  which means it would append AFTER data.          which means it would insert BEFORE data.
+		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
+		-------------------------------------------------------------------------------------------------
 
 		x := 23
 		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] <= x })

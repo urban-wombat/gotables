@@ -799,69 +799,39 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=35483:35527#L1181">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=35984:36028#L1170">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
-			<p>
-gotable.SearchLast() mirrors Go library sort.Search()
-</p>
-<p>
-sort.Search() does a GE (Greater than or Equal) search.
-</p>
-<p>
-It finds the FIRST instance of the search term.
-</p>
-<p>
-The search term, if present, is at the found index,
-and any other instances of the search term will be ABOVE
-the found index.
-</p>
-<p>
-if the search term is larger than any in the list, the
-index returned will be ONE BEYOND the top end of the list.
-</p>
-<p>
-A non-existent location in the list - potential bounds error.
-</p>
-<p>
-gotable.SearchLast() does a LE (Less than or Equal) search.
-</p>
-<p>
-It finds the LAST instance of the search term.
-</p>
-<p>
-The search term, if present, is at the found index,
-and any other instances of the search term will be BELOW
-the found index.
-</p>
-<p>
-if the search term is smaller than any in the list, the
-index returned will be ONE BEYOND the bottom end of the list.
-</p>
-<p>
-A non-existent location in the list - potential bounds error.
-</p>
-<p>
-In a zero-based list, the index will be -1.
-</p>
-<p>
-x := 23
-i := gotable.SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-if i &gt;= 0 &amp;&amp; data[i] == x {
-</p>
-<pre>// x is present at data[i]
+			<pre>	gotable.SearchLast() mirrors the Go library function sort.Search()
+
+    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+		Assume data is a zero-based array/slice of elements sorted in ascending order.
+		Each search function returns an index into data.
+		-------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         gotable.SearchLast()
+		-------------------------------------------------------------------------------------------------
+		GE greater than or equal to search term.         LE less than or equal to search term.
+		Finds index of FIRST instance.                   Finds index of LAST instance.
+		Multiple instances will be AFTER index.          Multiple instances will be BEFORE index.
+		if term is missing, where it WOULD be            If term is missing, where it WOULD be
+		  is insert BEFORE index.                          is insert AFTER index.
+		Missing at high end of data returns              Missing at low end of data returns
+		  index 1 greater than last element: len(data)     index 1 less than first element: -1
+		  which means it would append AFTER data.          which means it would insert BEFORE data.
+		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
+		-------------------------------------------------------------------------------------------------
+
+		x := 23
+		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+		if i &gt;= 0 &amp;&amp; data[i] == x {
+			// x is present at data[i]
+		} else {
+			// x is not present in data,
+			// but i is the index where it would be inserted.
+			// Note that i can be -1 which does not exist in the data.
+		}
 </pre>
-<p>
-} else {
-</p>
-<pre>// x is not present in data,
-// but i is the index where it would be inserted.
-// Note that i can be -1 which does not exist in the data.
-</pre>
-<p>
-}
-</p>
 
 			<div id="example_SearchLast" class="toggle">
 	<div class="collapsed">
@@ -875,6 +845,7 @@ if i &gt;= 0 &amp;&amp; data[i] == x {
 			<p>Code:</p>
 			<pre class="code">var data []int = []int{4, 8, 10, 10, 10, 20, 23, 29}
 fmt.Printf(&#34;data: %v\n&#34;, data)
+fmt.Println(&#34;       0 1  2  3  4  5  6  7&#34;)
 fmt.Println()
 
 fmt.Printf(&#34;(1) Find an element that is present:\n&#34;)
@@ -941,6 +912,7 @@ fmt.Println()
 			
 			<p>Output:</p>
 			<pre class="output">data: [4 8 10 10 10 20 23 29]
+       0 1  2  3  4  5  6  7
 
 (1) Find an element that is present:
 Searching for x: 23
