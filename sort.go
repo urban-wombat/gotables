@@ -1158,12 +1158,13 @@ func Search(n int, f func(int) bool) int {
 		-------------------------------------------------------------------------------------------------
 		GE greater than or equal to search term.         LE less than or equal to search term.
 		Finds index of FIRST instance.                   Finds index of LAST instance.
-		Multiple instances will be AFTER index.          Multiple instances will be BEFORE index.
+		Multiple instances will be greater than index.   Multiple instances will be less than index.
 		if term is missing, where it WOULD be            If term is missing, where it WOULD be
 		  is insert BEFORE index.                          is insert AFTER index.
 		Missing at high end of data returns              Missing at low end of data returns
 		  index 1 greater than last element: len(data)     index 1 less than first element: -1
-		  which means it would append AFTER data.          which means it would insert BEFORE data.
+		  which means it would insert BEFORE data,         which means it would insert AFTER -1 data,
+		  which would be an append to data.                which would be an insert to beginning of data.
 		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
 		-------------------------------------------------------------------------------------------------
 

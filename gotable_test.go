@@ -4462,7 +4462,7 @@ func ExampleSearchLast() {
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
-		fmt.Printf("x is not present in data, but i is the index where it would be inserted.\n")
+		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
 		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
 	}
 	fmt.Println()
@@ -4477,13 +4477,13 @@ func ExampleSearchLast() {
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
-		fmt.Printf("x is not present in data, but i is the index where it would be inserted.\n")
+		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
 		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
 	}
 	fmt.Println()
 
-	fmt.Printf("(3) This time find an x that is missing:\n")
-	x = 7
+	fmt.Printf("(3) This time find an x that is missing between items in data:\n")
+	x = 15
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
 	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
@@ -4492,12 +4492,12 @@ func ExampleSearchLast() {
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
-		fmt.Printf("x is not present in data, but i is the index where it would be inserted.\n")
+		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
 		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
 	}
 	fmt.Println()
 
-	fmt.Printf("(4) This time find an x that is below all items in data:\n")
+	fmt.Printf("(4) This time find an x that is missing below all items in data:\n")
 	x = 3
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
@@ -4507,7 +4507,22 @@ func ExampleSearchLast() {
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
-		fmt.Printf("x is not present in data, but i is the index where it would be inserted.\n")
+		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
+		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+	}
+	fmt.Println()
+
+	fmt.Printf("(5) This time find an x that is missing above all items in data:\n")
+	x = 31
+	fmt.Printf("Searching for x: %d\n", x)
+	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
+	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+
+	// Check whether x is actually where SearchLast() said it is, or would be inserted.
+	if i >= 0 && data[i] == x {
+		fmt.Printf("x %d is present at data[%d]\n", x, i)
+	} else {
+		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
 		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
 	}
 	fmt.Println()
@@ -4526,15 +4541,21 @@ func ExampleSearchLast() {
 	// x 10 is or would be at index i: 4
 	// x 10 is present at data[4]
 	// 
-	// (3) This time find an x that is missing:
-	// Searching for x: 7
-	// x 7 is or would be at index i: 0
-	// x is not present in data, but i is the index where it would be inserted.
+	// (3) This time find an x that is missing between items in data:
+	// Searching for x: 15
+	// x 15 is or would be at index i: 4
+	// x is not present in data, but i 4 is the index where it would be inserted AFTER.
 	// Note that i can be -1 which does not exist in the data.
 	// 
-	// (4) This time find an x that is below all items in data:
+	// (4) This time find an x that is missing below all items in data:
 	// Searching for x: 3
 	// x 3 is or would be at index i: -1
-	// x is not present in data, but i is the index where it would be inserted.
+	// x is not present in data, but i -1 is the index where it would be inserted AFTER.
+	// Note that i can be -1 which does not exist in the data.
+	// 
+	// (5) This time find an x that is missing above all items in data:
+	// Searching for x: 31
+	// x 31 is or would be at index i: 7
+	// x is not present in data, but i 7 is the index where it would be inserted AFTER.
 	// Note that i can be -1 which does not exist in the data.
 }
