@@ -799,7 +799,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=36089:36133#L1171">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=36246:36290#L1176">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -823,8 +823,13 @@ fmt.Println(rounded)
 		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
 		-------------------------------------------------------------------------------------------------
 
+		This binary search has two steps: (1) the binary search for x, and (2) checking if x was found.
+
+		(1) Binary search for x.
 		x := 23
 		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
+
+		(2) Check that x was found.
 		if i &gt;= 0 &amp;&amp; data[i] == x {
 			// x is present at data[i]
 		} else {

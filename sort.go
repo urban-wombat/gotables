@@ -1168,8 +1168,13 @@ func Search(n int, f func(int) bool) int {
 		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
 		-------------------------------------------------------------------------------------------------
 
+		This binary search has two steps: (1) the binary search for x, and (2) checking if x was found.
+
+		(1) Binary search for x.
 		x := 23
 		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] <= x })
+
+		(2) Check that x was found.
 		if i >= 0 && data[i] == x {
 			// x is present at data[i]
 		} else {
