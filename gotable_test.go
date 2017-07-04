@@ -4603,7 +4603,6 @@ func TestTable_SearchFirst_by_user(t *testing.T) {
 	}
 
 	for _, test := range tests {
-
 		found, err := table.SearchFirst(test.searchValue)
 		if (found != test.expecting) {
 			t.Errorf("Expecting SearchFirst(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
@@ -4654,7 +4653,6 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 	}
 
 	for _, test := range tests {
-
 		found, err := table.SearchLast(test.searchValue)
 		if (found != test.expecting) {
 			t.Errorf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
@@ -4706,11 +4704,78 @@ func TestTable_SearchRange_by_user(t *testing.T) {
 	}
 
 	for _, test := range tests {
-
 		foundFirst, foundLast, err := table.SearchRange(test.searchValue)
 		if (foundFirst != test.expectingFirst || foundLast != test.expectingLast) {
 			t.Errorf("Expecting SearchRange(%q) = %d, %d but found: %d, %d err: %v",
 				test.searchValue, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
+		}
+	}
+}
+
+func TestTable_SearchRange_by_user_lines(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines index
+	string   string        int   int
+	"rsc"    "Go"          200     0
+	"r"      "Go"          100     0
+	"r"      "C"           150     0
+	"ken"    "C"           150     0
+	"ken"    "Go"          200     0
+	"ken"    "Go"          200     0
+	"gri"    "Smalltalk"    80     0
+	"gri"    "Go"          100     0
+	"gri"    "Go"          100     0
+	"gri"    "Go"          100     0
+	"glenda" "Go"          200     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetSortKeys("user", "lines")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+
+	for i := 0; i < table.RowCount(); i++ {
+		table.SetInt("index", i, i)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var tests = []struct {
+		searchName string
+		searchLines int
+		expectingFirst int
+		expectingLast int
+	}{
+		{"dmr",    100,  0,  4},
+		{"glenda", 200,  5,  5},
+		{"gri",    100,  7,  9},
+		{"ken",    200, 11, 12},
+		{"r",      150, 14, 14},
+		{"rsc",    200, 15, 15},
+		{"NOT",    500, -1, -1},
+	}
+
+	for _, test := range tests {
+		foundFirst, foundLast, err := table.SearchRange(test.searchName, test.searchLines)
+		if (foundFirst != test.expectingFirst || foundLast != test.expectingLast) {
+			t.Errorf("Expecting SearchRange(%q, %d) = %d, %d but found: %d, %d err: %v",
+				test.searchName, test.searchLines, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
+			fmt.Println(table)
 		}
 	}
 }
