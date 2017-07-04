@@ -74,9 +74,6 @@ Functions and methods for processing Table tables.
 				<dd><a href="#Round">func Round(val float64, places int) (rounded float64)</a></dd>
 			
 				
-				<dd><a href="#Search">func Search(n int, f func(int) bool) int</a></dd>
-			
-				
 				<dd><a href="#SearchFirst">func SearchFirst(n int, f func(int) bool) int</a></dd>
 			
 				
@@ -335,10 +332,13 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.Search">func (table *Table) Search(searchValues ...interface{}) (int, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Table.SearchGE">func (table *Table) SearchGE(searchValues ...interface{}) (int, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#Table.SearchFirst">func (table *Table) SearchFirst(searchValues ...interface{}) (int, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SearchLast">func (table *Table) SearchLast(searchValues ...interface{}) (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SearchRange">func (table *Table) SearchRange(searchValues ...interface{}) (first int, last int, err error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetAllFloatCellsToNaN">func (table *Table) SetAllFloatCellsToNaN() error</a></dd>
@@ -791,18 +791,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="Search">func <a href="/src/target/sort.go?s=33724:33764#L1121">Search</a>
-				<a class="permalink" href="#Search">&#xb6;</a>
-			</h2>
-			<pre>func Search(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
-			
-			
-			
-
-		
-			
-			
-			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=39849:39894#L1243">SearchFirst</a>
+			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=34961:35006#L1127">SearchFirst</a>
 				<a class="permalink" href="#SearchFirst">&#xb6;</a>
 			</h2>
 			<pre>func SearchFirst(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -856,7 +845,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=36913:36957#L1184">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=32065:32109#L1069">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -1549,7 +1538,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=20034:20108#L712">CompareRows</a>
+				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19830:19904#L720">CompareRows</a>
 					<a class="permalink" href="#Table.CompareRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) CompareRows(rowIndex1 <a href="/pkg/builtin/#int">int</a>, rowIndex2 <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2603,7 +2592,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23531:23578#L837">OrderColsBySortKeys</a>
+				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23327:23374#L845">OrderColsBySortKeys</a>
 					<a class="permalink" href="#Table.OrderColsBySortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) OrderColsBySortKeys() <a href="/pkg/builtin/#error">error</a></pre>
@@ -2730,7 +2719,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=14938:15006#L572">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=16570:16638#L619">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2739,6 +2728,9 @@ Search this table by this table&#39;s currently-set sort keys.
 </p>
 <p>
 To see the currently-set sort keys use GetSortKeysAsTable()
+</p>
+<p>
+Note: This calls *Table.SearchFirst() which returns the first (if any) match in the table.
 </p>
 
 				
@@ -2950,17 +2942,23 @@ Found Pluto at rowIndex = -1 (missing)
 				
 			
 				
-				<h3 id="Table.SearchGE">func (*Table) <a href="/src/target/sort.go?s=14601:14671#L562">SearchGE</a>
-					<a class="permalink" href="#Table.SearchGE">&#xb6;</a>
+				<h3 id="Table.SearchFirst">func (*Table) <a href="/src/target/sort.go?s=16818:16891#L628">SearchFirst</a>
+					<a class="permalink" href="#Table.SearchFirst">&#xb6;</a>
 				</h3>
-				<pre>func (table *<a href="#Table">Table</a>) SearchGE(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
+				<pre>func (table *<a href="#Table">Table</a>) SearchFirst(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Search this table by this table&#39;s currently-set sort keys.
+</p>
+<p>
+To see the currently-set sort keys use GetSortKeysAsTable()
+</p>
+
 				
 				
 				
 			
 				
-				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26828:26900#L931">SearchLast</a>
+				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26624:26696#L939">SearchLast</a>
 					<a class="permalink" href="#Table.SearchLast">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchLast(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2969,6 +2967,22 @@ Search this table by this table&#39;s currently-set sort keys.
 </p>
 <p>
 To see the currently-set sort keys use GetSortKeysAsTable()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35202:35295#L1136">SearchRange</a>
+					<a class="permalink" href="#Table.SearchRange">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (first <a href="/pkg/builtin/#int">int</a>, last <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Return the first and last index of 1 or more instances of searchValues in table.
+</p>
+<p>
+Note: searchValues must match, not merely GT and LT where match would be.
 </p>
 
 				
@@ -3617,7 +3631,7 @@ index colName    colType  reverse
 				
 			
 				
-				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=22135:22199#L779">SetSortKeysFromTable</a>
+				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=21931:21995#L787">SetSortKeysFromTable</a>
 					<a class="permalink" href="#Table.SetSortKeysFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3915,7 +3929,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=22018:22056#L774">SortKeyCount</a>
+				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21814:21852#L782">SortKeyCount</a>
 					<a class="permalink" href="#Table.SortKeyCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortKeyCount() <a href="/pkg/builtin/#int">int</a></pre>

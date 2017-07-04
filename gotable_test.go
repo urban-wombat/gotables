@@ -4588,7 +4588,6 @@ func TestTable_SearchFirst_by_user(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-// fmt.Printf("here:\n%s", table)
 
 	var tests = []struct {
 		searchValue string
@@ -4640,7 +4639,6 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-//fmt.Printf("here:\n%s", table)
 
 	var tests = []struct {
 		searchValue string
@@ -4660,6 +4658,59 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 		found, err := table.SearchLast(test.searchValue)
 		if (found != test.expecting) {
 			t.Errorf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
+		}
+	}
+}
+
+func TestTable_SearchRange_by_user(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetSortKeys("user")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+
+	var tests = []struct {
+		searchValue string
+		expectingFirst int
+		expectingLast int
+	}{
+		{"dmr",    0, 0},
+		{"glenda", 1, 1},
+		{"gri",    2, 3},
+		{"ken",    4, 5},
+		{"r",      6, 7},
+		{"rsc",    8, 8},
+		{"NOT",   -1,-1},
+	}
+
+	for _, test := range tests {
+
+		foundFirst, foundLast, err := table.SearchRange(test.searchValue)
+		if (foundFirst != test.expectingFirst || foundLast != test.expectingLast) {
+			t.Errorf("Expecting SearchRange(%q) = %d, %d but found: %d, %d err: %v",
+				test.searchValue, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
 		}
 	}
 }
