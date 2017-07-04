@@ -4748,6 +4748,7 @@ func TestTable_SearchRange_by_user_lines(t *testing.T) {
 		t.Error(err)
 	}
 
+	// To eye-ball errors.
 	for i := 0; i < table.RowCount(); i++ {
 		table.SetInt("index", i, i)
 		if err != nil {
@@ -4768,6 +4769,8 @@ func TestTable_SearchRange_by_user_lines(t *testing.T) {
 		{"r",      150, 14, 14},
 		{"rsc",    200, 15, 15},
 		{"NOT",    500, -1, -1},
+		{"NOT",    200, -1, -1},
+		{"rsc",    100, -1, -1},
 	}
 
 	for _, test := range tests {
@@ -4820,6 +4823,7 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 		t.Error(err)
 	}
 
+	// To eye-ball errors.
 	for i := 0; i < table.RowCount(); i++ {
 		table.SetInt("index", i, i)
 		if err != nil {
