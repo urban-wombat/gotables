@@ -77,6 +77,9 @@ Functions and methods for processing Table tables.
 				<dd><a href="#Search">func Search(n int, f func(int) bool) int</a></dd>
 			
 				
+				<dd><a href="#SearchFirst">func SearchFirst(n int, f func(int) bool) int</a></dd>
+			
+				
 				<dd><a href="#SearchLast">func SearchLast(n int, f func(int) bool) int</a></dd>
 			
 			
@@ -799,7 +802,61 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=36246:36290#L1176">SearchLast</a>
+			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=39849:39894#L1243">SearchFirst</a>
+				<a class="permalink" href="#SearchFirst">&#xb6;</a>
+			</h2>
+			<pre>func SearchFirst(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
+			<pre>	gotable.SearchFirst() calls the Go library function sort.Search()
+
+    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+		Assume data is a zero-based array/slice of elements sorted in ascending order.
+		Each search function returns an index into data.
+		----------------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         |  gotable.SearchLast()
+		----------------------------------------------------------------------------------------------------------
+		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
+		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
+		Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
+		if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
+		  is insert BEFORE index.                        |    is insert AFTER index.
+		Missing at high end of data returns              |  Missing at low end of data returns
+		  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
+		  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
+		  which would be an append to data array.        |    which would be an insert to before start of data array.
+		  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
+		Example: multiple search terms present           |  Example: multiple search terms present
+		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
+		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
+		  x: 10                                          |    x: 10
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		----------------------------------------------------------------------------------------------------------
+
+		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
+
+		Strange, huh? Go library sort.Search() works the same way, except in the opposite (mirror image) direction.
+		See <a href="https://golang.org/pkg/sort/#Search">https://golang.org/pkg/sort/#Search</a>
+
+		(1) Binary search for x.
+		x := 23
+		i := gotable.SearchFirst(len(data), func(i int) bool { return data[i] &gt;= x })
+
+		(2) Check that x was found.
+		if i &lt; len(data) &amp;&amp; data[i] == x {
+			// x is present at data[i]
+		} else {
+			// x is not present in data,
+			// but i is the index where it would be inserted.
+			// Note that i can be len(data) which does not exist in data.
+		}
+</pre>
+
+			
+			
+
+		
+			
+			
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=36913:36957#L1184">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -808,22 +865,30 @@ fmt.Println(rounded)
     	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
 		Assume data is a zero-based array/slice of elements sorted in ascending order.
 		Each search function returns an index into data.
-		-------------------------------------------------------------------------------------------------
-		Go library sort.Search()                         gotable.SearchLast()
-		-------------------------------------------------------------------------------------------------
-		GE greater than or equal to search term.         LE less than or equal to search term.
-		Finds index of FIRST instance.                   Finds index of LAST instance.
-		Multiple instances will be greater than index.   Multiple instances will be less than index.
-		if term is missing, where it WOULD be            If term is missing, where it WOULD be
-		  is insert BEFORE index.                          is insert AFTER index.
-		Missing at high end of data returns              Missing at low end of data returns
-		  index 1 greater than last element: len(data)     index 1 less than first element: -1
-		  which means it would insert BEFORE data,         which means it would insert AFTER -1 data,
-		  which would be an append to data.                which would be an insert to beginning of data.
-		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
-		-------------------------------------------------------------------------------------------------
+		----------------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         |  gotable.SearchLast()
+		----------------------------------------------------------------------------------------------------------
+		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
+		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
+		Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
+		if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
+		  is insert BEFORE index.                        |    is insert AFTER index.
+		Missing at high end of data returns              |  Missing at low end of data returns
+		  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
+		  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
+		  which would be an append to data array.        |    which would be an insert to before start of data array.
+		  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
+		Example: multiple search terms present           |  Example: multiple search terms present
+		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
+		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
+		  x: 10                                          |    x: 10
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		----------------------------------------------------------------------------------------------------------
 
-		This binary search has two steps: (1) the binary search for x, and (2) checking if x was found.
+		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
+
+		Strange, huh? Go library sort.Search() works the same way, except in the opposite (mirror image) direction.
+		See <a href="https://golang.org/pkg/sort/#Search">https://golang.org/pkg/sort/#Search</a>
 
 		(1) Binary search for x.
 		x := 23
@@ -835,7 +900,7 @@ fmt.Println(rounded)
 		} else {
 			// x is not present in data,
 			// but i is the index where it would be inserted.
-			// Note that i can be -1 which does not exist in the data.
+			// Note that i can be -1 which does not exist in data.
 		}
 </pre>
 
@@ -851,21 +916,21 @@ fmt.Println(rounded)
 			<p>Code:</p>
 			<pre class="code">var data []int = []int{4, 8, 10, 10, 10, 20, 23, 29}
 fmt.Printf(&#34;data: %v\n&#34;, data)
-fmt.Println(&#34;       0 1  2  3  4  5  6  7&#34;)
+fmt.Println(&#34;index: 0 1  2  3  4  5  6  7&#34;)
 fmt.Println()
 
 fmt.Printf(&#34;(1) Find an element that is present:\n&#34;)
 x := 23
 fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
 i := SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+fmt.Printf(&#34;x %d is, or would be, at index i: %d\n&#34;, x, i)
 
 <span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
 if i &gt;= 0 &amp;&amp; data[i] == x {
     fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
 } else {
     fmt.Printf(&#34;x is not present in data, but i %d is the index where it would be inserted AFTER.\n&#34;, i)
-    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in data.\n&#34;)
 }
 fmt.Println()
 
@@ -873,14 +938,14 @@ fmt.Printf(&#34;(2) This time find an x that is present multiple times:\n&#34;)
 x = 10
 fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
 i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+fmt.Printf(&#34;x %d is, or would be, at index i: %d\n&#34;, x, i)
 
 <span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
 if i &gt;= 0 &amp;&amp; data[i] == x {
     fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
 } else {
     fmt.Printf(&#34;x is not present in data, but i %d is the index where it would be inserted AFTER.\n&#34;, i)
-    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in data.\n&#34;)
 }
 fmt.Println()
 
@@ -888,14 +953,14 @@ fmt.Printf(&#34;(3) This time find an x that is missing between items in data:\n
 x = 15
 fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
 i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+fmt.Printf(&#34;x %d is, or would be, at index i: %d\n&#34;, x, i)
 
 <span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
 if i &gt;= 0 &amp;&amp; data[i] == x {
     fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
 } else {
     fmt.Printf(&#34;x is not present in data, but i %d is the index where it would be inserted AFTER.\n&#34;, i)
-    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in data.\n&#34;)
 }
 fmt.Println()
 
@@ -903,14 +968,14 @@ fmt.Printf(&#34;(4) This time find an x that is missing below all items in data:
 x = 3
 fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
 i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+fmt.Printf(&#34;x %d is, or would be, at index i: %d\n&#34;, x, i)
 
 <span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
 if i &gt;= 0 &amp;&amp; data[i] == x {
     fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
 } else {
     fmt.Printf(&#34;x is not present in data, but i %d is the index where it would be inserted AFTER.\n&#34;, i)
-    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in data.\n&#34;)
 }
 fmt.Println()
 
@@ -918,14 +983,14 @@ fmt.Printf(&#34;(5) This time find an x that is missing above all items in data:
 x = 31
 fmt.Printf(&#34;Searching for x: %d\n&#34;, x)
 i = SearchLast(len(data), func(i int) bool { return data[i] &lt;= x })
-fmt.Printf(&#34;x %d is or would be at index i: %d\n&#34;, x, i)
+fmt.Printf(&#34;x %d is, or would be, at index i: %d\n&#34;, x, i)
 
 <span class="comment">// Check whether x is actually where SearchLast() said it is, or would be inserted.</span>
 if i &gt;= 0 &amp;&amp; data[i] == x {
     fmt.Printf(&#34;x %d is present at data[%d]\n&#34;, x, i)
 } else {
     fmt.Printf(&#34;x is not present in data, but i %d is the index where it would be inserted AFTER.\n&#34;, i)
-    fmt.Printf(&#34;Note that i can be -1 which does not exist in the data.\n&#34;)
+    fmt.Printf(&#34;Note that i can be -1 which does not exist in data.\n&#34;)
 }
 fmt.Println()
 
@@ -933,35 +998,35 @@ fmt.Println()
 			
 			<p>Output:</p>
 			<pre class="output">data: [4 8 10 10 10 20 23 29]
-       0 1  2  3  4  5  6  7
+index: 0 1  2  3  4  5  6  7
 
 (1) Find an element that is present:
 Searching for x: 23
-x 23 is or would be at index i: 6
+x 23 is, or would be, at index i: 6
 x 23 is present at data[6]
 
 (2) This time find an x that is present multiple times:
 Searching for x: 10
-x 10 is or would be at index i: 4
+x 10 is, or would be, at index i: 4
 x 10 is present at data[4]
 
 (3) This time find an x that is missing between items in data:
 Searching for x: 15
-x 15 is or would be at index i: 4
+x 15 is, or would be, at index i: 4
 x is not present in data, but i 4 is the index where it would be inserted AFTER.
-Note that i can be -1 which does not exist in the data.
+Note that i can be -1 which does not exist in data.
 
 (4) This time find an x that is missing below all items in data:
 Searching for x: 3
-x 3 is or would be at index i: -1
+x 3 is, or would be, at index i: -1
 x is not present in data, but i -1 is the index where it would be inserted AFTER.
-Note that i can be -1 which does not exist in the data.
+Note that i can be -1 which does not exist in data.
 
 (5) This time find an x that is missing above all items in data:
 Searching for x: 31
-x 31 is or would be at index i: 7
+x 31 is, or would be, at index i: 7
 x is not present in data, but i 7 is the index where it would be inserted AFTER.
-Note that i can be -1 which does not exist in the data.
+Note that i can be -1 which does not exist in data.
 </pre>
 			
 		

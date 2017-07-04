@@ -3764,7 +3764,7 @@ func TestTable_Search_2keys(t *testing.T) {
 	}
 
 // where("SORTING")
-	// First let's sort the table by name.
+	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
 		t.Error(err)
@@ -3841,7 +3841,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 		t.Error(err)
 	}
 
-	// First let's sort the table by name.
+	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
 		t.Error(err)
@@ -4176,7 +4176,7 @@ func TestTable_SortKeyCount(t *testing.T) {
 		t.Error(err)
 	}
 
-	// First let's sort the table by name.
+	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
 		t.Error(err)
@@ -4209,7 +4209,7 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 		t.Error(err)
 	}
 
-	// First let's sort the table by name.
+	// First let's sort the table by user and lines.
 	err = fromTable.SetSortKeys("user", "lines")
 	if err != nil {
 		t.Error(err)
@@ -4350,7 +4350,7 @@ func Test_Search(t *testing.T) {
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
 		for searchFor := -1; searchFor <= intRange; searchFor++ {
-			index = Search(elements, func(element int) bool {
+			index = sort.Search(elements, func(element int) bool {
 				return slice[element] >= searchFor
 			})
 
@@ -4449,21 +4449,21 @@ func ExampleSearchLast() {
 
 	var data []int = []int { 4, 8, 10, 10, 10, 20, 23, 29 }
 	fmt.Printf("data: %v\n", data)
-	fmt.Println("       0 1  2  3  4  5  6  7")
+	fmt.Println("index: 0 1  2  3  4  5  6  7")
 	fmt.Println()
 
 	fmt.Printf("(1) Find an element that is present:\n")
 	x := 23
 	fmt.Printf("Searching for x: %d\n", x)
 	i := SearchLast(len(data), func(i int) bool { return data[i] <= x } )
-	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+	fmt.Printf("x %d is, or would be, at index i: %d\n", x, i)
 
 	// Check whether x is actually where SearchLast() said it is, or would be inserted.
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
 		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
-		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+		fmt.Printf("Note that i can be -1 which does not exist in data.\n")
 	}
 	fmt.Println()
 
@@ -4471,14 +4471,14 @@ func ExampleSearchLast() {
 	x = 10
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
-	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+	fmt.Printf("x %d is, or would be, at index i: %d\n", x, i)
 
 	// Check whether x is actually where SearchLast() said it is, or would be inserted.
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
 		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
-		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+		fmt.Printf("Note that i can be -1 which does not exist in data.\n")
 	}
 	fmt.Println()
 
@@ -4486,14 +4486,14 @@ func ExampleSearchLast() {
 	x = 15
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
-	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+	fmt.Printf("x %d is, or would be, at index i: %d\n", x, i)
 
 	// Check whether x is actually where SearchLast() said it is, or would be inserted.
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
 		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
-		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+		fmt.Printf("Note that i can be -1 which does not exist in data.\n")
 	}
 	fmt.Println()
 
@@ -4501,14 +4501,14 @@ func ExampleSearchLast() {
 	x = 3
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
-	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+	fmt.Printf("x %d is, or would be, at index i: %d\n", x, i)
 
 	// Check whether x is actually where SearchLast() said it is, or would be inserted.
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
 		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
-		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+		fmt.Printf("Note that i can be -1 which does not exist in data.\n")
 	}
 	fmt.Println()
 
@@ -4516,46 +4516,150 @@ func ExampleSearchLast() {
 	x = 31
 	fmt.Printf("Searching for x: %d\n", x)
 	i = SearchLast(len(data), func(i int) bool { return data[i] <= x } )
-	fmt.Printf("x %d is or would be at index i: %d\n", x, i)
+	fmt.Printf("x %d is, or would be, at index i: %d\n", x, i)
 
 	// Check whether x is actually where SearchLast() said it is, or would be inserted.
 	if i >= 0 && data[i] == x {
 		fmt.Printf("x %d is present at data[%d]\n", x, i)
 	} else {
 		fmt.Printf("x is not present in data, but i %d is the index where it would be inserted AFTER.\n", i)
-		fmt.Printf("Note that i can be -1 which does not exist in the data.\n")
+		fmt.Printf("Note that i can be -1 which does not exist in data.\n")
 	}
 	fmt.Println()
 
 	// Output:
 	// data: [4 8 10 10 10 20 23 29]
-	//        0 1  2  3  4  5  6  7
+	// index: 0 1  2  3  4  5  6  7
 	// 
 	// (1) Find an element that is present:
 	// Searching for x: 23
-	// x 23 is or would be at index i: 6
+	// x 23 is, or would be, at index i: 6
 	// x 23 is present at data[6]
 	// 
 	// (2) This time find an x that is present multiple times:
 	// Searching for x: 10
-	// x 10 is or would be at index i: 4
+	// x 10 is, or would be, at index i: 4
 	// x 10 is present at data[4]
 	// 
 	// (3) This time find an x that is missing between items in data:
 	// Searching for x: 15
-	// x 15 is or would be at index i: 4
+	// x 15 is, or would be, at index i: 4
 	// x is not present in data, but i 4 is the index where it would be inserted AFTER.
-	// Note that i can be -1 which does not exist in the data.
+	// Note that i can be -1 which does not exist in data.
 	// 
 	// (4) This time find an x that is missing below all items in data:
 	// Searching for x: 3
-	// x 3 is or would be at index i: -1
+	// x 3 is, or would be, at index i: -1
 	// x is not present in data, but i -1 is the index where it would be inserted AFTER.
-	// Note that i can be -1 which does not exist in the data.
+	// Note that i can be -1 which does not exist in data.
 	// 
 	// (5) This time find an x that is missing above all items in data:
 	// Searching for x: 31
-	// x 31 is or would be at index i: 7
+	// x 31 is, or would be, at index i: 7
 	// x is not present in data, but i 7 is the index where it would be inserted AFTER.
-	// Note that i can be -1 which does not exist in the data.
+	// Note that i can be -1 which does not exist in data.
+}
+
+func TestTable_SearchFirst_by_user(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetSortKeys("user")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+// fmt.Printf("here:\n%s", table)
+
+	var tests = []struct {
+		searchValue string
+		expecting int
+	}{
+		{"dmr",    0},
+		{"glenda", 1},
+		{"gri",    2},
+		{"ken",    4},
+		{"r",      6},
+		{"rsc",    8},
+		{"NOT",   -1},
+	}
+
+	for _, test := range tests {
+
+		found, err := table.SearchFirst(test.searchValue)
+		if (found != test.expecting) {
+			t.Errorf("Expecting SearchFirst(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
+		}
+	}
+}
+
+func TestTable_SearchLast_by_user(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetSortKeys("user")
+	if err != nil {
+		t.Error(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		t.Error(err)
+	}
+//fmt.Printf("here:\n%s", table)
+
+	var tests = []struct {
+		searchValue string
+		expecting int
+	}{
+		{"dmr",    0},
+		{"glenda", 1},
+		{"gri",    3},
+		{"ken",    5},
+		{"r",      7},
+		{"rsc",    8},
+		{"NOT",   -1},
+	}
+
+	for _, test := range tests {
+
+		found, err := table.SearchLast(test.searchValue)
+		if (found != test.expecting) {
+			t.Errorf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
+		}
+	}
 }

@@ -569,53 +569,50 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 	}})
 }
 
-func (table *Table) SearchGE(searchValues ...interface{}) (int, error) {
-	// Note: Go's sort.Search() already returns the first index if there are multiple matches.
-	return table.Search(searchValues...)
-}
-
-/*
-	Search this table by this table's currently-set sort keys.
-
-	To see the currently-set sort keys use GetSortKeysAsTable()
-*/
-   func (table *Table) Search(searchValues ...interface{}) (int, error) {
+//func (table *Table) SearchGE(searchValues ...interface{}) (int, error) {
+//	// Note: Go's sort.Search() already returns the first index if there are multiple matches.
+//	return table.Search(searchValues...)
+//}
 //   where(fmt.Sprintf("yyy Search() searchValues values %v type %T", searchValues, searchValues))
 //   where(fmt.Sprintf("yyy Search() len(searchValues) = %d", len(searchValues)))
 //   where(fmt.Sprintf("yyy Search() len(table.sortKeys) = %d", len(table.sortKeys)))
 
+func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
+// where("A")
 	if table == nil {
-		return -1, fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
+		return fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
 	}
 
-// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
+// where(fmt.Sprintf("B len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
-		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
+		return fmt.Errorf("Search() cannot search table using 0 search values")
 	}
 
 	if len(table.sortKeys) == 0 {
-		return -1, fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
+		return fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
 	}
 
 	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
 	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
-// where(fmt.Sprintf("searchValues type %T", searchValues))
-		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
+// where(fmt.Sprintf("C searchValues type %T", searchValues))
+		return fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
 	if len(searchValues) != len(table.sortKeys) {
-// where(fmt.Sprintf("searchValues type %T", searchValues))
-		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d",
+// where(fmt.Sprintf("D searchValues type %T", searchValues))
+		return fmt.Errorf("%s() searchValues count %d != sort keys count %d",
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
+// where("E")
 	// Check that searchValues are the right type.
 	for sortIndex, sortKey := range table.sortKeys {
 		colName := sortKey.colName
 		value := searchValues[sortIndex]
 		isValid, err := table.IsValidColValue(colName, value)
 		if !isValid {
+// where("F")
 			// Append key name and type information to end of err.
 			var keyInfo string
 			sep := ""
@@ -623,9 +620,81 @@ func (table *Table) SearchGE(searchValues ...interface{}) (int, error) {
 				keyInfo += fmt.Sprintf("%s%s %s", sep, sortKey.colName, sortKey.colType)
 				sep = ", "
 			}
-			return -1, fmt.Errorf("%v (valid key type%s: %s)", err, plural(len(table.sortKeys)), keyInfo)
+			return fmt.Errorf("%v (valid key type%s: %s)", err, plural(len(table.sortKeys)), keyInfo)
 		}
 	}
+
+	return nil
+}
+
+/*
+	Search this table by this table's currently-set sort keys.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+
+	Note: This calls *Table.SearchFirst() which returns the first (if any) match in the table.
+*/
+func (table *Table) Search(searchValues ...interface{}) (int, error) {
+   	return table.SearchFirst(searchValues...)
+}
+
+/*
+	Search this table by this table's currently-set sort keys.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+*/
+func (table *Table) SearchFirst(searchValues ...interface{}) (int, error) {
+//   where(fmt.Sprintf("yyy Search() searchValues values %v type %T", searchValues, searchValues))
+//   where(fmt.Sprintf("yyy Search() len(searchValues) = %d", len(searchValues)))
+//   where(fmt.Sprintf("yyy Search() len(table.sortKeys) = %d", len(table.sortKeys)))
+
+	err := table.checkSearchArguments(searchValues...)
+	if err != nil {
+		return -1, err
+	}
+
+//	if table == nil {
+//		return -1, fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
+//	}
+//
+//// where(fmt.Sprintf("len(searchValues) = %d", len(searchValues)))
+//	if len(searchValues) == 0 {
+//		return -1, fmt.Errorf("Search() cannot search table using 0 search values")
+//	}
+//
+//	if len(table.sortKeys) == 0 {
+//		return -1, fmt.Errorf("cannot search table that has 0 sort keys - use SetSortKeys()")
+//	}
+//
+//	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
+//	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
+//// where(fmt.Sprintf("searchValues type %T", searchValues))
+//		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
+//			funcName(), len(searchValues), len(table.sortKeys))
+//	}
+//
+//	if len(searchValues) != len(table.sortKeys) {
+//// where(fmt.Sprintf("searchValues type %T", searchValues))
+//		return -1, fmt.Errorf("%s() searchValues count %d != sort keys count %d",
+//			funcName(), len(searchValues), len(table.sortKeys))
+//	}
+//
+//	// Check that searchValues are the right type.
+//	for sortIndex, sortKey := range table.sortKeys {
+//		colName := sortKey.colName
+//		value := searchValues[sortIndex]
+//		isValid, err := table.IsValidColValue(colName, value)
+//		if !isValid {
+//			// Append key name and type information to end of err.
+//			var keyInfo string
+//			sep := ""
+//			for _, sortKey := range table.sortKeys {
+//				keyInfo += fmt.Sprintf("%s%s %s", sep, sortKey.colName, sortKey.colType)
+//				sep = ", "
+//			}
+//			return -1, fmt.Errorf("%v (valid key type%s: %s)", err, plural(len(table.sortKeys)), keyInfo)
+//		}
+//	}
 
 	rowIndex, err := table.searchByKeys(searchValues)
 // where(fmt.Sprintf("rowIndex = %d err = %v", rowIndex, err))
@@ -1057,34 +1126,34 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 	}
 }
 
-/*
-// Adapt this to search for the last index.
-func Search(n int, f func(int) bool) int {
-	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
-	// Define f(-1) == false and f(n) == true.
-	// Invariant: f(i-1) == false, f(j) == true.
-	where("i is low. j is high. h is middle.")
-	i, j := 0, n
-	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
-	fmt.Println()
-	for i < j {
-		h := i + (j-i)/2 // avoid overflow when computing h
-		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
-		// i ≤ h < j
-		if !f(h) {
-			i = h + 1 // preserves f(i-1) == false
-			where(fmt.Sprintf("h%d is too low: i%d = h%d + 1", h, i, h))
-		} else {
-			j = h // preserves f(j) == true
-			where(fmt.Sprintf("h%d is equal or higher than first: j%d = h%d", h, j, h))
-		}
-		where(fmt.Sprintf("i%d < j%d = %t", i, j, i < j))
-		fmt.Println()
-	}
-	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
-	return i
-}
-*/
+///*
+//// Adapt this to search for the last index.
+//func Search(n int, f func(int) bool) int {
+//	// Derived from: https://golang.org/src/sort/search.go?s=2247:2287#L49
+//	// Define f(-1) == false and f(n) == true.
+//	// Invariant: f(i-1) == false, f(j) == true.
+//	where("i is low. j is high. h is middle.")
+//	i, j := 0, n
+//	where(fmt.Sprintf("i%d = %d, j%d = n%d", i, i, j, j))
+//	fmt.Println()
+//	for i < j {
+//		h := i + (j-i)/2 // avoid overflow when computing h
+//		where(fmt.Sprintf("h%d := i%d + (j%d-i%d)/2", h, i, j, i))
+//		// i ≤ h < j
+//		if !f(h) {
+//			i = h + 1 // preserves f(i-1) == false
+//			where(fmt.Sprintf("h%d is too low: i%d = h%d + 1", h, i, h))
+//		} else {
+//			j = h // preserves f(j) == true
+//			where(fmt.Sprintf("h%d is equal or higher than first: j%d = h%d", h, j, h))
+//		}
+//		where(fmt.Sprintf("i%d < j%d = %t", i, j, i < j))
+//		fmt.Println()
+//	}
+//	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+//	return i
+//}
+//*/
 
 //	// Adapted to search for the last index. sort.Search() searches for the first index.
 //	func SearchLast(n int, f func(int) bool) int {
@@ -1128,24 +1197,24 @@ func Search(n int, f func(int) bool) int {
 //		return i
 //	}
 
-func Search(n int, f func(int) bool) int {
-	// Define f(-1) == false and f(n) == true.
-	// Invariant: f(i-1) == false, f(j) == true.
-	i, j := 0, n
-	var h int
-	for i < j {
-		h = i + (j-i)/2 // avoid overflow when computing h
-		// i ≤ h < j
-		if !f(h) {
-			i = h + 1 // preserves f(i-1) == false
-		} else {
-			j = h // preserves f(j) == true
-		}
-	}
-	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
-//	fmt.Printf("%2d %2d %2d\n", i, h, j)
-	return i
-}
+//func Search(n int, f func(int) bool) int {
+//	// Define f(-1) == false and f(n) == true.
+//	// Invariant: f(i-1) == false, f(j) == true.
+//	i, j := 0, n
+//	var h int
+//	for i < j {
+//		h = i + (j-i)/2 // avoid overflow when computing h
+//		// i ≤ h < j
+//		if !f(h) {
+//			i = h + 1 // preserves f(i-1) == false
+//		} else {
+//			j = h // preserves f(j) == true
+//		}
+//	}
+//	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
+////	fmt.Printf("%2d %2d %2d\n", i, h, j)
+//	return i
+//}
 
 /*
 	gotable.SearchLast() mirrors the Go library function sort.Search()
@@ -1153,22 +1222,30 @@ func Search(n int, f func(int) bool) int {
     	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
 		Assume data is a zero-based array/slice of elements sorted in ascending order.
 		Each search function returns an index into data.
-		-------------------------------------------------------------------------------------------------
-		Go library sort.Search()                         gotable.SearchLast()
-		-------------------------------------------------------------------------------------------------
-		GE greater than or equal to search term.         LE less than or equal to search term.
-		Finds index of FIRST instance.                   Finds index of LAST instance.
-		Multiple instances will be greater than index.   Multiple instances will be less than index.
-		if term is missing, where it WOULD be            If term is missing, where it WOULD be
-		  is insert BEFORE index.                          is insert AFTER index.
-		Missing at high end of data returns              Missing at low end of data returns
-		  index 1 greater than last element: len(data)     index 1 less than first element: -1
-		  which means it would insert BEFORE data,         which means it would insert AFTER -1 data,
-		  which would be an append to data.                which would be an insert to beginning of data.
-		  Be careful with index to avoid a bounds error.   Be careful with index to avoid a bounds error.
-		-------------------------------------------------------------------------------------------------
+		----------------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         |  gotable.SearchLast()
+		----------------------------------------------------------------------------------------------------------
+		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
+		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
+		Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
+		if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
+		  is insert BEFORE index.                        |    is insert AFTER index.
+		Missing at high end of data returns              |  Missing at low end of data returns
+		  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
+		  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
+		  which would be an append to data array.        |    which would be an insert to before start of data array.
+		  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
+		Example: multiple search terms present           |  Example: multiple search terms present
+		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
+		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
+		  x: 10                                          |    x: 10
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		----------------------------------------------------------------------------------------------------------
 
-		This binary search has two steps: (1) the binary search for x, and (2) checking if x was found.
+		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
+
+		Strange, huh? Go library sort.Search() works the same way, except in the opposite (mirror image) direction.
+		See https://golang.org/pkg/sort/#Search
 
 		(1) Binary search for x.
 		x := 23
@@ -1180,7 +1257,7 @@ func Search(n int, f func(int) bool) int {
 		} else {
 			// x is not present in data,
 			// but i is the index where it would be inserted.
-			// Note that i can be -1 which does not exist in the data.
+			// Note that i can be -1 which does not exist in data.
 		}
 */
 func SearchLast(n int, f func(int) bool) int {
@@ -1197,3 +1274,60 @@ func SearchLast(n int, f func(int) bool) int {
 //	fmt.Printf("%2d %2d %2d\n", i, h, j)
 	return i
 }
+
+/*
+	gotable.SearchFirst() calls the Go library function sort.Search()
+
+    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+		Assume data is a zero-based array/slice of elements sorted in ascending order.
+		Each search function returns an index into data.
+		----------------------------------------------------------------------------------------------------------
+		Go library sort.Search()                         |  gotable.SearchLast()
+		----------------------------------------------------------------------------------------------------------
+		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
+		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
+		Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
+		if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
+		  is insert BEFORE index.                        |    is insert AFTER index.
+		Missing at high end of data returns              |  Missing at low end of data returns
+		  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
+		  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
+		  which would be an append to data array.        |    which would be an insert to before start of data array.
+		  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
+		Example: multiple search terms present           |  Example: multiple search terms present
+		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
+		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
+		  x: 10                                          |    x: 10
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		----------------------------------------------------------------------------------------------------------
+
+		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
+
+		Strange, huh? Go library sort.Search() works the same way, except in the opposite (mirror image) direction.
+		See https://golang.org/pkg/sort/#Search
+
+		(1) Binary search for x.
+		x := 23
+		i := gotable.SearchFirst(len(data), func(i int) bool { return data[i] >= x })
+
+		(2) Check that x was found.
+		if i < len(data) && data[i] == x {
+			// x is present at data[i]
+		} else {
+			// x is not present in data,
+			// but i is the index where it would be inserted.
+			// Note that i can be len(data) which does not exist in data.
+		}
+*/
+func SearchFirst(n int, f func(int) bool) int {
+	return sort.Search(n, f)
+}
+
+/*	DOING
+func (table *Table) SearchRange(searchValues ...interface{}) (first int, last int, err error) {
+	first, err = SearchFirst(searchValues...)
+	if err != nil {
+		return -1, -1, err
+	}
+}
+*/
