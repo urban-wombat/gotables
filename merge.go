@@ -30,6 +30,33 @@ import (
 	"reflect"
 )
 
+/*
+	Merge table1 and table2 and return merged (table) of table1 and table2 columns and rows.
+
+	table1 and table2 must share compatible sort key columns: same names and types.
+
+	Sort keys for the key columns must be set in table1: table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
+
+	For each matching row (or rows -- duplicates will be removed) in each table the non-key cells will be merged
+	using the following rules:
+
+        There are 4 possibilities (based on whether the cells have zero values -- soft-null):
+        -----------------------------------------------------------------------------------------------
+        Combination | table1.cell | table2.cell | Action              | Remarks
+        -----------------------------------------------------------------------------------------------
+        (a)         | zero       == zero        | do nothing
+        (b)         | zero       <- non-zero    | copy cell2 to cell1 | Assumes zero is a missing value
+        (c)         | non-zero   -> zero        | copy cell1 to cell2 | Assumes zero is a missing value
+        (d)         | non-zero   -> non-zero    | copy cell1 to cell2 | (table1 takes precedence)
+
+        There are 2 further possibilities with float32 and float64 (based on NaN values -- hard-null):
+        -----------------------------------------------------------------------------------------------
+        Combination | table1.cell | table2.cell | Action
+        -----------------------------------------------------------------------------------------------
+        (e)         | zero       -> NaN         | copy cell1 to cell2 | Assumes zero is NOT a missing value
+        (f)         | NaN        <- zero        | copy cell2 to cell1 | Assumes zero is NOT a missing value
+        -----------------------------------------------------------------------------------------------
+*/
 func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 //	var err error
@@ -160,7 +187,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	var tempColCount int	// To ignore temporary columns.
 
 	// Add a column to keep track of which columns came from which table.
-	const tableNumberColName = "_TNUM_"
+	const tableNumberColName = "_TABLE_"
 	err = merged.AppendCol(tableNumberColName, "int")
 	if err != nil {
 		return nil, err
@@ -235,7 +262,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	}
 	tempColCount++
 
-where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
+	// where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 
 	// Loop through to second-last row, comparing each row with the row after it.
 	/*
@@ -386,25 +413,25 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 						}
 						val2 = reflect.ValueOf(tmp2).Float()
 						if val1 != zeroVal && !math.IsNaN(val1) {	// Covers combinations (c) and (d)
-							where(fmt.Sprintf("val1 %f != zeroVal", val1))
+							// where(fmt.Sprintf("val1 %f != zeroVal", val1))
 							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
 							}
 						} else if val2 != zeroVal && !math.IsNaN(val2) {	// Covers combination (b)
-							where(fmt.Sprintf("val2 %f != zeroVal", val2))
+							// where(fmt.Sprintf("val2 %f != zeroVal", val2))
 							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val1) { // Maybe one of them is NaN and the other is zero.
-							where("math.IsNaN(val1)")
+							// where("math.IsNaN(val1)")
 							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val2) { // Maybe one of them is NaN and the other is zero.
-							where("math.IsNaN(val2)")
+							// where("math.IsNaN(val2)")
 							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
@@ -421,6 +448,8 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 						}
 				}
 			}
+
+			// Tag one of the (now identical) rows for deletion (arbitrarily choose the 2nd row: rowIndex+1)
 			err = merged.SetBool(deleteColName, rowIndex+1, true)
 			if err != nil {
 				return nil, err
@@ -428,7 +457,47 @@ where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 		}
 	}
 
-where()
+	// Sort by deleteColName ready to delete as a single block of rows.
+	err = merged.SetSortKeys(deleteColName)
+	if err != nil {
+		return nil, err
+	}
+	err = merged.Sort()
+	if err != nil {
+		return nil, err
+	}
+
+	// Find the block of rows to delete.
+	first, last, err := merged.SearchRange(true)
+	if err != nil {
+		return nil, err
+	}
+
+	// Delete the block of rows.
+	err = merged.DeleteRows(first, last)
+	if err != nil {
+		return nil, err
+	}
+
+	// Delete the temporary tag columns.
+	err = merged.DeleteCol(deleteColName)
+	if err != nil {
+		return nil, err
+	}
+	err = merged.DeleteCol(tableNumberColName)
+	if err != nil {
+		return nil, err
+	}
+
+	err = merged.SetSortKeysFromTable(table1)
+	if err != nil {
+		return nil, err
+	}
+	err = merged.Sort()
+	if err != nil {
+		return nil, err
+	}
+
 	return merged, nil
 }
 

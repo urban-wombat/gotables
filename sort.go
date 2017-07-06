@@ -577,7 +577,7 @@ func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
 
 // where(fmt.Sprintf("B len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
-		return fmt.Errorf("Search() cannot search table using 0 search values")
+		return fmt.Errorf("[%s].Search(...) expecting 1 or more search values, but found none", table.Name())
 	}
 
 	if len(table.sortKeys) == 0 {

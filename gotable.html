@@ -608,6 +608,8 @@ Functions and methods for processing Table tables.
 			
 			<dd><a class="exampleLink" href="#example_Table_JoinColValsByColIndex">Table.JoinColValsByColIndex</a></dd>
 			
+			<dd><a class="exampleLink" href="#example_Table_Merge">Table.Merge</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_Table_OrderColsBySortKeys">Table.OrderColsBySortKeys</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Table_Search_keys1">Table.Search (Keys1)</a></dd>
@@ -791,7 +793,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=35019:35064#L1128">SearchFirst</a>
+			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=35049:35094#L1128">SearchFirst</a>
 				<a class="permalink" href="#SearchFirst">&#xb6;</a>
 			</h2>
 			<pre>func SearchFirst(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -845,7 +847,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=32123:32167#L1070">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=32153:32197#L1070">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -1538,7 +1540,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19888:19962#L721">CompareRows</a>
+				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19918:19992#L721">CompareRows</a>
 					<a class="permalink" href="#Table.CompareRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) CompareRows(rowIndex1 <a href="/pkg/builtin/#int">int</a>, rowIndex2 <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2572,13 +2574,143 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.Merge">func (*Table) <a href="/src/target/merge.go?s=1122:1190#L23">Merge</a>
+				<h3 id="Table.Merge">func (*Table) <a href="/src/target/merge.go?s=2997:3065#L50">Merge</a>
 					<a class="permalink" href="#Table.Merge">&#xb6;</a>
 				</h3>
 				<pre>func (table1 *<a href="#Table">Table</a>) Merge(table2 *<a href="#Table">Table</a>) (merged *<a href="#Table">Table</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
+				<pre>	Merge table1 and table2 and return merged (table) of table1 and table2 columns and rows.
+
+	table1 and table2 must share compatible sort key columns: same names and types.
+
+	Sort keys for the key columns must be set in table1: table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
+
+	For each matching row (or rows -- duplicates will be removed) in each table the non-key cells will be merged
+	using the following rules:
+
+        There are 4 possibilities (based on whether the cells have zero values -- soft-null):
+        -----------------------------------------------------------------------------------------------
+        Combination | table1.cell | table2.cell | Action              | Remarks
+        -----------------------------------------------------------------------------------------------
+        (a)         | zero       == zero        | do nothing
+        (b)         | zero       &lt;- non-zero    | copy cell2 to cell1 | Assumes zero is a missing value
+        (c)         | non-zero   -&gt; zero        | copy cell1 to cell2 | Assumes zero is a missing value
+        (d)         | non-zero   -&gt; non-zero    | copy cell1 to cell2 | (table1 takes precedence)
+
+        There are 2 further possibilities with float32 and float64 (based on NaN values -- hard-null):
+        -----------------------------------------------------------------------------------------------
+        Combination | table1.cell | table2.cell | Action
+        -----------------------------------------------------------------------------------------------
+        (e)         | zero       -&gt; NaN         | copy cell1 to cell2 | Assumes zero is NOT a missing value
+        (f)         | NaN        &lt;- zero        | copy cell2 to cell1 | Assumes zero is NOT a missing value
+        -----------------------------------------------------------------------------------------------
+</pre>
+
 				
-				
-				
+				<div id="example_Table_Merge" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">t1string :=
+    `[Table1]
+XYZ     y   s       f       i   diff
+string  int string  float64 int int
+&#34;X&#34;     1   &#34;abc&#34;   1.11    1   7
+&#34;Y&#34;     3   &#34;ghi&#34;   7.8910  3   8
+&#34;Z&#34;     2   &#34;def&#34;   NaN     2   9
+&#34;A&#34;     4   &#34;jkl&#34;   0       4   6
+&#34;B&#34;     5   &#34;mno&#34;   0       5   4
+&#34;C&#34;     8   &#34;pqr&#34;   NaN     6   45
+`
+table1, err := NewTableFromString(t1string)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(table1)
+
+t2string :=
+    `[Table2]
+s       b       diff    ui      f		i
+string  bool    int     uint    float64	int
+&#34;abc&#34;   true    55      99      2.22	1
+&#34;def&#34;   false   66      88      0		2
+&#34;ghi&#34;   false   66      0       42		3
+&#34;jkl&#34;   false   66      88      NaN		4
+&#34;mno&#34;   false   77      95      0		5
+&#34;pqr&#34;   true    88      97      0		6
+&#34;pqr&#34;   true    88      97      0		6
+`
+table2, err := NewTableFromString(t2string)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(table2)
+
+<span class="comment">// These tables share sort keys i and s.</span>
+
+<span class="comment">// Note that there is a duplicate row,</span>
+<span class="comment">// which will be removed during merging.</span>
+
+<span class="comment">// At least one of the tables must have these sort keys set.</span>
+
+err = table1.SetSortKeys(&#34;i&#34;, &#34;s&#34;)
+if err != nil {
+    log.Println(err)
+}
+
+merged, err := table1.Merge(table2)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(merged)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">[Table1]
+XYZ      y s            f   i diff
+string int string float64 int  int
+&#34;X&#34;      1 &#34;abc&#34;    1.11    1    7
+&#34;Y&#34;      3 &#34;ghi&#34;    7.891   3    8
+&#34;Z&#34;      2 &#34;def&#34;      NaN   2    9
+&#34;A&#34;      4 &#34;jkl&#34;    0.0     4    6
+&#34;B&#34;      5 &#34;mno&#34;    0.0     5    4
+&#34;C&#34;      8 &#34;pqr&#34;      NaN   6   45
+
+[Table2]
+s      b     diff   ui       f   i
+string bool   int uint float64 int
+&#34;abc&#34;  true    55   99    2.22   1
+&#34;def&#34;  false   66   88    0.0    2
+&#34;ghi&#34;  false   66    0   42.0    3
+&#34;jkl&#34;  false   66   88     NaN   4
+&#34;mno&#34;  false   77   95    0.0    5
+&#34;pqr&#34;  true    88   97    0.0    6
+&#34;pqr&#34;  true    88   97    0.0    6
+
+[Merged]
+  i s        y       f XYZ    diff b       ui
+int string int float64 string  int bool  uint
+  1 &#34;abc&#34;    1   1.11  &#34;X&#34;       7 true    99
+  2 &#34;def&#34;    2   0.0   &#34;Z&#34;       9 false   88
+  3 &#34;ghi&#34;    3   7.891 &#34;Y&#34;       8 false    0
+  4 &#34;jkl&#34;    4   0.0   &#34;A&#34;       6 false   88
+  5 &#34;mno&#34;    5   0.0   &#34;B&#34;       4 false   95
+  6 &#34;pqr&#34;    8   0.0   &#34;C&#34;      45 true    97
+</pre>
+			
+		
+	</div>
+</div>
+
 				
 			
 				
@@ -2592,7 +2724,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23385:23432#L846">OrderColsBySortKeys</a>
+				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23415:23462#L846">OrderColsBySortKeys</a>
 					<a class="permalink" href="#Table.OrderColsBySortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) OrderColsBySortKeys() <a href="/pkg/builtin/#error">error</a></pre>
@@ -2719,7 +2851,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=16628:16696#L620">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=16658:16726#L620">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2943,7 +3075,7 @@ Found Pluto at rowIndex = -1 (missing)
 				
 			
 				
-				<h3 id="Table.SearchFirst">func (*Table) <a href="/src/target/sort.go?s=16876:16949#L629">SearchFirst</a>
+				<h3 id="Table.SearchFirst">func (*Table) <a href="/src/target/sort.go?s=16906:16979#L629">SearchFirst</a>
 					<a class="permalink" href="#Table.SearchFirst">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchFirst(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2959,7 +3091,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26682:26754#L940">SearchLast</a>
+				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26712:26784#L940">SearchLast</a>
 					<a class="permalink" href="#Table.SearchLast">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchLast(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2975,7 +3107,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35260:35353#L1137">SearchRange</a>
+				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35290:35383#L1137">SearchRange</a>
 					<a class="permalink" href="#Table.SearchRange">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (first <a href="/pkg/builtin/#int">int</a>, last <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3632,7 +3764,7 @@ index colName    colType  reverse
 				
 			
 				
-				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=21989:22053#L788">SetSortKeysFromTable</a>
+				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=22019:22083#L788">SetSortKeysFromTable</a>
 					<a class="permalink" href="#Table.SetSortKeysFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3930,7 +4062,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21872:21910#L783">SortKeyCount</a>
+				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21902:21940#L783">SortKeyCount</a>
 					<a class="permalink" href="#Table.SortKeyCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortKeyCount() <a href="/pkg/builtin/#int">int</a></pre>
