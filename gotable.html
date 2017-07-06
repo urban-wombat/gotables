@@ -2574,7 +2574,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.Merge">func (*Table) <a href="/src/target/merge.go?s=2997:3065#L50">Merge</a>
+				<h3 id="Table.Merge">func (*Table) <a href="/src/target/merge.go?s=3009:3077#L50">Merge</a>
 					<a class="permalink" href="#Table.Merge">&#xb6;</a>
 				</h3>
 				<pre>func (table1 *<a href="#Table">Table</a>) Merge(table2 *<a href="#Table">Table</a>) (merged *<a href="#Table">Table</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2582,7 +2582,7 @@ echo myfile | wc -l
 
 	table1 and table2 must share compatible sort key columns: same names and types.
 
-	Sort keys for the key columns must be set in table1: table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
+	Sort keys for the key columns must be set in table1 (or table2): table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
 
 	For each matching row (or rows -- duplicates will be removed) in each table the non-key cells will be merged
 	using the following rules:

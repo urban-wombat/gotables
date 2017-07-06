@@ -35,7 +35,7 @@ import (
 
 	table1 and table2 must share compatible sort key columns: same names and types.
 
-	Sort keys for the key columns must be set in table1: table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
+	Sort keys for the key columns must be set in table1 (or table2): table1.SetSortKeys() and optionally table1.SetSortKeysReverse()
 
 	For each matching row (or rows -- duplicates will be removed) in each table the non-key cells will be merged
 	using the following rules:
@@ -77,7 +77,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 				return err
 			}
 		} else {
-			err = fmt.Errorf("[%s].Merge([%s]) needs at least [%s] or [%s] to have sort keys",
+			err = fmt.Errorf("[%s].Merge([%s]) needs at least table [%s] or table [%s] to have sort keys",
 				table1.Name(), table2.Name(), table1.Name(), table2.Name())
 			return err
 		}
@@ -87,7 +87,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	// where()
 	// Local function.
 	sortMerged := func (localMerged *Table) (*Table, error) {
-		// TODO: Copy sort keys from table1 or table2 to merged
 		if localMerged.SortKeyCount() == 0 {
 			err = setSortKeysBetweenTables()
 			if err != nil {
