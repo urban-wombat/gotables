@@ -805,7 +805,7 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 		return fmt.Errorf("*fromTable.%s() *fromTable is <nil>", funcName())
 	}
 	if fromTable.SortKeyCount() == 0 {
-		return fmt.Errorf("%s(*Table) *fromTable.SortKeyCount() == 0", funcName())
+		return fmt.Errorf("table.%s(fromTable): fromTable.SortKeyCount() == 0", funcName())
 	}
 
 	var err error

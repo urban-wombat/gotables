@@ -4011,13 +4011,17 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 	return true, nil
 }
 
-// Append the columns from fromTable to table.
+/*
+	Append all columns from fromTable to table.
+
+	Column order is ignored. Identical duplicate columns are ignored.
+*/
 func (table *Table) AppendColsFromTable(fromTable *Table) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() *Table is <nil>", funcName())
+		return fmt.Errorf("table.%s(fromTable): table is <nil>", funcName())
 	}
 	if fromTable == nil {
-		return fmt.Errorf("fromTable.%s() *Table is <nil>", funcName())
+		return fmt.Errorf("fromTable.%s(fromTable): fromTable is <nil>", funcName())
 	}
 
 	colsTable, err := fromTable.GetColInfoAsTable()
@@ -4056,4 +4060,67 @@ func (table *Table) AppendColsFromTable(fromTable *Table) error {
 	}
 	
 	return nil
+}
+
+func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRow int) error {
+	var err error
+
+	if toTable == nil {
+		return fmt.Errorf("toTable.%s(fromTable): toTable is <nil>", funcName())
+	}
+	if fromTable == nil {
+		return fmt.Errorf("fromTable.%s(fromTable): fromTable is <nil>", funcName())
+	}
+
+	// Note: multiple assignment syntax in for loop.
+	for fromRow, toRow := firstRow, toTable.RowCount(); fromRow <= lastRow; fromRow, toRow = fromRow+1, toRow+1 {
+
+		err = toTable.AppendRow()
+		if err != nil {
+			return err
+		}
+
+		for fromCol := 0; fromCol < fromTable.ColCount(); fromCol++ {
+			colName, err := fromTable.ColName(fromCol)
+			if err != nil {
+				return err
+			}
+
+			cellVal, err := fromTable.GetValByColIndex(fromCol, fromRow)
+			if err != nil {
+				return err
+			}
+			err = toTable.SetVal(colName, toRow, cellVal)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+/*
+	Create a new table from a range of rows in this table.
+*/
+func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName string) (*Table, error) {
+	var newTable *Table
+	var err error
+
+	newTable, err = NewTable(newTableName)
+	if err != nil {
+		return nil, err
+	}
+
+	err = newTable.AppendColsFromTable(fromTable)
+	if err != nil {
+		return nil, err
+	}
+
+	err = newTable.AppendRowsFromTable(fromTable, firstRow, lastRow)
+	if err != nil {
+		return nil, err
+	}
+
+	return newTable, nil
 }
