@@ -33,18 +33,27 @@ SOFTWARE.
 /*
 	Split nestable by keys (which must match table) into separate tables.
 
-	Insert each separate table into the matching (by keys) cell into newColName in table.
+	Nest each separate table into the matching (by keys) cell in nestColName col in table.
+
+	Each nested table is given table name nestColName.
+
+	Each nested table is stored as a string. To retrieve it:
+
+		var nestedString string
+		var nestedTable *gotable.Table
+		nestedString, _ = table.GetString(nestColName, rowIndex)
+		nestedTable,  _ = gotable.NewTableFromString(nestedString)
 */
-func (table *Table) Nest(nestable *Table, newColName string) error {
+func (table *Table) Nest(nestable *Table, nestColName string) error {
 
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(nestable, newColName): table is <nil>", funcName())
+		return fmt.Errorf("table.%s(nestable, nestColName): table is <nil>", funcName())
 	}
 
 	if nestable == nil {
-		return fmt.Errorf("table.%s(nestable, newColName): nestable is <nil>", funcName())
+		return fmt.Errorf("table.%s(nestable, nestColName): nestable is <nil>", funcName())
 	}
 
 	// Use whichever table has sort keys for the shared keys. table is dominant over nestable.
@@ -87,7 +96,7 @@ func (table *Table) Nest(nestable *Table, newColName string) error {
 	var keys []interface{} = make([]interface{}, keysTable.RowCount())
 
 	// Create a string col for nested table, for now. Later we may make this a *Table pointer.
-	err = table.AppendCol(newColName, "string")
+	err = table.AppendCol(nestColName, "string")
 	if err != nil {
 		return err
 	}
@@ -108,13 +117,13 @@ func (table *Table) Nest(nestable *Table, newColName string) error {
 			return err
 		}
 
-		newTableName := newColName
-		newTable, err := NewTableFromRows(nestable, firstRow, lastRow, newTableName)
+		nestTableName := nestColName
+		newTable, err := NewTableFromRows(nestable, firstRow, lastRow, nestTableName)
 		if err != nil {
 			return err
 		}
 
-		table.SetString(newColName, rowIndex, newTable.StringUnpadded())
+		table.SetString(nestColName, rowIndex, newTable.StringUnpadded())
 		if err != nil {
 			return err
 		}

@@ -329,7 +329,7 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.Name">func (table *Table) Name() string</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Table.Nest">func (table *Table) Nest(nestable *Table, newColName string) error</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#Table.Nest">func (table *Table) Nest(nestable *Table, nestColName string) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.OrderColsBySortKeys">func (table *Table) OrderColsBySortKeys() error</a></dd>
@@ -2776,16 +2776,27 @@ int string int float64 string  int bool  uint
 				
 			
 				
-				<h3 id="Table.Nest">func (*Table) <a href="/src/target/nest.go?s=1359:1425#L28">Nest</a>
+				<h3 id="Table.Nest">func (*Table) <a href="/src/target/nest.go?s=1652:1719#L37">Nest</a>
 					<a class="permalink" href="#Table.Nest">&#xb6;</a>
 				</h3>
-				<pre>func (table *<a href="#Table">Table</a>) Nest(nestable *<a href="#Table">Table</a>, newColName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<pre>func (table *<a href="#Table">Table</a>) Nest(nestable *<a href="#Table">Table</a>, nestColName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
 				<p>
 Split nestable by keys (which must match table) into separate tables.
 </p>
 <p>
-Insert each separate table into the matching (by keys) cell into newColName in table.
+Nest each separate table into the matching (by keys) cell in nestColName col in table.
 </p>
+<p>
+Each nested table is given table name nestColName.
+</p>
+<p>
+Each nested table is stored as a string. To retrieve it:
+</p>
+<pre>var nestedString string
+var nestedTable *gotable.Table
+nestedString, _ = table.GetString(nestColName, rowIndex)
+nestedTable,  _ = gotable.NewTableFromString(nestedString)
+</pre>
 
 				
 				
