@@ -356,7 +356,7 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.SearchLast">func (table *Table) SearchLast(searchValues ...interface{}) (int, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Table.SearchRange">func (table *Table) SearchRange(searchValues ...interface{}) (first int, last int, err error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#Table.SearchRange">func (table *Table) SearchRange(searchValues ...interface{}) (firstRow int, lastRow int, err error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetAllFloatCellsToNaN">func (table *Table) SetAllFloatCellsToNaN() error</a></dd>
@@ -3206,10 +3206,10 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35316:35409#L1137">SearchRange</a>
+				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35316:35415#L1137">SearchRange</a>
 					<a class="permalink" href="#Table.SearchRange">&#xb6;</a>
 				</h3>
-				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (first <a href="/pkg/builtin/#int">int</a>, last <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
 				<p>
 Return the first and last index of 1 or more instances of searchValues in table.
 </p>
@@ -4171,7 +4171,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortUnique">func (*Table) <a href="/src/target/sort.go?s=36047:36111#L1169">SortUnique</a>
+				<h3 id="Table.SortUnique">func (*Table) <a href="/src/target/sort.go?s=36065:36129#L1169">SortUnique</a>
 					<a class="permalink" href="#Table.SortUnique">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortUnique() (tableUnique *<a href="#Table">Table</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>

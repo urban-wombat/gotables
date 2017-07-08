@@ -1144,21 +1144,21 @@ func SearchFirst(n int, f func(int) bool) int {
 
 	Note: searchValues must match, not merely GT and LT where match would be.
 */
-func (table *Table) SearchRange(searchValues ...interface{}) (first int, last int, err error) {
+func (table *Table) SearchRange(searchValues ...interface{}) (firstRow int, lastRow int, err error) {
 
-	first, last = -1, -1
+	firstRow, lastRow = -1, -1
 
 	err = table.checkSearchArguments(searchValues...)
 	if err != nil {
 		return
 	}
 
-	first, err = table.SearchFirst(searchValues...)
+	firstRow, err = table.SearchFirst(searchValues...)
 	if err != nil {
 		return
 	}
 
-	last, err = table.SearchLast(searchValues...)
+	lastRow, err = table.SearchLast(searchValues...)
 	if err != nil {
 		return
 	}
