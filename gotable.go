@@ -4103,7 +4103,7 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 /*
 	Create a new table from a range of rows in this table.
 */
-func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName string) (*Table, error) {
+func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow int) (*Table, error) {
 	var newTable *Table
 	var err error
 
@@ -4112,12 +4112,12 @@ func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName 
 		return nil, err
 	}
 
-	err = newTable.AppendColsFromTable(fromTable)
+	err = newTable.AppendColsFromTable(table)
 	if err != nil {
 		return nil, err
 	}
 
-	err = newTable.AppendRowsFromTable(fromTable, firstRow, lastRow)
+	err = newTable.AppendRowsFromTable(table, firstRow, lastRow)
 	if err != nil {
 		return nil, err
 	}
@@ -4137,7 +4137,7 @@ func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValu
 		return nil, err
 	}
 
-	newTable, err = NewTableFromRows(table, firstRow, lastRow, newTableName)
+	newTable, err = NewTableFromRows(table, newTableName, firstRow, lastRow)
 	if err != nil {
 		return nil, err
 	}
