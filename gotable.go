@@ -298,28 +298,6 @@ func (tableSet *TableSet) _String(horizontalSeparator byte) string {
 	return s
 }
 
-/*
-Returns a set of parsable right aligned tables as a string.
-*/
-//func (tableSet *TableSet) StringAligned() string {
-//	var verticalSep string = ""
-//	var s string
-//
-//	var tableSetName string = tableSet.Name()
-//	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
-//	}
-//
-//	var table *Table
-//	for i := 0; i < len(tableSet.tables); i++ {
-//		table = tableSet.tables[i]
-//		s += verticalSep
-//		s += table.StringAligned()
-//		verticalSep = "\n"
-//	}
-//	return s
-// }
-
 func (tableSet *TableSet) Name() string {
 	return tableSet.tableSetName
 }
@@ -3321,32 +3299,6 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 	return table, nil
 }
 
-//func (table *Table) GobEncode() (bytes.Buffer, error) {
-//	if table == nil {
-//		var blankBuffer bytes.Buffer
-//		return blankBuffer, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-//	}
-//	var err error
-//	var buffer bytes.Buffer
-//	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-//	var tableExported *TableExported
-//
-//	tableExported, err = table.exportTable()
-//	if err != nil {
-//		var blankBuffer bytes.Buffer
-//		return blankBuffer, err
-//	}
-//
-//	err = enc.Encode(tableExported)
-//	if err != nil {
-//		var blankBuffer bytes.Buffer
-//		return blankBuffer, err
-//	}
-//
-//	return buffer, nil
-//}
-
-// DOING dealing with go vet complaints.
 func (table *Table) GobEncode() ([]byte, error) {
 	var blankBuffer []byte
 
@@ -3370,25 +3322,6 @@ func (table *Table) GobEncode() ([]byte, error) {
 
 	return buffer.Bytes(), nil
 }
-
-//func (table *Table) GobEncode() ([]byte, error) {
-//	var err error
-//	var buffer bytes.Buffer
-//	var enc *gob.Encoder = gob.NewEncoder(&buffer)
-//	var tableExported *TableExported
-//
-//	tableExported, err = table.exportTable()
-//	if err != nil {
-//		return buffer.Bytes(), err
-//	}
-//
-//	err = enc.Encode(tableExported)
-//	if err != nil {
-//		return buffer.Bytes(), err
-//	}
-//
-//	return buffer.Bytes(), nil
-//}
 
 func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 	/*
@@ -3438,95 +3371,6 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 	return encodedTableSet, nil
 }
 
-///* NOT OKAY!!
-//// DOING dealing with go vet complaints.
-//func (tableSet *TableSet) GobEncode() ([]byte, error) {
-//	var emptyBuffer []byte
-//	var encodedTableSet []*bytes.Buffer
-//	var err error
-//
-//	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-//		var table *Table = tableSet.tables[tableIndex]
-//		var encodedTable *bytes.Buffer
-//		var encodedTableBytes []byte
-//		encodedTableBytes, err = table.GobEncode()
-//		if err != nil {
-//			return emptyBuffer, err
-//		}
-//		encodedTable = bytes.NewBuffer(encodedTableBytes)
-//		encodedTableSet = append(encodedTableSet, encodedTable)
-//		if len(encodedTableSet) != tableIndex+1 {
-//			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
-//				table.Name())
-//			return emptyBuffer, err
-//		}
-//	}
-//
-//	// Add header information to the tail end of the buffer array.
-//	var tableSetHeader TableSetExported
-//	tableSetHeader.TableSetName = tableSet.tableSetName
-//	tableSetHeader.FileName = tableSet.fileName
-//	var encodedHeader *bytes.Buffer
-//	var enc *gob.Encoder = gob.NewEncoder(encodedHeader)
-//	err = enc.Encode(tableSetHeader)
-//	if err != nil {
-//		return emptyBuffer, err
-//	}
-//	encodedTableSet = append(encodedTableSet, encodedHeader)
-//	var headerIndex int = len(tableSet.tables)
-//	if len(encodedTableSet) != headerIndex+1 {
-//		err = fmt.Errorf("GobEncode(): error appending table set header to table set")
-//		return emptyBuffer, err
-//	}
-//
-//	return encodedTableSet, nil
-//}
-//*/
-
-//func (tableSet *TableSet) GobEncode() ([][]byte, error) {
-////	var emptyBuffer []bytes.Buffer
-//	var emptyBuffer [][]byte
-////	var encodedTableSet []bytes.Buffer
-//	var encodedTableSet [][]byte
-//	var err error
-//
-//	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-//		var table *Table
-//		table = tableSet.tables[tableIndex]
-////		var encodedTable bytes.Buffer
-//		var encodedTable []byte
-//		encodedTable, err = table.GobEncode()
-//		if err != nil {
-//			return emptyBuffer, err
-//		}
-//		encodedTableSet = append(encodedTableSet, encodedTable)
-//		if len(encodedTableSet) != tableIndex+1 {
-//			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
-//				table.Name())
-//			return emptyBuffer, err
-//		}
-//	}
-//
-//	// Add header information to the tail end of the buffer array.
-//	var tableSetHeader TableSetExported
-//	tableSetHeader.TableSetName = tableSet.tableSetName
-//	tableSetHeader.FileName = tableSet.fileName
-//	var encodedHeader bytes.Buffer
-//	var enc *gob.Encoder = gob.NewEncoder(&encodedHeader)
-//	err = enc.Encode(tableSetHeader)
-//	if err != nil {
-//		return emptyBuffer, err
-//	}
-//	encodedTableSet = append(encodedTableSet, encodedHeader.Bytes())
-//	var headerIndex int = len(tableSet.tables)
-//	if len(encodedTableSet) != headerIndex+1 {
-//		err = fmt.Errorf("GobEncode(): error appending table set header to table set")
-//		return emptyBuffer, err
-//	}
-//
-//	return encodedTableSet, nil
-//}
-
 /*
 	Reconstruct a TableSet from a slice of []bytes.Buffer
 
@@ -3574,62 +3418,6 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	return tableSet, nil
 }
 
-//func GobDecodeTableSet(buffer [][]byte) (*TableSet, error) {
-//	var tableSet *TableSet
-//	var err error
-//	tableSet, err = NewTableSet("")
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var table *Table
-//	var tableCount = len(buffer)-1	// The tail end buffer element is the header.
-//	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
-//		table, err = GobDecodeTable(buffer[tableIndex])
-//		if err != nil {
-//			return nil, err
-//		}
-//		err = tableSet.AppendTable(table)
-//		if err != nil {
-//			return nil, err
-//		}
-//	}
-//
-//	// Decode and restore the header.
-//	var headerIndex int = len(buffer)-1
-////	var encodedHeader bytes.Buffer = buffer[headerIndex]
-//	var encodedHeader []byte = buffer[headerIndex]
-//	var dec *gob.Decoder = gob.NewDecoder(&encodedHeader)
-//	var tableSetHeader TableSetExported
-//	err = dec.Decode(&tableSetHeader)
-//	if err != nil {
-//		return nil, err
-//	}
-//	tableSet.tableSetName = tableSetHeader.TableSetName
-//	tableSet.fileName = tableSetHeader.FileName
-//
-//	return tableSet, nil
-//}
-
-//func GobDecodeTable(buffer bytes.Buffer) (*Table, error) {
-//	var err error
-//	var tableDecoded *Table
-//	var dec *gob.Decoder = gob.NewDecoder(&buffer)
-//	var tableExported *TableExported
-//
-//	err = dec.Decode(&tableExported)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	tableDecoded, err = tableExported.importTable()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return tableDecoded, nil
-//}
-
 /*
 	Reconstruct a Table from a slice of []byte
 
@@ -3659,25 +3447,6 @@ func GobDecodeTable(buf []byte) (*Table, error) {
 
 	return tableDecoded, nil
 }
-
-//func GobDecodeTable(buffer []byte) (*Table, error) {
-//	var err error
-//	var tableDecoded *Table
-//	var dec *gob.Decoder = gob.NewDecoder(&buffer)
-//	var tableExported *TableExported
-//
-//	err = dec.Decode(&tableExported)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	tableDecoded, err = tableExported.importTable()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return tableDecoded, nil
-//}
 
 func funcName() string {
 	pc, _, _, _ := runtime.Caller(1)

@@ -37,65 +37,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/*
-//func TestRenameTable2(t *testing.T) {
-//	var err error
-//	var testsTableSet *TableSet
-//	var tests *Table
-//	var setupName string = "Fred"
-//
-//	testsTableSet, err = NewTableSetFromString(
-//		`[tests]
-//		input		succeeds	output
-//		string		bool		string
-//		"Barney"	true		"Barney"
-//		""			false		"Fred"
-//		"$&*"		false		"Fred"
-//		`)
-//	if err != nil {
-//		panic(err)
-//	}
-//	tests, err = testsTableSet.Table("tests")
-//	if err != nil {
-//		panic(err)
-//	}
-//	fmt.Printf("tests = \n%v", tests)
-//
-//	var table *Table
-//
-//	for row := 0; row < tests.RowCount(); row++ {
-//		// Get test parameters for this row.
-//		input, err := tests.GetString("input", row)
-//		if err != nil {
-//			t.Error(err)
-//		}
-//		succeeds, err := tests.GetBool("succeeds", row)
-//		if err != nil {
-//			t.Error(err)
-//		}
-//		output, err := tests.GetString("output", row)
-//		if err != nil {
-//			t.Error(err)
-//		}
-//
-//		table, err = NewTable(setupName)
-//		if err != nil {
-//			t.Error(err)
-//		}
-//
-//		err = table.RenameTable(input)
-//		if (err == nil) != succeeds {
-//			t.Errorf("Error renaming to %q: %s", output, err)
-//		}
-//
-//		var tableName string = table.Name()
-//		if tableName != output {
-//			t.Errorf("Expected %q, not %q", output, tableName)
-//		}
-//	}
-//}
-*/
-
 func TestRenameTable(t *testing.T) {
 	var err error
 	var table *Table
