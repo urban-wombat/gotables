@@ -4949,91 +4949,71 @@ func ExampleTable_Merge() {
 
 func ExampleTable_SortUnique() {
 
-	t1string :=
-    `[Table1]
-    XYZ     y   s       f       i   diff
-    string  int string  float64 int int
-    "X"     1   "abc"   1.11    1   7
-    "Y"     3   "ghi"   7.8910  3   8
-    "Z"     2   "def"   NaN     2   9
-    "A"     4   "jkl"   0       4   6
-    "B"     5   "mno"   0       5   4
-    "C"     8   "pqr"   NaN     6   45
-    `
-    table1, err := NewTableFromString(t1string)
-    if err != nil {
-		log.Println(err)
-    }
-
-    fmt.Println(table1)
-
-    t2string :=
-    `[Table2]
-    s       b       diff    ui      f		i
-    string  bool    int     uint    float64	int
-    "abc"   true    55      99      2.22	1
-    "def"   false   66      88      0		2
-    "ghi"   false   66      0       42		3
-    "jkl"   false   66      88      NaN		4
-    "mno"   false   77      95      0		5
-    "pqr"   true    88      97      0		6
-    "pqr"   true    88      97      0		6
-    `
-    table2, err := NewTableFromString(t2string)
-    if err != nil {
+	tableString :=
+	`[Uniqueness]
+	KeyCol number   s
+	int float32 string
+	2   0       "two point two"
+	2   2.2     ""
+	1   1.1     "one point one"
+	3   3.3     "three point three"
+	3   3.3     ""
+	3   NaN     "three point three"
+	4   0.0     "neither zero nor same X"
+	4   NaN     "neither zero nor same Y"
+	4   4.4     "neither zero nor same Z"
+	4   NaN     "neither zero nor same A"
+	5   NaN     "minus 5"
+	5   -0      "minus 5"
+	5   -5      "minus 5"
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
         log.Println(err)
-    }
+	}
 
-    fmt.Println(table2)
+	fmt.Println("Before SortUnique() ...")
+	fmt.Println(table)
 
-	// These tables share sort keys i and s.
-
-	// Note that there is a duplicate row,
-	// which will be removed during merging.
-
-	// At least one of the tables must have these sort keys set.
-
-	err = table1.SetSortKeys("i", "s")
-    if err != nil {
+	err = table.SetSortKeys("KeyCol")
+	if err != nil {
         log.Println(err)
-    }
+	}
 
-	merged, err := table1.Merge(table2)
-    if err != nil {
+	tableUnique, err := table.SortUnique()
+	if err != nil {
         log.Println(err)
-    }
+	}
 
-    fmt.Println(merged)
+	fmt.Println("After SortUnique() ...")
+	fmt.Println(tableUnique)
 
 	// Output:
-	// [Table1]
-	// XYZ      y s            f   i diff
-	// string int string float64 int  int
-	// "X"      1 "abc"    1.11    1    7
-	// "Y"      3 "ghi"    7.891   3    8
-	// "Z"      2 "def"      NaN   2    9
-	// "A"      4 "jkl"    0.0     4    6
-	// "B"      5 "mno"    0.0     5    4
-	// "C"      8 "pqr"      NaN   6   45
+	// Before SortUnique() ...
+	// [Uniqueness]
+	// KeyCol  number s
+	//    int float32 string
+	//      2     0.0 "two point two"
+	//      2     2.2 ""
+	//      1     1.1 "one point one"
+	//      3     3.3 "three point three"
+	//      3     3.3 ""
+	//      3     NaN "three point three"
+	//      4     0.0 "neither zero nor same X"
+	//      4     NaN "neither zero nor same Y"
+	//      4     4.4 "neither zero nor same Z"
+	//      4     NaN "neither zero nor same A"
+	//      5     NaN "minus 5"
+	//      5    -0.0 "minus 5"
+	//      5    -5.0 "minus 5"
 	// 
-	// [Table2]
-	// s      b     diff   ui       f   i
-	// string bool   int uint float64 int
-	// "abc"  true    55   99    2.22   1
-	// "def"  false   66   88    0.0    2
-	// "ghi"  false   66    0   42.0    3
-	// "jkl"  false   66   88     NaN   4
-	// "mno"  false   77   95    0.0    5
-	// "pqr"  true    88   97    0.0    6
-	// "pqr"  true    88   97    0.0    6
-	// 
+	// After SortUnique() ...
 	// [Merged]
-	//   i s        y       f XYZ    diff b       ui
-	// int string int float64 string  int bool  uint
-	//   1 "abc"    1   1.11  "X"       7 true    99
-	//   2 "def"    2   0.0   "Z"       9 false   88
-	//   3 "ghi"    3   7.891 "Y"       8 false    0
-	//   4 "jkl"    4   0.0   "A"       6 false   88
-	//   5 "mno"    5   0.0   "B"       4 false   95
-	//   6 "pqr"    8   0.0   "C"      45 true    97
+	// KeyCol  number s
+	//    int float32 string
+	//      1     1.1 "one point one"
+	//      2     2.2 "two point two"
+	//      3     3.3 "three point three"
+	//      4     4.4 "neither zero nor same A"
+	//      5    -5.0 "minus 5"
 }

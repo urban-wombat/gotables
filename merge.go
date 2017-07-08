@@ -399,59 +399,28 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 						}
 						val2 = reflect.ValueOf(tmp2).Float()
 
-keyVal, err := merged.GetInt("KeyCol", rowIndex1)
-if err != nil {
-	return nil, err
-}
-if table1.Name() == "Unique" && keyVal == 4 {
-	fourTable, err := NewTableFromRowsBySearchRange(merged, "FOUR", 4)
-	if err != nil {
-		return nil, err
-	}
-	where("BEFORE")
-	where(fourTable)
-}
-
-where(fmt.Sprintf("val1 = %v, val2 = %v", val1, val2))
-
 						if val1 != zeroVal && !math.IsNaN(val1) {	// Covers combinations (c) and (d)
-where(fmt.Sprintf("val1 %f != zeroVal", val1))
-where(fmt.Sprintf("using val1 %v", tmp1))
 							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
 							}
 						} else if val2 != zeroVal && !math.IsNaN(val2) {	// Covers combination (b)
-where(fmt.Sprintf("val2 %f != zeroVal", val2))
-where(fmt.Sprintf("using val2 %v", tmp2))
 							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val1) { // Maybe one of them is NaN and the other is zero.
-where("math.IsNaN(val1)")
 							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val2) { // Maybe one of them is NaN and the other is zero.
-where("math.IsNaN(val2)")
-where(fmt.Sprintf("using val1 %v", tmp1))
 							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
 							}
 						}
 						// Otherwise both vals must be zero. Do nothing.
-if table1.Name() == "Unique" && keyVal == 4 {
-	fourTable, err := NewTableFromRowsBySearchRange(merged, "FOUR", 4)
-	if err != nil {
-		return nil, err
-	}
-	where("AFTER")
-	where(fourTable)
-}
-fmt.Println()
 					default:
 						// Should never reach here.
 						isValid, err := IsValidColType(colType)

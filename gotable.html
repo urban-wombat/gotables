@@ -115,6 +115,9 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromRows">func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName string) (*Table, error)</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="#NewTableFromRowsBySearchRange">func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValues ...interface{}) (*Table, error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromString">func NewTableFromString(s string) (*Table, error)</a></dd>
 				
 					
@@ -488,6 +491,9 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.SortKeyCount">func (table *Table) SortKeyCount() int</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="#Table.SortUnique">func (table *Table) SortUnique() (tableUnique *Table, err error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="#Table.String">func (table *Table) String() string</a></dd>
 				
 					
@@ -638,6 +644,8 @@ Functions and methods for processing Table tables.
 			<dd><a class="exampleLink" href="#example_Table_SetSortKeys">Table.SetSortKeys</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Table_Sort">Table.Sort</a></dd>
+			
+			<dd><a class="exampleLink" href="#example_Table_SortUnique">Table.SortUnique</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_Table_StringUnpadded">Table.StringUnpadded</a></dd>
 			
@@ -810,7 +818,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=35058:35103#L1128">SearchFirst</a>
+			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=35075:35120#L1128">SearchFirst</a>
 				<a class="permalink" href="#SearchFirst">&#xb6;</a>
 			</h2>
 			<pre>func SearchFirst(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -864,7 +872,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=32162:32206#L1070">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=32179:32223#L1070">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -1303,6 +1311,18 @@ Create a new table from a range of rows in this table.
 				
 			
 				
+				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=115356:115470#L4121">NewTableFromRowsBySearchRange</a>
+					<a class="permalink" href="#NewTableFromRowsBySearchRange">&#xb6;</a>
+				</h3>
+				<pre>func NewTableFromRowsBySearchRange(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, searchValues ...interface{}) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Create a new table from a range of rows in this table searched by keys.
+</p>
+
+				
+				
+			
+				
 				<h3 id="NewTableFromString">func <a href="/src/target/gotable.go?s=4038:4087#L141">NewTableFromString</a>
 					<a class="permalink" href="#NewTableFromString">&#xb6;</a>
 				</h3>
@@ -1532,7 +1552,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.AppendTable">func (*Table) <a href="/src/target/merge.go?s=16130:16182#L520">AppendTable</a>
+				<h3 id="Table.AppendTable">func (*Table) <a href="/src/target/merge.go?s=15709:15761#L511">AppendTable</a>
 					<a class="permalink" href="#Table.AppendTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendTable(append *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1592,7 +1612,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19918:19992#L721">CompareRows</a>
+				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19935:20009#L721">CompareRows</a>
 					<a class="permalink" href="#Table.CompareRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) CompareRows(rowIndex1 <a href="/pkg/builtin/#int">int</a>, rowIndex2 <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2803,7 +2823,7 @@ nestedTable,  _ = gotable.NewTableFromString(nestedString)
 				
 			
 				
-				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23424:23471#L846">OrderColsBySortKeys</a>
+				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=23441:23488#L846">OrderColsBySortKeys</a>
 					<a class="permalink" href="#Table.OrderColsBySortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) OrderColsBySortKeys() <a href="/pkg/builtin/#error">error</a></pre>
@@ -2930,7 +2950,7 @@ Returns -1 if there is an error (namely: the table variable is nil).
 				
 			
 				
-				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=16658:16726#L620">Search</a>
+				<h3 id="Table.Search">func (*Table) <a href="/src/target/sort.go?s=16675:16743#L620">Search</a>
 					<a class="permalink" href="#Table.Search">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Search(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3154,7 +3174,7 @@ Found Pluto at rowIndex = -1 (missing)
 				
 			
 				
-				<h3 id="Table.SearchFirst">func (*Table) <a href="/src/target/sort.go?s=16906:16979#L629">SearchFirst</a>
+				<h3 id="Table.SearchFirst">func (*Table) <a href="/src/target/sort.go?s=16923:16996#L629">SearchFirst</a>
 					<a class="permalink" href="#Table.SearchFirst">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchFirst(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3170,7 +3190,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26721:26793#L940">SearchLast</a>
+				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=26738:26810#L940">SearchLast</a>
 					<a class="permalink" href="#Table.SearchLast">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchLast(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3186,7 +3206,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35299:35392#L1137">SearchRange</a>
+				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=35316:35409#L1137">SearchRange</a>
 					<a class="permalink" href="#Table.SearchRange">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (first <a href="/pkg/builtin/#int">int</a>, last <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3843,7 +3863,7 @@ index colName    colType  reverse
 				
 			
 				
-				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=22019:22083#L788">SetSortKeysFromTable</a>
+				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=22036:22100#L788">SetSortKeysFromTable</a>
 					<a class="permalink" href="#Table.SetSortKeysFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4141,13 +4161,120 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21902:21940#L783">SortKeyCount</a>
+				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21919:21957#L783">SortKeyCount</a>
 					<a class="permalink" href="#Table.SortKeyCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortKeyCount() <a href="/pkg/builtin/#int">int</a></pre>
 				
 				
 				
+				
+			
+				
+				<h3 id="Table.SortUnique">func (*Table) <a href="/src/target/sort.go?s=36047:36111#L1169">SortUnique</a>
+					<a class="permalink" href="#Table.SortUnique">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SortUnique() (tableUnique *<a href="#Table">Table</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Sort this table UNIQUE by this table&#39;s currently-set sort keys.
+Non-key column cell values are not used for uniqueness but are evaluated and merged.
+</p>
+<p>
+To see the currently-set sort keys use GetSortKeysAsTable()
+</p>
+<p>
+Note: the sorted table is returned, not sorted in place.
+</p>
+<p>
+SortUnique() uses table.Merge() which resolves missing or conflicting cell values.
+</p>
+
+				
+				<div id="example_Table_SortUnique" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
+		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableString :=
+    `[Uniqueness]
+KeyCol number   s
+int float32 string
+2   0       &#34;two point two&#34;
+2   2.2     &#34;&#34;
+1   1.1     &#34;one point one&#34;
+3   3.3     &#34;three point three&#34;
+3   3.3     &#34;&#34;
+3   NaN     &#34;three point three&#34;
+4   0.0     &#34;neither zero nor same X&#34;
+4   NaN     &#34;neither zero nor same Y&#34;
+4   4.4     &#34;neither zero nor same Z&#34;
+4   NaN     &#34;neither zero nor same A&#34;
+5   NaN     &#34;minus 5&#34;
+5   -0      &#34;minus 5&#34;
+5   -5      &#34;minus 5&#34;
+`
+table, err := NewTableFromString(tableString)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(&#34;Before SortUnique() ...&#34;)
+fmt.Println(table)
+
+err = table.SetSortKeys(&#34;KeyCol&#34;)
+if err != nil {
+    log.Println(err)
+}
+
+tableUnique, err := table.SortUnique()
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(&#34;After SortUnique() ...&#34;)
+fmt.Println(tableUnique)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">Before SortUnique() ...
+[Uniqueness]
+KeyCol  number s
+   int float32 string
+     2     0.0 &#34;two point two&#34;
+     2     2.2 &#34;&#34;
+     1     1.1 &#34;one point one&#34;
+     3     3.3 &#34;three point three&#34;
+     3     3.3 &#34;&#34;
+     3     NaN &#34;three point three&#34;
+     4     0.0 &#34;neither zero nor same X&#34;
+     4     NaN &#34;neither zero nor same Y&#34;
+     4     4.4 &#34;neither zero nor same Z&#34;
+     4     NaN &#34;neither zero nor same A&#34;
+     5     NaN &#34;minus 5&#34;
+     5    -0.0 &#34;minus 5&#34;
+     5    -5.0 &#34;minus 5&#34;
+
+After SortUnique() ...
+[Merged]
+KeyCol  number s
+   int float32 string
+     1     1.1 &#34;one point one&#34;
+     2     2.2 &#34;two point two&#34;
+     3     3.3 &#34;three point three&#34;
+     4     4.4 &#34;neither zero nor same A&#34;
+     5    -5.0 &#34;minus 5&#34;
+</pre>
+			
+		
+	</div>
+</div>
+
 				
 			
 				
