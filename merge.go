@@ -256,6 +256,11 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 	// Loop through to second-last row, comparing each row with the row after it.
 	for rowIndex := 0; rowIndex < merged.RowCount()-1; rowIndex++ {
+
+		// Reduce make it easier to reason about assignments of val1 and val2.
+		rowIndex1 := rowIndex
+		rowIndex2 := rowIndex+1
+
 		comparison, err := merged.CompareRows(rowIndex, rowIndex+1)
 		if err != nil {
 			return nil, err
@@ -382,44 +387,71 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 						var val2 float64
 						const zeroVal = 0.0
 
-						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
+						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex1)
 						if err != nil {
 							return nil, err
 						}
 						val1 = reflect.ValueOf(tmp1).Float()
 
-						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
+						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex2)
 						if err != nil {
 							return nil, err
 						}
 						val2 = reflect.ValueOf(tmp2).Float()
 
+keyVal, err := merged.GetInt("KeyCol", rowIndex1)
+if err != nil {
+	return nil, err
+}
+if table1.Name() == "Unique" && keyVal == 4 {
+	fourTable, err := NewTableFromRowsBySearchRange(merged, "FOUR", 4)
+	if err != nil {
+		return nil, err
+	}
+	where("BEFORE")
+	where(fourTable)
+}
+
+where(fmt.Sprintf("val1 = %v, val2 = %v", val1, val2))
+
 						if val1 != zeroVal && !math.IsNaN(val1) {	// Covers combinations (c) and (d)
-							// where(fmt.Sprintf("val1 %f != zeroVal", val1))
-							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
+where(fmt.Sprintf("val1 %f != zeroVal", val1))
+where(fmt.Sprintf("using val1 %v", tmp1))
+							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
 							}
 						} else if val2 != zeroVal && !math.IsNaN(val2) {	// Covers combination (b)
-							// where(fmt.Sprintf("val2 %f != zeroVal", val2))
-							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
+where(fmt.Sprintf("val2 %f != zeroVal", val2))
+where(fmt.Sprintf("using val2 %v", tmp2))
+							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val1) { // Maybe one of them is NaN and the other is zero.
-							// where("math.IsNaN(val1)")
-							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
+where("math.IsNaN(val1)")
+							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
 							if err != nil {
 								return nil, err
 							}
 						} else if math.IsNaN(val2) { // Maybe one of them is NaN and the other is zero.
-							// where("math.IsNaN(val2)")
-							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
+where("math.IsNaN(val2)")
+where(fmt.Sprintf("using val1 %v", tmp1))
+							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
 							if err != nil {
 								return nil, err
 							}
 						}
 						// Otherwise both vals must be zero. Do nothing.
+if table1.Name() == "Unique" && keyVal == 4 {
+	fourTable, err := NewTableFromRowsBySearchRange(merged, "FOUR", 4)
+	if err != nil {
+		return nil, err
+	}
+	where("AFTER")
+	where(fourTable)
+}
+fmt.Println()
 					default:
 						// Should never reach here.
 						isValid, err := IsValidColType(colType)
@@ -431,8 +463,15 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 				}
 			}
 
-			// Tag one of the (now identical) rows for deletion (arbitrarily choose the 2nd row: rowIndex+1)
-			err = merged.SetBool(deleteColName, rowIndex+1, true)
+			/*
+			Tag one of the (now identical) rows for deletion.
+			Choose the 1st row (rowIndex1) because rowIndex2 will be compared with the subsequent row.
+			Each row1 (of row1 and row2) will be marked for deletion after its values have been merged.
+			This performs a cascading/progressive copy of the least-zero value forward in the matching rows
+			so that the single remaining matching row contains the least-zero value.
+			E.g. float 4.4 will trump 0.0 will trump NaN.
+			*/
+			err = merged.SetBool(deleteColName, rowIndex1, true)
 			if err != nil {
 				return nil, err
 			}

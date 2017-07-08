@@ -4124,3 +4124,23 @@ func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName 
 
 	return newTable, nil
 }
+
+/*
+	Create a new table from a range of rows in this table searched by keys.
+*/
+func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValues ...interface{}) (*Table, error) {
+	var newTable *Table
+	var err error
+
+	firstRow, lastRow, err := table.SearchRange(searchValues...)
+	if err != nil {
+		return nil, err
+	}
+
+	newTable, err = NewTableFromRows(table, firstRow, lastRow, newTableName)
+	if err != nil {
+		return nil, err
+	}
+
+	return newTable, nil
+}
