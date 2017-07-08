@@ -112,7 +112,7 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromFileByTableName">func NewTableFromFileByTableName(fileName string, tableName string) (*Table, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#NewTableFromRows">func NewTableFromRows(fromTable *Table, firstRow int, lastRow int, newTableName string) (*Table, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#NewTableFromRows">func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow int) (*Table, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromRowsBySearchRange">func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValues ...interface{}) (*Table, error)</a></dd>
@@ -1299,10 +1299,10 @@ MyInt int = 42
 				
 			
 				
-				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=114839:114942#L4096">NewTableFromRows</a>
+				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=114839:114938#L4096">NewTableFromRows</a>
 					<a class="permalink" href="#NewTableFromRows">&#xb6;</a>
 				</h3>
-				<pre>func NewTableFromRows(fromTable *<a href="#Table">Table</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>, newTableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<pre>func NewTableFromRows(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 				<p>
 Create a new table from a range of rows in this table.
 </p>
@@ -1311,7 +1311,7 @@ Create a new table from a range of rows in this table.
 				
 			
 				
-				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=115356:115470#L4121">NewTableFromRowsBySearchRange</a>
+				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=115344:115458#L4121">NewTableFromRowsBySearchRange</a>
 					<a class="permalink" href="#NewTableFromRowsBySearchRange">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRowsBySearchRange(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, searchValues ...interface{}) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
