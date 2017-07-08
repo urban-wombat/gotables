@@ -3321,9 +3321,36 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 	return table, nil
 }
 
-func (table *Table) GobEncode() (bytes.Buffer, error) {
+//func (table *Table) GobEncode() (bytes.Buffer, error) {
+//	if table == nil {
+//		var blankBuffer bytes.Buffer
+//		return blankBuffer, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
+//	}
+//	var err error
+//	var buffer bytes.Buffer
+//	var enc *gob.Encoder = gob.NewEncoder(&buffer)
+//	var tableExported *TableExported
+//
+//	tableExported, err = table.exportTable()
+//	if err != nil {
+//		var blankBuffer bytes.Buffer
+//		return blankBuffer, err
+//	}
+//
+//	err = enc.Encode(tableExported)
+//	if err != nil {
+//		var blankBuffer bytes.Buffer
+//		return blankBuffer, err
+//	}
+//
+//	return buffer, nil
+//}
+
+// DOING dealing with go vet complaints.
+func (table *Table) GobEncode() ([]byte, error) {
+	var blankBuffer []byte
+
 	if table == nil {
-		var blankBuffer bytes.Buffer
 		return blankBuffer, fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
 	}
 	var err error
@@ -3333,17 +3360,15 @@ func (table *Table) GobEncode() (bytes.Buffer, error) {
 
 	tableExported, err = table.exportTable()
 	if err != nil {
-		var blankBuffer bytes.Buffer
 		return blankBuffer, err
 	}
 
 	err = enc.Encode(tableExported)
 	if err != nil {
-		var blankBuffer bytes.Buffer
 		return blankBuffer, err
 	}
 
-	return buffer, nil
+	return buffer.Bytes(), nil
 }
 
 //func (table *Table) GobEncode() ([]byte, error) {
@@ -3366,18 +3391,26 @@ func (table *Table) GobEncode() (bytes.Buffer, error) {
 //}
 
 func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
+	/*
+		go vet doesn't like this signature, but I see no other way. If it were an array of byte,
+		there would be no way of distinguishing individual tables (arrays of byte) within it.
+		$ go vet
+		$ method GobEncode() ([]bytes.Buffer, error) should have signature GobEncode() ([]byte, error)
+	*/
 	var emptyBuffer []bytes.Buffer
 	var encodedTableSet []bytes.Buffer
 	var err error
 
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
 		var table *Table = tableSet.tables[tableIndex]
-		var encodedTable bytes.Buffer
-		encodedTable, err = table.GobEncode()
+		var encodedTable *bytes.Buffer
+		var encodedTableBytes []byte
+		encodedTableBytes, err = table.GobEncode()
 		if err != nil {
 			return emptyBuffer, err
 		}
-		encodedTableSet = append(encodedTableSet, encodedTable)
+		encodedTable = bytes.NewBuffer(encodedTableBytes)
+		encodedTableSet = append(encodedTableSet, *encodedTable)
 		if len(encodedTableSet) != tableIndex+1 {
 			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
 				table.Name())
@@ -3404,6 +3437,51 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 
 	return encodedTableSet, nil
 }
+
+///* NOT OKAY!!
+//// DOING dealing with go vet complaints.
+//func (tableSet *TableSet) GobEncode() ([]byte, error) {
+//	var emptyBuffer []byte
+//	var encodedTableSet []*bytes.Buffer
+//	var err error
+//
+//	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
+//		var table *Table = tableSet.tables[tableIndex]
+//		var encodedTable *bytes.Buffer
+//		var encodedTableBytes []byte
+//		encodedTableBytes, err = table.GobEncode()
+//		if err != nil {
+//			return emptyBuffer, err
+//		}
+//		encodedTable = bytes.NewBuffer(encodedTableBytes)
+//		encodedTableSet = append(encodedTableSet, encodedTable)
+//		if len(encodedTableSet) != tableIndex+1 {
+//			err = fmt.Errorf("GobEncode(): table [%s] Error appending table to table set",
+//				table.Name())
+//			return emptyBuffer, err
+//		}
+//	}
+//
+//	// Add header information to the tail end of the buffer array.
+//	var tableSetHeader TableSetExported
+//	tableSetHeader.TableSetName = tableSet.tableSetName
+//	tableSetHeader.FileName = tableSet.fileName
+//	var encodedHeader *bytes.Buffer
+//	var enc *gob.Encoder = gob.NewEncoder(encodedHeader)
+//	err = enc.Encode(tableSetHeader)
+//	if err != nil {
+//		return emptyBuffer, err
+//	}
+//	encodedTableSet = append(encodedTableSet, encodedHeader)
+//	var headerIndex int = len(tableSet.tables)
+//	if len(encodedTableSet) != headerIndex+1 {
+//		err = fmt.Errorf("GobEncode(): error appending table set header to table set")
+//		return emptyBuffer, err
+//	}
+//
+//	return encodedTableSet, nil
+//}
+//*/
 
 //func (tableSet *TableSet) GobEncode() ([][]byte, error) {
 ////	var emptyBuffer []bytes.Buffer
@@ -3449,6 +3527,17 @@ func (tableSet *TableSet) GobEncode() ([]bytes.Buffer, error) {
 //	return encodedTableSet, nil
 //}
 
+/*
+	Reconstruct a TableSet from a slice of []bytes.Buffer
+
+	Each element in the slice is a Gob encoded table as a slice of []byte
+
+	Calls GobDecodeTableSet(buffer)
+*/
+func NewTableSetFromGob(buffer []bytes.Buffer) (*TableSet, error) {
+	return GobDecodeTableSet(buffer)
+}
+
 func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	var tableSet *TableSet
 	var err error
@@ -3460,7 +3549,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	var table *Table
 	var tableCount = len(buffer) - 1 // The tail end buffer element is the header.
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
-		table, err = GobDecodeTable(buffer[tableIndex])
+		table, err = GobDecodeTable(buffer[tableIndex].Bytes())
 		if err != nil {
 			return nil, err
 		}
@@ -3522,10 +3611,40 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 //	return tableSet, nil
 //}
 
-func GobDecodeTable(buffer bytes.Buffer) (*Table, error) {
+//func GobDecodeTable(buffer bytes.Buffer) (*Table, error) {
+//	var err error
+//	var tableDecoded *Table
+//	var dec *gob.Decoder = gob.NewDecoder(&buffer)
+//	var tableExported *TableExported
+//
+//	err = dec.Decode(&tableExported)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	tableDecoded, err = tableExported.importTable()
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return tableDecoded, nil
+//}
+
+/*
+	Reconstruct a Table from a slice of []byte
+
+	Calls GobDecodeTable([]byte)
+*/
+func NewTableFromGob(buf []byte) (*Table, error) {
+	return GobDecodeTable(buf)
+}
+
+func GobDecodeTable(buf []byte) (*Table, error) {
 	var err error
 	var tableDecoded *Table
-	var dec *gob.Decoder = gob.NewDecoder(&buffer)
+	var buffer *bytes.Buffer
+	buffer = bytes.NewBuffer(buf)
+	var dec *gob.Decoder = gob.NewDecoder(buffer)
 	var tableExported *TableExported
 
 	err = dec.Decode(&tableExported)

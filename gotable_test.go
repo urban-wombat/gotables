@@ -2833,7 +2833,7 @@ func ExampleTable_GobEncode_table() {
 	fmt.Println(tableToEncode)
 
 	// Encode into binary.
-    var binary bytes.Buffer
+    var binary []byte
     binary, err = tableToEncode.GobEncode()
     if err != nil {
 		log.Println(err)

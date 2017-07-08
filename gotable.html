@@ -100,7 +100,7 @@ Functions and methods for processing Table tables.
 				<dd><a href="#Table">type Table</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#GobDecodeTable">func GobDecodeTable(buffer bytes.Buffer) (*Table, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#GobDecodeTable">func GobDecodeTable(buf []byte) (*Table, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTable">func NewTable(tableName string) (*Table, error)</a></dd>
@@ -110,6 +110,9 @@ Functions and methods for processing Table tables.
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromFileByTableName">func NewTableFromFileByTableName(fileName string, tableName string) (*Table, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewTableFromGob">func NewTableFromGob(buf []byte) (*Table, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTableFromRows">func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow int) (*Table, error)</a></dd>
@@ -284,7 +287,7 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#Table.GetValByColIndex">func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Table.GobEncode">func (table *Table) GobEncode() (bytes.Buffer, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#Table.GobEncode">func (table *Table) GobEncode() ([]byte, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.HasCell">func (table *Table) HasCell(colName string, rowIndex int) (bool, error)</a></dd>
@@ -525,6 +528,9 @@ Functions and methods for processing Table tables.
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromFile">func NewTableSetFromFile(fileName string) (*TableSet, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromGob">func NewTableSetFromGob(buffer []bytes.Buffer) (*TableSet, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromHtmlReader">func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, error)</a></dd>
@@ -1131,10 +1137,10 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 
 			
 				
-				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=99360:99416#L3515">GobDecodeTable</a>
+				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=102682:102729#L3632">GobDecodeTable</a>
 					<a class="permalink" href="#GobDecodeTable">&#xb6;</a>
 				</h3>
-				<pre>func GobDecodeTable(buffer <a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<pre>func GobDecodeTable(buf []<a href="/pkg/builtin/#byte">byte</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 				
 				
 				
@@ -1299,7 +1305,22 @@ MyInt int = 42
 				
 			
 				
-				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=114839:114938#L4096">NewTableFromRows</a>
+				<h3 id="NewTableFromGob">func <a href="/src/target/gotable.go?s=102600:102648#L3628">NewTableFromGob</a>
+					<a class="permalink" href="#NewTableFromGob">&#xb6;</a>
+				</h3>
+				<pre>func NewTableFromGob(buf []<a href="/pkg/builtin/#byte">byte</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Reconstruct a Table from a slice of []byte
+</p>
+<p>
+Calls GobDecodeTable([]byte)
+</p>
+
+				
+				
+			
+				
+				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=118208:118307#L4215">NewTableFromRows</a>
 					<a class="permalink" href="#NewTableFromRows">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRows(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1311,7 +1332,7 @@ Create a new table from a range of rows in this table.
 				
 			
 				
-				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=115344:115458#L4121">NewTableFromRowsBySearchRange</a>
+				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=118713:118827#L4240">NewTableFromRowsBySearchRange</a>
 					<a class="permalink" href="#NewTableFromRowsBySearchRange">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRowsBySearchRange(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, searchValues ...interface{}) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1489,7 +1510,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=112649:112712#L4009">AppendColsFromTable</a>
+				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=116018:116081#L4128">AppendColsFromTable</a>
 					<a class="permalink" href="#Table.AppendColsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendColsFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1532,7 +1553,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=113870:113962#L4055">AppendRowsFromTable</a>
+				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=117239:117331#L4174">AppendRowsFromTable</a>
 					<a class="permalink" href="#Table.AppendRowsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (toTable *<a href="#Table">Table</a>) AppendRowsFromTable(fromTable *<a href="#Table">Table</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1758,7 +1779,7 @@ Delete a sort key by name.
 				
 			
 				
-				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=110297:110353#L3930">Equals</a>
+				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=113666:113722#L4049">Equals</a>
 					<a class="permalink" href="#Table.Equals">&#xb6;</a>
 				</h3>
 				<pre>func (table1 *<a href="#Table">Table</a>) Equals(table2 *<a href="#Table">Table</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2182,7 +2203,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=102962:103042#L3655">GetValAsString</a>
+				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=106331:106411#L3774">GetValAsString</a>
 					<a class="permalink" href="#Table.GetValAsString">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2192,7 +2213,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=100648:100736#L3570">GetValAsStringByColIndex</a>
+				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=104017:104105#L3689">GetValAsStringByColIndex</a>
 					<a class="permalink" href="#Table.GetValAsStringByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2216,11 +2237,14 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=93670:93723#L3314">GobEncode</a>
+				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=94320:94367#L3340">GobEncode</a>
 					<a class="permalink" href="#Table.GobEncode">&#xb6;</a>
 				</h3>
-				<pre>func (table *<a href="#Table">Table</a>) GobEncode() (<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
+				<pre>func (table *<a href="#Table">Table</a>) GobEncode() ([]<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+DOING dealing with go vet complaints.
+</p>
+
 				
 				<div id="example_Table_GobEncode_table" class="toggle">
 	<div class="collapsed">
@@ -2247,7 +2271,7 @@ fmt.Println(&#34;(1) Table ready to encode into binary.&#34;)
 fmt.Println(tableToEncode)
 
 <span class="comment">// Encode into binary.</span>
-var binary bytes.Buffer
+var binary []byte
 binary, err = tableToEncode.GobEncode()
 if err != nil {
     log.Println(err)
@@ -2468,7 +2492,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=103309:103358#L3671">IsStructShape</a>
+				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=106678:106727#L3790">IsStructShape</a>
 					<a class="permalink" href="#Table.IsStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsStructShape() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2478,7 +2502,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=104791:104875#L3726">IsValidColValue</a>
+				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=108160:108244#L3845">IsValidColValue</a>
 					<a class="permalink" href="#Table.IsValidColValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidColValue(colName <a href="/pkg/builtin/#string">string</a>, value interface{}) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2525,7 +2549,7 @@ Valid sort keys (if any are set)?
 				
 			
 				
-				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=103860:103941#L3691">JoinColVals</a>
+				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=107229:107310#L3810">JoinColVals</a>
 					<a class="permalink" href="#Table.JoinColVals">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColVals(colName <a href="/pkg/builtin/#string">string</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2585,7 +2609,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=104425:104514#L3712">JoinColValsByColIndex</a>
+				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=107794:107883#L3831">JoinColValsByColIndex</a>
 					<a class="permalink" href="#Table.JoinColValsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColValsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3915,7 +3939,7 @@ Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
 				
 			
 				
-				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=103572:103632#L3680">SetStructShape</a>
+				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=106941:107001#L3799">SetStructShape</a>
 					<a class="permalink" href="#Table.SetStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetStructShape(isStructShape <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4440,7 +4464,7 @@ TableSet is an ordered set of *Table pointers.
 
 			
 				
-				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=97394:97458#L3442">GobDecodeTableSet</a>
+				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=100137:100201#L3531">GobDecodeTableSet</a>
 					<a class="permalink" href="#GobDecodeTableSet">&#xb6;</a>
 				</h3>
 				<pre>func GobDecodeTableSet(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4496,6 +4520,24 @@ MyTableSet
 				<pre>func NewTableSetFromFile(fileName <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
 				<p>
 Read and parse a gotable file into a TableSet.
+</p>
+
+				
+				
+			
+				
+				<h3 id="NewTableSetFromGob">func <a href="/src/target/gotable.go?s=100032:100097#L3527">NewTableSetFromGob</a>
+					<a class="permalink" href="#NewTableSetFromGob">&#xb6;</a>
+				</h3>
+				<pre>func NewTableSetFromGob(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Reconstruct a TableSet from a slice of []bytes.Buffer
+</p>
+<p>
+Each element in the slice is a Gob encoded table as a slice of []byte
+</p>
+<p>
+Calls GobDecodeTableSet(buffer)
 </p>
 
 				
@@ -4569,7 +4611,7 @@ The file name if this TableSet has been created from a file. Otherwise &#34;&#34
 				
 			
 				
-				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=94646:94707#L3358">GobEncode</a>
+				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=95230:95291#L3383">GobEncode</a>
 					<a class="permalink" href="#TableSet.GobEncode">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) GobEncode() ([]<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
