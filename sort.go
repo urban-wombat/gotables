@@ -530,7 +530,7 @@ func (table *Table) Sort() error {
 	}
 
 	if len(table.sortKeys) == 0 {
-		return fmt.Errorf("cannot sort table that has 0 sort keys - use SetSortKeys()")
+		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
 	table.sortByKeys(table.sortKeys)
@@ -1164,4 +1164,32 @@ func (table *Table) SearchRange(searchValues ...interface{}) (first int, last in
 	}
 
 	return
+}
+
+/*
+	Sort this table UNIQUE by this table's currently-set sort keys.
+	Non-key column cell values are not used for uniqueness but are evaluated and merged.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+
+	Note: the sorted table is returned, not sorted in place.
+
+	SortUnique() uses table.Merge() which resolves missing or conflicting cell values.
+*/
+func (table *Table) SortUnique() (tableUnique *Table, err error) {
+
+	if table == nil {
+		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	if len(table.sortKeys) == 0 {
+		return nil, fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
+	}
+
+	tableUnique, err = table.Merge(table)
+	if err != nil {
+		return nil, err
+	}
+
+	return tableUnique, nil
 }

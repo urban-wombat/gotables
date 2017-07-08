@@ -123,7 +123,7 @@ func (table *Table) Nest(nestable *Table, nestColName string) error {
 			return err
 		}
 
-		table.SetString(nestColName, rowIndex, newTable.StringUnpadded())
+		err = table.SetString(nestColName, rowIndex, newTable.StringUnpadded())
 		if err != nil {
 			return err
 		}

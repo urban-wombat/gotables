@@ -142,15 +142,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 	// Okay. They're compatible, now set up for merging.
 
-/*
-	// where()
-	colInfoTable, err := table1.GetColInfoAsTable()
-	if err != nil {
-		return nil, err
-	}
-	// where(fmt.Sprintf("colInfoTable =\n%s\n", colInfoTable))
-*/
-
 	// where()
 	merged, err = NewTable("Merged")
 	if err != nil {
@@ -264,17 +255,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	// where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 
 	// Loop through to second-last row, comparing each row with the row after it.
-	/*
-		There are 4 possibilities (based on whether the values are zero values):
-		Combination	val1		val2		Action
-		(a)			zero		zero		do nothing
-		(b)			zero		non-zero	copy val2 to val1	Assumes zero is a missing value
-		(c)			non-zero	zero		copy val1 to val2	Assumes zero is a missing value
-		(d)			non-zero	non-zero	copy val1 to val2	(table1 takes precedence)
-		There are 2 further possibilities with float32 and float64:
-		(e)			zero		NaN			copy val1 to val2	Assumes zero is NOT a missing value
-		(f)			NaN			zero		copy val2 to val1	Assumes zero is NOT a missing value
-	*/
 	for rowIndex := 0; rowIndex < merged.RowCount()-1; rowIndex++ {
 		comparison, err := merged.CompareRows(rowIndex, rowIndex+1)
 		if err != nil {
@@ -401,16 +381,19 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 						var val1 float64
 						var val2 float64
 						const zeroVal = 0.0
+
 						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
 						if err != nil {
 							return nil, err
 						}
 						val1 = reflect.ValueOf(tmp1).Float()
+
 						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
 						if err != nil {
 							return nil, err
 						}
 						val2 = reflect.ValueOf(tmp2).Float()
+
 						if val1 != zeroVal && !math.IsNaN(val1) {	// Covers combinations (c) and (d)
 							// where(fmt.Sprintf("val1 %f != zeroVal", val1))
 							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
