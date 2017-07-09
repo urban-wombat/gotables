@@ -797,12 +797,10 @@ func (table *Table) SortKeyCount() int {
 // Copy sort keys into table from fromTable.
 func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	if table == nil {
-//		return fmt.Errorf("%s(*Table) *Table is <nil>", funcName())
-		return fmt.Errorf("*Table.%s() *Table is <nil>", funcName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if fromTable == nil {
-//		return fmt.Errorf("%s(*Table) *fromTable is <nil>", funcName())
-		return fmt.Errorf("*fromTable.%s() *fromTable is <nil>", funcName())
+		return fmt.Errorf("fromTable.%s() fromTable is <nil>", funcName())
 	}
 	if fromTable.SortKeyCount() == 0 {
 		return fmt.Errorf("table.%s(fromTable): fromTable.SortKeyCount() == 0", funcName())
@@ -855,48 +853,56 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 */
 func (table *Table) OrderColsBySortKeys() error {
 	var err error
+	var newOrder []string = make([]string, table.ColCount())	// List of new colNames.
+	var key int
 
-	// Create parallel arrays ready to swap colNames values around.
-	var old []int = make([]int, table.SortKeyCount())	// List of old colName indexes.
-	var new []int = make([]int, table.SortKeyCount())	// List of new colName indexes.
+	// Populate new order ...
 
-	for key := 0; key < table.SortKeyCount(); key++ {
-		for col := 0; col < table.ColCount(); col++ {
-			keyName := table.sortKeys[key].colName
-			colName := table.colNames[col]
-//			fmt.Printf("colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
-			if colName == keyName {
-//				fmt.Printf("matching: colName[%d] = %q  keyName[%d] = %q\n", col, colName, key, keyName)
-				old[key] = col
-				new[key] = key
-				break	// Go on to next key.
-			}
-		}
+	// First slots with key col names.
+	for key = 0; key < table.SortKeyCount(); key++ {
+		keyName := table.sortKeys[key].colName
+		// where(fmt.Sprintf("[%d] keyName: %s", key, keyName))
+		newOrder[key] = keyName
 	}
-//	where(fmt.Sprintf("(1) table.colNamesLookup = %v", table.colNamesLookup))
 
-	for key := 0; key < table.SortKeyCount(); key++ {
-//	fmt.Printf("%d, %d = %d, %d\n", old[key], new[key], new[key], old[key])
-
-/*
-		// Swap colNames values using Go assignment swapping syntax: x, y = y, x
-		table.colNames[old[key]], table.colNames[new[key]] = table.colNames[new[key]], table.colNames[old[key]]
-
-		// Swap colTypes values using Go assignment swapping syntax: x, y = y, x
-		table.colTypes[old[key]], table.colTypes[new[key]] = table.colTypes[new[key]], table.colTypes[old[key]]
-
-		// Swap colNamesLookup values using Go assignment swapping syntax: x, y = y, x
-		table.colNamesLookup[table.colNames[old[key]]], table.colNamesLookup[table.colNames[new[key]]] =
-		table.colNamesLookup[table.colNames[new[key]]], table.colNamesLookup[table.colNames[old[key]]]
-*/
-		err = table.swapColsByColIndex(old[key], new[key])
+	// Subsequent slots with non-key col names.
+	row := table.SortKeyCount()
+	for col := 0; col < table.ColCount(); col++ {
+		colName := table.colNames[col]
+		isSortKey, err := table.IsSortKey(colName)
 		if err != nil {
 			return err
 		}
+		if !isSortKey {
+			// where(fmt.Sprintf("[%d] colName: %s", row, colName))
+			newOrder[row] = colName
+			row++
+		}
 	}
-	// where(fmt.Sprintf("(2) table.colNamesLookup = %v", table.colNamesLookup))
+
+	table.ReorderCols(newOrder...)
 
 	return err
+}
+
+// True if colName is a sort key in table. False if not. Error if colName not in table.
+func (table *Table) IsSortKey(colName string) (bool, error) {
+	if table == nil {
+		return false, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	hasCol, err := table.HasCol(colName)
+	if err != nil {
+		return hasCol, err
+	}
+
+	for keyIndex := 0; keyIndex < len(table.sortKeys); keyIndex++ {
+		if table.sortKeys[keyIndex].colName == colName {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
@@ -938,6 +944,80 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 
 	table.colNamesLookup[colName1], table.colNamesLookup[colName2] =
 	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
+
+	return nil
+}
+
+func (table *Table) ReorderCols(newColNamesOrder ...string) error {
+
+	// This sets out the relationship between table.colNames, table.colTypes and table.colnamesLookup.
+
+	// table.colNames, table.colTypes and table.colnamesLookup are fully re-written.
+	// The old (existing) table column information is first copied to [oldColsTable] and sorted
+	// to facilitate lookup of colType.
+
+	var err error
+
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	if len(newColNamesOrder) != table.ColCount() {
+		return fmt.Errorf("%s(newColNamesOrder): expecting %d col names, but found: %d",
+			funcName(), table.ColCount(), len(newColNamesOrder))
+	}
+
+	// Table of old colName and typeName to help reconstructing new order.
+	tableString :=
+	`[oldColsTable]
+	colName string
+	colType string
+	`
+	oldColsTable, err := NewTableFromString(tableString)
+	if err != nil {
+		return err
+	}
+	err = oldColsTable.AppendRows(table.ColCount())
+	if err != nil {
+		return err
+	}
+	for col := 0; col < table.ColCount(); col++ {
+		err = oldColsTable.SetString("colName", col, table.colNames[col])
+		if err != nil {
+			return err
+		}
+		err = oldColsTable.SetString("colType", col, table.colTypes[col])
+		if err != nil {
+			return err
+		}
+	}
+	err = oldColsTable.SetSortKeys("colName")
+	if err != nil {
+		return err
+	}
+//where(oldColsTable)
+	err = oldColsTable.Sort()
+	if err != nil {
+		return err
+	}
+//where(oldColsTable)
+
+	for col := 0; col < len(newColNamesOrder); col++ {
+		table.colNames[col] = newColNamesOrder[col]
+		oldColNameIndex, err := oldColsTable.Search(newColNamesOrder[col])
+		if err != nil {
+			return err
+		}
+		oldColType, err := oldColsTable.GetString("colType", oldColNameIndex)
+		if err != nil {
+			return err
+		}
+		table.colTypes[col] = oldColType
+		table.colNamesLookup[newColNamesOrder[col]] = col
+	}
+
+//where(table.colTypes)
+//where(table.colNamesLookup)
 
 	return nil
 }
@@ -1187,6 +1267,11 @@ func (table *Table) SortUnique() (tableUnique *Table, err error) {
 	}
 
 	tableUnique, err = table.Merge(table)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tableUnique.SetName(table.Name())
 	if err != nil {
 		return nil, err
 	}

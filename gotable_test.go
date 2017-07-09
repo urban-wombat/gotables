@@ -4247,8 +4247,8 @@ func ExampleTable_OrderColsBySortKeys() {
 	// 
 	// (3) Order the sort key columns to the left:
 	// [MyTable]
-	// Key1 Key2   ColB    ColC ColA   ColD ColE
-	//  int string  int float64 string  int bool
+	// Key1 Key2   ColA   ColB    ColC ColD ColE
+	//  int string string  int float64  int bool
 }
 
 /*
@@ -4878,14 +4878,14 @@ func ExampleTable_Merge() {
 	// "pqr"  true    88   97    0.0    6
 	// 
 	// [Merged]
-	//   i s        y       f XYZ    diff b       ui
-	// int string int float64 string  int bool  uint
-	//   1 "abc"    1   1.11  "X"       7 true    99
-	//   2 "def"    2   0.0   "Z"       9 false   88
-	//   3 "ghi"    3   7.891 "Y"       8 false    0
-	//   4 "jkl"    4   0.0   "A"       6 false   88
-	//   5 "mno"    5   0.0   "B"       4 false   95
-	//   6 "pqr"    8   0.0   "C"      45 true    97
+	//   i s      XYZ      y       f diff b       ui
+	// int string string int float64  int bool  uint
+	//   1 "abc"  "X"      1   1.11     7 true    99
+	//   2 "def"  "Z"      2   0.0      9 false   88
+	//   3 "ghi"  "Y"      3   7.891    8 false    0
+	//   4 "jkl"  "A"      4   0.0      6 false   88
+	//   5 "mno"  "B"      5   0.0      4 false   95
+	//   6 "pqr"  "C"      8   0.0     45 true    97
 }
 
 func ExampleTable_SortUnique() {
@@ -4949,7 +4949,7 @@ func ExampleTable_SortUnique() {
 	//      5    -5.0 "minus 5"
 	// 
 	// After SortUnique() ...
-	// [Merged]
+	// [Uniqueness]
 	// KeyCol  number s
 	//    int float32 string
 	//      1     1.1 "one point one"
