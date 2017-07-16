@@ -4269,11 +4269,11 @@ See: <a href="https://en.wikipedia.org/wiki/Comma-separated_values">https://en.w
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[ForCSV]
-first_name	last_name	username	i	f64		b		f32
-string		string		string		int	float64	bool	float32
-&#34;Rob&#34;		&#34;Pike&#34;		&#34;rob&#34;		1	1.1		true	NaN
-&#34;Ken&#34;		&#34;Thompson&#34;	&#34;ken&#34;		3	NaN		true	3.3
-&#34;Robert&#34;	&#34;Griesemer&#34;	&#34;gri&#34;		5	5.5		true	NaN
+first_name  last_name   username    i   f64     b       f32
+string      string      string      int float64 bool    float32
+&#34;Rob&#34;       &#34;Pike&#34;      &#34;rob&#34;       1   1.1     true    NaN
+&#34;Ken&#34;       &#34;Thompson&#34;  &#34;ken&#34;       3   NaN     true    3.3
+&#34;Robert&#34;    &#34;Griesemer&#34; &#34;gri&#34;       5   5.5     true    NaN
 `
 table, err := NewTableFromString(tableString)
 if err != nil {
