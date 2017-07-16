@@ -4963,11 +4963,11 @@ func ExampleTable_StringCSV() {
 
 	tableString :=
 	`[ForCSV]
-	first_name	last_name	username	i	f		b
-	string		string		string		int	float64	bool
-	"Rob"		"Pike"		"rob"		1	1.1		true
-	"Ken"		"Thompson"	"ken"		3	3.3		true
-	"Robert"	"Griesemer"	"gri"		5	5.5		true
+	first_name	last_name	username	i	f64		b		f32
+	string		string		string		int	float64	bool	float32
+	"Rob"		"Pike"		"rob"		1	1.1		true	NaN
+	"Ken"		"Thompson"	"ken"		3	NaN		true	3.3
+	"Robert"	"Griesemer"	"gri"		5	5.5		true	NaN
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
@@ -4989,15 +4989,15 @@ func ExampleTable_StringCSV() {
 	// Output:
 	// Before table.StringCSV() ...
 	// [ForCSV]
-	// first_name last_name   username   i       f b
-	// string     string      string   int float64 bool
-	// "Rob"      "Pike"      "rob"      1     1.1 true
-	// "Ken"      "Thompson"  "ken"      3     3.3 true
-	// "Robert"   "Griesemer" "gri"      5     5.5 true
+	// first_name last_name   username   i     f64 b        f32
+	// string     string      string   int float64 bool float32
+	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN
+	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3
+	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN
 	// 
 	// After table.StringCSV() ...
-	// first_name,last_name,username,i,f,b
-	// Rob,Pike,rob,1,1.1,true
-	// Ken,Thompson,ken,3,3.3,true
-	// Robert,Griesemer,gri,5,5.5,true
+	// first_name,last_name,username,i,f64,b,f32
+	// Rob,Pike,rob,1,1.1,true,
+	// Ken,Thompson,ken,3,,true,3.3
+	// Robert,Griesemer,gri,5,5.5,true,
 }
