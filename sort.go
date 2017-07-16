@@ -852,6 +852,10 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	Note: This is purely for human readability. It is not required for sorting.
 */
 func (table *Table) OrderColsBySortKeys() error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
 	var err error
 	var newOrder []string = make([]string, table.ColCount())	// List of new colNames.
 	var key int
@@ -907,6 +911,10 @@ func (table *Table) IsSortKey(colName string) (bool, error) {
 
 func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colnamesLookup.
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
 	var err error
 	table.colNames[colIndex1], table.colNames[colIndex2] = table.colNames[colIndex2], table.colNames[colIndex1]
 
@@ -1266,11 +1274,13 @@ func (table *Table) SortUnique() (tableUnique *Table, err error) {
 		return nil, fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
+	// Merge() eliminates duplicates (based on keys) and fills in zero and missing values where available.
 	tableUnique, err = table.Merge(table)
 	if err != nil {
 		return nil, err
 	}
 
+	// Merge() calls the merged table "merged". Rename it.
 	err = tableUnique.SetName(table.Name())
 	if err != nil {
 		return nil, err

@@ -3391,7 +3391,7 @@ func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	}
 
 	var table *Table
-	var tableCount = len(buffer) - 1 // The tail end buffer element is the header.
+	var tableCount = len(buffer) - 1 // The tail end buffer element is the TableSet header.
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
 		table, err = GobDecodeTable(buffer[tableIndex].Bytes())
 		if err != nil {

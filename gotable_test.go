@@ -2806,7 +2806,7 @@ func ExampleTable_GobEncode_table() {
 	//   3 "ssss"     4.9 false
 }
 
-func ExampleTable_GobEncode_tableset() {
+func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
     int string  float64     bool
