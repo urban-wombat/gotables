@@ -4958,3 +4958,46 @@ func ExampleTable_SortUnique() {
 	//      4     4.4 "neither zero nor same A"
 	//      5    -5.0 "minus 5"
 }
+
+func ExampleTable_StringCSV() {
+
+	tableString :=
+	`[ForCSV]
+	first_name	last_name	username	i	f		b
+	string		string		string		int	float64	bool
+	"Rob"		"Pike"		"rob"		1	1.1		true
+	"Ken"		"Thompson"	"ken"		3	3.3		true
+	"Robert"	"Griesemer"	"gri"		5	5.5		true
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+        log.Println(err)
+	}
+
+	fmt.Println("Before table.StringCSV() ...")
+	fmt.Println(table)
+
+	var csv string
+	csv, err = table.StringCSV()
+	if err != nil {
+        log.Println(err)
+	}
+
+	fmt.Println("After table.StringCSV() ...")
+	fmt.Println(csv)
+
+	// Output:
+	// Before table.StringCSV() ...
+	// [ForCSV]
+	// first_name last_name   username   i       f b
+	// string     string      string   int float64 bool
+	// "Rob"      "Pike"      "rob"      1     1.1 true
+	// "Ken"      "Thompson"  "ken"      3     3.3 true
+	// "Robert"   "Griesemer" "gri"      5     5.5 true
+	// 
+	// After table.StringCSV() ...
+	// first_name,last_name,username,i,f,b
+	// Rob,Pike,rob,1,1.1,true
+	// Ken,Thompson,ken,3,3.3,true
+	// Robert,Griesemer,gri,5,5.5,true
+}

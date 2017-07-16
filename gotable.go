@@ -6,6 +6,7 @@ package gotable
 import (
 	"bufio"
 	"bytes"
+	"encoding/csv"
 	"encoding/gob"
 	"errors"
 	"fmt"
@@ -1436,36 +1437,168 @@ func setWidths(s string, colIndex int, prenum []int, points []int, precis []int,
 	width[colIndex] = max(width[colIndex], thisWidth)
 }
 
+///*
+//Return a table as a comma separated variables for spreadsheets.
+//
+//Note: This does not (yet) implement handling of commas and quotation marks inside strings.
+//See: https://en.wikipedia.org/wiki/Comma-separated_values
+//*/
+//func (table *Table) StringCSV() string {
+//	if table == nil {
+//		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
+//		return ""
+//	}
+//	const comma = ","
+//	var s string
+//	var buf bytes.Buffer
+//
+//	// Col names
+//	var colNameSep = ""
+//	for _, colName := range table.colNames {
+//		buf.WriteString(colNameSep)
+//		buf.WriteString(colName)
+//		colNameSep = comma
+//	}
+//	buf.WriteByte('\n')
+//
+//	// Rows of data
+//	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+//		var rowSep = "\n"
+//		var rowMap tableRow
+//		rowMap, _ = table.rowMap(rowIndex)
+//		var rowColSep = ""
+//		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+//			var sVal string
+//			var tVal bool
+//			var ui8Val uint8
+//			var ui16Val uint16
+//			var ui32Val uint32
+//			var ui64Val uint64
+//			var uiVal uint
+//			var iVal int
+//			var i8Val int8
+//			var i16Val int16
+//			var i32Val int32
+//			var i64Val int64
+//			var f32Val float32
+//			var f64Val float64
+//			var exists bool
+//			buf.WriteString(rowColSep)
+//			switch table.colTypes[colIndex] {
+//			case "string":
+//				sVal, exists = rowMap[table.colNames[colIndex]].(string)
+//				buf.WriteString(sVal)
+//			case "bool":
+//				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+//				buf.WriteString(fmt.Sprintf("%t", tVal))
+//			case "uint8":
+//				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+//				buf.WriteString(fmt.Sprintf("%d", ui8Val))
+//			case "uint16":
+//				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+//				buf.WriteString(fmt.Sprintf("%d", ui16Val))
+//			case "uint32":
+//				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+//				buf.WriteString(fmt.Sprintf("%d", ui32Val))
+//			case "uint64":
+//				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+//				buf.WriteString(fmt.Sprintf("%d", ui64Val))
+//			case "uint":
+//				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+//				buf.WriteString(fmt.Sprintf("%d", uiVal))
+//			case "int":
+//				iVal, exists = rowMap[table.colNames[colIndex]].(int)
+//				buf.WriteString(fmt.Sprintf("%d", iVal))
+//			case "int8":
+//				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+//				buf.WriteString(fmt.Sprintf("%d", i8Val))
+//			case "int16":
+//				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+//				buf.WriteString(fmt.Sprintf("%d", i16Val))
+//			case "int32":
+//				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+//				buf.WriteString(fmt.Sprintf("%d", i32Val))
+//			case "int64":
+//				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+//				buf.WriteString(fmt.Sprintf("%d", i64Val))
+//			case "float32":
+//				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+//				if exists {
+//					var f64ValForFormatFloat float64 = float64(f32Val)
+//					if !math.IsNaN(f64ValForFormatFloat) {
+//						buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32))
+//					} else {
+//						buf.WriteString(fmt.Sprintf("")) // Missing value.
+//					}
+//				} else {
+//					buf.WriteString(fmt.Sprintf("")) // Missing value.
+//					exists = true                    // To not trigger following test of missing value for other types.
+//				}
+//			case "float64":
+//				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+//				if exists {
+//					if !math.IsNaN(f64Val) {
+//						buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))
+//					} else {
+//						buf.WriteString(fmt.Sprintf("")) // Missing value.
+//					}
+//				} else {
+//					buf.WriteString(fmt.Sprintf("")) // Missing value.
+//					exists = true                    // To not trigger following test of missing value for other types.
+//				}
+//			default:
+//				log.Printf("ERROR IN func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
+//				return ""
+//			}
+//
+//			if !exists {
+//				log.Printf("ERROR IN func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
+//					table.Name(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
+//					rowMap[table.colNames[colIndex]])
+//				return ""
+//			}
+//
+//			rowColSep = comma
+//		}
+//		buf.WriteString(rowSep)
+//	}
+//
+//	s = buf.String()
+//
+//	return s
+//}
+
 /*
 Return a table as a comma separated variables for spreadsheets.
 
 Note: This does not (yet) implement handling of commas and quotation marks inside strings.
 See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
-func (table *Table) StringCSV() string {
+func (table *Table) StringCSV() (string, error) {
+	var err error
+
 	if table == nil {
 		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
-		return ""
+		return "", err
 	}
-	const comma = ","
-	var s string
-	var buf bytes.Buffer
+
+	var buf *bytes.Buffer = new(bytes.Buffer)
+	csvWriter := csv.NewWriter(buf)
+	var record []string = make([]string, table.ColCount())
 
 	// Col names
-	var colNameSep = ""
-	for _, colName := range table.colNames {
-		buf.WriteString(colNameSep)
-		buf.WriteString(colName)
-		colNameSep = comma
+	for colIndex, colName := range table.colNames {
+		record[colIndex] = colName
 	}
-	buf.WriteByte('\n')
+	err = csvWriter.Write(record)
+	if err != nil {
+		return "", err
+	}
 
 	// Rows of data
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		var rowSep = "\n"
 		var rowMap tableRow
 		rowMap, _ = table.rowMap(rowIndex)
-		var rowColSep = ""
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal string
 			var tVal bool
@@ -1482,89 +1615,97 @@ func (table *Table) StringCSV() string {
 			var f32Val float32
 			var f64Val float64
 			var exists bool
-			buf.WriteString(rowColSep)
+
 			switch table.colTypes[colIndex] {
 			case "string":
 				sVal, exists = rowMap[table.colNames[colIndex]].(string)
-				buf.WriteString(sVal)
+				record[colIndex] = sVal
 			case "bool":
 				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-				buf.WriteString(fmt.Sprintf("%t", tVal))
+				record[colIndex] = fmt.Sprintf("%t", tVal)
 			case "uint8":
 				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-				buf.WriteString(fmt.Sprintf("%d", ui8Val))
+				record[colIndex] = fmt.Sprintf("%d", ui8Val)
 			case "uint16":
 				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-				buf.WriteString(fmt.Sprintf("%d", ui16Val))
+				record[colIndex] = fmt.Sprintf("%d", ui16Val)
 			case "uint32":
 				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-				buf.WriteString(fmt.Sprintf("%d", ui32Val))
+				record[colIndex] = fmt.Sprintf("%d", ui32Val)
 			case "uint64":
 				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-				buf.WriteString(fmt.Sprintf("%d", ui64Val))
+				record[colIndex] = fmt.Sprintf("%d", ui64Val)
 			case "uint":
 				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-				buf.WriteString(fmt.Sprintf("%d", uiVal))
+				record[colIndex] = fmt.Sprintf("%d", uiVal)
 			case "int":
 				iVal, exists = rowMap[table.colNames[colIndex]].(int)
-				buf.WriteString(fmt.Sprintf("%d", iVal))
+				record[colIndex] = fmt.Sprintf("%d", iVal)
 			case "int8":
 				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-				buf.WriteString(fmt.Sprintf("%d", i8Val))
+				record[colIndex] = fmt.Sprintf("%d", i8Val)
 			case "int16":
 				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-				buf.WriteString(fmt.Sprintf("%d", i16Val))
+				record[colIndex] = fmt.Sprintf("%d", i16Val)
 			case "int32":
 				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-				buf.WriteString(fmt.Sprintf("%d", i32Val))
+				record[colIndex] = fmt.Sprintf("%d", i32Val)
 			case "int64":
 				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-				buf.WriteString(fmt.Sprintf("%d", i64Val))
+				record[colIndex] = fmt.Sprintf("%d", i64Val)
 			case "float32":
 				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
 				if exists {
 					var f64ValForFormatFloat float64 = float64(f32Val)
 					if !math.IsNaN(f64ValForFormatFloat) {
-						buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32))
+						record[colIndex] = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)
 					} else {
-						buf.WriteString(fmt.Sprintf("")) // Missing value.
+						record[colIndex] = fmt.Sprintf("") // Missing value.
 					}
 				} else {
-					buf.WriteString(fmt.Sprintf("")) // Missing value.
+					record[colIndex] = fmt.Sprintf("") // Missing value.
 					exists = true                    // To not trigger following test of missing value for other types.
 				}
 			case "float64":
 				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
 				if exists {
 					if !math.IsNaN(f64Val) {
-						buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64))
+						record[colIndex] = strconv.FormatFloat(f64Val, 'f', -1, 64)
 					} else {
-						buf.WriteString(fmt.Sprintf("")) // Missing value.
+						record[colIndex] = fmt.Sprintf("") // Missing value.
 					}
 				} else {
-					buf.WriteString(fmt.Sprintf("")) // Missing value.
+					record[colIndex] = fmt.Sprintf("") // Missing value.
 					exists = true                    // To not trigger following test of missing value for other types.
 				}
 			default:
 				log.Printf("ERROR IN func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
-				return ""
+				return "", err
 			}
 
 			if !exists {
 				log.Printf("ERROR IN func (table *Table) StringCSV() Missing a value: table [%s] col %q row %d type %q value: %v\n",
 					table.Name(), table.colNames[colIndex], rowIndex, table.colTypes[colIndex],
 					rowMap[table.colNames[colIndex]])
-				return ""
+				return "", err
 			}
-
-			rowColSep = comma
 		}
-		buf.WriteString(rowSep)
+
+		err = csvWriter.Write(record)
+		if err != nil {
+			return "", err
+		}
 	}
 
-	s = buf.String()
+	csvWriter.Flush()
+	err = csvWriter.Error()
+	if err != nil {
+		return "", err
+	}
 
-	return s
+	var s string = buf.String()
+
+	return s, nil
 }
 
 // Append a column to this table.
