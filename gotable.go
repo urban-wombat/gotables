@@ -1575,6 +1575,9 @@ Note: This does not (yet) implement handling of commas and quotation marks insid
 See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
 func (table *Table) StringCSV() (string, error) {
+	// Note: this doesn't use table.GetValAsStringByColIndex() because it needs to handle NaN differently.
+	// Could probably adapt it to handle NaN.
+
 	var err error
 
 	if table == nil {
