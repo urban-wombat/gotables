@@ -4959,7 +4959,7 @@ func ExampleTable_SortUnique() {
 	//      5    -5.0 "minus 5"
 }
 
-func ExampleTable_StringCSV() {
+func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
 	`[ForCSV]
@@ -4974,20 +4974,30 @@ func ExampleTable_StringCSV() {
         log.Println(err)
 	}
 
-	fmt.Println("Before table.StringCSV() ...")
+	fmt.Println("Before table.GetTableAsCSV() ...")
 	fmt.Println(table)
 
 	var csv string
-	csv, err = table.StringCSV()
+	csv, err = table.GetTableAsCSV()
 	if err != nil {
         log.Println(err)
 	}
 
-	fmt.Println("After table.StringCSV() ...")
+	fmt.Println("After table.GetTableAsCSV() ...")
+	fmt.Println(csv)
+
+	headingNames := []string{"First Name", "Last Name", "username", "i", "f64", "bool", "f32"}
+
+	csv, err = table.GetTableAsCSV(headingNames...)
+	if err != nil {
+        log.Println(err)
+	}
+
+	fmt.Println("After table.GetTableAsCSV(headingNames) ...")
 	fmt.Println(csv)
 
 	// Output:
-	// Before table.StringCSV() ...
+	// Before table.GetTableAsCSV() ...
 	// [ForCSV]
 	// first_name last_name   username   i     f64 b        f32
 	// string     string      string   int float64 bool float32
@@ -4995,8 +5005,14 @@ func ExampleTable_StringCSV() {
 	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3
 	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN
 	// 
-	// After table.StringCSV() ...
+	// After table.GetTableAsCSV() ...
 	// first_name,last_name,username,i,f64,b,f32
+	// Rob,Pike,rob,1,1.1,true,
+	// Ken,Thompson,ken,3,,true,3.3
+	// Robert,Griesemer,gri,5,5.5,true,
+
+	// After table.GetTableAsCSV(headingNames) ...
+	// First Name,Last Name,username,i,f64,bool,f32
 	// Rob,Pike,rob,1,1.1,true,
 	// Ken,Thompson,ken,3,,true,3.3
 	// Robert,Griesemer,gri,5,5.5,true,

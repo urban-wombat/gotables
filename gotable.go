@@ -1714,14 +1714,15 @@ func setWidths(s string, colIndex int, prenum []int, points []int, precis []int,
 /*
 Return a table as a comma separated variables for spreadsheets.
 
+headingNames is optional. Leave empty or provide table.ColCount() []string of names.
+
 See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
-func (table *Table) StringCSV() (string, error) {
+func (table *Table) GetTableAsCSV(headingNames ...string) (string, error) {
 	var err error
 
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: *Table.%s() *Table is <nil>\n", funcName()))
-		return "", err
+		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	var buf *bytes.Buffer = new(bytes.Buffer)
@@ -1729,8 +1730,20 @@ func (table *Table) StringCSV() (string, error) {
 	var record []string = make([]string, table.ColCount())
 
 	// Col names
-	for colIndex, colName := range table.colNames {
-		record[colIndex] = colName
+	if len(headingNames) > 0 {
+		// Use user-provided headings.
+		if len(headingNames) != table.ColCount() {
+			return "", fmt.Errorf("table.%s(headingNames): expecting %d headingNames, not %d",
+				table.ColCount(), len(headingNames), funcName())
+		}
+		for colIndex, colName := range headingNames {
+			record[colIndex] = colName
+		}
+	} else {
+		// Be default use table col names.
+		for colIndex, colName := range table.colNames {
+			record[colIndex] = colName
+		}
 	}
 	err = csvWriter.Write(record)
 	if err != nil {
