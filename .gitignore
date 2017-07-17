@@ -228,3 +228,5 @@ ExampleNewGoTableFromFileByTableName.txt
 junk1
 junk2
 junk2!
+junk2.csv
+*.csv

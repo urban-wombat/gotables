@@ -4963,11 +4963,11 @@ func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
 	`[ForCSV]
-	first_name  last_name   username    i   f64     b       f32
-	string      string      string      int float64 bool    float32
-	"Rob"       "Pike"      "rob"       1   1.1     true    NaN
-	"Ken"       "Thompson"  "ken"       3   NaN     true    3.3
-	"Robert"    "Griesemer" "gri"       5   5.5     true    NaN
+	first_name  last_name   username    i   f64     b       f32     commas  quotes
+	string      string      string      int float64 bool    float32 string  string
+	"Rob"       "Pike"      "rob"       1   1.1     true    NaN     ",end"  "\"xyz\""
+	"Ken"       "Thompson"  "ken"       3   NaN     true    3.3     "beg,"  "'abc'"
+	"Robert"    "Griesemer" "gri"       5   5.5     true    NaN     "md,l"  " \"\" "
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
@@ -4986,34 +4986,34 @@ func ExampleTable_GetTableAsCSV() {
 	fmt.Println("After table.GetTableAsCSV() ...")
 	fmt.Println(csv)
 
-	headingNames := []string{"First Name", "Last Name", "username", "i", "f64", "bool", "f32"}
+	substituteHeadingNames := []string{"First Name", "Last Name", "username", "i", "f64", "bool", "f32", "Commas", "Quotes"}
 
-	csv, err = table.GetTableAsCSV(headingNames...)
+	csv, err = table.GetTableAsCSV(substituteHeadingNames...)
 	if err != nil {
         log.Println(err)
 	}
 
-	fmt.Println("After table.GetTableAsCSV(headingNames) ...")
+	fmt.Println("After table.GetTableAsCSV(substituteHeadingNames) ...")
 	fmt.Println(csv)
 
 	// Output:
 	// Before table.GetTableAsCSV() ...
 	// [ForCSV]
-	// first_name last_name   username   i     f64 b        f32
-	// string     string      string   int float64 bool float32
-	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN
-	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3
-	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN
+	// first_name last_name   username   i     f64 b        f32 commas quotes
+	// string     string      string   int float64 bool float32 string string
+	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN ",end" "\\\"xyz\\\""
+	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3 "beg," "'abc'"
+	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN "md,l" " \\\"\\\" "
 	// 
 	// After table.GetTableAsCSV() ...
-	// first_name,last_name,username,i,f64,b,f32
-	// Rob,Pike,rob,1,1.1,true,
-	// Ken,Thompson,ken,3,,true,3.3
-	// Robert,Griesemer,gri,5,5.5,true,
-
-	// After table.GetTableAsCSV(headingNames) ...
-	// First Name,Last Name,username,i,f64,bool,f32
-	// Rob,Pike,rob,1,1.1,true,
-	// Ken,Thompson,ken,3,,true,3.3
-	// Robert,Griesemer,gri,5,5.5,true,
+	// first_name,last_name,username,i,f64,b,f32,commas,quotes
+	// Rob,Pike,rob,1,1.1,true,,",end","\""xyz\"""
+	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
+	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
+	// 
+	// After table.GetTableAsCSV(substituteHeadingNames) ...
+	// First Name,Last Name,username,i,f64,bool,f32,Commas,Quotes
+	// Rob,Pike,rob,1,1.1,true,,",end","\""xyz\"""
+	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
+	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
 }
