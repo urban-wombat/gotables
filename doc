@@ -1,1 +1,8 @@
-godoc -v -html -index . > gotable.html
+echo '<!DOCTYPE html>' > gotable.html
+echo '<html>' >> gotable.html
+echo '<body>' >> gotable.html
+
+godoc -v -html -index . >> gotable.html
+
+echo '</body>' >> gotable.html
+echo '</html>' >> gotable.html
