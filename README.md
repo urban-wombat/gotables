@@ -158,7 +158,7 @@ Here's the output:
 	}
 	fmt.Println(table)
 
-	var rowIndex int = 0
+	var rowIndex int
 
 	// Get the name and mass of the first planet.
 	rowIndex = 0
