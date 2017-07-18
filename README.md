@@ -11,6 +11,12 @@ Table data format and utilities
 4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
    But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
    And if they are, you want it to be obvious.
+5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
+   or to use a database as a conduit for sharing messages or data flows between processes or threads or goroutines.
+6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
+   data through your channels.
+7. gotable has methods and functions to perform tasks in these broad categories:
+   a. Get and Set values.
 
 ## What Is A gotable.Table?
 
