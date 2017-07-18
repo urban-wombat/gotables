@@ -33,7 +33,7 @@ will not break downstream code.
 
 ## Go documentation
 
-	https://github.com/urban-wombat/gotable
+https://github.com/urban-wombat/gotable
 
 ## What Is A gotable.Table?
 
