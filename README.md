@@ -14,7 +14,7 @@ Table data format and utilities
 5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
    or to use a database as a conduit for sharing messages or data flows between processes or threads or goroutines.
 6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
-   data through your channels.
+   data through your channels. A Table can be sent and received as an object or as a string.
 7. gotable has methods and functions to perform tasks in these broad categories:
    a. Get and Set values. Most Go types are supported.
    b. Sort and Search a table. Multiple keys and reverse sort and search are supported.
