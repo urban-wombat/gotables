@@ -1,141 +1,50 @@
-# gotable
+package gotable
 
-Table data format and utilities
+import (
+//	"bytes"
+	"fmt"
+//	"io/ioutil"
+	"log"
+//	"math"
+//	"math/rand"
+//	"os"
+//	"sort"
+//	"strconv"
+//	"strings"
+//	"testing"
+//	"time"
+)
 
-## Why Use gotable?
+/*
+Copyright (c) 2017 Malcolm Gorman
 
-1. Sometimes the data you want to represent is intrinsically tabular.
-2. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
-3. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
-   Data name and type are mentioned only once in a gotable Table.
-4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
-   But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
-   And if they are, you want it to be obvious.
-5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
-   or to use a database as a conduit for sharing messages or data flows between processes or goroutines.
-6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
-   data through your channels. A Table can be sent and received as an object or as a string.
-7. gotable has methods and functions to perform tasks in these broad categories:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-   a. Get and Set values. Most Go types are supported.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-   b. Sort and Search a table. Multiple keys and reverse sort and search are supported.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
-   c. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
+/*
+	Note:
 
-   d. SortUnique to remove NaN and zero values.
+	For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotable"
+	and prefix function and method calls with gotable.
+*/
 
-Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
-columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
-will not break downstream code.
-
-## What Is A gotable.Table?
-
-A gotable.Table is a table of data with the following sections:
-1. A table name in square brackets: **[MyTableName]**
-2. A row of one or more column names: **MyName  IsMale**
-3. A row of one or more column types: **string  bool**
-4. Zero or more rows of data:         **"Urban" true**
-5. One or more blank lines before any subsequent table(s).
-
-It's a bit like a slice of struct.
-
-Here's an example:
-
-    [planets]
-    name         mass distance moons index mnemonic
-    string    float64  float64   int   int string
-    "Mercury"   0.055      0.4     0     0 "my"
-    "Venus"     0.815      0.7     0     1 "very"
-    "Earth"     1.000      1.0     1     2 "elegant"
-    "Mars"      0.107      1.5     2     3 "mother"
-    "Jupiter" 318.000      5.2    67     4 "just"
-    "Saturn"   95.000     29.4    62     5 "sat"
-    "Uranus"   15.000     84.0    27     6 "upon"
-    "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-
-Most of the Go builtin data types can be used. (But not yet: complex64, complex128, rune, byte.)
-
-Here is a simple program that parses the table into a gotable.Table and echoes it back out:
-
-    // main_echo.go
-    
-    package main
-    
-    import (
-        "github.com/urban-wombat/gotable"
-        "fmt"
-        "log"
-    )
-    
-    func main() {
-        tableString :=
-        `[planets]
-        name         mass distance moons index mnemonic
-        string    float64  float64   int   int string
-        "Mercury"   0.055      0.4     0     0 "my"
-        "Venus"     0.815      0.7     0     1 "very"
-        "Earth"     1.000      1.0     1     2 "elegant"
-        "Mars"      0.107      1.5     2     3 "mother"
-        "Jupiter" 318.000      5.2    67     4 "just"
-        "Saturn"   95.000     29.4    62     5 "sat"
-        "Uranus"   15.000     84.0    27     6 "upon"
-        "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-        `
-    
-        table, err := gotable.NewTableFromString(tableString)
-        if err != nil {
-            log.Println(err)
-        }
-    
-        fmt.Println("Default String() padded output\n")
-        fmt.Println(table)
-    
-        // Notice that the columns of data are padded with spaces, and numeric types are right-aligned.
-        // This reflects the opinion that human readability is important.
-    
-        fmt.Println("For unpadded output use StringUnpadded()\n")
-        fmt.Println(table.StringUnpadded())
-    }
-
-Here's the output:
-
-    Default String() padded output
-    
-    [planets]
-    name         mass distance moons index mnemonic
-    string    float64  float64   int   int string
-    "Mercury"   0.055      0.4     0     0 "my"
-    "Venus"     0.815      0.7     0     1 "very"
-    "Earth"     1.0        1.0     1     2 "elegant"
-    "Mars"      0.107      1.5     2     3 "mother"
-    "Jupiter" 318.0        5.2    67     4 "just"
-    "Saturn"   95.0       29.4    62     5 "sat"
-    "Uranus"   15.0       84.0    27     6 "upon"
-    "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-    
-    For unpadded output use StringUnpadded()
-    
-    [planets]
-    name mass distance moons index mnemonic
-    string float64 float64 int int string
-    "Mercury" 0.055 0.4 0 0 "my"
-    "Venus" 0.815 0.7 0 1 "very"
-    "Earth" 1 1 1 2 "elegant"
-    "Mars" 0.107 1.5 2 3 "mother"
-    "Jupiter" 318 5.2 67 4 "just"
-    "Saturn" 95 29.4 62 5 "sat"
-    "Uranus" 15 84 27 6 "upon"
-    "Neptune" 17 164 13 7 "nine ... porcupines"
-
-
-## Can you show me some worked examples?
-
-    Note:
-
-    For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotable"
-    and prefix function and method calls with gotable.
-
+func Example() {
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic
@@ -362,3 +271,4 @@ Here's the output:
 	//      3     3.3 "three point three"
 	//      4     4.4 "neither zero nor same A"
 	//      5    -5.0 "minus 5"
+}
