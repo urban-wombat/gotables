@@ -131,10 +131,10 @@ Here's the output:
 
 ## Can you show me some worked examples?
 
-    Note:
+Note:
 
-    For these examples to compile and run for you, you need to go get and import "github.com/urban-wombat/gotable"
-    and prefix function and method calls with gotable.
+For these examples to compile and run for you, you need to go get and import "github.com/urban-wombat/gotable"
+and prefix function and method calls with gotable.
 
 
 	package main
@@ -142,11 +142,10 @@ Here's the output:
 	import (
 		"fmt"
 		"log"
-	
 		"github.com/urban-wombat/gotable"
 	)
 	
-		// Copyright (c) 2017 Malcolm Gorman
+	// Copyright (c) 2017 Malcolm Gorman
 	
 	func main() {
 		tableString :=
@@ -169,11 +168,12 @@ Here's the output:
 		if err != nil {
 			log.Println(err)
 		}
+		fmt.Println("Table [planets] already in distance order.")
 		fmt.Println(table)
 	
 		var rowIndex int
 	
-		// Get the name and mass of the first planet.
+		fmt.Println("Get the name and mass of the first planet.")
 		rowIndex = 0
 		fmt.Printf("rowIndex = %d\n", rowIndex)
 		name, err := table.GetString("name", rowIndex)
@@ -189,8 +189,9 @@ Here's the output:
 		fmt.Printf("mass = %f\n", mass)
 		fmt.Println()
 	
-		// Get and Set the mnemonic of the second planet.
+		fmt.Println("Get and Set the mnemonic of the second planet.")
 		rowIndex = 1
+		fmt.Printf("rowIndex = %d\n", rowIndex)
 		name, err = table.GetString("name", rowIndex)
 		if err != nil {
 			log.Println(err)
@@ -215,8 +216,10 @@ Here's the output:
 		fmt.Printf("mnemonic = %s\n", mnemonic)
 		fmt.Println()
 	
-		// Sort and Search.
-		err = table.SetSortKeys("name")
+		fmt.Println("Sort and Search.")
+		sortKey := "name"
+		fmt.Printf("sortKey = %q\n", sortKey)
+		err = table.SetSortKeys(sortKey)
 		if err != nil {
 			log.Println(err)
 		}
@@ -225,7 +228,8 @@ Here's the output:
 			log.Println(err)
 		}
 	
-		planet := "Mars"
+		planet := "Saturn"
+		fmt.Printf("search value: planet = %q\n", planet)
 		rowIndex, err = table.Search(planet)
 		if err != nil {
 			log.Println(err)
@@ -240,7 +244,7 @@ Here's the output:
 		fmt.Printf("%s has %d moons.\n", planet, moons)
 		fmt.Println()
 	
-		// Sort and Search Range.
+		fmt.Println("Sort and Search Range.")
 		err = table.SetSortKeys("moons")
 		if err != nil {
 			log.Println(err)
@@ -258,10 +262,11 @@ Here's the output:
 		}
 		var planets int
 		if err == nil {
-			// Found at least 1 row with 2 moons.
+			fmt.Println("Found at least 1 row with 2 moons.")
 			planets = lastRowIndex - firstRowIndex + 1
 		} else {
 			// moons = 3: [planets].Search([3]) search values not in table: [3]
+			fmt.Println(err)
 			planets = 0
 		}
 		fmt.Println(table)
@@ -294,9 +299,12 @@ Here's the output:
 			log.Println(err)
 		}
 	
+		fmt.Println("Table [Unique] in no particular order, contains duplicate key values and zero and NaN values.")
 		fmt.Println(table)
 	
-		err = table.SetSortKeys("KeyCol")
+		sortKey = "KeyCol"
+		fmt.Printf("sortKey = %q\n", sortKey)
+		err = table.SetSortKeys(sortKey)
 		if err != nil {
 			log.Println(err)
 		}
@@ -305,9 +313,9 @@ Here's the output:
 		if err != nil {
 			log.Println(err)
 		}
+		fmt.Printf("table [%s] sorted unique by key %q\n", tableUnique.Name(), sortKey)
 		fmt.Println(tableUnique)
 	}
-
 
 Output:
 
