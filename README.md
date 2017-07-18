@@ -25,6 +25,10 @@ Table data format and utilities
 
    d. SortUnique to remove NaN and zero values.
 
+Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
+columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
+will not break downstream code.
+
 ## What Is A gotable.Table?
 
 A gotable.Table is a table of data with the following sections:
