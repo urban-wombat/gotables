@@ -309,7 +309,7 @@ Here's the output:
 	}
 
 
-	Output:
+Output:
 
 
 	[planets]
