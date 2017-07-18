@@ -545,15 +545,6 @@ Functions and methods for processing Table tables.
 					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromGob">func NewTableSetFromGob(buffer []bytes.Buffer) (*TableSet, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromHtmlReader">func NewTableSetFromHtmlReader(sourceName string, reader io.Reader) (*TableSet, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromHtmlString">func NewTableSetFromHtmlString(sourceName string, htmlString string) (*TableSet, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromHtmlUrl">func NewTableSetFromHtmlUrl(url string) (*TableSet, error)</a></dd>
-				
-					
 					<dd>&nbsp; &nbsp; <a href="#NewTableSetFromString">func NewTableSetFromString(s string) (*TableSet, error)</a></dd>
 				
 				
@@ -679,8 +670,6 @@ Functions and methods for processing Table tables.
 			<span style="font-size:90%">
 			
 				<a href="/src/target/gotable.go">gotable.go</a>
-			
-				<a href="/src/target/html.go">html.go</a>
 			
 				<a href="/src/target/merge.go">merge.go</a>
 			
@@ -1334,7 +1323,7 @@ Calls GobDecodeTable([]byte)
 				
 			
 				
-				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=110335:110434#L3965">NewTableFromRows</a>
+				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=110186:110285#L3960">NewTableFromRows</a>
 					<a class="permalink" href="#NewTableFromRows">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRows(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1346,7 +1335,7 @@ Create a new table from a range of rows in this table.
 				
 			
 				
-				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=110840:110954#L3990">NewTableFromRowsBySearchRange</a>
+				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=110691:110805#L3985">NewTableFromRowsBySearchRange</a>
 					<a class="permalink" href="#NewTableFromRowsBySearchRange">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRowsBySearchRange(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, searchValues ...interface{}) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1524,7 +1513,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=108167:108230#L3878">AppendColsFromTable</a>
+				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=108018:108081#L3873">AppendColsFromTable</a>
 					<a class="permalink" href="#Table.AppendColsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendColsFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1567,7 +1556,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=109380:109472#L3924">AppendRowsFromTable</a>
+				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=109231:109323#L3919">AppendRowsFromTable</a>
 					<a class="permalink" href="#Table.AppendRowsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (toTable *<a href="#Table">Table</a>) AppendRowsFromTable(fromTable *<a href="#Table">Table</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1793,7 +1782,7 @@ Delete a sort key by name.
 				
 			
 				
-				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=105815:105871#L3799">Equals</a>
+				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=105666:105722#L3794">Equals</a>
 					<a class="permalink" href="#Table.Equals">&#xb6;</a>
 				</h3>
 				<pre>func (table1 *<a href="#Table">Table</a>) Equals(table2 *<a href="#Table">Table</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1846,7 +1835,7 @@ Useful for testing.
 				
 			
 				
-				<h3 id="Table.GetColValsAsStrings">func (*Table) <a href="/src/target/gotable.go?s=99470:99543#L3562">GetColValsAsStrings</a>
+				<h3 id="Table.GetColValsAsStrings">func (*Table) <a href="/src/target/gotable.go?s=99321:99394#L3557">GetColValsAsStrings</a>
 					<a class="permalink" href="#Table.GetColValsAsStrings">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetColValsAsStrings(colName <a href="/pkg/builtin/#string">string</a>) ([]<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1859,7 +1848,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetColValsAsStringsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=99953:100034#L3581">GetColValsAsStringsByColIndex</a>
+				<h3 id="Table.GetColValsAsStringsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=99804:99885#L3576">GetColValsAsStringsByColIndex</a>
 					<a class="permalink" href="#Table.GetColValsAsStringsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetColValsAsStringsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2545,7 +2534,7 @@ True if colName is a sort key in table. False if not. Error if colName not in ta
 				
 			
 				
-				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=100309:100393#L3595">IsValidColValue</a>
+				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=100160:100244#L3590">IsValidColValue</a>
 					<a class="permalink" href="#Table.IsValidColValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidColValue(colName <a href="/pkg/builtin/#string">string</a>, value interface{}) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2652,7 +2641,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=99104:99193#L3548">JoinColValsByColIndex</a>
+				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=98955:99044#L3543">JoinColValsByColIndex</a>
 					<a class="permalink" href="#Table.JoinColValsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColValsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4576,33 +4565,6 @@ Each element in the slice is a Gob encoded table as a slice of []byte
 Calls GobDecodeTableSet(buffer)
 </p>
 
-				
-				
-			
-				
-				<h3 id="NewTableSetFromHtmlReader">func <a href="/src/target/html.go?s=3103:3189#L92">NewTableSetFromHtmlReader</a>
-					<a class="permalink" href="#NewTableSetFromHtmlReader">&#xb6;</a>
-				</h3>
-				<pre>func NewTableSetFromHtmlReader(sourceName <a href="/pkg/builtin/#string">string</a>, reader <a href="/pkg/io/">io</a>.<a href="/pkg/io/#Reader">Reader</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
-				
-				
-			
-				
-				<h3 id="NewTableSetFromHtmlString">func <a href="/src/target/html.go?s=1946:2033#L56">NewTableSetFromHtmlString</a>
-					<a class="permalink" href="#NewTableSetFromHtmlString">&#xb6;</a>
-				</h3>
-				<pre>func NewTableSetFromHtmlString(sourceName <a href="/pkg/builtin/#string">string</a>, htmlString <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
-				
-				
-			
-				
-				<h3 id="NewTableSetFromHtmlUrl">func <a href="/src/target/html.go?s=2465:2523#L72">NewTableSetFromHtmlUrl</a>
-					<a class="permalink" href="#NewTableSetFromHtmlUrl">&#xb6;</a>
-				</h3>
-				<pre>func NewTableSetFromHtmlUrl(url <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
 				
 				
 			

@@ -16,7 +16,10 @@ Table data format and utilities
 6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
    data through your channels.
 7. gotable has methods and functions to perform tasks in these broad categories:
-   a. Get and Set values.
+   a. Get and Set values. Most Go types are supported.
+   b. Sort and Search a table. Multiple keys and reverse sort and search are supported.
+   c. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
+   d. SortUnique to remove NaN and zero values.
 
 ## What Is A gotable.Table?
 
@@ -24,6 +27,8 @@ A gotable.Table is a table of data with the following sections:
 1. A table name in square brackets.
 2. A row of 1 or more column names and data types.
 3. Rows of data.
+
+It's a bit like a slice of struct.
 
 Here's an example:
 
