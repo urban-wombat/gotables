@@ -1,5 +1,7 @@
 # gotable
 
+	go get github.com/urban-wombat/gotable
+
 Table data format and utilities
 
 ## Why Use gotable?
