@@ -12,7 +12,7 @@ Table data format and utilities
    But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
    And if they are, you want it to be obvious.
 5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
-   or to use a database as a conduit for sharing messages or data flows between processes or threads or goroutines.
+   or to use a database as a conduit for sharing messages or data flows between processes or goroutines.
 6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
    data through your channels. A Table can be sent and received as an object or as a string.
 7. gotable has methods and functions to perform tasks in these broad categories:
@@ -32,9 +32,11 @@ will not break downstream code.
 ## What Is A gotable.Table?
 
 A gotable.Table is a table of data with the following sections:
-1. A table name in square brackets.
-2. A row of 1 or more column names and data types.
-3. Rows of data.
+1. A table name in square brackets: [MyTableName]
+2. A row of one or more column names: MyName  IsMale
+3. A row of one or more column types: string  bool
+4. Zero or more rows of data:         "Urban" true
+5. One or more blank lines before any subsequent table(s).
 
 It's a bit like a slice of struct.
 
