@@ -133,9 +133,49 @@ Here's the output:
 
     Note:
 
-    For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotable"
+    For these examples to compile and run for you, you need to go get and import "github.com/urban-wombat/gotable"
     and prefix function and method calls with gotable.
 
+
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/urban-wombat/gotable"
+)
+
+/*
+Copyright (c) 2017 Malcolm Gorman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/*
+	Note:
+
+	For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotable"
+	and prefix function and method calls with gotable.
+*/
+
+func main() {
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic
@@ -152,7 +192,7 @@ Here's the output:
 
 	var err error
 
-	table, err := NewTableFromString(tableString)
+	table, err := gotable.NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
 	}
@@ -238,13 +278,19 @@ Here's the output:
 		log.Println(err)
 	}
 
-	moons = 0
+	moons = 2
 	firstRowIndex, lastRowIndex, err := table.SearchRange(moons)
 	if err != nil {
 		log.Println(err)
 	}
-
-	planets := lastRowIndex - firstRowIndex + 1
+	var planets int
+	if err == nil {
+		// Found at least 1 row with 2 moons.
+		planets = lastRowIndex - firstRowIndex + 1
+	} else {
+		// moons = 3: [planets].Search([3]) search values not in table: [3]
+		planets = 0
+	}
 	fmt.Println(table)
 	fmt.Printf("%d planets have %d moons.\n", planets, moons)
 	fmt.Println()
@@ -270,7 +316,7 @@ Here's the output:
 	5   -0      "minus 5"
 	5   -5      "minus 5"
 	`
-	table, err = NewTableFromString(tableString)
+	table, err = gotable.NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
 	}
@@ -289,76 +335,76 @@ Here's the output:
 	fmt.Println(tableUnique)
 
 	// Output:
-	// [planets]
-	// name         mass distance moons index mnemonic
-	// string    float64  float64   int   int string
-	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Venus"     0.815      0.7     0     1 "very"
-	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// 
-	// rowIndex = 0
-	// name = Mercury
-	// mass = 0.055000
-	// 
-	// name = Venus
-	// mnemonic = very
-	// mnemonic = VERY
-	// 
-	// [planets]
-	// name         mass distance moons index mnemonic
-	// string    float64  float64   int   int string
-	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Venus"     0.815      0.7     0     1 "VERY"
-	// 
-	// Mars has 2 moons.
-	// 
-	// [planets]
-	// name         mass distance moons index mnemonic
-	// string    float64  float64   int   int string
-	// "Venus"     0.815      0.7     0     1 "VERY"
-	// "Mercury"   0.055      0.4     0     0 "my"
-	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// 
-	// 2 planets have 0 moons.
-	// 
-	// [Unique]
-	// KeyCol  number s
-	//    int float32 string
-	//      2     0.0 "two point two"
-	//      2     2.2 ""
-	//      1     1.1 "one point one"
-	//      3     3.3 "three point three"
-	//      3     3.3 ""
-	//      3     NaN "three point three"
-	//      4     0.0 "neither zero nor same X"
-	//      4     NaN "neither zero nor same Y"
-	//      4     4.4 "neither zero nor same Z"
-	//      4     NaN "neither zero nor same A"
-	//      5     NaN "minus 5"
-	//      5    -0.0 "minus 5"
-	//      5    -5.0 "minus 5"
-	// 
-	// [Unique]
-	// KeyCol  number s
-	//    int float32 string
-	//      1     1.1 "one point one"
-	//      2     2.2 "two point two"
-	//      3     3.3 "three point three"
-	//      4     4.4 "neither zero nor same A"
-	//      5    -5.0 "minus 5"
+	[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.0        5.2    67     4 "just"
+	"Saturn"   95.0       29.4    62     5 "sat"
+	"Uranus"   15.0       84.0    27     6 "upon"
+	"Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	
+	rowIndex = 0
+	name = Mercury
+	mass = 0.055000
+	
+	name = Venus
+	mnemonic = very
+	mnemonic = VERY
+	
+	[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Jupiter" 318.0        5.2    67     4 "just"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.0       29.4    62     5 "sat"
+	"Uranus"   15.0       84.0    27     6 "upon"
+	"Venus"     0.815      0.7     0     1 "VERY"
+	
+	Mars has 2 moons.
+	
+	[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Venus"     0.815      0.7     0     1 "VERY"
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	"Uranus"   15.0       84.0    27     6 "upon"
+	"Saturn"   95.0       29.4    62     5 "sat"
+	"Jupiter" 318.0        5.2    67     4 "just"
+	
+	1 planets have 2 moons.
+	
+	[Unique]
+	KeyCol  number s
+	   int float32 string
+	     2     0.0 "two point two"
+	     2     2.2 ""
+	     1     1.1 "one point one"
+	     3     3.3 "three point three"
+	     3     3.3 ""
+	     3     NaN "three point three"
+	     4     0.0 "neither zero nor same X"
+	     4     NaN "neither zero nor same Y"
+	     4     4.4 "neither zero nor same Z"
+	     4     NaN "neither zero nor same A"
+	     5     NaN "minus 5"
+	     5    -0.0 "minus 5"
+	     5    -5.0 "minus 5"
+	
+	[Unique]
+	KeyCol  number s
+	   int float32 string
+	     1     1.1 "one point one"
+	     2     2.2 "two point two"
+	     3     3.3 "three point three"
+	     4     4.4 "neither zero nor same A"
+	     5    -5.0 "minus 5"

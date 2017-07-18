@@ -691,7 +691,7 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
-		return -1, fmt.Errorf("(1) [%s].Search(%v) search values not in table: %v",
+		return -1, fmt.Errorf("[%s].Search(%v) search values not in table: %v",
 			table.Name(), searchValues, searchValues)
 	}
 }
@@ -1093,7 +1093,7 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 	if searchIndex < table.RowCount() && searchValuesMatchRowValues(table, searchValues, searchIndex) {
 		return searchIndex, nil
 	} else {
-		return -1, fmt.Errorf("(2) [%s].Search(%v) search values not in table: %v",
+		return -1, fmt.Errorf("[%s].Search(%v) search values not in table: %v",
 			table.Name(), searchValues, searchValues)
 	}
 }
