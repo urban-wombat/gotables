@@ -46,7 +46,249 @@ Functions and methods for processing Table tables.
 
 			</div>
 		</div>
+		<div id="example_" class="toggle">
+	<div class="collapsed">
+		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
+	</div>
+	<div class="expanded">
+		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
 		
+		
+		
+			<p>Code:</p>
+			<pre class="code">tableString :=
+    `[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+`
+
+var err error
+
+table, err := NewTableFromString(tableString)
+if err != nil {
+    log.Println(err)
+}
+fmt.Println(table)
+
+var rowIndex int
+
+<span class="comment">// Get the name and mass of the first planet.</span>
+rowIndex = 0
+fmt.Printf(&#34;rowIndex = %d\n&#34;, rowIndex)
+name, err := table.GetString(&#34;name&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;name = %s\n&#34;, name)
+
+mass, err := table.GetFloat64(&#34;mass&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;mass = %f\n&#34;, mass)
+fmt.Println()
+
+<span class="comment">// Get and Set the mnemonic of the second planet.</span>
+rowIndex = 1
+name, err = table.GetString(&#34;name&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;name = %s\n&#34;, name)
+
+mnemonic, err := table.GetString(&#34;mnemonic&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;mnemonic = %s\n&#34;, mnemonic)
+
+err = table.SetString(&#34;mnemonic&#34;, rowIndex, &#34;VERY&#34;)
+if err != nil {
+    log.Println(err)
+}
+
+mnemonic, err = table.GetString(&#34;mnemonic&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+fmt.Printf(&#34;mnemonic = %s\n&#34;, mnemonic)
+fmt.Println()
+
+<span class="comment">// Sort and Search.</span>
+err = table.SetSortKeys(&#34;name&#34;)
+if err != nil {
+    log.Println(err)
+}
+err = table.Sort()
+if err != nil {
+    log.Println(err)
+}
+
+planet := &#34;Mars&#34;
+rowIndex, err = table.Search(planet)
+if err != nil {
+    log.Println(err)
+}
+
+moons, err := table.GetInt(&#34;moons&#34;, rowIndex)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(table)
+fmt.Printf(&#34;%s has %d moons.\n&#34;, planet, moons)
+fmt.Println()
+
+<span class="comment">// Sort and Search Range.</span>
+err = table.SetSortKeys(&#34;moons&#34;)
+if err != nil {
+    log.Println(err)
+}
+
+err = table.Sort()
+if err != nil {
+    log.Println(err)
+}
+
+moons = 0
+firstRowIndex, lastRowIndex, err := table.SearchRange(moons)
+if err != nil {
+    log.Println(err)
+}
+
+planets := lastRowIndex - firstRowIndex + 1
+fmt.Println(table)
+fmt.Printf(&#34;%d planets have %d moons.\n&#34;, planets, moons)
+fmt.Println()
+
+<span class="comment">// Sort Unique.</span>
+
+tableString =
+    `[Unique]
+KeyCol number   s
+int float32 string
+2   0       &#34;two point two&#34;
+2   2.2     &#34;&#34;
+1   1.1     &#34;one point one&#34;
+3   3.3     &#34;three point three&#34;
+3   3.3     &#34;&#34;
+3   NaN     &#34;three point three&#34;
+4   0.0     &#34;neither zero nor same X&#34;
+4   NaN     &#34;neither zero nor same Y&#34;
+4   4.4     &#34;neither zero nor same Z&#34;
+4   NaN     &#34;neither zero nor same A&#34;
+5   NaN     &#34;minus 5&#34;
+5   -0      &#34;minus 5&#34;
+5   -5      &#34;minus 5&#34;
+`
+table, err = NewTableFromString(tableString)
+if err != nil {
+    log.Println(err)
+}
+
+fmt.Println(table)
+
+err = table.SetSortKeys(&#34;KeyCol&#34;)
+if err != nil {
+    log.Println(err)
+}
+
+tableUnique, err := table.SortUnique()
+if err != nil {
+    log.Println(err)
+}
+fmt.Println(tableUnique)
+
+<span class="comment"></pre>
+			
+			<p>Output:</p>
+			<pre class="output">[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+&#34;Earth&#34;     1.0        1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Jupiter&#34; 318.0        5.2    67     4 &#34;just&#34;
+&#34;Saturn&#34;   95.0       29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.0       84.0    27     6 &#34;upon&#34;
+&#34;Neptune&#34;  17.0      164.0    13     7 &#34;nine ... porcupines&#34;
+
+rowIndex = 0
+name = Mercury
+mass = 0.055000
+
+name = Venus
+mnemonic = very
+mnemonic = VERY
+
+[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Earth&#34;     1.0        1.0     1     2 &#34;elegant&#34;
+&#34;Jupiter&#34; 318.0        5.2    67     4 &#34;just&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Neptune&#34;  17.0      164.0    13     7 &#34;nine ... porcupines&#34;
+&#34;Saturn&#34;   95.0       29.4    62     5 &#34;sat&#34;
+&#34;Uranus&#34;   15.0       84.0    27     6 &#34;upon&#34;
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;VERY&#34;
+
+Mars has 2 moons.
+
+[planets]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+&#34;Venus&#34;     0.815      0.7     0     1 &#34;VERY&#34;
+&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+&#34;Earth&#34;     1.0        1.0     1     2 &#34;elegant&#34;
+&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+&#34;Neptune&#34;  17.0      164.0    13     7 &#34;nine ... porcupines&#34;
+&#34;Uranus&#34;   15.0       84.0    27     6 &#34;upon&#34;
+&#34;Saturn&#34;   95.0       29.4    62     5 &#34;sat&#34;
+&#34;Jupiter&#34; 318.0        5.2    67     4 &#34;just&#34;
+
+2 planets have 0 moons.
+
+[Unique]
+KeyCol  number s
+   int float32 string
+     2     0.0 &#34;two point two&#34;
+     2     2.2 &#34;&#34;
+     1     1.1 &#34;one point one&#34;
+     3     3.3 &#34;three point three&#34;
+     3     3.3 &#34;&#34;
+     3     NaN &#34;three point three&#34;
+     4     0.0 &#34;neither zero nor same X&#34;
+     4     NaN &#34;neither zero nor same Y&#34;
+     4     4.4 &#34;neither zero nor same Z&#34;
+     4     NaN &#34;neither zero nor same A&#34;
+     5     NaN &#34;minus 5&#34;
+     5    -0.0 &#34;minus 5&#34;
+     5    -5.0 &#34;minus 5&#34;
+
+[Unique]
+KeyCol  number s
+   int float32 string
+     1     1.1 &#34;one point one&#34;
+     2     2.2 &#34;two point two&#34;
+     3     3.3 &#34;three point three&#34;
+     4     4.4 &#34;neither zero nor same A&#34;
+     5    -5.0 &#34;minus 5&#34;
+</pre>
+			
+		
+	</div>
+</div>
+
 
 		<div id="pkg-index" class="toggleVisible">
 		<div class="collapsed">
@@ -608,6 +850,8 @@ Functions and methods for processing Table tables.
 			<h4>Examples</h4>
 			<dl>
 			
+			<dd><a class="exampleLink" href="#example_">Package</a></dd>
+			
 			<dd><a class="exampleLink" href="#example_NewTableFromFile">NewTableFromFile</a></dd>
 			
 			<dd><a class="exampleLink" href="#example_NewTableFromFileByTableName">NewTableFromFileByTableName</a></dd>
@@ -827,7 +1071,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=36190:36235#L1214">SearchFirst</a>
+			<h2 id="SearchFirst">func <a href="/src/target/sort.go?s=36182:36227#L1214">SearchFirst</a>
 				<a class="permalink" href="#SearchFirst">&#xb6;</a>
 			</h2>
 			<pre>func SearchFirst(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -881,7 +1125,7 @@ fmt.Println(rounded)
 		
 			
 			
-			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=33294:33338#L1156">SearchLast</a>
+			<h2 id="SearchLast">func <a href="/src/target/sort.go?s=33286:33330#L1156">SearchLast</a>
 				<a class="permalink" href="#SearchLast">&#xb6;</a>
 			</h2>
 			<pre>func SearchLast(n <a href="/pkg/builtin/#int">int</a>, f func(<a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#int">int</a></pre>
@@ -1636,7 +1880,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19590:19664#L716">CompareRows</a>
+				<h3 id="Table.CompareRows">func (*Table) <a href="/src/target/sort.go?s=19586:19660#L716">CompareRows</a>
 					<a class="permalink" href="#Table.CompareRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) CompareRows(rowIndex1 <a href="/pkg/builtin/#int">int</a>, rowIndex2 <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2511,7 +2755,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsSortKey">func (*Table) <a href="/src/target/sort.go?s=23978:24037#L881">IsSortKey</a>
+				<h3 id="Table.IsSortKey">func (*Table) <a href="/src/target/sort.go?s=23974:24033#L881">IsSortKey</a>
 					<a class="permalink" href="#Table.IsSortKey">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsSortKey(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2879,7 +3123,7 @@ nestedTable,  _ = gotable.NewTableFromString(nestedString)
 				
 			
 				
-				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=22958:23005#L839">OrderColsBySortKeys</a>
+				<h3 id="Table.OrderColsBySortKeys">func (*Table) <a href="/src/target/sort.go?s=22954:23001#L839">OrderColsBySortKeys</a>
 					<a class="permalink" href="#Table.OrderColsBySortKeys">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) OrderColsBySortKeys() <a href="/pkg/builtin/#error">error</a></pre>
@@ -2992,7 +3236,7 @@ To avoid this, use the TableSet.RenameTable() method.
 				
 			
 				
-				<h3 id="Table.ReorderCols">func (*Table) <a href="/src/target/sort.go?s=25828:25893#L947">ReorderCols</a>
+				<h3 id="Table.ReorderCols">func (*Table) <a href="/src/target/sort.go?s=25824:25889#L947">ReorderCols</a>
 					<a class="permalink" href="#Table.ReorderCols">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ReorderCols(newColNamesOrder ...<a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3256,7 +3500,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=27853:27925#L1026">SearchLast</a>
+				<h3 id="Table.SearchLast">func (*Table) <a href="/src/target/sort.go?s=27849:27921#L1026">SearchLast</a>
 					<a class="permalink" href="#Table.SearchLast">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchLast(searchValues ...interface{}) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3272,7 +3516,7 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 				
 			
 				
-				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=36431:36530#L1223">SearchRange</a>
+				<h3 id="Table.SearchRange">func (*Table) <a href="/src/target/sort.go?s=36423:36522#L1223">SearchRange</a>
 					<a class="permalink" href="#Table.SearchRange">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SearchRange(searchValues ...interface{}) (firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -3929,7 +4173,7 @@ index colName    colType  reverse
 				
 			
 				
-				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=21689:21753#L783">SetSortKeysFromTable</a>
+				<h3 id="Table.SetSortKeysFromTable">func (*Table) <a href="/src/target/sort.go?s=21685:21749#L783">SetSortKeysFromTable</a>
 					<a class="permalink" href="#Table.SetSortKeysFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetSortKeysFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4227,7 +4471,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21572:21610#L778">SortKeyCount</a>
+				<h3 id="Table.SortKeyCount">func (*Table) <a href="/src/target/sort.go?s=21568:21606#L778">SortKeyCount</a>
 					<a class="permalink" href="#Table.SortKeyCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortKeyCount() <a href="/pkg/builtin/#int">int</a></pre>
@@ -4237,7 +4481,7 @@ string    float64  float64
 				
 			
 				
-				<h3 id="Table.SortUnique">func (*Table) <a href="/src/target/sort.go?s=37180:37244#L1255">SortUnique</a>
+				<h3 id="Table.SortUnique">func (*Table) <a href="/src/target/sort.go?s=37172:37236#L1255">SortUnique</a>
 					<a class="permalink" href="#Table.SortUnique">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SortUnique() (tableUnique *<a href="#Table">Table</a>, err <a href="/pkg/builtin/#error">error</a>)</pre>
