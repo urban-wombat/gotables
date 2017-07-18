@@ -3539,14 +3539,9 @@ func (table *Table) JoinColVals(colName string, separator string) (string, error
 		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
-	rowCount := table.RowCount()
-	sVals := make([]string, rowCount)
-	for rowIndex := 0; rowIndex < rowCount; rowIndex++ {
-		s, err := table.GetValAsString(colName, rowIndex)
-		if err != nil {
-			return "", err
-		}
-		sVals[rowIndex] = s
+	sVals, err := table.GetColValsAsStrings(colName)
+	if err != nil {
+		return "", err
 	}
 
 	joined := strings.Join(sVals, separator)
