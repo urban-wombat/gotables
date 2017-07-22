@@ -247,7 +247,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 	return tableSet.StringPadded()
@@ -255,7 +255,7 @@ func (tableSet *TableSet) String() string {
 
 func (tableSet *TableSet) StringPadded() string {
 	if tableSet == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 	var verticalSep string = ""
@@ -399,7 +399,7 @@ type TableExported struct {
 
 func (table *Table) getColTypes() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return nil
 	}
 	return table.colTypes
@@ -847,7 +847,7 @@ func (table *Table) stringTabWriter() (string, error) {
 func (table *Table) StringUnpadded() string {
 
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 
@@ -859,7 +859,7 @@ Return a parsable table as a string. Intended for internal library use.
 */
 func (table *Table) _String(horizontalSeparator byte) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -908,7 +908,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 			rowMap, err := table.rowMap(rowIndex)
 			if err != nil {
 				// Admittedly, a rowIndex error can't happen here. This is paranoid.
-				os.Stderr.WriteString(err.Error())
+				_, _ = os.Stderr.WriteString(err.Error())
 				return ""
 			}
 			horizontalSep = ""
@@ -1126,7 +1126,7 @@ Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 	return table.StringPadded()
@@ -1134,7 +1134,7 @@ func (table *Table) String() string {
 
 func (table *Table) StringPadded() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 
@@ -1205,7 +1205,7 @@ func (table *Table) StringPadded() string {
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
-			os.Stderr.WriteString(err.Error())
+			_, _ = os.Stderr.WriteString(err.Error())
 			return ""
 		}
 		horizontalSep = "" // No gap on left of first column.
@@ -1366,7 +1366,7 @@ func (table *Table) StringPadded() string {
 
 func printStruct(table *Table) string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 	}
 
 	var asString string
@@ -1881,7 +1881,7 @@ func (table *Table) lastRowIndex() (int, error) {
 
 func (table *Table) Name() string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return ""
 	}
 	return table.tableName
@@ -1889,7 +1889,7 @@ func (table *Table) Name() string {
 
 func (table *Table) ColCount() int {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return -1
 	}
 	return len(table.colTypes)

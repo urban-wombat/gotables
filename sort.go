@@ -75,7 +75,7 @@ type SortKeys []sortKey
 
 func (keys SortKeys) String() string {
 	if keys == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(SortKeys) SortKeys is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: %s(SortKeys) SortKeys is <nil>\n", funcName()))
 		return ""
 	}
 	// where(fmt.Sprintf("len(keys) = %d\n", len(keys)))
@@ -292,7 +292,7 @@ func (table *Table) getSortKeys() (SortKeys, error) {
 
 func (table *Table) getColNames() []string {
 	if table == nil {
-		os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return nil
 	}
 	return table.colNames
