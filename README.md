@@ -19,15 +19,15 @@ Table data format and utilities
    data through your channels. A Table can be sent and received as an object or as a string.
 7. gotable has methods and functions to perform tasks in these broad categories:
 
-   i. Instantiate a gotable.Table or gotable.TableSet from a file, a string, a Go binary object, or a segment of an existing table.
+   1. Instantiate a gotable.Table or gotable.TableSet from a file, a string, a Go binary object, or a segment of an existing table.
 
-   i. Get and Set values. Most Go types are supported.
+   2. Get and Set values. Most Go types are supported.
 
-   i. Sort and Search a table. Multiple keys and reverse sort and search are supported.
+   3. Sort and Search a table. Multiple keys and reverse sort and search are supported.
 
-   i. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
+   4. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
 
-   i. SortUnique to remove NaN and zero values.
+   5. SortUnique to remove NaN and zero values.
 
 8. **gotable Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
    And that can mean multiple sort/search keys, and even reverse keys. It's very simple. And if a wrong column name is
