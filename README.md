@@ -7,34 +7,34 @@ Table data format and utilities
 ## Why Use gotable?
 
 1. Sometimes the data you want to represent is intrinsically tabular.
-1. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
-1. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
+2. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
+3. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
    Data name and type are mentioned only once in a gotable Table.
-1. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
+4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
    But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
    And if they are, you want it to be obvious.
-1. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
+5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
    or to use a database as a conduit for sharing messages or data flows between processes or goroutines.
-1. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
+6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
    data through your channels. A Table can be sent and received as an object or as a string.
-1. gotable has methods and functions to perform tasks in these broad categories:
+7. gotable has methods and functions to perform tasks in these broad categories:
 
    a. Get and Set values. Most Go types are supported.
 
-   a. Sort and Search a table. Multiple keys and reverse sort and search are supported.
+   b. Sort and Search a table. Multiple keys and reverse sort and search are supported.
 
-   a. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
+   c. Merge two tables (with shared key(s)) into one. NaN and zero values are handled consistently.
 
-   a. SortUnique to remove NaN and zero values.
+   d. SortUnique to remove NaN and zero values.
 
-1. **gotable Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
+8. **gotable Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
    And that can mean multiple sort/search keys, and even reverse keys. It's very simple. And if a wrong column name is
    used, or you forget to set sort keys before sorting, the gotable error handling system will notice and return to you
    a meaningful error message.
 
-Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
-columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
-will not break downstream code.
+9. Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
+   columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
+   will not break downstream code.
 
 ## Go Doc for gotable
 
