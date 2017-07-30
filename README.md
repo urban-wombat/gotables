@@ -45,10 +45,10 @@ https://github.com/urban-wombat/gotable/gotable.html
 ## What Is A gotable.Table?
 
 A gotable.Table is a table of data with the following sections:
-1. A table name in square brackets: **[MyTableName]**
-2. A row of one or more column names: **MyName  IsMale**
-3. A row of one or more column types: **string  bool**
-4. Zero or more rows of data:         **"Urban" true**
+1. A table name in square brackets:   **[planets]**
+2. A row of one or more column names: **name      mass**
+3. A row of one or more column types: **string    float64**
+4. Zero or more rows of data:         **"Mercury" 0.055**
 5. One or more blank lines before any subsequent table(s).
 
 It's a bit like a slice of struct.
