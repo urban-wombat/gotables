@@ -6,7 +6,7 @@ Table data format and utilities
 
 ## Why Use gotable?
 
-1. Sometimes the data you want to represent is intrinsically tabular.
+1. Often enough the data you want to represent is intrinsically tabular, or should be.
 2. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
 3. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
    Data name and type are mentioned only once in a gotable Table.
