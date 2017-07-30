@@ -27,6 +27,11 @@ Table data format and utilities
 
    d. SortUnique to remove NaN and zero values.
 
+7. **gotable Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
+   And that can mean multiple sort/search keys, and even reverse keys. It's very simple. And if a wrong column name is
+   used, or you forget to set sort keys before sorting, the gotable error handling system will notice and return to you
+   a meaningful error message.
+
 Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
 columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
 will not break downstream code.
