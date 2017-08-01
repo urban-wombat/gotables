@@ -6,7 +6,7 @@ Table data format and utilities
 
 ## Here's the API ...
 
-	[API](https://urban-wombat.github.io)
+[API](https://urban-wombat.github.io)
 
 ## Why Use gotable?
 
