@@ -8,6 +8,10 @@ Table data format and utilities
 
 [gotable API](https://urban-wombat.github.io)
 
+## Here are the Release Notes ...
+
+https://github.com/urban-wombat/urban-wombat.github.io/releases/tag/v0.1-alpha
+
 ## Why Use gotable?
 
 1. Often enough the data you want to represent is intrinsically tabular, or should be.
