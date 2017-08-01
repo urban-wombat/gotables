@@ -10,7 +10,7 @@ Table data format and utilities
 
 ## Here are the Release Notes ...
 
-https://github.com/urban-wombat/urban-wombat.github.io/releases/tag/v0.1-alpha
+https://github.com/urban-wombat/gotable/releases
 
 ## Why Use gotable?
 
