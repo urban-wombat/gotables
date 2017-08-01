@@ -4,9 +4,9 @@ Table data format and utilities
 
 	go get github.com/urban-wombat/gotable
 
-## Here's the API
+## Here's the API ...
 
-	https://urban-wombat.github.io
+	[API](https://urban-wombat.github.io)
 
 ## Why Use gotable?
 
