@@ -1,8 +1,9 @@
-echo '<!DOCTYPE html>' > gotable.html
-echo '<html>' >> gotable.html
-echo '<body>' >> gotable.html
+INDEX_HTML=../urban-wombat.github.io/index.html
+echo '<!DOCTYPE html>' > $INDEX_HTML
+echo '<html>' >> $INDEX_HTML
+echo '<body>' >> $INDEX_HTML
 
-godoc -v -html -index . >> gotable.html
+godoc -v -html -index . >> $INDEX_HTML
 
-echo '</body>' >> gotable.html
-echo '</html>' >> gotable.html
+echo '</body>' >> $INDEX_HTML
+echo '</html>' >> $INDEX_HTML

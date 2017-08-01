@@ -44,7 +44,7 @@ Table data format and utilities
 
 ## Go Doc for gotable
 
-https://github.com/urban-wombat/gotable/gotable.html
+https://urban-wombat.github.io
 
 ## What Is A gotable.Table?
 
