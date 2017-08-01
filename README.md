@@ -42,6 +42,11 @@ Table data format and utilities
    columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
    will not break downstream code.
 
+10. gotable is written in the Go language, using purely Go libraries. No third-party libraries will be used. If down the track
+	non-Go libraries are needed, a separate distribution will be created (to contain any third-party dependency issues) and
+	will itself use gotable as a third-party library to maintain separation.
+	The core gotable library will **not* use third-party libraries.
+
 ## Go Doc for gotable
 
 https://urban-wombat.github.io
@@ -53,7 +58,7 @@ A gotable.Table is a table of data with the following sections:
 2. A row of one or more column names: **name      mass**
 3. A row of one or more column types: **string    float64**
 4. Zero or more rows of data:         **"Mercury" 0.055**
-5. One or more blank lines before any subsequent table(s).
+5. One or more blank lines before any subsequent table(s)
 
 It's a bit like a slice of struct.
 
