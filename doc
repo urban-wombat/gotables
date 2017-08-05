@@ -1,9 +1,1 @@
-INDEX_HTML=../urban-wombat.github.io/index.html
-echo '<!DOCTYPE html>' > $INDEX_HTML
-echo '<html>' >> $INDEX_HTML
-echo '<body>' >> $INDEX_HTML
-
-godoc -v -html -index . >> $INDEX_HTML
-
-echo '</body>' >> $INDEX_HTML
-echo '</html>' >> $INDEX_HTML
+godoc -html -index . > gotable.html
