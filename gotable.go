@@ -3805,23 +3805,23 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 	var err error
 
 	if table1 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", funcName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table)?: table1 is <nil>\n", funcName())
 		return false, err
 	}
 
 	if table2 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", funcName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table)?: table2 is <nil>\n", funcName())
 		return false, err
 	}
 
 	if table1.RowCount() != table2.RowCount() {
-		err = fmt.Errorf("[%s].%s([%s]): [%s].RowCount() %d != [%s].RowCount() %d\n",
+		err = fmt.Errorf("[%s].%s([%s])?: [%s].RowCount() %d != [%s].RowCount() %d\n",
 			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.RowCount(), table2.Name(), table2.RowCount())
 		return false, err
 	}
 
 	if table1.ColCount() != table2.ColCount() {
-		err = fmt.Errorf("[%s].%s([%s]): [%s].ColCount() %d != [%s].ColCount() %d\n",
+		err = fmt.Errorf("[%s].%s([%s])?: [%s].ColCount() %d != [%s].ColCount() %d\n",
 			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.ColCount(), table2.Name(), table2.ColCount())
 		return false, err
 	}
@@ -3842,7 +3842,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 			return false, err
 		}
 		if type1 != type2 {
-			err = fmt.Errorf("[%s].%s([%s]): [%s].ColType(%q) %s != [%s].ColType(%q) %s\n",
+			err = fmt.Errorf("[%s].%s([%s])?: [%s].ColType(%q) %s != [%s].ColType(%q) %s\n",
 				table1.Name(), funcName(), table2.Name(), table1.Name(), colName, type1, table2.Name(), colName, type2)
 			return false, err
 		}
@@ -3865,8 +3865,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 			if val1 != val2 {
-				err = fmt.Errorf("[%s].%s([%s]): [%s].ColType(%q) %v != [%s].ColType(%q) %v\n",
-					table1.Name(), funcName(), table2.Name(), table1.Name(), colName, val1, table2.Name(), colName, val2)
+				err = fmt.Errorf("[%s].%s([%s])?: [%s]col %s row %d != [%s] col %s row %d\n",
+					table1.Name(), funcName(), table2.Name(), table1.Name(), colName, colIndex, table2.Name(), colName, colIndex)
 				return false, err
 			}
 		}
