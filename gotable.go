@@ -1961,6 +1961,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
+// byte is an alias for uint8, so byte values can be stored with SetUint8()
 func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -2031,6 +2032,7 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+// byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -2416,6 +2418,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
 	return val, nil
 }
 
+// byte is an alias for uint8, so byte values can be gotten with GetUint8()
 func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -2435,6 +2438,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	return val, err
 }
 
+// byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
 func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
