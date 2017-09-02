@@ -444,6 +444,50 @@ func TestReadString12(t *testing.T) {
 	}
 }
 
+// 02/09.2017
+// Testing table with slice of uint: []uint
+func TestReadString13(t *testing.T) {
+	var err error
+
+	_, err = NewTableFromString(
+		`[TableWithUintSlice]
+		uintNums
+		[]uint8
+		[0 1 255 3 4]
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = NewTableFromString(
+		`[TableWithUintSlice]
+		uintNums
+		[]uint8
+		[0 -1 255 3 4]
+	`)
+	if err == nil {
+		t.Error(err)
+	}
+
+	_, err = NewTableFromString(
+		`[TableWithByteSlice]
+		uintNums
+		[]byte
+		[0 1 256 3 4]
+	`)
+	if err == nil {
+		t.Error(err)
+	}
+
+	_, err = NewTableFromString(
+		`[TableWithByteSlice]
+		uintNums []byte = [0 1 256 3 4]
+	`)
+	if err == nil {
+		t.Error(err)
+	}
+}
+
 func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
 	tableSet, err := NewTableSet(tableSetName)

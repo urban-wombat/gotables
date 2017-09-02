@@ -745,8 +745,17 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-			return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
-				funcName(), table.tableName, colName, colType, valType)
+// where(typeAliasMap)
+			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
+			alias, exists := typeAliasMap[valType]
+// where(exists)
+// where(alias)
+			if exists && alias == colType {
+				// All okay. Do nothing.
+			} else {
+				return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
+					funcName(), table.tableName, colName, colType, valType)
+			}
 		}
 	}
 
@@ -1213,6 +1222,8 @@ func (table *Table) StringPadded() string {
 			var sVal string
 			var tVal bool
 			var ui8Val uint8
+			var ui8SliceVal []uint8
+			var byteSliceVal []byte
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
@@ -1249,6 +1260,18 @@ func (table *Table) StringPadded() string {
 					ui8Val = 0
 				}
 				s = fmt.Sprintf("%d", ui8Val)
+			case "[]uint8":
+				ui8SliceVal, exists = rowMap[table.colNames[colIndex]].([]uint8)
+				if !exists {
+					ui8SliceVal = []uint8{}
+				}
+				s = fmt.Sprintf("%v", ui8SliceVal)
+			case "[]byte":
+				byteSliceVal, exists = rowMap[table.colNames[colIndex]].([]byte)
+				if !exists {
+					byteSliceVal = []byte{}
+				}
+				s = fmt.Sprintf("%v", byteSliceVal)
 			case "uint16":
 				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
 				if !exists {
@@ -1609,8 +1632,13 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return fmt.Errorf("table [%s] col %q expecting val of type %q, not type %q: %v",
-			table.Name(), colName, colType, valType, val)
+		alias, exists := typeAliasMap[valType]
+		if exists && alias == colType {
+			// All okay. Do nothing.
+		} else {
+			return fmt.Errorf("table [%s] col %q expecting val of type %q, not type %q: %v",
+				table.Name(), colName, colType, valType, val)
+		}
 	}
 
 	// Set the val
@@ -3425,6 +3453,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var sVal string
 	var tVal bool
 	var ui8Val uint8
+	var ui8SliceVal []uint8
 	var ui16Val uint16
 	var ui32Val uint32
 	var ui64Val uint64
@@ -3458,6 +3487,9 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "uint8":
 		ui8Val = interfaceType.(uint8)
 		buf.WriteString(fmt.Sprintf("%d", ui8Val))
+	case "[]uint8", "[]byte":
+		ui8SliceVal = interfaceType.([]uint8)
+		buf.WriteString(fmt.Sprintf("%v", ui8SliceVal))
 	case "uint16":
 		ui16Val = interfaceType.(uint16)
 		buf.WriteString(fmt.Sprintf("%d", ui16Val))
