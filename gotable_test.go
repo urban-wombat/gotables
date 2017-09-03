@@ -482,8 +482,55 @@ func TestReadString13(t *testing.T) {
 	_, err = NewTableFromString(
 		`[TableWithByteSlice]
 		uintNums []byte = [0 1 256 3 4]
+		i int = 42
+		b []byte = [1 1 255]
+		u []uint8 = [2 2 255 2]
+		f float32 = 32
+		x []byte = []
+		s string = "In Between ..."
+		y []uint8 = []
+		j int64 = 99
 	`)
 	if err == nil {
+		t.Error(err)
+	}
+}
+
+// 03/09.2017
+// Testing table with slice of uint: []uint
+func TestReadString14(t *testing.T) {
+	var err error
+	s :=
+	`[TableX]
+	i   x                   f           bb                  s       b
+	int []uint8             float64     []byte              string  byte
+	1   [10 11 12 13]       1           [90 81 72 63]       "one"   11
+	2   [20 21 22 23]       2           [90 81 72 63]       "two"   22
+	3   [30 31 32]          3           [90 81 72]          "three" 33
+	4   [40 41 42 43 44]    4           [90 81 72 63 255]   "four"  44
+	`
+	table, err := NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s =
+	`[StructY]
+	i int = 42
+	bb []byte = [1 1 255]
+	u []uint8 = [2 2 255 2]
+	f float32 = 32
+	x []byte = []
+	y []uint8 = []
+	b byte = 55
+	`
+	table, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendCol("bite", "[]byte")
+	if err != nil {
 		t.Error(err)
 	}
 }

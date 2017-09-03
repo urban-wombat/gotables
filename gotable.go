@@ -1024,7 +1024,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					}
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
-					log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+					log.Printf("#1 ERROR IN %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 					return ""
 				}
 	
@@ -1250,7 +1250,7 @@ func (table *Table) StringPadded() string {
 					tVal = false
 				}
 				s = fmt.Sprintf("%t", tVal)
-			case "uint8":
+			case "uint8", "byte":
 				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
 				if !exists {
 					ui8Val = 0
@@ -1340,7 +1340,7 @@ func (table *Table) StringPadded() string {
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
-				log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+				log.Printf("#2 ERROR IN %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
@@ -1388,6 +1388,7 @@ func printStruct(table *Table) string {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 	}
 
+	var err error
 	var asString string
 	var s string
 	var structHasRowData bool = table.RowCount() > 0
@@ -1397,7 +1398,10 @@ func printStruct(table *Table) string {
 		s += table.colNames[colIndex] + " " + table.colTypes[colIndex]
 		if structHasRowData {
 			const RowIndexZero = 0
-			asString, _ = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
+			asString, err = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
+			if err != nil {
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s(): %s\n", funcName(), err))
+			}
 			if table.colTypes[colIndex] == "string" {
 				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
 				s += " = " + fmt.Sprintf("%q", asString)
@@ -3479,7 +3483,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "bool":
 		tVal = interfaceType.(bool)
 		buf.WriteString(fmt.Sprintf("%t", tVal))
-	case "uint8":
+	case "uint8", "byte":
 		ui8Val = interfaceType.(uint8)
 		buf.WriteString(fmt.Sprintf("%d", ui8Val))
 	case "[]uint8", "[]byte":
@@ -3520,7 +3524,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		err = fmt.Errorf("func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
+		err = fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
 		return "", err
 	}
 
@@ -3731,7 +3735,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
 	default:
-		err = fmt.Errorf("func %s(%q): unknown type: %s\n", funcName(), colType, table.colTypes[colIndex])
+		err = fmt.Errorf("ERROR IN %s(%q): unknown type: %s\n", funcName(), colType, table.colTypes[colIndex])
 		return nil, err
 	}
 

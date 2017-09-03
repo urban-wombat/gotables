@@ -51,8 +51,8 @@ func init() {
 	typeAliasMap = map[string]string {
 		"[]uint8" : "[]byte",
 		  "uint8" :   "byte",
-		"[]int32" : "[]rune",
-		  "int32" :   "rune",
+//		"[]int32" : "[]rune",
+//		  "int32" :   "rune",
 	}
 }
 
@@ -136,6 +136,7 @@ var globalColTypesMap = map[string]int{
 	"int32":   0,
 	"int64":   0,
 	"int8":    0,
+	"byte":    0,
 	"string":  0,
 	"uint":    0,
 	"uint16":  0,
@@ -381,7 +382,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			parserColTypes, err = p.getColTypes(line)
 			if err != nil {
-				return nil, err
+//				return nil, err
+				return nil, fmt.Errorf("table [%s] %s", table.Name(), err)
 			}
 			lenColNames := len(parserColNames)
 			lenColTypes := len(parserColTypes)
@@ -630,7 +632,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
 			rowMap[colNames[i]] = boolVal
-		case "uint8":
+		case "uint8", "byte":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
@@ -651,12 +653,8 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			}
 			textFound := remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
-where()
-where(fmt.Sprintf("sliceString = %q", sliceString))
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
-where(fmt.Sprintf("sliceStringSplit = %q", sliceStringSplit))
-where(fmt.Sprintf("len(sliceStringSplit) = %d", len(sliceStringSplit)))
 			for el := 0; el < len(sliceStringSplit); el++ {
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
 				if err != nil {
