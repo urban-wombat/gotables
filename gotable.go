@@ -667,6 +667,8 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
 	case "uint":
 		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
+	case "[]uint8", "[]byte":
+		err = table.SetValByColIndex(colIndex, rowIndex, []uint8{})
 	case "int":
 		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
 	case "int16":
@@ -745,14 +747,8 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-// where(typeAliasMap)
 			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
-			alias, exists := typeAliasMap[valType]
-// where(exists)
-// where(alias)
-			if exists && alias == colType {
-				// All okay. Do nothing.
-			} else {
+			if !isAlias(colType, valType) {
 				return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
 					funcName(), table.tableName, colName, colType, valType)
 			}
@@ -1632,12 +1628,9 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		alias, exists := typeAliasMap[valType]
-		if exists && alias == colType {
-			// All okay. Do nothing.
-		} else {
-			return fmt.Errorf("table [%s] col %q expecting val of type %q, not type %q: %v",
-				table.Name(), colName, colType, valType, val)
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s(): table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, val)
 		}
 	}
 
@@ -1667,8 +1660,10 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return fmt.Errorf("table [%s] col index %d col name %q expecting type %q not type %q",
-			table.Name(), colIndex, colName, colType, valType)
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s(): table [%s] col index %d col name %s expecting type %s not type %s",
+				funcName(), table.Name(), colIndex, colName, colType, valType)
+		}
 	}
 
 	// Set the val
@@ -4043,4 +4038,13 @@ func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValu
 	}
 
 	return newTable, nil
+}
+
+func isAlias(aliasTypeName string, typeName string) bool {
+		alias, exists := typeAliasMap[typeName]
+		if exists && alias == aliasTypeName {
+			return true
+		} else {
+			return false
+		}
 }
