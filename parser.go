@@ -639,7 +639,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName, p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint8Val = uint8(uint64Val)
 			rowMap[colNames[i]] = uint8Val
@@ -651,13 +651,17 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			}
 			textFound := remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
-			var sliceStringSplit []string = whiteRegexp.Split(sliceString, _ALL_SUBSTRINGS)
+where()
+where(fmt.Sprintf("sliceString = %q", sliceString))
+			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
+where(fmt.Sprintf("sliceStringSplit = %q", sliceStringSplit))
+where(fmt.Sprintf("len(sliceStringSplit) = %d", len(sliceStringSplit)))
 			for el := 0; el < len(sliceStringSplit); el++ {
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
 				if err != nil {
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
@@ -671,7 +675,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint16Val = uint16(uint64Val)
 			rowMap[colNames[i]] = uint16Val
@@ -684,7 +688,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint32Val = uint32(uint64Val)
 			rowMap[colNames[i]] = uint32Val
@@ -697,7 +701,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			rowMap[colNames[i]] = uint64Val
 		case "uint":
@@ -719,12 +723,12 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 					minVal = 0
 					maxVal = math.MaxUint64
 				default:
-					msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+					msg := fmt.Sprintf("#6 %s(): CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", funcName(), intBits)
 					log.Printf("%s", msg)
 					return nil, fmt.Errorf("%s", msg)
 				}
 				rangeMsg := rangeForIntegerType(minVal, maxVal)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uintVal = uint(uint64Val) // May be unnecessary.
 			rowMap[colNames[i]] = uintVal
@@ -897,4 +901,17 @@ func plural(items int) string {
 		// Plural
 		return "s"
 	}
+}
+
+/*
+	whiteRegexp.Split returns a slice with 1 empty string element if the
+	input sliceString is empty. But we want a slice with 0 elements.
+*/
+func splitSliceString(sliceString string) (sliceStringSplit []string) {
+	if len(sliceString) == 0 {
+		sliceStringSplit = []string{}	// 0 elements, not 1 element.
+	} else {
+		sliceStringSplit = whiteRegexp.Split(sliceString, _ALL_SUBSTRINGS)
+	}
+	return
 }
