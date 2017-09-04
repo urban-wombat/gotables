@@ -126,9 +126,10 @@ const (
 var typeAliasMap map[string]string
 
 var globalColTypesMap = map[string]int{
-	"[]uint8": 0,
 	"[]byte":  0,
+	"[]uint8": 0,
 	"bool":    0,
+	"byte":    0,
 	"float32": 0,
 	"float64": 0,
 	"int":     0,
@@ -136,7 +137,6 @@ var globalColTypesMap = map[string]int{
 	"int32":   0,
 	"int64":   0,
 	"int8":    0,
-	"byte":    0,
 	"string":  0,
 	"uint":    0,
 	"uint16":  0,
