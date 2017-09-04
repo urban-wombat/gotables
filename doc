@@ -1,1 +1,4 @@
-godoc -html -index . > gotable.html
+# godoc -html -index . > gotable.html
+
+# Update the file that populates the gotable github web site.
+  godoc -html -index . > ../urban-wombat.github.io/index.html
