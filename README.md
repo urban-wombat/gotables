@@ -1,6 +1,10 @@
 # gotable
 
-Table data format and utilities
+Go (golang) Table data format replaces XML, JSON, YAML.
+
+Sometimes data and configurations are intrinsically tabular. Trying to represent tables in XML, JSON and YAML
+merely obscures tables, makes them less readable, and invites inconsistencies and lack of discipline, risking
+missing cells or superfluous leaf nodes that introduce potential bugs in host code.
 
 	go get github.com/urban-wombat/gotable
 
