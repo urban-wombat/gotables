@@ -58,17 +58,17 @@ Functions and methods for processing Table tables.
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[planets]
-name         mass distance moons index mnemonic
-string    float64  float64   int   int string
-&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
-&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
-&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
-&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
-&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
-&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
-&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
-&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
-`
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    &#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+    &#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+    &#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+    &#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+    &#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+    &#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+    &#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+    &#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+    `
 
 var err error
 
@@ -173,22 +173,22 @@ fmt.Println()
 
 tableString =
     `[Unique]
-KeyCol number   s
-int float32 string
-2   0       &#34;two point two&#34;
-2   2.2     &#34;&#34;
-1   1.1     &#34;one point one&#34;
-3   3.3     &#34;three point three&#34;
-3   3.3     &#34;&#34;
-3   NaN     &#34;three point three&#34;
-4   0.0     &#34;neither zero nor same X&#34;
-4   NaN     &#34;neither zero nor same Y&#34;
-4   4.4     &#34;neither zero nor same Z&#34;
-4   NaN     &#34;neither zero nor same A&#34;
-5   NaN     &#34;minus 5&#34;
-5   -0      &#34;minus 5&#34;
-5   -5      &#34;minus 5&#34;
-`
+    KeyCol number   s
+    int float32 string
+    2   0       &#34;two point two&#34;
+    2   2.2     &#34;&#34;
+    1   1.1     &#34;one point one&#34;
+    3   3.3     &#34;three point three&#34;
+    3   3.3     &#34;&#34;
+    3   NaN     &#34;three point three&#34;
+    4   0.0     &#34;neither zero nor same X&#34;
+    4   NaN     &#34;neither zero nor same Y&#34;
+    4   4.4     &#34;neither zero nor same Z&#34;
+    4   NaN     &#34;neither zero nor same A&#34;
+    5   NaN     &#34;minus 5&#34;
+    5   -0      &#34;minus 5&#34;
+    5   -5      &#34;minus 5&#34;
+    `
 table, err = NewTableFromString(tableString)
 if err != nil {
     log.Println(err)
@@ -433,6 +433,18 @@ KeyCol  number s
 					<dd>&nbsp; &nbsp; <a href="#Table.GetBoolByColIndex">func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error)</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetByte">func (table *Table) GetByte(colName string, rowIndex int) (byte, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetByteByColIndex">func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (byte, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetByteSlice">func (table *Table) GetByteSlice(colName string, rowIndex int) ([]byte, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetByteSliceByColIndex">func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) ([]byte, error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="#Table.GetColInfoAsTable">func (table *Table) GetColInfoAsTable() (*Table, error)</a></dd>
 				
 					
@@ -521,6 +533,12 @@ KeyCol  number s
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.GetUint8ByColIndex">func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetUint8Slice">func (table *Table) GetUint8Slice(colName string, rowIndex int) ([]uint8, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.GetUint8SliceByColIndex">func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) ([]uint8, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.GetUintByColIndex">func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (uint, error)</a></dd>
@@ -626,6 +644,18 @@ KeyCol  number s
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetBoolByColIndex">func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetByte">func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetByteByColIndex">func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetByteSlice">func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetByteSliceByColIndex">func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetCellToZeroValue">func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error</a></dd>
@@ -734,6 +764,12 @@ KeyCol  number s
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetUint8ByColIndex">func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetUint8Slice">func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Table.SetUint8SliceByColIndex">func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="#Table.SetUintByColIndex">func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error</a></dd>
@@ -971,7 +1007,7 @@ KeyCol  number s
 		
 			
 			
-			<h2 id="IsNumericColType">func <a href="/src/target/parser.go?s=16788:16839#L514">IsNumericColType</a>
+			<h2 id="IsNumericColType">func <a href="/src/target/parser.go?s=18006:18057#L533">IsNumericColType</a>
 				<a class="permalink" href="#IsNumericColType">&#xb6;</a>
 			</h2>
 			<pre>func IsNumericColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -988,7 +1024,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidColName">func <a href="/src/target/parser.go?s=17273:17322#L529">IsValidColName</a>
+			<h2 id="IsValidColName">func <a href="/src/target/parser.go?s=18506:18555#L548">IsValidColName</a>
 				<a class="permalink" href="#IsValidColName">&#xb6;</a>
 			</h2>
 			<pre>func IsValidColName(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -999,7 +1035,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidColType">func <a href="/src/target/parser.go?s=16207:16256#L494">IsValidColType</a>
+			<h2 id="IsValidColType">func <a href="/src/target/parser.go?s=17405:17454#L513">IsValidColType</a>
 				<a class="permalink" href="#IsValidColType">&#xb6;</a>
 			</h2>
 			<pre>func IsValidColType(colType <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1016,7 +1052,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="IsValidTableName">func <a href="/src/target/parser.go?s=17659:17712#L544">IsValidTableName</a>
+			<h2 id="IsValidTableName">func <a href="/src/target/parser.go?s=18907:18960#L563">IsValidTableName</a>
 				<a class="permalink" href="#IsValidTableName">&#xb6;</a>
 			</h2>
 			<pre>func IsValidTableName(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1027,7 +1063,7 @@ Go types NOT (yet) supported: complex64 complex128 byte rune
 		
 			
 			
-			<h2 id="Round">func <a href="/src/target/gotable.go?s=85654:85707#L3070">Round</a>
+			<h2 id="Round">func <a href="/src/target/gotable.go?s=95387:95440#L3271">Round</a>
 				<a class="permalink" href="#Round">&#xb6;</a>
 			</h2>
 			<pre>func Round(val <a href="/pkg/builtin/#float64">float64</a>, places <a href="/pkg/builtin/#int">int</a>) (rounded <a href="/pkg/builtin/#float64">float64</a>)</pre>
@@ -1038,7 +1074,7 @@ Round is a custom implementation for rounding values as Golang does not include 
 Round up if fraction is &gt;= 0.5 otherwise round down.
 </p>
 <p>
-From: <a href="https://medium.com/">https://medium.com/</a>@edoardo849/mercato-how-to-build-an-effective-web-scraper-with-golang-e2918d279f49#.istjzw4nl
+From: <a href="https://medium.com/@edoardo849/mercato-how-to-build-an-effective-web-scraper-with-golang-e2918d279f49#.istjzw4nl">https://medium.com/@edoardo849/mercato-how-to-build-an-effective-web-scraper-with-golang-e2918d279f49#.istjzw4nl</a>
 </p>
 
 			<div id="example_Round" class="toggle">
@@ -1366,7 +1402,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 		
 			
 			
-			<h2 id="Table">type <a href="/src/target/gotable.go?s=10020:10266#L371">Table</a>
+			<h2 id="Table">type <a href="/src/target/gotable.go?s=10400:10654#L371">Table</a>
 				<a class="permalink" href="#Table">&#xb6;</a>
 			</h2>
 			
@@ -1384,7 +1420,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 
 			
 				
-				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=94483:94530#L3368">GobDecodeTable</a>
+				<h3 id="GobDecodeTable">func <a href="/src/target/gotable.go?s=104514:104561#L3569">GobDecodeTable</a>
 					<a class="permalink" href="#GobDecodeTable">&#xb6;</a>
 				</h3>
 				<pre>func GobDecodeTable(buf []<a href="/pkg/builtin/#byte">byte</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1393,7 +1429,7 @@ For GOB encoding and GOB decoding, which requires items to be exported.
 				
 			
 				
-				<h3 id="NewTable">func <a href="/src/target/gotable.go?s=11063:11110#L411">NewTable</a>
+				<h3 id="NewTable">func <a href="/src/target/gotable.go?s=11483:11530#L411">NewTable</a>
 					<a class="permalink" href="#NewTable">&#xb6;</a>
 				</h3>
 				<pre>func NewTable(tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1411,7 +1447,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="NewTableFromFile">func <a href="/src/target/gotable.go?s=4946:5000#L179">NewTableFromFile</a>
+				<h3 id="NewTableFromFile">func <a href="/src/target/gotable.go?s=5134:5188#L179">NewTableFromFile</a>
 					<a class="permalink" href="#NewTableFromFile">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromFile(fileName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1431,11 +1467,11 @@ If there&#39;s more than one table in the file, use NewTableFromFileByTableName(
 		
 			<p>Code:</p>
 			<pre class="code">tableString := `
-[MyTable]
-MyBool bool = true
-MyString string = &#34;The answer to life, the universe and everything&#34;
-MyInt int = 42
-`
+    [MyTable]
+    MyBool bool = true
+    MyString string = &#34;The answer to life, the universe and everything&#34;
+    MyInt int = 42
+    `
 
 table1, err := NewTableFromStringByTableName(tableString, &#34;MyTable&#34;)
 if err != nil {
@@ -1484,7 +1520,7 @@ true   &#34;The answer to life, the universe and everything&#34;    42
 				
 			
 				
-				<h3 id="NewTableFromFileByTableName">func <a href="/src/target/gotable.go?s=5408:5491#L199">NewTableFromFileByTableName</a>
+				<h3 id="NewTableFromFileByTableName">func <a href="/src/target/gotable.go?s=5616:5699#L199">NewTableFromFileByTableName</a>
 					<a class="permalink" href="#NewTableFromFileByTableName">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromFileByTableName(fileName <a href="/pkg/builtin/#string">string</a>, tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1508,15 +1544,15 @@ true   &#34;The answer to life, the universe and everything&#34;    42
 */</span>
 
 tableSetString := `
-[MyTable]
-MyBool bool = true
-MyString string = &#34;The answer to life, the universe and everything&#34;
-MyInt int = 42
+    [MyTable]
+    MyBool bool = true
+    MyString string = &#34;The answer to life, the universe and everything&#34;
+    MyInt int = 42
 
-[Fred]
-i
-int
-`
+    [Fred]
+    i
+    int
+    `
 
 <span class="comment">// For testing, we need to write this out to a file so we can read it back.</span>
 tableSet, err := NewTableSetFromString(tableSetString)
@@ -1552,7 +1588,7 @@ MyInt int = 42
 				
 			
 				
-				<h3 id="NewTableFromGob">func <a href="/src/target/gotable.go?s=94401:94449#L3364">NewTableFromGob</a>
+				<h3 id="NewTableFromGob">func <a href="/src/target/gotable.go?s=104428:104476#L3565">NewTableFromGob</a>
 					<a class="permalink" href="#NewTableFromGob">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromGob(buf []<a href="/pkg/builtin/#byte">byte</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1567,7 +1603,7 @@ Calls GobDecodeTable([]byte)
 				
 			
 				
-				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=110270:110369#L3960">NewTableFromRows</a>
+				<h3 id="NewTableFromRows">func <a href="/src/target/gotable.go?s=121066:121165#L4165">NewTableFromRows</a>
 					<a class="permalink" href="#NewTableFromRows">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRows(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1579,7 +1615,7 @@ Create a new table from a range of rows in this table.
 				
 			
 				
-				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=110775:110889#L3985">NewTableFromRowsBySearchRange</a>
+				<h3 id="NewTableFromRowsBySearchRange">func <a href="/src/target/gotable.go?s=121596:121710#L4190">NewTableFromRowsBySearchRange</a>
 					<a class="permalink" href="#NewTableFromRowsBySearchRange">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromRowsBySearchRange(table *<a href="#Table">Table</a>, newTableName <a href="/pkg/builtin/#string">string</a>, searchValues ...interface{}) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1591,7 +1627,7 @@ Create a new table from a range of rows in this table searched by keys.
 				
 			
 				
-				<h3 id="NewTableFromString">func <a href="/src/target/gotable.go?s=4071:4120#L142">NewTableFromString</a>
+				<h3 id="NewTableFromString">func <a href="/src/target/gotable.go?s=4222:4271#L142">NewTableFromString</a>
 					<a class="permalink" href="#NewTableFromString">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromString(s <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1615,17 +1651,17 @@ If there&#39;s more than one table in the string, use NewTableFromStringByTableN
 <span class="comment">// http://www.windows2universe.org/our_solar_system/planets_table.html</span>
 tableString :=
     `[planets]
-name         mass distance moons index mnemonic
-string    float64  float64   int   int string
-&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
-&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
-&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
-&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
-&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
-&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
-&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
-&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
-`
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    &#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+    &#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+    &#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+    &#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+    &#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+    &#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+    &#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+    &#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -1684,9 +1720,9 @@ string float64 float64 int int string
 			<p>Code:</p>
 			<pre class="code"><span class="comment">// A table literal. Sometimes easier than constructing a table programmatically.</span>
 tableString := `[MyTable]
-    MyBool bool = true
-    MyString string = &#34;The answer to life, the universe and everything is forty-two.&#34;
-    MyInt int = 42`
+        MyBool bool = true
+        MyString string = &#34;The answer to life, the universe and everything is forty-two.&#34;
+        MyInt int = 42`
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -1728,7 +1764,7 @@ true   &#34;The answer to life, the universe and everything is forty-two.&#34;  
 				
 			
 				
-				<h3 id="NewTableFromStringByTableName">func <a href="/src/target/gotable.go?s=4508:4586#L161">NewTableFromStringByTableName</a>
+				<h3 id="NewTableFromStringByTableName">func <a href="/src/target/gotable.go?s=4678:4756#L161">NewTableFromStringByTableName</a>
 					<a class="permalink" href="#NewTableFromStringByTableName">&#xb6;</a>
 				</h3>
 				<pre>func NewTableFromStringByTableName(s <a href="/pkg/builtin/#string">string</a>, tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1739,7 +1775,7 @@ true   &#34;The answer to life, the universe and everything is forty-two.&#34;  
 
 			
 				
-				<h3 id="Table.AppendCol">func (*Table) <a href="/src/target/gotable.go?s=43968:44035#L1515">AppendCol</a>
+				<h3 id="Table.AppendCol">func (*Table) <a href="/src/target/gotable.go?s=46342:46409#L1540">AppendCol</a>
 					<a class="permalink" href="#Table.AppendCol">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendCol(colName <a href="/pkg/builtin/#string">string</a>, colType <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1757,7 +1793,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=108102:108165#L3873">AppendColsFromTable</a>
+				<h3 id="Table.AppendColsFromTable">func (*Table) <a href="/src/target/gotable.go?s=118811:118874#L4078">AppendColsFromTable</a>
 					<a class="permalink" href="#Table.AppendColsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendColsFromTable(fromTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1773,7 +1809,7 @@ Column order is ignored. Identical duplicate columns are ignored.
 				
 			
 				
-				<h3 id="Table.AppendRow">func (*Table) <a href="/src/target/gotable.go?s=13833:13870#L511">AppendRow</a>
+				<h3 id="Table.AppendRow">func (*Table) <a href="/src/target/gotable.go?s=14353:14390#L511">AppendRow</a>
 					<a class="permalink" href="#Table.AppendRow">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendRow() <a href="/pkg/builtin/#error">error</a></pre>
@@ -1787,7 +1823,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.AppendRows">func (*Table) <a href="/src/target/gotable.go?s=13264:13313#L492">AppendRows</a>
+				<h3 id="Table.AppendRows">func (*Table) <a href="/src/target/gotable.go?s=13765:13814#L492">AppendRows</a>
 					<a class="permalink" href="#Table.AppendRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) AppendRows(howMany <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1800,7 +1836,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=109315:109407#L3919">AppendRowsFromTable</a>
+				<h3 id="Table.AppendRowsFromTable">func (*Table) <a href="/src/target/gotable.go?s=120070:120162#L4124">AppendRowsFromTable</a>
 					<a class="permalink" href="#Table.AppendRowsFromTable">&#xb6;</a>
 				</h3>
 				<pre>func (toTable *<a href="#Table">Table</a>) AppendRowsFromTable(fromTable *<a href="#Table">Table</a>, firstRow <a href="/pkg/builtin/#int">int</a>, lastRow <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1830,7 +1866,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.ColCount">func (*Table) <a href="/src/target/gotable.go?s=53640:53674#L1880">ColCount</a>
+				<h3 id="Table.ColCount">func (*Table) <a href="/src/target/gotable.go?s=56499:56533#L1909">ColCount</a>
 					<a class="permalink" href="#Table.ColCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColCount() <a href="/pkg/builtin/#int">int</a></pre>
@@ -1840,7 +1876,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.ColIndex">func (*Table) <a href="/src/target/gotable.go?s=52581:52638#L1841">ColIndex</a>
+				<h3 id="Table.ColIndex">func (*Table) <a href="/src/target/gotable.go?s=55401:55458#L1870">ColIndex</a>
 					<a class="permalink" href="#Table.ColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColIndex(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1850,7 +1886,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.ColName">func (*Table) <a href="/src/target/gotable.go?s=81507:81564#L2933">ColName</a>
+				<h3 id="Table.ColName">func (*Table) <a href="/src/target/gotable.go?s=91103:91160#L3134">ColName</a>
 					<a class="permalink" href="#Table.ColName">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColName(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1860,7 +1896,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.ColType">func (*Table) <a href="/src/target/gotable.go?s=51806:51865#L1816">ColType</a>
+				<h3 id="Table.ColType">func (*Table) <a href="/src/target/gotable.go?s=54601:54660#L1845">ColType</a>
 					<a class="permalink" href="#Table.ColType">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColType(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1870,7 +1906,7 @@ Note: Can append rows to an empty (no columns) table, and later append columns.
 				
 			
 				
-				<h3 id="Table.ColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=52188:52255#L1829">ColTypeByColIndex</a>
+				<h3 id="Table.ColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=54996:55063#L1858">ColTypeByColIndex</a>
 					<a class="permalink" href="#Table.ColTypeByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) ColTypeByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -1898,7 +1934,7 @@ Return -2 if error.
 				
 			
 				
-				<h3 id="Table.DeleteCol">func (*Table) <a href="/src/target/gotable.go?s=45457:45508#L1572">DeleteCol</a>
+				<h3 id="Table.DeleteCol">func (*Table) <a href="/src/target/gotable.go?s=47888:47939#L1597">DeleteCol</a>
 					<a class="permalink" href="#Table.DeleteCol">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) DeleteCol(colName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1908,7 +1944,7 @@ Return -2 if error.
 				
 			
 				
-				<h3 id="Table.DeleteColByColIndex">func (*Table) <a href="/src/target/gotable.go?s=44747:44806#L1547">DeleteColByColIndex</a>
+				<h3 id="Table.DeleteColByColIndex">func (*Table) <a href="/src/target/gotable.go?s=47153:47212#L1572">DeleteColByColIndex</a>
 					<a class="permalink" href="#Table.DeleteColByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) DeleteColByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1918,7 +1954,7 @@ Return -2 if error.
 				
 			
 				
-				<h3 id="Table.DeleteRow">func (*Table) <a href="/src/target/gotable.go?s=20339:20388#L749">DeleteRow</a>
+				<h3 id="Table.DeleteRow">func (*Table) <a href="/src/target/gotable.go?s=21395:21444#L756">DeleteRow</a>
 					<a class="permalink" href="#Table.DeleteRow">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) DeleteRow(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1928,7 +1964,7 @@ Return -2 if error.
 				
 			
 				
-				<h3 id="Table.DeleteRows">func (*Table) <a href="/src/target/gotable.go?s=21014:21087#L769">DeleteRows</a>
+				<h3 id="Table.DeleteRows">func (*Table) <a href="/src/target/gotable.go?s=22090:22163#L776">DeleteRows</a>
 					<a class="permalink" href="#Table.DeleteRows">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) DeleteRows(firstRowIndex <a href="/pkg/builtin/#int">int</a>, lastRowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -1948,20 +1984,20 @@ Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowInde
 		
 			<p>Code:</p>
 			<pre class="code">tableString := `
-[items]
-item
-int
-0
-1
-2
-3
-4
-5
-6
-7
-8
-9
-`
+    [items]
+    item
+    int
+    0
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -2026,7 +2062,7 @@ Delete a sort key by name.
 				
 			
 				
-				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=105750:105806#L3794">Equals</a>
+				<h3 id="Table.Equals">func (*Table) <a href="/src/target/gotable.go?s=116369:116425#L3999">Equals</a>
 					<a class="permalink" href="#Table.Equals">&#xb6;</a>
 				</h3>
 				<pre>func (table1 *<a href="#Table">Table</a>) Equals(table2 *<a href="#Table">Table</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2049,7 +2085,7 @@ Useful for testing.
 				
 			
 				
-				<h3 id="Table.GetBool">func (*Table) <a href="/src/target/gotable.go?s=75686:75757#L2713">GetBool</a>
+				<h3 id="Table.GetBool">func (*Table) <a href="/src/target/gotable.go?s=85062:85133#L2914">GetBool</a>
 					<a class="permalink" href="#Table.GetBool">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetBool(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2059,7 +2095,7 @@ Useful for testing.
 				
 			
 				
-				<h3 id="Table.GetBoolByColIndex">func (*Table) <a href="/src/target/gotable.go?s=76112:76191#L2732">GetBoolByColIndex</a>
+				<h3 id="Table.GetBoolByColIndex">func (*Table) <a href="/src/target/gotable.go?s=85507:85586#L2933">GetBoolByColIndex</a>
 					<a class="permalink" href="#Table.GetBoolByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetBoolByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2069,7 +2105,59 @@ Useful for testing.
 				
 			
 				
-				<h3 id="Table.GetColInfoAsTable">func (*Table) <a href="/src/target/gotable.go?s=50572:50627#L1759">GetColInfoAsTable</a>
+				<h3 id="Table.GetByte">func (*Table) <a href="/src/target/gotable.go?s=75319:75390#L2529">GetByte</a>
+					<a class="permalink" href="#Table.GetByte">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetByte(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetByteByColIndex">func (*Table) <a href="/src/target/gotable.go?s=75847:75926#L2549">GetByteByColIndex</a>
+					<a class="permalink" href="#Table.GetByteByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetByteByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetByteSlice">func (*Table) <a href="/src/target/gotable.go?s=77550:77628#L2609">GetByteSlice</a>
+					<a class="permalink" href="#Table.GetByteSlice">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetByteSlice(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8Slice()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetByteSliceByColIndex">func (*Table) <a href="/src/target/gotable.go?s=78106:78192#L2629">GetByteSliceByColIndex</a>
+					<a class="permalink" href="#Table.GetByteSliceByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetByteSliceByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetColInfoAsTable">func (*Table) <a href="/src/target/gotable.go?s=53310:53365#L1788">GetColInfoAsTable</a>
 					<a class="permalink" href="#Table.GetColInfoAsTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetColInfoAsTable() (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2079,7 +2167,7 @@ Useful for testing.
 				
 			
 				
-				<h3 id="Table.GetColValsAsStrings">func (*Table) <a href="/src/target/gotable.go?s=99405:99478#L3557">GetColValsAsStrings</a>
+				<h3 id="Table.GetColValsAsStrings">func (*Table) <a href="/src/target/gotable.go?s=109783:109856#L3762">GetColValsAsStrings</a>
 					<a class="permalink" href="#Table.GetColValsAsStrings">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetColValsAsStrings(colName <a href="/pkg/builtin/#string">string</a>) ([]<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2092,7 +2180,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetColValsAsStringsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=99888:99969#L3576">GetColValsAsStringsByColIndex</a>
+				<h3 id="Table.GetColValsAsStringsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=110285:110366#L3781">GetColValsAsStringsByColIndex</a>
 					<a class="permalink" href="#Table.GetColValsAsStringsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetColValsAsStringsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2105,7 +2193,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetFloat32">func (*Table) <a href="/src/target/gotable.go?s=65060:65137#L2257">GetFloat32</a>
+				<h3 id="Table.GetFloat32">func (*Table) <a href="/src/target/gotable.go?s=70457:70534#L2336">GetFloat32</a>
 					<a class="permalink" href="#Table.GetFloat32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetFloat32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float32">float32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2115,7 +2203,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetFloat32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=65496:65581#L2276">GetFloat32ByColIndex</a>
+				<h3 id="Table.GetFloat32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=70912:70997#L2355">GetFloat32ByColIndex</a>
 					<a class="permalink" href="#Table.GetFloat32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetFloat32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float32">float32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2125,7 +2213,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetFloat64">func (*Table) <a href="/src/target/gotable.go?s=65963:66040#L2295">GetFloat64</a>
+				<h3 id="Table.GetFloat64">func (*Table) <a href="/src/target/gotable.go?s=71398:71475#L2374">GetFloat64</a>
 					<a class="permalink" href="#Table.GetFloat64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetFloat64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2135,7 +2223,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetFloat64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=66399:66484#L2314">GetFloat64ByColIndex</a>
+				<h3 id="Table.GetFloat64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=71853:71938#L2393">GetFloat64ByColIndex</a>
 					<a class="permalink" href="#Table.GetFloat64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetFloat64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#float64">float64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2145,7 +2233,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt">func (*Table) <a href="/src/target/gotable.go?s=67741:67810#L2371">GetInt</a>
+				<h3 id="Table.GetInt">func (*Table) <a href="/src/target/gotable.go?s=73252:73321#L2450">GetInt</a>
 					<a class="permalink" href="#Table.GetInt">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2155,7 +2243,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt16">func (*Table) <a href="/src/target/gotable.go?s=73039:73112#L2599">GetInt16</a>
+				<h3 id="Table.GetInt16">func (*Table) <a href="/src/target/gotable.go?s=82301:82374#L2800">GetInt16</a>
 					<a class="permalink" href="#Table.GetInt16">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int16">int16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2165,7 +2253,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=73465:73546#L2618">GetInt16ByColIndex</a>
+				<h3 id="Table.GetInt16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=82746:82827#L2819">GetInt16ByColIndex</a>
 					<a class="permalink" href="#Table.GetInt16ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int16">int16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2175,7 +2263,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt32">func (*Table) <a href="/src/target/gotable.go?s=73922:73995#L2637">GetInt32</a>
+				<h3 id="Table.GetInt32">func (*Table) <a href="/src/target/gotable.go?s=83222:83295#L2838">GetInt32</a>
 					<a class="permalink" href="#Table.GetInt32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int32">int32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2185,7 +2273,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=74348:74429#L2656">GetInt32ByColIndex</a>
+				<h3 id="Table.GetInt32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=83667:83748#L2857">GetInt32ByColIndex</a>
 					<a class="permalink" href="#Table.GetInt32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int32">int32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2195,7 +2283,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt64">func (*Table) <a href="/src/target/gotable.go?s=74804:74877#L2675">GetInt64</a>
+				<h3 id="Table.GetInt64">func (*Table) <a href="/src/target/gotable.go?s=84142:84215#L2876">GetInt64</a>
 					<a class="permalink" href="#Table.GetInt64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int64">int64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2205,7 +2293,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=75230:75311#L2694">GetInt64ByColIndex</a>
+				<h3 id="Table.GetInt64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=84587:84668#L2895">GetInt64ByColIndex</a>
 					<a class="permalink" href="#Table.GetInt64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int64">int64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2215,7 +2303,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt8">func (*Table) <a href="/src/target/gotable.go?s=72164:72235#L2561">GetInt8</a>
+				<h3 id="Table.GetInt8">func (*Table) <a href="/src/target/gotable.go?s=81388:81459#L2762">GetInt8</a>
 					<a class="permalink" href="#Table.GetInt8">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int8">int8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2225,7 +2313,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetInt8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=72586:72665#L2580">GetInt8ByColIndex</a>
+				<h3 id="Table.GetInt8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=81829:81908#L2781">GetInt8ByColIndex</a>
 					<a class="permalink" href="#Table.GetInt8ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetInt8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int8">int8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2235,7 +2323,7 @@ Get column values (of any type) as a slice of strings.
 				
 			
 				
-				<h3 id="Table.GetIntByColIndex">func (*Table) <a href="/src/target/gotable.go?s=68159:68236#L2390">GetIntByColIndex</a>
+				<h3 id="Table.GetIntByColIndex">func (*Table) <a href="/src/target/gotable.go?s=73689:73766#L2469">GetIntByColIndex</a>
 					<a class="permalink" href="#Table.GetIntByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetIntByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#int">int</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2266,18 +2354,18 @@ Returns a copy of the sort keys as a Table. Useful for debugging.
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[changes]
-user     language    lines
-string   string        int
-&#34;gri&#34;    &#34;Go&#34;          100
-&#34;ken&#34;    &#34;C&#34;           150
-&#34;glenda&#34; &#34;Go&#34;          200
-&#34;rsc&#34;    &#34;Go&#34;          200
-&#34;r&#34;      &#34;Go&#34;          100
-&#34;ken&#34;    &#34;Go&#34;          200
-&#34;dmr&#34;    &#34;C&#34;           100
-&#34;r&#34;      &#34;C&#34;           150
-&#34;gri&#34;    &#34;Smalltalk&#34;    80
-`
+    user     language    lines
+    string   string        int
+    &#34;gri&#34;    &#34;Go&#34;          100
+    &#34;ken&#34;    &#34;C&#34;           150
+    &#34;glenda&#34; &#34;Go&#34;          200
+    &#34;rsc&#34;    &#34;Go&#34;          200
+    &#34;r&#34;      &#34;Go&#34;          100
+    &#34;ken&#34;    &#34;Go&#34;          200
+    &#34;dmr&#34;    &#34;C&#34;           100
+    &#34;r&#34;      &#34;C&#34;           150
+    &#34;gri&#34;    &#34;Smalltalk&#34;    80
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -2342,7 +2430,7 @@ string   string        int
 				
 			
 				
-				<h3 id="Table.GetString">func (*Table) <a href="/src/target/gotable.go?s=64094:64169#L2214">GetString</a>
+				<h3 id="Table.GetString">func (*Table) <a href="/src/target/gotable.go?s=69448:69523#L2293">GetString</a>
 					<a class="permalink" href="#Table.GetString">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2352,7 +2440,7 @@ string   string        int
 				
 			
 				
-				<h3 id="Table.GetStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=64598:64681#L2238">GetStringByColIndex</a>
+				<h3 id="Table.GetStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=69976:70059#L2317">GetStringByColIndex</a>
 					<a class="permalink" href="#Table.GetStringByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2362,7 +2450,7 @@ string   string        int
 				
 			
 				
-				<h3 id="Table.GetTableAsCSV">func (*Table) <a href="/src/target/gotable.go?s=42100:42183#L1437">GetTableAsCSV</a>
+				<h3 id="Table.GetTableAsCSV">func (*Table) <a href="/src/target/gotable.go?s=44396:44479#L1462">GetTableAsCSV</a>
 					<a class="permalink" href="#Table.GetTableAsCSV">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetTableAsCSV(substituteHeadingNames ...<a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2389,12 +2477,12 @@ See: <a href="https://en.wikipedia.org/wiki/Comma-separated_values">https://en.w
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[ForCSV]
-first_name  last_name   username    i   f64     b       f32     commas  quotes
-string      string      string      int float64 bool    float32 string  string
-&#34;Rob&#34;       &#34;Pike&#34;      &#34;rob&#34;       1   1.1     true    NaN     &#34;,end&#34;  &#34;\&#34;xyz\&#34;&#34;
-&#34;Ken&#34;       &#34;Thompson&#34;  &#34;ken&#34;       3   NaN     true    3.3     &#34;beg,&#34;  &#34;&#39;abc&#39;&#34;
-&#34;Robert&#34;    &#34;Griesemer&#34; &#34;gri&#34;       5   5.5     true    NaN     &#34;md,l&#34;  &#34; \&#34;\&#34; &#34;
-`
+    first_name  last_name   username    i   f64     b       f32     commas  quotes
+    string      string      string      int float64 bool    float32 string  string
+    &#34;Rob&#34;       &#34;Pike&#34;      &#34;rob&#34;       1   1.1     true    NaN     &#34;,end&#34;  &#34;\&#34;xyz\&#34;&#34;
+    &#34;Ken&#34;       &#34;Thompson&#34;  &#34;ken&#34;       3   NaN     true    3.3     &#34;beg,&#34;  &#34;&#39;abc&#39;&#34;
+    &#34;Robert&#34;    &#34;Griesemer&#34; &#34;gri&#34;       5   5.5     true    NaN     &#34;md,l&#34;  &#34; \&#34;\&#34; &#34;
+    `
 table, err := NewTableFromString(tableString)
 if err != nil {
     log.Println(err)
@@ -2453,7 +2541,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint">func (*Table) <a href="/src/target/gotable.go?s=66866:66937#L2333">GetUint</a>
+				<h3 id="Table.GetUint">func (*Table) <a href="/src/target/gotable.go?s=72339:72410#L2412">GetUint</a>
 					<a class="permalink" href="#Table.GetUint">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint">uint</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2463,7 +2551,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint16">func (*Table) <a href="/src/target/gotable.go?s=69491:69566#L2447">GetUint16</a>
+				<h3 id="Table.GetUint16">func (*Table) <a href="/src/target/gotable.go?s=78601:78676#L2648">GetUint16</a>
 					<a class="permalink" href="#Table.GetUint16">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint16">uint16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2473,7 +2561,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=69921:70004#L2466">GetUint16ByColIndex</a>
+				<h3 id="Table.GetUint16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=79050:79133#L2667">GetUint16ByColIndex</a>
 					<a class="permalink" href="#Table.GetUint16ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint16">uint16</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2483,7 +2571,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint32">func (*Table) <a href="/src/target/gotable.go?s=70382:70457#L2485">GetUint32</a>
+				<h3 id="Table.GetUint32">func (*Table) <a href="/src/target/gotable.go?s=79530:79605#L2686">GetUint32</a>
 					<a class="permalink" href="#Table.GetUint32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint32">uint32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2493,7 +2581,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=70812:70895#L2504">GetUint32ByColIndex</a>
+				<h3 id="Table.GetUint32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=79979:80062#L2705">GetUint32ByColIndex</a>
 					<a class="permalink" href="#Table.GetUint32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint32">uint32</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2503,7 +2591,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint64">func (*Table) <a href="/src/target/gotable.go?s=71273:71348#L2523">GetUint64</a>
+				<h3 id="Table.GetUint64">func (*Table) <a href="/src/target/gotable.go?s=80459:80534#L2724">GetUint64</a>
 					<a class="permalink" href="#Table.GetUint64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint64">uint64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2513,7 +2601,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=71703:71786#L2542">GetUint64ByColIndex</a>
+				<h3 id="Table.GetUint64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=80908:80991#L2743">GetUint64ByColIndex</a>
 					<a class="permalink" href="#Table.GetUint64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint64">uint64</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2523,27 +2611,59 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetUint8">func (*Table) <a href="/src/target/gotable.go?s=68608:68681#L2409">GetUint8</a>
+				<h3 id="Table.GetUint8">func (*Table) <a href="/src/target/gotable.go?s=74234:74307#L2489">GetUint8</a>
 					<a class="permalink" href="#Table.GetUint8">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8()
+</p>
+
 				
 				
 				
 			
 				
-				<h3 id="Table.GetUint8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=69034:69115#L2428">GetUint8ByColIndex</a>
+				<h3 id="Table.GetUint8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=74766:74847#L2509">GetUint8ByColIndex</a>
 					<a class="permalink" href="#Table.GetUint8ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUint8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
+</p>
+
 				
 				
 				
 			
 				
-				<h3 id="Table.GetUintByColIndex">func (*Table) <a href="/src/target/gotable.go?s=67288:67367#L2352">GetUintByColIndex</a>
+				<h3 id="Table.GetUint8Slice">func (*Table) <a href="/src/target/gotable.go?s=76405:76485#L2569">GetUint8Slice</a>
+					<a class="permalink" href="#Table.GetUint8Slice">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetUint8Slice(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+[]byte is an []alias for uint8, so byte values can be gotten with GetUint8Slice()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetUint8SliceByColIndex">func (*Table) <a href="/src/target/gotable.go?s=76967:77055#L2589">GetUint8SliceByColIndex</a>
+					<a class="permalink" href="#Table.GetUint8SliceByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) GetUint8SliceByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) ([]<a href="/pkg/builtin/#uint8">uint8</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.GetUintByColIndex">func (*Table) <a href="/src/target/gotable.go?s=72780:72859#L2431">GetUintByColIndex</a>
 					<a class="permalink" href="#Table.GetUintByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetUintByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#uint">uint</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2553,7 +2673,7 @@ Robert,Griesemer,gri,5,5.5,true,,&#34;md,l&#34;,&#34; \&#34;&#34;\&#34;&#34; &#3
 				
 			
 				
-				<h3 id="Table.GetVal">func (*Table) <a href="/src/target/gotable.go?s=61187:61264#L2110">GetVal</a>
+				<h3 id="Table.GetVal">func (*Table) <a href="/src/target/gotable.go?s=66406:66483#L2189">GetVal</a>
 					<a class="permalink" href="#Table.GetVal">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetVal(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (interface{}, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2567,7 +2687,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=97729:97809#L3491">GetValAsString</a>
+				<h3 id="Table.GetValAsString">func (*Table) <a href="/src/target/gotable.go?s=108041:108121#L3696">GetValAsString</a>
 					<a class="permalink" href="#Table.GetValAsString">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2577,7 +2697,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=95416:95504#L3406">GetValAsStringByColIndex</a>
+				<h3 id="Table.GetValAsStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=105485:105573#L3607">GetValAsStringByColIndex</a>
 					<a class="permalink" href="#Table.GetValAsStringByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValAsStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2587,7 +2707,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GetValByColIndex">func (*Table) <a href="/src/target/gotable.go?s=62073:62158#L2137">GetValByColIndex</a>
+				<h3 id="Table.GetValByColIndex">func (*Table) <a href="/src/target/gotable.go?s=67319:67404#L2216">GetValByColIndex</a>
 					<a class="permalink" href="#Table.GetValByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GetValByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (interface{}, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2601,7 +2721,7 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 				
 			
 				
-				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=90943:90990#L3240">GobEncode</a>
+				<h3 id="Table.GobEncode">func (*Table) <a href="/src/target/gotable.go?s=100846:100893#L3441">GobEncode</a>
 					<a class="permalink" href="#Table.GobEncode">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) GobEncode() ([]<a href="/pkg/builtin/#byte">byte</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2618,12 +2738,12 @@ Returns an interface{} value which may contain any valid gotable data type or Na
 		
 			<p>Code:</p>
 			<pre class="code">s := `[sable_fur]
-i   s      f       b
-int string float64 bool
-1   &#34;abc&#34;  2.3     true
-2   &#34;xyz&#34;  4.5     false
-3   &#34;ssss&#34; 4.9     false
-`
+    i   s      f       b
+    int string float64 bool
+    1   &#34;abc&#34;  2.3     true
+    2   &#34;xyz&#34;  4.5     false
+    3   &#34;ssss&#34; 4.9     false
+    `
 tableToEncode, err := NewTableFromString(s)
 if err != nil {
     log.Println(err)
@@ -2673,7 +2793,7 @@ int string float64 bool
 				
 			
 				
-				<h3 id="Table.HasCell">func (*Table) <a href="/src/target/gotable.go?s=62952:63023#L2168">HasCell</a>
+				<h3 id="Table.HasCell">func (*Table) <a href="/src/target/gotable.go?s=68229:68300#L2247">HasCell</a>
 					<a class="permalink" href="#Table.HasCell">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) HasCell(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2686,7 +2806,7 @@ Returns true if this table has colName and has rowIndex.
 				
 			
 				
-				<h3 id="Table.HasCellByColIndex">func (*Table) <a href="/src/target/gotable.go?s=63351:63430#L2186">HasCellByColIndex</a>
+				<h3 id="Table.HasCellByColIndex">func (*Table) <a href="/src/target/gotable.go?s=68646:68725#L2265">HasCellByColIndex</a>
 					<a class="permalink" href="#Table.HasCellByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) HasCellByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2699,7 +2819,7 @@ Returns true if this table has colIndex and has rowIndex.
 				
 			
 				
-				<h3 id="Table.HasCol">func (*Table) <a href="/src/target/gotable.go?s=49441:49497#L1718">HasCol</a>
+				<h3 id="Table.HasCol">func (*Table) <a href="/src/target/gotable.go?s=52138:52194#L1747">HasCol</a>
 					<a class="permalink" href="#Table.HasCol">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) HasCol(colName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2712,7 +2832,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.HasColByColIndex">func (*Table) <a href="/src/target/gotable.go?s=49706:49770#L1728">HasColByColIndex</a>
+				<h3 id="Table.HasColByColIndex">func (*Table) <a href="/src/target/gotable.go?s=52413:52477#L1757">HasColByColIndex</a>
 					<a class="permalink" href="#Table.HasColByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) HasColByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2725,7 +2845,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.HasRow">func (*Table) <a href="/src/target/gotable.go?s=63718:63772#L2203">HasRow</a>
+				<h3 id="Table.HasRow">func (*Table) <a href="/src/target/gotable.go?s=69030:69084#L2282">HasRow</a>
 					<a class="permalink" href="#Table.HasRow">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) HasRow(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2735,7 +2855,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsColType">func (*Table) <a href="/src/target/gotable.go?s=76568:76655#L2751">IsColType</a>
+				<h3 id="Table.IsColType">func (*Table) <a href="/src/target/gotable.go?s=85982:86069#L2952">IsColType</a>
 					<a class="permalink" href="#Table.IsColType">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsColType(colName <a href="/pkg/builtin/#string">string</a>, typeNameQuestioning <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2745,7 +2865,7 @@ Checks whether col exists
 				
 			
 				
-				<h3 id="Table.IsColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=76991:77086#L2764">IsColTypeByColIndex</a>
+				<h3 id="Table.IsColTypeByColIndex">func (*Table) <a href="/src/target/gotable.go?s=86418:86513#L2965">IsColTypeByColIndex</a>
 					<a class="permalink" href="#Table.IsColTypeByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsColTypeByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, typeNameQuestioning <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2768,7 +2888,7 @@ True if colName is a sort key in table. False if not. Error if colName not in ta
 				
 			
 				
-				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=98075:98124#L3507">IsStructShape</a>
+				<h3 id="Table.IsStructShape">func (*Table) <a href="/src/target/gotable.go?s=108403:108452#L3712">IsStructShape</a>
 					<a class="permalink" href="#Table.IsStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsStructShape() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2778,7 +2898,7 @@ True if colName is a sort key in table. False if not. Error if colName not in ta
 				
 			
 				
-				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=100244:100328#L3590">IsValidColValue</a>
+				<h3 id="Table.IsValidColValue">func (*Table) <a href="/src/target/gotable.go?s=110655:110739#L3795">IsValidColValue</a>
 					<a class="permalink" href="#Table.IsValidColValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidColValue(colName <a href="/pkg/builtin/#string">string</a>, value interface{}) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2791,7 +2911,7 @@ Test that this value is a valid type for this column.
 				
 			
 				
-				<h3 id="Table.IsValidRow">func (*Table) <a href="/src/target/gotable.go?s=82042:82100#L2949">IsValidRow</a>
+				<h3 id="Table.IsValidRow">func (*Table) <a href="/src/target/gotable.go?s=91654:91712#L3150">IsValidRow</a>
 					<a class="permalink" href="#Table.IsValidRow">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidRow(rowIndex <a href="/pkg/builtin/#int">int</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2805,7 +2925,7 @@ That means completely missing values, not just empty strings or NaN floats.
 				
 			
 				
-				<h3 id="Table.IsValidTable">func (*Table) <a href="/src/target/gotable.go?s=82937:82985#L2986">IsValidTable</a>
+				<h3 id="Table.IsValidTable">func (*Table) <a href="/src/target/gotable.go?s=92586:92634#L3187">IsValidTable</a>
 					<a class="permalink" href="#Table.IsValidTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) IsValidTable() (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2825,7 +2945,7 @@ Valid sort keys (if any are set)?
 				
 			
 				
-				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=98624:98705#L3527">JoinColVals</a>
+				<h3 id="Table.JoinColVals">func (*Table) <a href="/src/target/gotable.go?s=108972:109053#L3732">JoinColVals</a>
 					<a class="permalink" href="#Table.JoinColVals">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColVals(colName <a href="/pkg/builtin/#string">string</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2845,12 +2965,12 @@ Join together a column of values. To compose a set of commands into a single com
 		
 			<p>Code:</p>
 			<pre class="code">tableString := `
-[commands]
-command
-string
-&#34;echo myfile&#34;
-&#34;wc -l&#34;
-`
+    [commands]
+    command
+    string
+    &#34;echo myfile&#34;
+    &#34;wc -l&#34;
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -2885,7 +3005,7 @@ echo myfile | wc -l
 				
 			
 				
-				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=99039:99128#L3543">JoinColValsByColIndex</a>
+				<h3 id="Table.JoinColValsByColIndex">func (*Table) <a href="/src/target/gotable.go?s=109403:109492#L3748">JoinColValsByColIndex</a>
 					<a class="permalink" href="#Table.JoinColValsByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) JoinColValsByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, separator <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -2905,12 +3025,12 @@ Join together a column of values. To compose a set of commands into a single com
 		
 			<p>Code:</p>
 			<pre class="code">tableString := `
-[commands]
-command
-string
-&#34;echo myfile&#34;
-&#34;wc -l&#34;
-`
+    [commands]
+    command
+    string
+    &#34;echo myfile&#34;
+    &#34;wc -l&#34;
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -2990,15 +3110,15 @@ echo myfile | wc -l
 			<p>Code:</p>
 			<pre class="code">t1string :=
     `[Table1]
-XYZ     y   s       f       i   diff
-string  int string  float64 int int
-&#34;X&#34;     1   &#34;abc&#34;   1.11    1   7
-&#34;Y&#34;     3   &#34;ghi&#34;   7.8910  3   8
-&#34;Z&#34;     2   &#34;def&#34;   NaN     2   9
-&#34;A&#34;     4   &#34;jkl&#34;   0       4   6
-&#34;B&#34;     5   &#34;mno&#34;   0       5   4
-&#34;C&#34;     8   &#34;pqr&#34;   NaN     6   45
-`
+    XYZ     y   s       f       i   diff
+    string  int string  float64 int int
+    &#34;X&#34;     1   &#34;abc&#34;   1.11    1   7
+    &#34;Y&#34;     3   &#34;ghi&#34;   7.8910  3   8
+    &#34;Z&#34;     2   &#34;def&#34;   NaN     2   9
+    &#34;A&#34;     4   &#34;jkl&#34;   0       4   6
+    &#34;B&#34;     5   &#34;mno&#34;   0       5   4
+    &#34;C&#34;     8   &#34;pqr&#34;   NaN     6   45
+    `
 table1, err := NewTableFromString(t1string)
 if err != nil {
     log.Println(err)
@@ -3008,16 +3128,16 @@ fmt.Println(table1)
 
 t2string :=
     `[Table2]
-s       b       diff    ui      f		i
-string  bool    int     uint    float64	int
-&#34;abc&#34;   true    55      99      2.22	1
-&#34;def&#34;   false   66      88      0		2
-&#34;ghi&#34;   false   66      0       42		3
-&#34;jkl&#34;   false   66      88      NaN		4
-&#34;mno&#34;   false   77      95      0		5
-&#34;pqr&#34;   true    88      97      0		6
-&#34;pqr&#34;   true    88      97      0		6
-`
+    s       b       diff    ui      f		i
+    string  bool    int     uint    float64	int
+    &#34;abc&#34;   true    55      99      2.22	1
+    &#34;def&#34;   false   66      88      0		2
+    &#34;ghi&#34;   false   66      0       42		3
+    &#34;jkl&#34;   false   66      88      NaN		4
+    &#34;mno&#34;   false   77      95      0		5
+    &#34;pqr&#34;   true    88      97      0		6
+    &#34;pqr&#34;   true    88      97      0		6
+    `
 table2, err := NewTableFromString(t2string)
 if err != nil {
     log.Println(err)
@@ -3086,7 +3206,7 @@ int string string int float64  int bool  uint
 				
 			
 				
-				<h3 id="Table.Name">func (*Table) <a href="/src/target/gotable.go?s=53449:53482#L1872">Name</a>
+				<h3 id="Table.Name">func (*Table) <a href="/src/target/gotable.go?s=56300:56333#L1901">Name</a>
 					<a class="permalink" href="#Table.Name">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) Name() <a href="/pkg/builtin/#string">string</a></pre>
@@ -3147,9 +3267,9 @@ Note: This is purely for human readability. It is not required for sorting.
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[MyTable]
-ColA   ColB Key2      ColC Key1 ColD ColE
-string  int string float64  int  int bool
-`
+    ColA   ColB Key2      ColC Key1 ColD ColE
+    string  int string float64  int  int bool
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -3206,7 +3326,7 @@ Key1 Key2   ColA   ColB    ColC ColD ColE
 				
 			
 				
-				<h3 id="Table.RenameCol">func (*Table) <a href="/src/target/gotable.go?s=79755:79822#L2873">RenameCol</a>
+				<h3 id="Table.RenameCol">func (*Table) <a href="/src/target/gotable.go?s=89291:89358#L3074">RenameCol</a>
 					<a class="permalink" href="#Table.RenameCol">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) RenameCol(oldName <a href="/pkg/builtin/#string">string</a>, newName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3219,7 +3339,7 @@ Note: This may leave the table in an invalid or unstable state if an error is re
 				
 			
 				
-				<h3 id="Table.RenameTable">func (*Table) <a href="/src/target/gotable.go?s=79049:79104#L2843">RenameTable</a>
+				<h3 id="Table.RenameTable">func (*Table) <a href="/src/target/gotable.go?s=88555:88610#L3044">RenameTable</a>
 					<a class="permalink" href="#Table.RenameTable">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) RenameTable(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3246,7 +3366,7 @@ To avoid this, use the TableSet.RenameTable() method.
 				
 			
 				
-				<h3 id="Table.RowCount">func (*Table) <a href="/src/target/gotable.go?s=53954:53988#L1892">RowCount</a>
+				<h3 id="Table.RowCount">func (*Table) <a href="/src/target/gotable.go?s=56825:56859#L1921">RowCount</a>
 					<a class="permalink" href="#Table.RowCount">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) RowCount() <a href="/pkg/builtin/#int">int</a></pre>
@@ -3292,18 +3412,18 @@ Search first is what the Go sort.Search() function does.
 <span class="comment">// http://www.space.com/17001-how-big-is-the-sun-size-of-the-sun.html</span>
 tableString :=
     `[planets]
-name         mass distance moons index mnemonic
-string    float64   float64   int   int string
-&#34;Sun&#34;      333333        0     0    -1 &#34;&#34;
-&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
-&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
-&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
-&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
-&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
-&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
-&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
-&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
-`
+    name         mass distance moons index mnemonic
+    string    float64   float64   int   int string
+    &#34;Sun&#34;      333333        0     0    -1 &#34;&#34;
+    &#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+    &#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+    &#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+    &#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+    &#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+    &#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+    &#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+    &#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -3394,17 +3514,17 @@ Found Pluto at rowIndex = -1 (missing)
 <span class="comment">// http://www.windows2universe.org/our_solar_system/planets_table.html</span>
 tableString :=
     `[planets]
-name         mass distance moons index mnemonic
-string    float64  float64   int   int string
-&#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
-&#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
-&#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
-&#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
-&#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
-&#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
-&#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
-&#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
-`
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
+    &#34;Mercury&#34;   0.055      0.4     0     0 &#34;my&#34;
+    &#34;Venus&#34;     0.815      0.7     0     1 &#34;very&#34;
+    &#34;Earth&#34;     1.000      1.0     1     2 &#34;elegant&#34;
+    &#34;Mars&#34;      0.107      1.5     2     3 &#34;mother&#34;
+    &#34;Jupiter&#34; 318.000      5.2    67     4 &#34;just&#34;
+    &#34;Saturn&#34;   95.000     29.4    62     5 &#34;sat&#34;
+    &#34;Uranus&#34;   15.000     84.0    27     6 &#34;upon&#34;
+    &#34;Neptune&#34;  17.000    164.0    13     7 &#34;nine ... porcupines&#34;
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -3532,7 +3652,7 @@ Note: searchValues must match, not merely GT and LT where match would be.
 				
 			
 				
-				<h3 id="Table.SetAllFloatCellsToNaN">func (*Table) <a href="/src/target/gotable.go?s=14996:15045#L557">SetAllFloatCellsToNaN</a>
+				<h3 id="Table.SetAllFloatCellsToNaN">func (*Table) <a href="/src/target/gotable.go?s=15562:15611#L557">SetAllFloatCellsToNaN</a>
 					<a class="permalink" href="#Table.SetAllFloatCellsToNaN">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetAllFloatCellsToNaN() <a href="/pkg/builtin/#error">error</a></pre>
@@ -3545,7 +3665,7 @@ Set all float cells in this table to NaN. This is a convenience function to use 
 				
 			
 				
-				<h3 id="Table.SetBool">func (*Table) <a href="/src/target/gotable.go?s=55083:55161#L1926">SetBool</a>
+				<h3 id="Table.SetBool">func (*Table) <a href="/src/target/gotable.go?s=58019:58097#L1955">SetBool</a>
 					<a class="permalink" href="#Table.SetBool">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetBool(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3555,7 +3675,7 @@ Set all float cells in this table to NaN. This is a convenience function to use 
 				
 			
 				
-				<h3 id="Table.SetBoolByColIndex">func (*Table) <a href="/src/target/gotable.go?s=55300:55386#L1933">SetBoolByColIndex</a>
+				<h3 id="Table.SetBoolByColIndex">func (*Table) <a href="/src/target/gotable.go?s=58243:58329#L1962">SetBoolByColIndex</a>
 					<a class="permalink" href="#Table.SetBoolByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetBoolByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3565,7 +3685,59 @@ Set all float cells in this table to NaN. This is a convenience function to use 
 				
 			
 				
-				<h3 id="Table.SetCellToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=16517:16591#L618">SetCellToZeroValue</a>
+				<h3 id="Table.SetByte">func (*Table) <a href="/src/target/gotable.go?s=59312:59390#L1992">SetByte</a>
+					<a class="permalink" href="#Table.SetByte">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetByte(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#byte">byte</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetByteByColIndex">func (*Table) <a href="/src/target/gotable.go?s=62653:62739#L2087">SetByteByColIndex</a>
+					<a class="permalink" href="#Table.SetByteByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetByteByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#byte">byte</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetByteSlice">func (*Table) <a href="/src/target/gotable.go?s=59933:60018#L2008">SetByteSlice</a>
+					<a class="permalink" href="#Table.SetByteSlice">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetByteSlice(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue []<a href="/pkg/builtin/#byte">byte</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetByteSliceByColIndex">func (*Table) <a href="/src/target/gotable.go?s=62983:63076#L2095">SetByteSliceByColIndex</a>
+					<a class="permalink" href="#Table.SetByteSliceByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetByteSliceByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue []<a href="/pkg/builtin/#byte">byte</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetCellToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=17144:17218#L618">SetCellToZeroValue</a>
 					<a class="permalink" href="#Table.SetCellToZeroValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetCellToZeroValue(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3582,12 +3754,12 @@ Set all float cells in this table to NaN. This is a convenience function to use 
 		
 			<p>Code:</p>
 			<pre class="code">s := `[three_rows]
-i    s        f1 	b	 f2
-int  string float32 bool  float64
-  0  &#34;abc&#34;      2.3 true  42.0
-  1  &#34;xyz&#34;      4.5 false 43.0
-  2  &#34;s  s&#34;     4.9 false 44.0
-`
+    i    s        f1 	b	 f2
+    int  string float32 bool  float64
+      0  &#34;abc&#34;      2.3 true  42.0
+      1  &#34;xyz&#34;      4.5 false 43.0
+      2  &#34;s  s&#34;     4.9 false 44.0
+    `
 table, err := NewTableFromString(s)
 if err != nil {
     log.Println(err)
@@ -3675,7 +3847,7 @@ int string float32 bool  float64
 				
 			
 				
-				<h3 id="Table.SetCellToZeroValueByColIndex">func (*Table) <a href="/src/target/gotable.go?s=16897:16979#L638">SetCellToZeroValueByColIndex</a>
+				<h3 id="Table.SetCellToZeroValueByColIndex">func (*Table) <a href="/src/target/gotable.go?s=17544:17626#L638">SetCellToZeroValueByColIndex</a>
 					<a class="permalink" href="#Table.SetCellToZeroValueByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetCellToZeroValueByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3685,7 +3857,7 @@ int string float32 bool  float64
 				
 			
 				
-				<h3 id="Table.SetColCellsToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=15803:15867#L590">SetColCellsToZeroValue</a>
+				<h3 id="Table.SetColCellsToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=16402:16466#L590">SetColCellsToZeroValue</a>
 					<a class="permalink" href="#Table.SetColCellsToZeroValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetColCellsToZeroValue(colName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3698,7 +3870,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetColCellsToZeroValueByColIndex">func (*Table) <a href="/src/target/gotable.go?s=16163:16235#L602">SetColCellsToZeroValueByColIndex</a>
+				<h3 id="Table.SetColCellsToZeroValueByColIndex">func (*Table) <a href="/src/target/gotable.go?s=16774:16846#L602">SetColCellsToZeroValueByColIndex</a>
 					<a class="permalink" href="#Table.SetColCellsToZeroValueByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetColCellsToZeroValueByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3711,7 +3883,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetFloat32">func (*Table) <a href="/src/target/gotable.go?s=60102:60186#L2080">SetFloat32</a>
+				<h3 id="Table.SetFloat32">func (*Table) <a href="/src/target/gotable.go?s=65291:65375#L2159">SetFloat32</a>
 					<a class="permalink" href="#Table.SetFloat32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetFloat32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float32">float32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3721,7 +3893,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetFloat32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=60325:60417#L2087">SetFloat32ByColIndex</a>
+				<h3 id="Table.SetFloat32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=65521:65613#L2166">SetFloat32ByColIndex</a>
 					<a class="permalink" href="#Table.SetFloat32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetFloat32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float32">float32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3731,7 +3903,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetFloat64">func (*Table) <a href="/src/target/gotable.go?s=60567:60651#L2094">SetFloat64</a>
+				<h3 id="Table.SetFloat64">func (*Table) <a href="/src/target/gotable.go?s=65770:65854#L2173">SetFloat64</a>
 					<a class="permalink" href="#Table.SetFloat64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetFloat64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3741,7 +3913,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetFloat64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=60790:60882#L2101">SetFloat64ByColIndex</a>
+				<h3 id="Table.SetFloat64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=66000:66092#L2180">SetFloat64ByColIndex</a>
 					<a class="permalink" href="#Table.SetFloat64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetFloat64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#float64">float64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3751,7 +3923,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt">func (*Table) <a href="/src/target/gotable.go?s=55753:55829#L1947">SetInt</a>
+				<h3 id="Table.SetInt">func (*Table) <a href="/src/target/gotable.go?s=58710:58786#L1976">SetInt</a>
 					<a class="permalink" href="#Table.SetInt">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3761,7 +3933,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt16">func (*Table) <a href="/src/target/gotable.go?s=57067:57147#L1989">SetInt16</a>
+				<h3 id="Table.SetInt16">func (*Table) <a href="/src/target/gotable.go?s=61072:61152#L2043">SetInt16</a>
 					<a class="permalink" href="#Table.SetInt16">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int16">int16</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3771,7 +3943,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=59388:59476#L2059">SetInt16ByColIndex</a>
+				<h3 id="Table.SetInt16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=64556:64644#L2138">SetInt16ByColIndex</a>
 					<a class="permalink" href="#Table.SetInt16ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int16">int16</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3781,7 +3953,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt32">func (*Table) <a href="/src/target/gotable.go?s=57286:57366#L1996">SetInt32</a>
+				<h3 id="Table.SetInt32">func (*Table) <a href="/src/target/gotable.go?s=61298:61378#L2050">SetInt32</a>
 					<a class="permalink" href="#Table.SetInt32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int32">int32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3791,7 +3963,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=59626:59714#L2066">SetInt32ByColIndex</a>
+				<h3 id="Table.SetInt32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=64801:64889#L2145">SetInt32ByColIndex</a>
 					<a class="permalink" href="#Table.SetInt32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int32">int32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3801,7 +3973,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt64">func (*Table) <a href="/src/target/gotable.go?s=57505:57585#L2003">SetInt64</a>
+				<h3 id="Table.SetInt64">func (*Table) <a href="/src/target/gotable.go?s=61524:61604#L2057">SetInt64</a>
 					<a class="permalink" href="#Table.SetInt64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int64">int64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3811,7 +3983,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=59864:59952#L2073">SetInt64ByColIndex</a>
+				<h3 id="Table.SetInt64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=65046:65134#L2152">SetInt64ByColIndex</a>
 					<a class="permalink" href="#Table.SetInt64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int64">int64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3821,7 +3993,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt8">func (*Table) <a href="/src/target/gotable.go?s=56850:56928#L1982">SetInt8</a>
+				<h3 id="Table.SetInt8">func (*Table) <a href="/src/target/gotable.go?s=60848:60926#L2036">SetInt8</a>
 					<a class="permalink" href="#Table.SetInt8">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int8">int8</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3831,7 +4003,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetInt8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=59152:59238#L2052">SetInt8ByColIndex</a>
+				<h3 id="Table.SetInt8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=64313:64399#L2131">SetInt8ByColIndex</a>
 					<a class="permalink" href="#Table.SetInt8ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetInt8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int8">int8</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3841,7 +4013,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetIntByColIndex">func (*Table) <a href="/src/target/gotable.go?s=57960:58044#L2017">SetIntByColIndex</a>
+				<h3 id="Table.SetIntByColIndex">func (*Table) <a href="/src/target/gotable.go?s=61993:62077#L2071">SetIntByColIndex</a>
 					<a class="permalink" href="#Table.SetIntByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetIntByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3851,7 +4023,7 @@ Set all cells in this col to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetName">func (*Table) <a href="/src/target/gotable.go?s=78225:78276#L2804">SetName</a>
+				<h3 id="Table.SetName">func (*Table) <a href="/src/target/gotable.go?s=87692:87743#L3005">SetName</a>
 					<a class="permalink" href="#Table.SetName">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetName(tableName <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3868,7 +4040,7 @@ To avoid this, use the TableSet.SetName() method.
 				
 			
 				
-				<h3 id="Table.SetRowCellsToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=15384:15446#L573">SetRowCellsToZeroValue</a>
+				<h3 id="Table.SetRowCellsToZeroValue">func (*Table) <a href="/src/target/gotable.go?s=15966:16028#L573">SetRowCellsToZeroValue</a>
 					<a class="permalink" href="#Table.SetRowCellsToZeroValue">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetRowCellsToZeroValue(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3881,7 +4053,7 @@ Set all cells in this row to their zero value, such as 0, &#34;&#34;, or false.
 				
 			
 				
-				<h3 id="Table.SetRowFloatCellsToNaN">func (*Table) <a href="/src/target/gotable.go?s=14288:14349#L532">SetRowFloatCellsToNaN</a>
+				<h3 id="Table.SetRowFloatCellsToNaN">func (*Table) <a href="/src/target/gotable.go?s=14829:14890#L532">SetRowFloatCellsToNaN</a>
 					<a class="permalink" href="#Table.SetRowFloatCellsToNaN">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetRowFloatCellsToNaN(rowIndex <a href="/pkg/builtin/#int">int</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -3901,12 +4073,12 @@ Set all float cells in this row to NaN. This is a convenience function to use Na
 		
 			<p>Code:</p>
 			<pre class="code">s := `[three_rows]
-  i s            f b	 f2
-int string float32 bool  float64
-  0 &#34;abc&#34;      2.3 true  42.0
-  1 &#34;xyz&#34;      4.5 false 43.0
-  2 &#34;s  s&#34;     4.9 false 44.0
-`
+      i s            f b	 f2
+    int string float32 bool  float64
+      0 &#34;abc&#34;      2.3 true  42.0
+      1 &#34;xyz&#34;      4.5 false 43.0
+      2 &#34;s  s&#34;     4.9 false 44.0
+    `
 table, err := NewTableFromString(s)
 if err != nil {
     log.Println(err)
@@ -3980,18 +4152,18 @@ err = table.SetSortKeys(sortColNames...)
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[changes]
-user     language    lines
-string   string        int
-&#34;gri&#34;    &#34;Go&#34;          100
-&#34;ken&#34;    &#34;C&#34;           150
-&#34;glenda&#34; &#34;Go&#34;          200
-&#34;rsc&#34;    &#34;Go&#34;          200
-&#34;r&#34;      &#34;Go&#34;          100
-&#34;ken&#34;    &#34;Go&#34;          200
-&#34;dmr&#34;    &#34;C&#34;           100
-&#34;r&#34;      &#34;C&#34;           150
-&#34;gri&#34;    &#34;Smalltalk&#34;    80
-`
+    user     language    lines
+    string   string        int
+    &#34;gri&#34;    &#34;Go&#34;          100
+    &#34;ken&#34;    &#34;C&#34;           150
+    &#34;glenda&#34; &#34;Go&#34;          200
+    &#34;rsc&#34;    &#34;Go&#34;          200
+    &#34;r&#34;      &#34;Go&#34;          100
+    &#34;ken&#34;    &#34;Go&#34;          200
+    &#34;dmr&#34;    &#34;C&#34;           100
+    &#34;r&#34;      &#34;C&#34;           150
+    &#34;gri&#34;    &#34;Smalltalk&#34;    80
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -4205,7 +4377,7 @@ Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
 				
 			
 				
-				<h3 id="Table.SetString">func (*Table) <a href="/src/target/gotable.go?s=54622:54704#L1912">SetString</a>
+				<h3 id="Table.SetString">func (*Table) <a href="/src/target/gotable.go?s=57544:57626#L1941">SetString</a>
 					<a class="permalink" href="#Table.SetString">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetString(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4215,7 +4387,7 @@ Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
 				
 			
 				
-				<h3 id="Table.SetStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=54843:54933#L1919">SetStringByColIndex</a>
+				<h3 id="Table.SetStringByColIndex">func (*Table) <a href="/src/target/gotable.go?s=57772:57862#L1948">SetStringByColIndex</a>
 					<a class="permalink" href="#Table.SetStringByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetStringByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4225,7 +4397,7 @@ Example 2: SetSortKeysReverse([]string{&#34;col1&#34;,&#34;col3&#34;}...)
 				
 			
 				
-				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=98337:98397#L3516">SetStructShape</a>
+				<h3 id="Table.SetStructShape">func (*Table) <a href="/src/target/gotable.go?s=108674:108734#L3721">SetStructShape</a>
 					<a class="permalink" href="#Table.SetStructShape">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetStructShape(isStructShape <a href="/pkg/builtin/#bool">bool</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4238,7 +4410,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint">func (*Table) <a href="/src/target/gotable.go?s=55536:55614#L1940">SetUint</a>
+				<h3 id="Table.SetUint">func (*Table) <a href="/src/target/gotable.go?s=58486:58564#L1969">SetUint</a>
 					<a class="permalink" href="#Table.SetUint">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint">uint</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4248,7 +4420,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint16">func (*Table) <a href="/src/target/gotable.go?s=56187:56269#L1961">SetUint16</a>
+				<h3 id="Table.SetUint16">func (*Table) <a href="/src/target/gotable.go?s=60164:60246#L2015">SetUint16</a>
 					<a class="permalink" href="#Table.SetUint16">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint16(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint16">uint16</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4258,7 +4430,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=58432:58522#L2031">SetUint16ByColIndex</a>
+				<h3 id="Table.SetUint16ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=63572:63662#L2110">SetUint16ByColIndex</a>
 					<a class="permalink" href="#Table.SetUint16ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint16ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint16">uint16</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4268,7 +4440,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint32">func (*Table) <a href="/src/target/gotable.go?s=56408:56490#L1968">SetUint32</a>
+				<h3 id="Table.SetUint32">func (*Table) <a href="/src/target/gotable.go?s=60392:60474#L2022">SetUint32</a>
 					<a class="permalink" href="#Table.SetUint32">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint32(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint32">uint32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4278,7 +4450,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=58672:58762#L2038">SetUint32ByColIndex</a>
+				<h3 id="Table.SetUint32ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=63819:63909#L2117">SetUint32ByColIndex</a>
 					<a class="permalink" href="#Table.SetUint32ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint32ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint32">uint32</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4288,7 +4460,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint64">func (*Table) <a href="/src/target/gotable.go?s=56629:56711#L1975">SetUint64</a>
+				<h3 id="Table.SetUint64">func (*Table) <a href="/src/target/gotable.go?s=60620:60702#L2029">SetUint64</a>
 					<a class="permalink" href="#Table.SetUint64">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint64(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint64">uint64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4298,7 +4470,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=58912:59002#L2045">SetUint64ByColIndex</a>
+				<h3 id="Table.SetUint64ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=64066:64156#L2124">SetUint64ByColIndex</a>
 					<a class="permalink" href="#Table.SetUint64ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint64ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint64">uint64</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4308,27 +4480,59 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetUint8">func (*Table) <a href="/src/target/gotable.go?s=55968:56048#L1954">SetUint8</a>
+				<h3 id="Table.SetUint8">func (*Table) <a href="/src/target/gotable.go?s=59009:59089#L1984">SetUint8</a>
 					<a class="permalink" href="#Table.SetUint8">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint8(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
-				
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8()
+</p>
+
 				
 				
 				
 			
 				
-				<h3 id="Table.SetUint8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=58194:58282#L2024">SetUint8ByColIndex</a>
+				<h3 id="Table.SetUint8ByColIndex">func (*Table) <a href="/src/target/gotable.go?s=62321:62409#L2079">SetUint8ByColIndex</a>
 					<a class="permalink" href="#Table.SetUint8ByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUint8ByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
-				
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+</p>
+
 				
 				
 				
 			
 				
-				<h3 id="Table.SetUintByColIndex">func (*Table) <a href="/src/target/gotable.go?s=57724:57810#L2010">SetUintByColIndex</a>
+				<h3 id="Table.SetUint8Slice">func (*Table) <a href="/src/target/gotable.go?s=59618:59705#L2000">SetUint8Slice</a>
+					<a class="permalink" href="#Table.SetUint8Slice">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetUint8Slice(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue []<a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetUint8SliceByColIndex">func (*Table) <a href="/src/target/gotable.go?s=63320:63415#L2103">SetUint8SliceByColIndex</a>
+					<a class="permalink" href="#Table.SetUint8SliceByColIndex">&#xb6;</a>
+				</h3>
+				<pre>func (table *<a href="#Table">Table</a>) SetUint8SliceByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue []<a href="/pkg/builtin/#uint8">uint8</a>) <a href="/pkg/builtin/#error">error</a></pre>
+				<p>
+byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="Table.SetUintByColIndex">func (*Table) <a href="/src/target/gotable.go?s=61750:61836#L2064">SetUintByColIndex</a>
 					<a class="permalink" href="#Table.SetUintByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetUintByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, newValue <a href="/pkg/builtin/#uint">uint</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4338,7 +4542,7 @@ Will be ignored (when writing table as string) if table RowCount() is more than 
 				
 			
 				
-				<h3 id="Table.SetVal">func (*Table) <a href="/src/target/gotable.go?s=45844:45923#L1586">SetVal</a>
+				<h3 id="Table.SetVal">func (*Table) <a href="/src/target/gotable.go?s=48289:48368#L1611">SetVal</a>
 					<a class="permalink" href="#Table.SetVal">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetVal(colName <a href="/pkg/builtin/#string">string</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, val interface{}) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4352,7 +4556,7 @@ Requires a val of valid type for the col in the table.
 				
 			
 				
-				<h3 id="Table.SetValByColIndex">func (*Table) <a href="/src/target/gotable.go?s=46643:46730#L1615">SetValByColIndex</a>
+				<h3 id="Table.SetValByColIndex">func (*Table) <a href="/src/target/gotable.go?s=49177:49264#L1642">SetValByColIndex</a>
 					<a class="permalink" href="#Table.SetValByColIndex">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) SetValByColIndex(colIndex <a href="/pkg/builtin/#int">int</a>, rowIndex <a href="/pkg/builtin/#int">int</a>, val interface{}) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4390,13 +4594,13 @@ To see the currently-set sort keys use GetSortKeysAsTable()
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[planets]
-name         mass distance
-string    float64  float64
-&#34;Mercury&#34;   0.055      0.4
-&#34;Venus&#34;     0.815      0.7
-&#34;Earth&#34;     1.000      1.0
-&#34;Mars&#34;      0.107      1.5
-`
+    name         mass distance
+    string    float64  float64
+    &#34;Mercury&#34;   0.055      0.4
+    &#34;Venus&#34;     0.815      0.7
+    &#34;Earth&#34;     1.000      1.0
+    &#34;Mars&#34;      0.107      1.5
+    `
 
 table, err := NewTableFromString(tableString)
 if err != nil {
@@ -4512,22 +4716,22 @@ SortUnique() uses table.Merge() which resolves missing or conflicting cell value
 			<p>Code:</p>
 			<pre class="code">tableString :=
     `[Uniqueness]
-KeyCol number   s
-int float32 string
-2   0       &#34;two point two&#34;
-2   2.2     &#34;&#34;
-1   1.1     &#34;one point one&#34;
-3   3.3     &#34;three point three&#34;
-3   3.3     &#34;&#34;
-3   NaN     &#34;three point three&#34;
-4   0.0     &#34;neither zero nor same X&#34;
-4   NaN     &#34;neither zero nor same Y&#34;
-4   4.4     &#34;neither zero nor same Z&#34;
-4   NaN     &#34;neither zero nor same A&#34;
-5   NaN     &#34;minus 5&#34;
-5   -0      &#34;minus 5&#34;
-5   -5      &#34;minus 5&#34;
-`
+    KeyCol number   s
+    int float32 string
+    2   0       &#34;two point two&#34;
+    2   2.2     &#34;&#34;
+    1   1.1     &#34;one point one&#34;
+    3   3.3     &#34;three point three&#34;
+    3   3.3     &#34;&#34;
+    3   NaN     &#34;three point three&#34;
+    4   0.0     &#34;neither zero nor same X&#34;
+    4   NaN     &#34;neither zero nor same Y&#34;
+    4   4.4     &#34;neither zero nor same Z&#34;
+    4   NaN     &#34;neither zero nor same A&#34;
+    5   NaN     &#34;minus 5&#34;
+    5   -0      &#34;minus 5&#34;
+    5   -5      &#34;minus 5&#34;
+    `
 table, err := NewTableFromString(tableString)
 if err != nil {
     log.Println(err)
@@ -4588,7 +4792,7 @@ KeyCol  number s
 				
 			
 				
-				<h3 id="Table.String">func (*Table) <a href="/src/target/gotable.go?s=32105:32140#L1117">String</a>
+				<h3 id="Table.String">func (*Table) <a href="/src/target/gotable.go?s=33527:33562#L1124">String</a>
 					<a class="permalink" href="#Table.String">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
@@ -4601,7 +4805,7 @@ Return a parsable table as a string with numbers format aligned right.
 				
 			
 				
-				<h3 id="Table.StringPadded">func (*Table) <a href="/src/target/gotable.go?s=32303:32344#L1125">StringPadded</a>
+				<h3 id="Table.StringPadded">func (*Table) <a href="/src/target/gotable.go?s=33733:33774#L1132">StringPadded</a>
 					<a class="permalink" href="#Table.StringPadded">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) StringPadded() <a href="/pkg/builtin/#string">string</a></pre>
@@ -4611,7 +4815,7 @@ Return a parsable table as a string with numbers format aligned right.
 				
 			
 				
-				<h3 id="Table.StringUnpadded">func (*Table) <a href="/src/target/gotable.go?s=23670:23713#L837">StringUnpadded</a>
+				<h3 id="Table.StringUnpadded">func (*Table) <a href="/src/target/gotable.go?s=24814:24857#L844">StringUnpadded</a>
 					<a class="permalink" href="#Table.StringUnpadded">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) StringUnpadded() <a href="/pkg/builtin/#string">string</a></pre>
@@ -4629,12 +4833,12 @@ Return a parsable table as a string with numbers format aligned right.
 			<p>Code:</p>
 			<pre class="code"><span class="comment">// Deliberately padded (by hand) for contrast.</span>
 s := `[sable_fur]
-  i s            f  b		ff
-int string float32  bool	float64
-  1 &#34;abc&#34;      2.34 true	7.899
-  2 &#34;xyz&#34;      4.5  false	6
-  3 &#34;s  s&#34;     4.9  false	5.5
-`
+      i s            f  b		ff
+    int string float32  bool	float64
+      1 &#34;abc&#34;      2.34 true	7.899
+      2 &#34;xyz&#34;      4.5  false	6
+      3 &#34;s  s&#34;     4.9  false	5.5
+    `
 table, err := NewTableFromString(s)
 if err != nil {
     log.Println(err)
@@ -4669,7 +4873,7 @@ int string float32 bool float64
 				
 			
 				
-				<h3 id="Table.WriteFile">func (*Table) <a href="/src/target/gotable.go?s=3200:3270#L109">WriteFile</a>
+				<h3 id="Table.WriteFile">func (*Table) <a href="/src/target/gotable.go?s=3318:3388#L109">WriteFile</a>
 					<a class="permalink" href="#Table.WriteFile">&#xb6;</a>
 				</h3>
 				<pre>func (table *<a href="#Table">Table</a>) WriteFile(fileName <a href="/pkg/builtin/#string">string</a>, mode <a href="/pkg/os/">os</a>.<a href="/pkg/os/#FileMode">FileMode</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4684,7 +4888,7 @@ Write a Table to a text file.
 		
 			
 			
-			<h2 id="TableExported">type <a href="/src/target/gotable.go?s=10267:10529#L380">TableExported</a>
+			<h2 id="TableExported">type <a href="/src/target/gotable.go?s=10656:10926#L380">TableExported</a>
 				<a class="permalink" href="#TableExported">&#xb6;</a>
 			</h2>
 			
@@ -4712,7 +4916,7 @@ Write a Table to a text file.
 		
 			
 			
-			<h2 id="TableSet">type <a href="/src/target/gotable.go?s=1875:1964#L57">TableSet</a>
+			<h2 id="TableSet">type <a href="/src/target/gotable.go?s=1941:2034#L57">TableSet</a>
 				<a class="permalink" href="#TableSet">&#xb6;</a>
 			</h2>
 			<p>
@@ -4733,7 +4937,7 @@ TableSet is an ordered set of *Table pointers.
 
 			
 				
-				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=93376:93440#L3323">GobDecodeTableSet</a>
+				<h3 id="GobDecodeTableSet">func <a href="/src/target/gotable.go?s=103362:103426#L3524">GobDecodeTableSet</a>
 					<a class="permalink" href="#GobDecodeTableSet">&#xb6;</a>
 				</h3>
 				<pre>func GobDecodeTableSet(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4742,7 +4946,7 @@ TableSet is an ordered set of *Table pointers.
 				
 			
 				
-				<h3 id="NewTableSet">func <a href="/src/target/gotable.go?s=2152:2208#L70">NewTableSet</a>
+				<h3 id="NewTableSet">func <a href="/src/target/gotable.go?s=2231:2287#L70">NewTableSet</a>
 					<a class="permalink" href="#NewTableSet">&#xb6;</a>
 				</h3>
 				<pre>func NewTableSet(tableSetName <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4783,7 +4987,7 @@ MyTableSet
 				
 			
 				
-				<h3 id="NewTableSetFromFile">func <a href="/src/target/gotable.go?s=2434:2494#L78">NewTableSetFromFile</a>
+				<h3 id="NewTableSetFromFile">func <a href="/src/target/gotable.go?s=2521:2581#L78">NewTableSetFromFile</a>
 					<a class="permalink" href="#NewTableSetFromFile">&#xb6;</a>
 				</h3>
 				<pre>func NewTableSetFromFile(fileName <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4795,7 +4999,7 @@ Read and parse a gotable file into a TableSet.
 				
 			
 				
-				<h3 id="NewTableSetFromGob">func <a href="/src/target/gotable.go?s=93271:93336#L3319">NewTableSetFromGob</a>
+				<h3 id="NewTableSetFromGob">func <a href="/src/target/gotable.go?s=103253:103318#L3520">NewTableSetFromGob</a>
 					<a class="permalink" href="#NewTableSetFromGob">&#xb6;</a>
 				</h3>
 				<pre>func NewTableSetFromGob(buffer []<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4813,7 +5017,7 @@ Calls GobDecodeTableSet(buffer)
 				
 			
 				
-				<h3 id="NewTableSetFromString">func <a href="/src/target/gotable.go?s=3726:3781#L129">NewTableSetFromString</a>
+				<h3 id="NewTableSetFromString">func <a href="/src/target/gotable.go?s=3864:3919#L129">NewTableSetFromString</a>
 					<a class="permalink" href="#NewTableSetFromString">&#xb6;</a>
 				</h3>
 				<pre>func NewTableSetFromString(s <a href="/pkg/builtin/#string">string</a>) (*<a href="#TableSet">TableSet</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4827,7 +5031,7 @@ Read and parse a gotable string into a TableSet.
 
 			
 				
-				<h3 id="TableSet.AppendTable">func (*TableSet) <a href="/src/target/gotable.go?s=8173:8233#L314">AppendTable</a>
+				<h3 id="TableSet.AppendTable">func (*TableSet) <a href="/src/target/gotable.go?s=8496:8556#L314">AppendTable</a>
 					<a class="permalink" href="#TableSet.AppendTable">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) AppendTable(newTable *<a href="#Table">Table</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4840,7 +5044,7 @@ Add a table to a table set.
 				
 			
 				
-				<h3 id="TableSet.FileName">func (*TableSet) <a href="/src/target/gotable.go?s=7900:7943#L301">FileName</a>
+				<h3 id="TableSet.FileName">func (*TableSet) <a href="/src/target/gotable.go?s=8210:8253#L301">FileName</a>
 					<a class="permalink" href="#TableSet.FileName">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) FileName() <a href="/pkg/builtin/#string">string</a></pre>
@@ -4853,7 +5057,7 @@ The file name if this TableSet has been created from a file. Otherwise &#34;&#34
 				
 			
 				
-				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=91437:91498#L3264">GobEncode</a>
+				<h3 id="TableSet.GobEncode">func (*TableSet) <a href="/src/target/gotable.go?s=101364:101425#L3465">GobEncode</a>
 					<a class="permalink" href="#TableSet.GobEncode">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) GobEncode() ([]<a href="/pkg/bytes/">bytes</a>.<a href="/pkg/bytes/#Buffer">Buffer</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4870,24 +5074,24 @@ The file name if this TableSet has been created from a file. Otherwise &#34;&#34
 		
 			<p>Code:</p>
 			<pre class="code">s := `[sable_fur]
-i   s       f           b
-int string  float64     bool
-1   &#34;abc&#34;   2.3         true
-2   &#34;xyz&#34;   4.5         false
-3   &#34;ssss&#34;  4.9         false
+    i   s       f           b
+    int string  float64     bool
+    1   &#34;abc&#34;   2.3         true
+    2   &#34;xyz&#34;   4.5         false
+    3   &#34;ssss&#34;  4.9         false
 
-[Struct_With_Data]
-Fred int = 42
-Wilma int = 39
-Pebbles int = 2
+    [Struct_With_Data]
+    Fred int = 42
+    Wilma int = 39
+    Pebbles int = 2
 
-[Empty_Struct]
-Fred int
+    [Empty_Struct]
+    Fred int
 
-[Empty_Table]
-Fred
-int
-`
+    [Empty_Table]
+    Fred
+    int
+    `
 tableSetToEncode, err := NewTableSetFromString(s)
 if err != nil {
     log.Println(err)
@@ -4961,7 +5165,7 @@ Fred
 				
 			
 				
-				<h3 id="TableSet.HasTable">func (*TableSet) <a href="/src/target/gotable.go?s=8845:8911#L334">HasTable</a>
+				<h3 id="TableSet.HasTable">func (*TableSet) <a href="/src/target/gotable.go?s=9188:9254#L334">HasTable</a>
 					<a class="permalink" href="#TableSet.HasTable">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) HasTable(tableName <a href="/pkg/builtin/#string">string</a>) (<a href="/pkg/builtin/#bool">bool</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -4974,7 +5178,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.Name">func (*TableSet) <a href="/src/target/gotable.go?s=7650:7689#L292">Name</a>
+				<h3 id="TableSet.Name">func (*TableSet) <a href="/src/target/gotable.go?s=7951:7990#L292">Name</a>
 					<a class="permalink" href="#TableSet.Name">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) Name() <a href="/pkg/builtin/#string">string</a></pre>
@@ -4984,7 +5188,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.RenameTable">func (*TableSet) <a href="/src/target/gotable.go?s=79226:79305#L2850">RenameTable</a>
+				<h3 id="TableSet.RenameTable">func (*TableSet) <a href="/src/target/gotable.go?s=88739:88818#L3051">RenameTable</a>
 					<a class="permalink" href="#TableSet.RenameTable">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) RenameTable(renameFrom <a href="/pkg/builtin/#string">string</a>, renameTo <a href="/pkg/builtin/#string">string</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -4994,7 +5198,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.SetFileName">func (*TableSet) <a href="/src/target/gotable.go?s=7975:8029#L305">SetFileName</a>
+				<h3 id="TableSet.SetFileName">func (*TableSet) <a href="/src/target/gotable.go?s=8289:8343#L305">SetFileName</a>
 					<a class="permalink" href="#TableSet.SetFileName">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) SetFileName(fileName <a href="/pkg/builtin/#string">string</a>)</pre>
@@ -5004,7 +5208,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.SetName">func (*TableSet) <a href="/src/target/gotable.go?s=7725:7779#L296">SetName</a>
+				<h3 id="TableSet.SetName">func (*TableSet) <a href="/src/target/gotable.go?s=8030:8084#L296">SetName</a>
 					<a class="permalink" href="#TableSet.SetName">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) SetName(tableSetName <a href="/pkg/builtin/#string">string</a>)</pre>
@@ -5014,7 +5218,7 @@ Checks whether table exists
 				
 			
 				
-				<h3 id="TableSet.String">func (*TableSet) <a href="/src/target/gotable.go?s=6253:6294#L238">String</a>
+				<h3 id="TableSet.String">func (*TableSet) <a href="/src/target/gotable.go?s=6500:6541#L238">String</a>
 					<a class="permalink" href="#TableSet.String">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) String() <a href="/pkg/builtin/#string">string</a></pre>
@@ -5035,12 +5239,12 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 			<p>Code:</p>
 			<pre class="code"><span class="comment">// Deliberately unpadded (by hand) for contrast.</span>
 s := `[sable_fur]
-i s f b
-int string float64 bool
-1 &#34;abc&#34; 2.3 true
-2 &#34;xyz&#34; 4.5 false
-3 &#34;ssss&#34; 4.9 false
-`
+    i s f b
+    int string float64 bool
+    1 &#34;abc&#34; 2.3 true
+    2 &#34;xyz&#34; 4.5 false
+    3 &#34;ssss&#34; 4.9 false
+    `
 tableSet, err := NewTableSetFromString(s)
 if err != nil {
     log.Println(err)
@@ -5087,7 +5291,7 @@ int string float64 bool
 				
 			
 				
-				<h3 id="TableSet.StringPadded">func (*TableSet) <a href="/src/target/gotable.go?s=6463:6510#L246">StringPadded</a>
+				<h3 id="TableSet.StringPadded">func (*TableSet) <a href="/src/target/gotable.go?s=6718:6765#L246">StringPadded</a>
 					<a class="permalink" href="#TableSet.StringPadded">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) StringPadded() <a href="/pkg/builtin/#string">string</a></pre>
@@ -5097,7 +5301,7 @@ int string float64 bool
 				
 			
 				
-				<h3 id="TableSet.StringUnpadded">func (*TableSet) <a href="/src/target/gotable.go?s=6984:7033#L269">StringUnpadded</a>
+				<h3 id="TableSet.StringUnpadded">func (*TableSet) <a href="/src/target/gotable.go?s=7262:7311#L269">StringUnpadded</a>
 					<a class="permalink" href="#TableSet.StringUnpadded">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) StringUnpadded() <a href="/pkg/builtin/#string">string</a></pre>
@@ -5116,18 +5320,18 @@ int string float64 bool
 			<pre class="code"><span class="comment">// Deliberately padded (by hand) for contrast.</span>
 s :=
     `[wombat_fur]
-  i s            f b
-int string float64 bool
-  1 &#34;abc&#34;      2.3 true
-  2 &#34;xyz&#34;      4.5 false
-  3 &#34;s  s&#34;     4.9 false
+      i s            f b
+    int string float64 bool
+      1 &#34;abc&#34;      2.3 true
+      2 &#34;xyz&#34;      4.5 false
+      3 &#34;s  s&#34;     4.9 false
 
-[various]
-i	f		u		s
-int	float32	uint	string
-3	44.55	2		&#34;Here I am!&#34;
-4	22.99	255		&#34;And now I&#39;m not ...&#34;
-`
+    [various]
+    i	f		u		s
+    int	float32	uint	string
+    3	44.55	2		&#34;Here I am!&#34;
+    4	22.99	255		&#34;And now I&#39;m not ...&#34;
+    `
 tableSet, err := NewTableSetFromString(s)
 if err != nil {
     log.Println(err)
@@ -5168,7 +5372,7 @@ int float32 uint string
 				
 			
 				
-				<h3 id="TableSet.Table">func (*TableSet) <a href="/src/target/gotable.go?s=9135:9200#L344">Table</a>
+				<h3 id="TableSet.Table">func (*TableSet) <a href="/src/target/gotable.go?s=9488:9553#L344">Table</a>
 					<a class="permalink" href="#TableSet.Table">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) Table(tableName <a href="/pkg/builtin/#string">string</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -5178,7 +5382,7 @@ int float32 uint string
 				
 			
 				
-				<h3 id="TableSet.TableByTableIndex">func (*TableSet) <a href="/src/target/gotable.go?s=9372:9447#L353">TableByTableIndex</a>
+				<h3 id="TableSet.TableByTableIndex">func (*TableSet) <a href="/src/target/gotable.go?s=9734:9809#L353">TableByTableIndex</a>
 					<a class="permalink" href="#TableSet.TableByTableIndex">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) TableByTableIndex(tableIndex <a href="/pkg/builtin/#int">int</a>) (*<a href="#Table">Table</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
@@ -5188,7 +5392,7 @@ int float32 uint string
 				
 			
 				
-				<h3 id="TableSet.TableCount">func (*TableSet) <a href="/src/target/gotable.go?s=8065:8107#L309">TableCount</a>
+				<h3 id="TableSet.TableCount">func (*TableSet) <a href="/src/target/gotable.go?s=8383:8425#L309">TableCount</a>
 					<a class="permalink" href="#TableSet.TableCount">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) TableCount() <a href="/pkg/builtin/#int">int</a></pre>
@@ -5198,7 +5402,7 @@ int float32 uint string
 				
 			
 				
-				<h3 id="TableSet.WriteFile">func (*TableSet) <a href="/src/target/gotable.go?s=2766:2842#L92">WriteFile</a>
+				<h3 id="TableSet.WriteFile">func (*TableSet) <a href="/src/target/gotable.go?s=2867:2943#L92">WriteFile</a>
 					<a class="permalink" href="#TableSet.WriteFile">&#xb6;</a>
 				</h3>
 				<pre>func (tableSet *<a href="#TableSet">TableSet</a>) WriteFile(fileName <a href="/pkg/builtin/#string">string</a>, mode <a href="/pkg/os/">os</a>.<a href="/pkg/os/#FileMode">FileMode</a>) <a href="/pkg/builtin/#error">error</a></pre>
@@ -5213,7 +5417,7 @@ Write a TableSet to a text file.
 		
 			
 			
-			<h2 id="TableSetExported">type <a href="/src/target/gotable.go?s=2012:2086#L64">TableSetExported</a>
+			<h2 id="TableSetExported">type <a href="/src/target/gotable.go?s=2085:2162#L64">TableSetExported</a>
 				<a class="permalink" href="#TableSetExported">&#xb6;</a>
 			</h2>
 			<p>
