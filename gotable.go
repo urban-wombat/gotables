@@ -667,6 +667,8 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
 	case "uint":
 		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
+	case "[]uint8", "[]byte":
+		err = table.SetValByColIndex(colIndex, rowIndex, []uint8{})
 	case "int":
 		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
 	case "int16":
@@ -745,8 +747,11 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 		valuePossiblyUpdated = newRow[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
-			return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
-				funcName(), table.tableName, colName, colType, valType)
+			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
+			if !isAlias(colType, valType) {
+				return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
+					funcName(), table.tableName, colName, colType, valType)
+			}
 		}
 	}
 
@@ -1019,7 +1024,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					}
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
-					log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+					log.Printf("#1 ERROR IN %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 					return ""
 				}
 	
@@ -1213,6 +1218,8 @@ func (table *Table) StringPadded() string {
 			var sVal string
 			var tVal bool
 			var ui8Val uint8
+			var ui8SliceVal []uint8
+			var byteSliceVal []byte
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
@@ -1243,12 +1250,24 @@ func (table *Table) StringPadded() string {
 					tVal = false
 				}
 				s = fmt.Sprintf("%t", tVal)
-			case "uint8":
+			case "uint8", "byte":
 				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
 				if !exists {
 					ui8Val = 0
 				}
 				s = fmt.Sprintf("%d", ui8Val)
+			case "[]uint8":
+				ui8SliceVal, exists = rowMap[table.colNames[colIndex]].([]uint8)
+				if !exists {
+					ui8SliceVal = []uint8{}
+				}
+				s = fmt.Sprintf("%v", ui8SliceVal)
+			case "[]byte":
+				byteSliceVal, exists = rowMap[table.colNames[colIndex]].([]byte)
+				if !exists {
+					byteSliceVal = []byte{}
+				}
+				s = fmt.Sprintf("%v", byteSliceVal)
 			case "uint16":
 				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
 				if !exists {
@@ -1321,7 +1340,7 @@ func (table *Table) StringPadded() string {
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
-				log.Printf("ERROR IN func %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
+				log.Printf("#2 ERROR IN %s(): Unknown type: %s\n", funcName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
@@ -1369,6 +1388,7 @@ func printStruct(table *Table) string {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 	}
 
+	var err error
 	var asString string
 	var s string
 	var structHasRowData bool = table.RowCount() > 0
@@ -1378,7 +1398,10 @@ func printStruct(table *Table) string {
 		s += table.colNames[colIndex] + " " + table.colTypes[colIndex]
 		if structHasRowData {
 			const RowIndexZero = 0
-			asString, _ = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
+			asString, err = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
+			if err != nil {
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s(): %s\n", funcName(), err))
+			}
 			if table.colTypes[colIndex] == "string" {
 				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
 				s += " = " + fmt.Sprintf("%q", asString)
@@ -1609,8 +1632,10 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return fmt.Errorf("table [%s] col %q expecting val of type %q, not type %q: %v",
-			table.Name(), colName, colType, valType, val)
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s(): table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, val)
+		}
 	}
 
 	// Set the val
@@ -1639,8 +1664,10 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
-		return fmt.Errorf("table [%s] col index %d col name %q expecting type %q not type %q",
-			table.Name(), colIndex, colName, colType, valType)
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s(): table [%s] col index %d col name %s expecting type %s not type %s",
+				funcName(), table.Name(), colIndex, colName, colType, valType)
+		}
 	}
 
 	// Set the val
@@ -1961,6 +1988,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	return table.SetVal(colName, rowIndex, newValue)
 }
 
+// byte is an alias for uint8, so byte values can be stored with SetUint8()
 func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -2031,6 +2059,7 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+// byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -2416,6 +2445,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
 	return val, nil
 }
 
+// byte is an alias for uint8, so byte values can be gotten with GetUint8()
 func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -2435,6 +2465,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	return val, err
 }
 
+// byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
 func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3421,6 +3452,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var sVal string
 	var tVal bool
 	var ui8Val uint8
+	var ui8SliceVal []uint8
 	var ui16Val uint16
 	var ui32Val uint32
 	var ui64Val uint64
@@ -3451,9 +3483,12 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "bool":
 		tVal = interfaceType.(bool)
 		buf.WriteString(fmt.Sprintf("%t", tVal))
-	case "uint8":
+	case "uint8", "byte":
 		ui8Val = interfaceType.(uint8)
 		buf.WriteString(fmt.Sprintf("%d", ui8Val))
+	case "[]uint8", "[]byte":
+		ui8SliceVal = interfaceType.([]uint8)
+		buf.WriteString(fmt.Sprintf("%v", ui8SliceVal))
 	case "uint16":
 		ui16Val = interfaceType.(uint16)
 		buf.WriteString(fmt.Sprintf("%d", ui16Val))
@@ -3489,7 +3524,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		err = fmt.Errorf("func %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
+		err = fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
 		return "", err
 	}
 
@@ -3700,7 +3735,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
 	default:
-		err = fmt.Errorf("func %s(%q): unknown type: %s\n", funcName(), colType, table.colTypes[colIndex])
+		err = fmt.Errorf("ERROR IN %s(%q): unknown type: %s\n", funcName(), colType, table.colTypes[colIndex])
 		return nil, err
 	}
 
@@ -4007,4 +4042,13 @@ func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValu
 	}
 
 	return newTable, nil
+}
+
+func isAlias(aliasTypeName string, typeName string) bool {
+		alias, exists := typeAliasMap[typeName]
+		if exists && alias == aliasTypeName {
+			return true
+		} else {
+			return false
+		}
 }

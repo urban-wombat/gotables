@@ -47,6 +47,13 @@ SOFTWARE.
 
 func init() {
 	log.SetFlags(log.Llongfile) // For var where
+
+	typeAliasMap = map[string]string {
+		"[]uint8" : "[]byte",
+		  "uint8" :   "byte",
+//		"[]int32" : "[]rune",
+//		  "int32" :   "rune",
+	}
 }
 
 var where = log.Print
@@ -69,7 +76,14 @@ const (
 // var stringRegexp *regexp.Regexp = regexp.MustCompile("/"(?:[^"\\]|\\.)*"/")
 var stringRegexp *regexp.Regexp = regexp.MustCompile(`^"(?:[^"\\]*(?:\\.)?)*"`)
 var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
-var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
+
+// Covers all unsigned integrals, including byte.
+// var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
+var uintRegexpString string = `[+]?\b\d+\b`	// Without ^ so we can use uintRegexpString in uintSliceRegexpString
+var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString))	// Prepend ^
+var uintSliceRegexpString string = fmt.Sprintf(`^\[(%s)*([ ]%s)*\]`, uintRegexpString, uintRegexpString)
+var uintSliceRegexp *regexp.Regexp = regexp.MustCompile(uintSliceRegexpString)
+
 var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 
 // Allow negative float numbers! 15/03/2017 Amazed that this was missed during initial testing!
@@ -78,10 +92,10 @@ var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
 var namePattern = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 var tableNamePattern = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
-var tableNameRegExp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
-var colNameRegExp *regexp.Regexp = regexp.MustCompile(namePattern)
-var whiteRegExp *regexp.Regexp = regexp.MustCompile(`\s+`)
-var equalsRegExp *regexp.Regexp = regexp.MustCompile(`=`)
+var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
+var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
+var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
+var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
@@ -109,7 +123,11 @@ const (
 )
 */
 
+var typeAliasMap map[string]string
+
 var globalColTypesMap = map[string]int{
+	"[]uint8": 0,
+	"[]byte":  0,
 	"bool":    0,
 	"float32": 0,
 	"float64": 0,
@@ -118,6 +136,7 @@ var globalColTypesMap = map[string]int{
 	"int32":   0,
 	"int64":   0,
 	"int8":    0,
+	"byte":    0,
 	"string":  0,
 	"uint":    0,
 	"uint16":  0,
@@ -228,7 +247,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		case _COL_NAMES: // Also proxy for a line of a table struct in the form: name type = value
 
 			// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
-			var lineSplit []string = whiteRegExp.Split(line, _ALL_SUBSTRINGS)
+			var lineSplit []string = whiteRegexp.Split(line, _ALL_SUBSTRINGS)
 			const structNameIndex = 0
 			const structTypeIndex = 1
 			const structEqualsIndex = 2
@@ -310,7 +329,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
 					// We know it's there (from the line split above), so don't check for nil returned.
-					var rangeFound []int = equalsRegExp.FindStringIndex(line)
+					var rangeFound []int = equalsRegexp.FindStringIndex(line)
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
 //where()
@@ -363,7 +382,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			parserColTypes, err = p.getColTypes(line)
 			if err != nil {
-				return nil, err
+//				return nil, err
+				return nil, fmt.Errorf("table [%s] %s", table.Name(), err)
 			}
 			lenColNames := len(parserColNames)
 			lenColTypes := len(parserColTypes)
@@ -382,7 +402,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			var rowMap tableRow
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil {
-				//					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				return nil, err
 			}
 			lenColTypes := len(parserColTypes)
@@ -446,7 +465,7 @@ func (p *parser) getTableName(line string) (string, error) {
 	}
 	tableName := fields[0]
 
-	result := tableNameRegExp.MatchString(tableName)
+	result := tableNameRegexp.MatchString(tableName)
 	if !result {
 		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name, eg [_Foo2Bar3] but found: %s", p.gotFilePos(), tableName)
 	}
@@ -479,7 +498,7 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 
 func (p *parser) getColTypes(line string) ([]string, error) {
 
-	var colTypes []string = whiteRegExp.Split(line, _ALL_SUBSTRINGS)
+	var colTypes []string = whiteRegexp.Split(line, _ALL_SUBSTRINGS)
 	if len(colTypes) == 0 {
 		return nil, fmt.Errorf("%s expecting col types", p.gotFilePos())
 	}
@@ -538,7 +557,7 @@ func IsNumericColType(colType string) (bool, error) {
 
 func IsValidColName(colName string) (bool, error) {
 
-	result := colNameRegExp.MatchString(colName)
+	result := colNameRegexp.MatchString(colName)
 	if !result {
 		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
 	}
@@ -553,7 +572,7 @@ func IsValidColName(colName string) (bool, error) {
 
 func IsValidTableName(tableName string) (bool, error) {
 	// Same regular expression as table name without square brackets.
-	result := colNameRegExp.MatchString(tableName)
+	result := colNameRegexp.MatchString(tableName)
 	if !result {
 		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
 	}
@@ -575,6 +594,8 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 	var stringVal string
 	var boolVal bool
 	var uint8Val uint8
+	var uint8SliceVal []uint8
+//	var byteSliceVal []byte
 	var uint16Val uint16
 	var uint32Val uint32
 	var uint64Val uint64
@@ -600,7 +621,6 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
 			rowMap[colNames[i]] = stringVal
-
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -612,7 +632,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
 			rowMap[colNames[i]] = boolVal
-		case "uint8":
+		case "uint8", "byte":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
@@ -621,10 +641,29 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName, p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint8Val = uint8(uint64Val)
 			rowMap[colNames[i]] = uint8Val
+		case "[]uint8", "[]byte":
+			// Go stores byte as uint8, so there's no need to process byte differently.
+			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
+			var sliceStringSplit []string = splitSliceString(sliceString)
+			uint8SliceVal = make([]uint8, len(sliceStringSplit))
+			for el := 0; el < len(sliceStringSplit); el++ {
+				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
+				if err != nil {
+					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
+					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				}
+				uint8SliceVal[el] = uint8(uint64Val)
+			}
+			rowMap[colNames[i]] = uint8SliceVal
 		case "uint16":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -634,7 +673,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint16Val = uint16(uint64Val)
 			rowMap[colNames[i]] = uint16Val
@@ -647,7 +686,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint32Val = uint32(uint64Val)
 			rowMap[colNames[i]] = uint32Val
@@ -660,7 +699,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			rowMap[colNames[i]] = uint64Val
 		case "uint":
@@ -682,12 +721,12 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 					minVal = 0
 					maxVal = math.MaxUint64
 				default:
-					msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
+					msg := fmt.Sprintf("#6 %s(): CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", funcName(), intBits)
 					log.Printf("%s", msg)
 					return nil, fmt.Errorf("%s", msg)
 				}
 				rangeMsg := rangeForIntegerType(minVal, maxVal)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uintVal = uint(uint64Val) // May be unnecessary.
 			rowMap[colNames[i]] = uintVal
@@ -801,18 +840,16 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			}
 			//				where(fmt.Sprintf("float64Val: %f", float64Val))
 			if math.IsNaN(float64Val) && textFound != "NaN" {
-				//					return nil, fmt.Errorf("%s expecting NaN as Not a Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowMap[colNames[i]] = float64Val
 		default:
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
-			return nil, fmt.Errorf("%s Unreachable code in getRowCol()", p.gotFilePos())
+			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
 		}
-//		remaining = remaining[rangeFound[1]:len(remaining)]
 		remaining = remaining[rangeFound[1]:]
-		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading spaces.
+		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
 		colCount++
 	}
 
@@ -862,4 +899,17 @@ func plural(items int) string {
 		// Plural
 		return "s"
 	}
+}
+
+/*
+	whiteRegexp.Split returns a slice with 1 empty string element if the
+	input sliceString is empty. But we want a slice with 0 elements.
+*/
+func splitSliceString(sliceString string) (sliceStringSplit []string) {
+	if len(sliceString) == 0 {
+		sliceStringSplit = []string{}	// 0 elements, not 1 element.
+	} else {
+		sliceStringSplit = whiteRegexp.Split(sliceString, _ALL_SUBSTRINGS)
+	}
+	return
 }
