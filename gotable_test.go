@@ -583,7 +583,9 @@ func TestRound(t *testing.T) {
 
 func TestSetAndGetFunctions(t *testing.T) {
 	var bVal bool
-	//	byte 			// alias for uint8
+	var byteVal byte   // alias for uint8
+	var byteSlice []byte
+	var ui8Slice  []uint8
 	//	complex128 		// The set of all complex numbers with float64 real and imaginary parts
 	//	complex64		// The set of all complex numbers with float32 real and imaginary parts
 	var f32Val float32 // The set of all IEEE-754 32-bit floating-point numbers
@@ -1048,6 +1050,105 @@ func TestSetAndGetFunctions(t *testing.T) {
 		}
 	}
 
+	{ // uint8[] slice tests
+
+		err = table.AppendCol("ui8Slice", "[]uint8")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+
+		err = table.SetByteSlice("ui8Slice", rowIndex, []uint8{0,1,2})
+		if err != nil {
+			t.Error(err)
+		}
+		ui8Slice, err = table.GetByteSlice("ui8Slice", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bytes.Compare(ui8Slice, []uint8{0,1,2}) != 0 {	// Slices not equal.
+			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []uint8{0,1,2}, ui8Slice)
+		}
+
+		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []uint8{2,4,6})
+		if err != nil {
+			t.Error(err)
+		}
+		ui8Slice, err = table.GetByteSliceByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bytes.Compare(ui8Slice, []uint8{2,4,6}) != 0 {	// Slices not equal.
+			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []uint8{2,4,6}, ui8Slice)
+		}
+	}
+
+	{ // byte tests
+
+		err = table.AppendCol("byteVal", "byte")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+
+		err = table.SetByte("byteVal", rowIndex, 56)
+		if err != nil {
+			t.Error(err)
+		}
+		byteVal, err = table.GetByte("byteVal", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if byteVal != 56 {
+			t.Errorf("expecting GetByte() value %d, not %d\n", 56, byteVal)
+		}
+
+		err = table.SetByteByColIndex(colIndex, rowIndex, 67)
+		if err != nil {
+			t.Error(err)
+		}
+		byteVal, err = table.GetByteByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if byteVal != 67 {
+			t.Errorf("expecting GetByteByColIndex() value %d, not %d\n", 67, byteVal)
+		}
+	}
+
+	{ // byte[] slice tests
+
+		err = table.AppendCol("byteSlice", "[]byte")
+		if err != nil {
+			t.Error(err)
+		}
+		colIndex += 1
+
+		err = table.SetByteSlice("byteSlice", rowIndex, []byte{4,5,6})
+		if err != nil {
+			t.Error(err)
+		}
+		byteSlice, err = table.GetByteSlice("byteSlice", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bytes.Compare(byteSlice, []byte{4,5,6}) != 0 {	// Slices not equal.
+			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []byte{4,5,6}, byteSlice)
+		}
+
+		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{7,8,9})
+		if err != nil {
+			t.Error(err)
+		}
+		byteSlice, err = table.GetByteSliceByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+		if bytes.Compare(byteSlice, []byte{7,8,9}) != 0 {	// Slices not equal.
+			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []byte{7,8,9}, byteSlice)
+		}
+	}
+
 	{ // string tests
 
 		err = table.AppendCol("sVal", "string")
@@ -1081,6 +1182,8 @@ func TestSetAndGetFunctions(t *testing.T) {
 		}
 	}
 
+//	fmt.Println(table)
+
 	var shape bool
 	var expected bool = true
 	err = table.SetStructShape(expected)
@@ -1094,6 +1197,8 @@ func TestSetAndGetFunctions(t *testing.T) {
 	if shape != expected {
 		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
 	}
+
+//	fmt.Println(table)
 
 	expected = false
 	err = table.SetStructShape(expected)

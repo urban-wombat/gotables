@@ -668,7 +668,7 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 	case "uint":
 		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
 	case "[]uint8", "[]byte":
-		err = table.SetValByColIndex(colIndex, rowIndex, []uint8{})
+		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []uint8{})
 	case "int":
 		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
 	case "int16":
@@ -689,6 +689,8 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
 	case "uint8":
 		err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
+	case "byte":
+		err = table.SetByteByColIndex(colIndex, rowIndex, 0)
 	}
 	if err != nil {
 		return err
@@ -1940,8 +1942,8 @@ func (table *Table) rowMap(rowIndex int) (tableRow, error) {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return nil, fmt.Errorf("table [%s] has %d row%s. Row index out of range: %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex)
+		return nil, fmt.Errorf("#1 table [%s] has %d row%s. Row index out of range (0..%d): %d",
+			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
 	}
 	return table.rows[rowIndex], nil
 }
@@ -1990,6 +1992,30 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 
 // byte is an alias for uint8, so byte values can be stored with SetUint8()
 func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetVal(colName, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8()
+func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetVal(colName, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
+func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetVal(colName, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
+func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -2061,6 +2087,30 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 
 // byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetValByColIndex(colIndex, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetValByColIndex(colIndex, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	return table.SetValByColIndex(colIndex, rowIndex, newValue)
+}
+
+// byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
+func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -2244,8 +2294,8 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 		return false, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return false, fmt.Errorf("table [%s] has %d row%s. Row index out of range: %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex)
+		return false, fmt.Errorf("#2 table [%s] has %d row%s. Row index out of range (0..%d): %d",
+			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
 	}
 	return true, nil
 }
@@ -2479,6 +2529,126 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error
 	val, valid := interfaceType.(uint8)
 	if !valid {
 		_, err := table.IsColTypeByColIndex(colIndex, "uint8")
+		return zeroVal, err
+	}
+
+	return val, nil
+}
+
+// byte is an alias for uint8, so byte values can be gotten with GetUint8()
+func (table *Table) GetByte(colName string, rowIndex int) (byte, error) {
+	const zeroVal = 0
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetVal(colName, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.(byte)
+	if !valid {
+		_, err = table.IsColType(colName, "byte")
+		return zeroVal, err
+	}
+
+	return val, err
+}
+
+// byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
+func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (byte, error) {
+	const zeroVal = 0
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.(byte)
+	if !valid {
+		_, err := table.IsColTypeByColIndex(colIndex, "byte")
+		return zeroVal, err
+	}
+
+	return val, nil
+}
+
+// []byte is an []alias for uint8, so byte values can be gotten with GetUint8Slice()
+func (table *Table) GetUint8Slice(colName string, rowIndex int) ([]uint8, error) {
+	var zeroVal []uint8 = []uint8{}
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetVal(colName, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.([]uint8)
+	if !valid {
+		_, err = table.IsColType(colName, "[]uint8")
+		return zeroVal, err
+	}
+
+	return val, err
+}
+
+// byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
+func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) ([]uint8, error) {
+	var zeroVal []uint8 = []uint8{}
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.([]uint8)
+	if !valid {
+		_, err := table.IsColTypeByColIndex(colIndex, "[]uint8")
+		return zeroVal, err
+	}
+
+	return val, nil
+}
+
+// byte is an alias for uint8, so byte values can be gotten with GetUint8Slice()
+func (table *Table) GetByteSlice(colName string, rowIndex int) ([]byte, error) {
+	var zeroVal []byte = []byte{}
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetVal(colName, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.([]byte)
+	if !valid {
+		_, err = table.IsColType(colName, "[]byte")
+		return zeroVal, err
+	}
+
+	return val, err
+}
+
+// byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
+func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) ([]byte, error) {
+	var zeroVal []byte = []byte{}
+	if table == nil {
+		return zeroVal, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+	interfaceType, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil {
+		return zeroVal, err
+	}
+
+	val, valid := interfaceType.([]byte)
+	if !valid {
+		_, err := table.IsColTypeByColIndex(colIndex, "[]byte")
 		return zeroVal, err
 	}
 
