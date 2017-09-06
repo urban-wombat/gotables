@@ -18,6 +18,12 @@ For Go (golang) programmers:
 
 https://github.com/urban-wombat/gotable/releases
 
+## Contact:
+
+* https://urban.wombat.burrow@gmail.com
+
+* https://twitter.com/UrbanWombat
+
 ## Why Use gotable?
 
 1. Often enough the data you want to represent is intrinsically tabular, or should be.
