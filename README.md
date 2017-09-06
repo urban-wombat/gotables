@@ -20,9 +20,9 @@ https://github.com/urban-wombat/gotable/releases
 
 ## Contact:
 
-* https://urban.wombat.burrow@gmail.com
+* _email:_ urban.wombat.burrow@gmail.com
 
-* https://twitter.com/UrbanWombat
+* _Twitter:_ UrbanWombat
 
 ## Why Use gotable?
 
