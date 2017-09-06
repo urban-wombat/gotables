@@ -22,7 +22,7 @@ https://github.com/urban-wombat/gotable/releases
 
 * _email:_ urban.wombat.burrow@gmail.com
 
-* _Twitter:_@UrbanWombat
+* _Twitter:_ @UrbanWombat
 
 ## Why Use gotable?
 
