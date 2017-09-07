@@ -1,18 +1,8 @@
 package gotable
 
 import (
-//	"bytes"
 	"fmt"
-//	"io/ioutil"
 	"log"
-//	"math"
-//	"math/rand"
-//	"os"
-//	"sort"
-//	"strconv"
-//	"strings"
-//	"testing"
-//	"time"
 )
 
 /*
@@ -44,7 +34,7 @@ SOFTWARE.
 	and prefix function and method calls with gotable.
 */
 
-func Example() {
+func Example1() {
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic
