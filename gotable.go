@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Malcolm Gorman
 
-// A tabular data format for configurations and messaging.
+// A tabular data format for configurations and messaging, with helper functions.
 package gotable
 
 import (
