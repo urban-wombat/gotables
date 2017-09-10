@@ -34,7 +34,7 @@ SOFTWARE.
 	and prefix function and method calls with gotable.
 */
 
-func Example1() {
+func ExampleSort() {
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic

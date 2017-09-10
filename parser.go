@@ -518,7 +518,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 /*
 Returns true for those Go types that Table supports.
 
-Go types NOT (yet) supported: complex64 complex128 byte rune
+Go types NOT (yet) supported: complex64 complex128 rune
 */
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
@@ -538,7 +538,7 @@ func IsValidColType(colType string) (bool, error) {
 /*
 Returns true for those Go types that are numeric.
 
-Go types NOT (yet) supported: complex64 complex128 byte rune
+Go types NOT (yet) supported: complex64 complex128 rune
 */
 func IsNumericColType(colType string) (bool, error) {
 	_, contains := globalNumericColTypesMap[colType]

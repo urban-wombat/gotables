@@ -34,7 +34,7 @@ SOFTWARE.
 	and prefix function and method calls with gotable.
 */
 
-func Example2() {
+func ExampleSetByteSlice() {
 	// Create a struct-shaped table with two cells
 	// for a string and a byte, just to show how it's done.
 	var s string =
@@ -79,4 +79,30 @@ func Example2() {
 		log.Println(err)
 	}
 	fmt.Printf("retrievedSlice = %v\n", retrievedSlice)
+
+	// Output:
+	// [myTableStruct]
+	// hello string = "Hello world!"
+	// b byte = 255
+	// 
+	// H = byte 72
+	// e = byte 101
+	// l = byte 108
+	// l = byte 108
+	// o = byte 111
+	//   = byte 32
+	// s = byte 115
+	// l = byte 108
+	// i = byte 105
+	// c = byte 99
+	// e = byte 101
+	// ! = byte 33
+	// helloByteSlice = [72 101 108 108 111 32 115 108 105 99 101 33]
+	// 
+	// [myTableStruct]
+	// hello string = "Hello world!"
+	// b byte = 255
+	// helloSlice []byte = [72 101 108 108 111 32 115 108 105 99 101 33]
+	// 
+	// retrievedSlice = [72 101 108 108 111 32 115 108 105 99 101 33]
 }
