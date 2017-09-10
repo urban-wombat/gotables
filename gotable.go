@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Malcolm Gorman
 
-// Functions and methods for processing Table tables.
+// A tabular data format for configurations and messaging.
+
 package gotable
 
 import (
