@@ -12,7 +12,7 @@ For Go (golang) programmers:
 
 ## Here's the API ...
 
-[gotable API](https://urban-wombat.github.io)
+[gotable API](https://godoc.org/github.com/urban-wombat/gotable)
 
 ## Here are the Release Notes ...
 
