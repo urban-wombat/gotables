@@ -1,4 +1,4 @@
-package gotable
+package gotables
 
 
 /*

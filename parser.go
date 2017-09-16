@@ -1,6 +1,6 @@
 // The TableSet parser reads text and parses it into a set of one or more tables in a TableSet.
 
-package gotable
+package gotables
 
 /*
 # 04/03/2016  Allow int format in float regular expressions.

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Malcolm Gorman
 
 // Golang tabular data format for configs and channels, with a rich set of helper functions.
-package gotable
+package gotables
 
 import (
 	"bufio"
@@ -84,7 +84,7 @@ func NewTableSet(tableSetName string) (*TableSet, error) {
 	return newTables, nil
 }
 
-// Read and parse a gotable file into a TableSet.
+// Read and parse a gotables file into a TableSet.
 func NewTableSetFromFile(fileName string) (*TableSet, error) {
 	var p parser
 	//	fmt.Printf("ReadFile(%q)\n", fileName)
@@ -135,7 +135,7 @@ func (table *Table) WriteFile(fileName string, mode os.FileMode) error {
 	return err
 }
 
-// Read and parse a gotable string into a TableSet.
+// Read and parse a gotables string into a TableSet.
 func NewTableSetFromString(s string) (*TableSet, error) {
 	var p parser
 	tables, err := p.parseString(s)
@@ -412,8 +412,8 @@ type tableRows []tableRow
 
 // Factory function to generate a *Table pointer.
 /*
-	var myTable *gotable.Table
-	myTable, err = gotable.NewTable("My_Table")
+	var myTable *gotables.Table
+	myTable, err = gotables.NewTable("My_Table")
 	if err != nil {
 		panic(err)
 	}
@@ -447,7 +447,7 @@ func newTableExported(tableName string) (*TableExported, error) {
 }
 
 /*
-	table, err := gotable.newTableFromCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
+	table, err := gotables.newTableFromCols("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
 
 	This is a "helper" function that currently doesn't provide any help. But best not public. Would rather users use other functions.
 */
@@ -702,7 +702,7 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 /*
 This is for adding an entire new row of data to a table in bulk, so to speak.
 
-	var row gotable.tableRow = make(gotable.tableRow)
+	var row gotables.tableRow = make(gotables.tableRow)
 	row["Manager"] = "JC"
 	row["Apostles"] = 12
 	err = table.appendRowMap(row)
@@ -2195,7 +2195,7 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 }
 
 // This is a fundamental method called by all type-specific methods.
-// Returns an interface{} value which may contain any valid gotable data type or NaN.
+// Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
 	if table == nil {
@@ -2222,7 +2222,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 }
 
 // This is a fundamental method called by all type-specific methods.
-// Returns an interface{} value which may contain any valid gotable data type or NaN.
+// Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())

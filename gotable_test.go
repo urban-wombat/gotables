@@ -1,4 +1,4 @@
-package gotable
+package gotables
 
 import (
 	"bytes"
@@ -2976,7 +2976,7 @@ func ExampleTable_GobEncode_table() {
 		log.Println(err)
     }
 
-	// Now decode it back from binary to type *gotable.Table
+	// Now decode it back from binary to type *gotables.Table
     tableDecoded, err := GobDecodeTable(binary)
     if err != nil {
 		log.Println(err)
@@ -3036,7 +3036,7 @@ func ExampleTableSet_GobEncode_tableset() {
 		log.Println(err)
     }
 
-	// Now decode it back from binary to type *gotable.TableSet
+	// Now decode it back from binary to type *gotables.TableSet
     tableSetDecoded, err := GobDecodeTableSet(binary)
     if err != nil {
 		log.Println(err)
@@ -4448,7 +4448,7 @@ func ExampleTable_OrderColsBySortKeys() {
 }
 
 /*
-	This tests a copy gotable.Search() of sort.Search()
+	This tests a copy gotables.Search() of sort.Search()
 	to confirm that SearchLast() is a mirror image in
 	behaviour: Search() is GE and SearchLast is LE.
 */

@@ -2,7 +2,7 @@
 Functions and methods for sorting Table tables.
 */
 
-package gotable
+package gotables
 
 import (
 	"fmt"
@@ -1120,13 +1120,13 @@ func search(n int, f func(int) bool) int {
 }
 
 /*
-	gotable.SearchLast() mirrors the Go library function sort.Search()
+	gotables.SearchLast() mirrors the Go library function sort.Search()
 
-    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+    	Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
 		Assume data is a zero-based array/slice of elements sorted in ascending order.
 		Each search function returns an index into data.
 		----------------------------------------------------------------------------------------------------------
-		Go library sort.Search()                         |  gotable.SearchLast()
+		Go library sort.Search()                         |  gotables.SearchLast()
 		----------------------------------------------------------------------------------------------------------
 		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
 		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
@@ -1142,7 +1142,7 @@ func search(n int, f func(int) bool) int {
 		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
 		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
 		  x: 10                                          |    x: 10
-		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotables.SearchLast(x, func) = 4 (finds LAST)
 		----------------------------------------------------------------------------------------------------------
 
 		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
@@ -1152,7 +1152,7 @@ func search(n int, f func(int) bool) int {
 
 		(1) Binary search for x.
 		x := 23
-		i := gotable.SearchLast(len(data), func(i int) bool { return data[i] <= x })
+		i := gotables.SearchLast(len(data), func(i int) bool { return data[i] <= x })
 
 		(2) Check that x was found.
 		if i >= 0 && data[i] == x {
@@ -1178,13 +1178,13 @@ func SearchLast(n int, f func(int) bool) int {
 }
 
 /*
-	gotable.SearchFirst() calls the Go library function sort.Search()
+	gotables.SearchFirst() calls the Go library function sort.Search()
 
-    	Comparison of sort.Search() and gotable.SearchLast() describing their mirrored relationship.
+    	Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
 		Assume data is a zero-based array/slice of elements sorted in ascending order.
 		Each search function returns an index into data.
 		----------------------------------------------------------------------------------------------------------
-		Go library sort.Search()                         |  gotable.SearchLast()
+		Go library sort.Search()                         |  gotables.SearchLast()
 		----------------------------------------------------------------------------------------------------------
 		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
 		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
@@ -1200,7 +1200,7 @@ func SearchLast(n int, f func(int) bool) int {
 		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
 		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
 		  x: 10                                          |    x: 10
-		  sort.Search(x, func) = 2 (finds FIRST)         |    gotable.SearchLast(x, func) = 4 (finds LAST)
+		  sort.Search(x, func) = 2 (finds FIRST)         |    gotables.SearchLast(x, func) = 4 (finds LAST)
 		----------------------------------------------------------------------------------------------------------
 
 		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
@@ -1210,7 +1210,7 @@ func SearchLast(n int, f func(int) bool) int {
 
 		(1) Binary search for x.
 		x := 23
-		i := gotable.SearchFirst(len(data), func(i int) bool { return data[i] >= x })
+		i := gotables.SearchFirst(len(data), func(i int) bool { return data[i] >= x })
 
 		(2) Check that x was found.
 		if i < len(data) && data[i] == x {

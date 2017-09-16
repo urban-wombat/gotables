@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Malcolm Gorman
 
-package gotable
+package gotables
 
 import (
 	"fmt"
@@ -39,9 +39,9 @@ SOFTWARE.
 	Each nested table is stored as a string. To retrieve it:
 
 		var nestedString string
-		var nestedTable *gotable.Table
+		var nestedTable *gotables.Table
 		nestedString, _ = table.GetString(nestColName, rowIndex)
-		nestedTable,  _ = gotable.NewTableFromString(nestedString)
+		nestedTable,  _ = gotables.NewTableFromString(nestedString)
 */
 func (table *Table) Nest(nestable *Table, nestColName string) error {
 

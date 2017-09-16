@@ -1,4 +1,4 @@
-package gotable
+package gotables
 
 import (
 	"fmt"
@@ -30,8 +30,8 @@ SOFTWARE.
 /*
 	Note:
 
-	For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotable"
-	and prefix function and method calls with gotable.
+	For these examples to compile and run for you, you need to import "github.com/urban-wombat/gotables"
+	and prefix function and method calls with gotables.
 */
 
 func ExampleSetByteSlice() {
