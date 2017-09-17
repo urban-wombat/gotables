@@ -1,6 +1,6 @@
-# gotable
+# gotables
 
-Go (golang) Table data format replaces XML, JSON, YAML.
+Go (golang) Table data format - simple and self-describing.
 
 Sometimes data and configurations are intrinsically tabular. Trying to represent tables in XML, JSON and YAML
 merely obscures tables, makes them less readable, and invites inconsistencies and lack of discipline, risking
@@ -8,15 +8,15 @@ missing cells or superfluous leaf nodes that introduce potential bugs in host co
 
 For Go (golang) programmers:
 
-	go get github.com/urban-wombat/gotable
+	go get github.com/urban-wombat/gotables
 
 ## Here's the API ...
 
-[gotable API](https://godoc.org/github.com/urban-wombat/gotable) - a rich set of helper functions and methds
+[gotables API](https://godoc.org/github.com/urban-wombat/gotables) - a rich set of helper functions and methds
 
 ## Here are the Release Notes ...
 
-https://github.com/urban-wombat/gotable/releases
+https://github.com/urban-wombat/gotables/releases
 
 ## Contact:
 
@@ -24,22 +24,22 @@ https://github.com/urban-wombat/gotable/releases
 
 * _Twitter:_ @UrbanWombat
 
-## Why Use gotable?
+## Why Use gotables?
 
 1. Often enough the data you want to represent is intrinsically tabular, or should be.
 2. You want tables of data to be more readable by human beings. Be able to look at the data and spot any problems.
 3. You want to eliminate repetitive metadata such as tags, and reduce the size of each tabular chunk of data.
-   Data name and type are mentioned only once in a gotable Table.
+   Data name and type are mentioned only once in a gotables Table.
 4. XML and JSON are great -- especially for tree shaped data or irregular data with twigs and leaves that may or may not need to be present.
    But sometimes the data you want to represent is intrinsically tabular, and really you don't want any elements to be missing.
    And if they are, you want it to be obvious.
 5. It feels like overkill to set up a relational database table (or tables) to store (and modify) your software configurations,
    or to use a database as a conduit for sharing messages or data flows between processes or goroutines.
-6. If you are sending messages between goroutines in Go, you can use a gotable Table or a set of Tables (a TableSet) to send
+6. If you are sending messages between goroutines in Go, you can use a gotables Table or a set of Tables (a TableSet) to send
    data through your channels. A Table can be sent and received as an object or as a string.
-7. gotable has methods and functions to perform tasks in these broad categories:
+7. gotables has methods and functions to perform tasks in these broad categories:
 
-   1. Instantiate a gotable.Table or gotable.TableSet from a file, a string, a Go binary object, or a segment of an existing table.
+   1. Instantiate a gotables.Table or gotables.TableSet from a file, a string, a Go binary object, or a segment of an existing table.
 
    2. Get and Set values. Most Go types are supported.
 
@@ -49,27 +49,27 @@ https://github.com/urban-wombat/gotable/releases
 
    5. SortUnique to remove NaN and zero values.
 
-8. **gotable Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
+8. **gotables Table is _simple_**. For instance, sorting (and searching) a table is probably as easy as it can possibly be.
    And that can mean multiple sort/search keys, and even reverse keys. It's very simple. And if a wrong column name is
-   used, or you forget to set sort keys before sorting, the gotable error handling system will notice and return to you
+   used, or you forget to set sort keys before sorting, the gotables error handling system will notice and return to you
    a meaningful error message.
 
 9. Some advantages are subtle. For instance, **versioning** is easier. Your program can test for the presence of particular
    columns (and their types) before accessing potentially new columns of data. And sending a table with additional columns
    will not break downstream code.
 
-10. gotable is written in the Go language, using purely Go libraries. No third-party libraries will be used. If down the track
+10. gotables is written in the Go language, using purely Go libraries. No third-party libraries will be used. If down the track
 	non-Go libraries are needed, a separate distribution will be created (to contain any third-party dependency issues) and
-	will itself use gotable as a third-party library to maintain separation.
-	The core gotable library will **not* use third-party libraries.
+	will itself use gotables as a third-party library to maintain separation.
+	The core gotables library will **not* use third-party libraries.
 
-## Go Doc for gotable
+## Go Doc for gotables
 
 https://urban-wombat.github.io
 
-## What Is A gotable.Table?
+## What Is A gotables.Table?
 
-A gotable.Table is a table of data with the following sections:
+A gotables.Table is a table of data with the following sections:
 1. A table name in square brackets:   **[planets]**
 2. A row of one or more column names: **name      mass**
 3. A row of one or more column types: **string    float64**
@@ -94,14 +94,14 @@ Here's an example:
 
 Most of the Go builtin data types can be used. (But not yet: complex64, complex128, rune, byte.)
 
-Here is a simple program that parses the table into a gotable.Table and echoes it back out:
+Here is a simple program that parses the table into a gotables.Table and echoes it back out:
 
     // main_echo.go
     
     package main
     
     import (
-        "github.com/urban-wombat/gotable"
+        "github.com/urban-wombat/gotables"
         "fmt"
         "log"
     )
@@ -121,7 +121,7 @@ Here is a simple program that parses the table into a gotable.Table and echoes i
         "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
         `
     
-        table, err := gotable.NewTableFromString(tableString)
+        table, err := gotables.NewTableFromString(tableString)
         if err != nil {
             log.Println(err)
         }
@@ -169,8 +169,8 @@ Here's the output:
 
 ## Can you show me some worked examples?
 
-For these examples to compile and run for you, you need to go get and import "github.com/urban-wombat/gotable"
-and prefix function and method calls with gotable.
+For these examples to compile and run for you, you need to go get and import "github.com/urban-wombat/gotables"
+and prefix function and method calls with gotables.
 
 
 	package main
@@ -178,7 +178,7 @@ and prefix function and method calls with gotable.
 	import (
 		"fmt"
 		"log"
-		"github.com/urban-wombat/gotable"
+		"github.com/urban-wombat/gotables"
 	)
 	
 	// Copyright (c) 2017 Malcolm Gorman
@@ -200,7 +200,7 @@ and prefix function and method calls with gotable.
 	
 		var err error
 	
-		table, err := gotable.NewTableFromString(tableString)
+		table, err := gotables.NewTableFromString(tableString)
 		if err != nil {
 			log.Println(err)
 		}
@@ -330,7 +330,7 @@ and prefix function and method calls with gotable.
 		5   -0      "minus 5"
 		5   -5      "minus 5"
 		`
-		table, err = gotable.NewTableFromString(tableString)
+		table, err = gotables.NewTableFromString(tableString)
 		if err != nil {
 			log.Println(err)
 		}
