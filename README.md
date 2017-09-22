@@ -18,6 +18,10 @@ For Go (golang) programmers:
 
 https://github.com/urban-wombat/gotables/releases
 
+## Command line utilities ...
+
+https://github.com/urban-wombat/gotablesutils
+
 ## Contact:
 
 * _email:_ urban.wombat.burrow@gmail.com
