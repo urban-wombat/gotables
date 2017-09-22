@@ -467,7 +467,7 @@ func (p *parser) getTableName(line string) (string, error) {
 
 	result := tableNameRegexp.MatchString(tableName)
 	if !result {
-		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name, eg [_Foo2Bar3] but found: %s", p.gotFilePos(), tableName)
+		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name in square brackets, eg [_Foo2Bar3] but found: %s", p.gotFilePos(), tableName)
 	}
 
 	// Strip off surrounding []
@@ -482,7 +482,7 @@ func (p *parser) getColNames(colNames []string) ([]string, error) {
 			if i == 1 {
 				_, contains := globalColTypesMap[colNames[1]]
 				if contains {
-					return nil, fmt.Errorf("%s %s did you perhaps mean either: %s %s or %s %s = <val>",
+					return nil, fmt.Errorf("%s %s did you perhaps mean either: %s %s OR %s %s = <val>",
 						p.gotFilePos(), err, colNames[0], colNames[1], colNames[0], colNames[1])
 				} else {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) // Default error.
