@@ -473,7 +473,7 @@ func (p *parser) getTableName(line string) (string, error) {
 
 	fields := strings.Fields(line)
 	if len(fields) != 1 {
-		return "", fmt.Errorf("%s expecting a table name (without spaces) but found: %s", p.gotFilePos(), line)
+		return "", fmt.Errorf("%s expecting a table name (in square brackets without spaces) but found: %s", p.gotFilePos(), line)
 	}
 	tableName := fields[0]
 
