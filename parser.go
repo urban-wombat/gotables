@@ -15,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -427,8 +428,20 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 
 	p.SetFileName(fileName) // For file and line diagnostics.
 
+	// Check that this is not a directory. Would like to check more.
+	var info os.FileInfo
+	info, err = os.Lstat(fileName)
+	if err != nil {
+		return nil, err
+	}
+	if info.IsDir() {
+		err = fmt.Errorf("FILE ERROR: %q is a directory", fileName)
+		return nil, err
+	}
+
 	fileBytes, err = ioutil.ReadFile(fileName)
 	if err != nil {
+
 		return nil, err
 	}
 
