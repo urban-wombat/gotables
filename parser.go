@@ -441,7 +441,6 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 
 	fileBytes, err = ioutil.ReadFile(fileName)
 	if err != nil {
-
 		return nil, err
 	}
 
