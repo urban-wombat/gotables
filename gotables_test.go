@@ -2961,17 +2961,17 @@ func ExampleTable_GobEncode_table() {
     1   "abc"  2.3     true  11   [11 12 13 14] [15 16 17]
     2   "xyz"  4.5     false 22   [22 23 24 25] [26 27 28]
     3   "ssss" 4.9     false 33   [33 34 35 36] [37 38 39]
-	`
-	tableToEncode, err := NewTableFromString(s)
+    `
+	tableToBeEncoded, err := NewTableFromString(s)
 	if err != nil {
 		log.Println(err)
 	}
 	fmt.Println("(1) Table ready to encode into binary.")
-	fmt.Println(tableToEncode)
+	fmt.Println(tableToBeEncoded)
 
 	// Encode into binary.
     var binary []byte
-    binary, err = tableToEncode.GobEncode()
+    binary, err = tableToBeEncoded.GobEncode()
     if err != nil {
 		log.Println(err)
     }
