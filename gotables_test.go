@@ -2987,19 +2987,19 @@ func ExampleTable_GobEncode_table() {
 	// Output:
 	// (1) Table ready to encode into binary.
 	// [sable_fur]
-	//   i s            f t     b    bb            ui8
+	//   i s            f t        b bb            ui8
 	// int string float64 bool  byte []byte        []uint8
-	//   1 "abc"      2.3 true  11   [11 12 13 14] [15 16 17]
-	//   2 "xyz"      4.5 false 22   [22 23 24 25] [26 27 28]
-	//   3 "ssss"     4.9 false 33   [33 34 35 36] [37 38 39]
+	//   1 "abc"      2.3 true    11 [11 12 13 14] [15 16 17]
+	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
+	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 	// 
 	// (2) Table decoded from binary.
 	// [sable_fur]
-	//   i s            f t     b    bb            ui8
+	//   i s            f t        b bb            ui8
 	// int string float64 bool  byte []byte        []uint8
-	//   1 "abc"      2.3 true  11   [11 12 13 14] [15 16 17]
-	//   2 "xyz"      4.5 false 22   [22 23 24 25] [26 27 28]
-	//   3 "ssss"     4.9 false 33   [33 34 35 36] [37 38 39]
+	//   1 "abc"      2.3 true    11 [11 12 13 14] [15 16 17]
+	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
+	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
 
 func ExampleTableSet_GobEncode_tableset() {

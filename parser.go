@@ -159,6 +159,7 @@ var globalNumericColTypesMap = map[string]int{
 	"uint32":  0,
 	"uint64":  0,
 	"uint8":   0,
+	"byte":    0,
 }
 
 func (p *parser) parseString(s string) (*TableSet, error) {
