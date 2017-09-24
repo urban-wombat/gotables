@@ -4224,9 +4224,8 @@ func ExampleNewTableFromString_planets() {
 	Where human readability is not important (with messaging or as a wire format) use:
 	*Table.StringUnpadded()
 	*TableSet.StringUnpadded()
-	StringUnpadded() is 3 to 4 times faster than String() for generating an ASCII
-	table or tableset.
-	Reading a padded table string is insignificantly slower (about 2.7% slower).
+	StringUnpadded() is 3 to 4 times faster.
+	Reading a padded table string is only slightly slower (about 2.7% slower).
 */
 
 	// For unpadded output:
