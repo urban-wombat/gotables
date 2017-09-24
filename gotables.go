@@ -3449,10 +3449,10 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 }
 
 func (table *Table) GobEncode() ([]byte, error) {
-	var blankBuffer []byte
+	var emptyBuffer []byte
 
 	if table == nil {
-		return blankBuffer, fmt.Errorf("table.%s() table is <nil>", funcName())
+		return emptyBuffer, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	var err error
 	var buffer bytes.Buffer
@@ -3461,12 +3461,12 @@ func (table *Table) GobEncode() ([]byte, error) {
 
 	tableExported, err = table.exportTable()
 	if err != nil {
-		return blankBuffer, err
+		return emptyBuffer, err
 	}
 
 	err = enc.Encode(tableExported)
 	if err != nil {
-		return blankBuffer, err
+		return emptyBuffer, err
 	}
 
 	return buffer.Bytes(), nil
