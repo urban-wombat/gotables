@@ -1580,6 +1580,80 @@ func BenchmarkTableSetToString(b *testing.B) {
 	}
 }
 
+var planets_padded = `[planets_padded]
+name         mass distance moons index mnemonic
+string    float64  float64   int   int string
+"Mercury"   0.055      0.4     0     0 "my"
+"Venus"     0.815      0.7     0     1 "very"
+"Earth"     1.0        1.0     1     2 "elegant"
+"Mars"      0.107      1.5     2     3 "mother"
+"Jupiter" 318.0        5.2    67     4 "just"
+"Saturn"   95.0       29.4    62     5 "sat"
+"Uranus"   15.0       84.0    27     6 "upon"
+"Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+`
+
+var planets_unpadded = `[planets_unpadded]
+name mass distance moons index mnemonic
+string float64 float64 int int string
+"Mercury" 0.055 0.4 0 0 "my"
+"Venus" 0.815 0.7 0 1 "very"
+"Earth" 1 1 1 2 "elegant"
+"Mars" 0.107 1.5 2 3 "mother"
+"Jupiter" 318 5.2 67 4 "just"
+"Saturn" 95 29.4 62 5 "sat"
+"Uranus" 15 84 27 6 "upon"
+"Neptune" 17 164 13 7 "nine ... porcupines"
+`
+
+func BenchmarkNewTableSetFromString_padded(b *testing.B) {
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = NewTableSetFromString(planets_padded)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+func BenchmarkNewTableSetFromString_unpadded(b *testing.B) {
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = NewTableSetFromString(planets_unpadded)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+func BenchmarkTableSetToString_padded(b *testing.B) {
+	// Set up for benchmark.
+	// Note: It's irrelevant whether the input string is padded.
+	tableSet, err := NewTableSetFromString(planets_padded)
+	if err != nil {
+		b.Error(err)
+	}
+
+	var _ string
+	for i := 0; i < b.N; i++ {
+		_ = tableSet.StringPadded()
+	}
+}
+
+func BenchmarkTableSetToString_unpadded(b *testing.B) {
+	// Set up for benchmark.
+	// Note: It's irrelevant whether the input string is padded.
+	tableSet, err := NewTableSetFromString(planets_unpadded)
+	if err != nil {
+		b.Error(err)
+	}
+
+	var _ string
+	for i := 0; i < b.N; i++ {
+		_ = tableSet.StringUnpadded()
+	}
+}
+
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -4142,8 +4216,14 @@ func ExampleNewTableFromString_planets() {
 	// Simply echo it back out.
 	fmt.Println(table)
 
-	// Notice that the columns of data are padded with spaces and numeric types are right-aligned.
-	// This reflects the opinion that human readability is as important as compactness and efficiency.
+	// Notice that by default the columns of data are padded with spaces and numeric types are right-aligned.
+	// This reflects the opinion that human readability is important.
+	// *Table.String() and *TableSet.String() call their underlying StringPadded() methods.
+	// Where human readability is not important (such with messaging or as a wire format) use:
+	// *Table.StringUnpadded()
+	// *TableSet.StringUnpadded()
+	// StringUnpadded() is 3 to 4 times faster than String() for generating an ASCII table or tableset.
+	// Reading a padded table string is insignificantly slower (about 2.7% slower).
 
 	// For unpadded output:
     fmt.Println(table.StringUnpadded())
