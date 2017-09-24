@@ -362,7 +362,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
-					return nil, fmt.Errorf("%s expecting more structs ( <name> <type> = <value> ) but found: %s", p.gotFilePos(), line)
+					return nil, fmt.Errorf("%s expecting more struct lines ( name type ) or ( name type = value ) but found: %s", p.gotFilePos(), line)
 				}
 
 				tableShape = _TABLE_SHAPE

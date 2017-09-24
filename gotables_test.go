@@ -1693,20 +1693,23 @@ func BenchmarkGobDecode(b *testing.B) {
 func TestIsNumericColType(t *testing.T) {
 	tableString := `
     [table]
-	F_bool bool
-	F_string string
+	F_bool    bool
+	F_string  string
+	F__byte   []byte
+	F__uint8  []uint8
 	T_float32 float32
 	T_float64 float64
-	T_int int
-	T_int16 int16
-	T_int32 int32
-	T_int64 int64
-	T_int8 int8
-	T_uint uint
-	T_uint16 uint16
-	T_uint32 uint32
-	T_uint64 uint64
-	T_uint8 uint8
+	T_int     int
+	T_int16   int16
+	T_int32   int32
+	T_int64   int64
+	T_int8    int8
+	T_uint    uint
+	T_uint16  uint16
+	T_uint32  uint32
+	T_uint64  uint64
+	T_uint8   uint8
+	T_byte    byte
     `
 
 	tableSet, err := NewTableSetFromString(tableString)
