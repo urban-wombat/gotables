@@ -237,6 +237,8 @@ func NewTableSetFromGob(buffer []bytes.Buffer) (*TableSet, error) {
 	Reconstruct a TableSet from a slice of []bytes.Buffer
 
 	Each element in the slice is a Gob encoded table as a slice of []byte
+
+	Equivalent to NewTableSetFromGob()
 */
 func GobDecodeTableSet(buffer []bytes.Buffer) (*TableSet, error) {
 	var tableSet *TableSet
@@ -285,6 +287,8 @@ func NewTableFromGob(buf []byte) (*Table, error) {
 
 /*
 	Reconstruct a Table from a slice of []byte
+
+	Equivalent to NewTableFromGob()
 */
 func GobDecodeTable(buf []byte) (*Table, error) {
 	var err error

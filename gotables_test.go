@@ -2977,7 +2977,8 @@ func ExampleTable_GobEncode_table() {
     }
 
 	// Now decode it back from binary to type *gotables.Table
-    tableDecoded, err := GobDecodeTable(binary)
+	// Note: NewTableFromGob(binary) is equivalent to GobDecodeTable(binary)
+    tableDecoded, err := NewTableFromGob(binary)
     if err != nil {
 		log.Println(err)
 	}
