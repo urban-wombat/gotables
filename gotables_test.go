@@ -4216,14 +4216,18 @@ func ExampleNewTableFromString_planets() {
 	// Simply echo it back out.
 	fmt.Println(table)
 
-	// Notice that by default the columns of data are padded with spaces and numeric types are right-aligned.
-	// This reflects the opinion that human readability is important.
-	// *Table.String() and *TableSet.String() call their underlying StringPadded() methods.
-	// Where human readability is not important (such with messaging or as a wire format) use:
-	// *Table.StringUnpadded()
-	// *TableSet.StringUnpadded()
-	// StringUnpadded() is 3 to 4 times faster than String() for generating an ASCII table or tableset.
-	// Reading a padded table string is insignificantly slower (about 2.7% slower).
+/*
+	Notice that by default the columns of data are padded with spaces and numeric types
+	are right-aligned.
+	This reflects the opinion that human readability is important.
+	*Table.String() and *TableSet.String() call their underlying StringPadded() methods.
+	Where human readability is not important (with messaging or as a wire format) use:
+	*Table.StringUnpadded()
+	*TableSet.StringUnpadded()
+	StringUnpadded() is 3 to 4 times faster than String() for generating an ASCII
+	table or tableset.
+	Reading a padded table string is insignificantly slower (about 2.7% slower).
+*/
 
 	// For unpadded output:
     fmt.Println(table.StringUnpadded())
