@@ -3356,6 +3356,8 @@ func ExampleTable_SetRowFloatCellsToNaN() {
 	if err != nil {
 		log.Println(err)
 	}
+	fmt.Println("Before ...")
+	fmt.Println(table)
 
 	rowIndex := 1	// The middle row.
 	err = table.SetRowFloatCellsToNaN(rowIndex)
@@ -3363,9 +3365,19 @@ func ExampleTable_SetRowFloatCellsToNaN() {
 		log.Println(err)
 	}
 
+	fmt.Println("After ...")
 	fmt.Println(table)
 
 	// Output:
+	// Before ...
+	// [three_rows]
+	//   i s            f b          f2
+	// int string float32 bool  float64
+	//   0 "abc"      2.3 true       42
+	//   1 "xyz"      4.5 false      43
+	//   2 "s  s"     4.9 false      44
+	// 
+	// After ...
 	// [three_rows]
 	//   i s            f b          f2
 	// int string float32 bool  float64
