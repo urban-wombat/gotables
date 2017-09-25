@@ -1,0 +1,17 @@
+$ date
+25 Sep 2017 12:11:29
+$ go test -bench=.
+goos: windows
+goarch: amd64
+pkg: github.com/urban-wombat/gotables
+BenchmarkNewTableSetFromString-4                   10000            107871 ns/op
+BenchmarkTableSetToString-4                        30000             41494 ns/op
+BenchmarkNewTableSetFromString_padded-4            20000             75950 ns/op
+BenchmarkNewTableSetFromString_unpadded-4          20000             73398 ns/op
+BenchmarkTableSetToString_padded-4                 30000             55603 ns/op
+BenchmarkTableSetToString_unpadded-4              100000             15540 ns/op
+BenchmarkGobEncode-4                               20000             84756 ns/op
+BenchmarkGobDecode-4                               10000            208238 ns/op
+PASS
+ok      github.com/urban-wombat/gotables        15.920s
+

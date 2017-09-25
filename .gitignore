@@ -221,7 +221,6 @@ pip-log.txt
 junk
 ExampleNewGoTableFromFile.txt
 ExampleNewGoTableFromFileByTableName.txt
-*.txt
 *.xml
 .idea/gotable.iml
 *.out
@@ -231,3 +230,8 @@ junk2!
 junk2.csv
 *.csv
 doc.bat
+ExampleNewTableFromFile.txt
+ExampleNewTableFromFileByTableName.txt
+malcover-exclude.txt
+TestGoTableSet_FileName.txt
+TestTableSet_FileName.txt
