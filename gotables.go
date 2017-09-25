@@ -330,7 +330,7 @@ func (tableSet *TableSet) AppendTable(newTable *Table) error {
 		//where(fmt.Sprintf("existingTable.Name() = %s\n", existingTable.Name()))
 		//where(fmt.Sprintf("newTable.Name() = %s\n", newTable.Name()))
 		if existingTable.Name() == newTable.Name() {
-			return fmt.Errorf("table [%s] already exists: %s", newTable.tableName, newTable.tableName)
+			return fmt.Errorf("table [%s] already exists: [%s]", newTable.tableName, newTable.tableName)
 		}
 	}
 
