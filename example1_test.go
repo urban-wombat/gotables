@@ -12,7 +12,7 @@ import (
 	and prefix function and method calls with gotables.
 */
 
-func ExampleSort_complete() {
+func ExampleTable_Sort_complete() {
 	tableString :=
 	`[planets]
 	name         mass distance moons index mnemonic
