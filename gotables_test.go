@@ -1690,6 +1690,38 @@ func BenchmarkGobDecode(b *testing.B) {
 	}
 }
 
+func BenchmarkNewTableSetFromFile(b *testing.B) {
+	// Set up for benchmark.
+	tableSetString := `
+	[MyTable]
+	MyBool bool = true
+	MyString string = "The answer to life, the universe and everything"
+	MyInt int = 42
+
+	[Fred]
+	i
+	int
+	`
+
+	// For testing, we need to write this out to a file so we can read it back.
+	tableSet, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		log.Println(err)
+	}
+	fileName := "ExampleNewTableFromFileByTableName.txt"
+	err = tableSet.WriteFile(fileName, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		_, err := NewTableSetFromFile(fileName)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
 func TestIsNumericColType(t *testing.T) {
 	tableString := `
     [table]
