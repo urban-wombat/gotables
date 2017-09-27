@@ -85,17 +85,14 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	var buf bytes.Buffer
 
 	tableName := table.Name()
-	funcName := fmt.Sprintf("TypeStructSlice_%s_FromTable", tableName)
-	buf.WriteString(fmt.Sprintf("func %s(table *gotables.Table) ([]%s, error) {\n", funcName, tableName))
+	buf.WriteString(fmt.Sprintf("func TypeStructSlice_%s_FromTable(table *gotables.Table) ([]%s, error) {\n", tableName, tableName))
 		buf.WriteString("\tif table == nil {\n")
-			buf.WriteString(fmt.Sprintf("\t\tfuncName := %q\n", funcName))
-			buf.WriteString("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n")
+			buf.WriteString("\t\treturn \"\", fmt.Errorf(\"table.%s() table is <nil>\", funcName())\n")
 		buf.WriteString("\t}\n\n")
 
 		buf.WriteString(fmt.Sprintf("\tvar %s []%s = make([]%s, table.RowCount())\n\n", tableName, tableName, tableName))
 
-		buf.WriteString("\tfor rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {\n")
-			var sep string = ""
+		buf.WriteString("\tfor rowIndex := 0; rowIndex < table.ColCount(); rowIndex++ {\n")
 			for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 				colName, err := table.ColName(colIndex)
 				if err != nil {
@@ -105,18 +102,29 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 				if err != nil {
 					return "", err
 				}
-				buf.WriteString(sep)
-				buf.WriteString(fmt.Sprintf("\t\t%s, err := table.Get%s(%q, rowIndex)\n", colName, typeProper(colType), colName))
-				buf.WriteString("\t\tif err != nil {\n")
-				buf.WriteString("\t\t\treturn nil, err\n")
-				buf.WriteString("\t\t}\n")
+				buf.WriteString(fmt.Sprintf("\t%s, err := table.Get%s(%s, rowIndex)\n", tableName, typeProper(colType)))
 				buf.WriteString(fmt.Sprintf("\t\t%s[rowIndex].%s = %s\n", tableName, colName, colName))
-				sep = "\n"
 			}
 		
 		buf.WriteString("\t}\n\n")
+/*
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			return "", err
+		}
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString("\t")
+		buf.WriteString(colName)
+		buf.WriteString(" ")
+		buf.WriteString(colType)
+		buf.WriteString("\n")
+	}
 
-		buf.WriteString(fmt.Sprintf("\treturn %s, nil\n", tableName))
+*/
 
 	buf.WriteString("}\n")
 
@@ -128,14 +136,11 @@ func typeProper(typeName string) string {
 	var buf bytes.Buffer
 	var upshifted bool = false
 	for i := 0; i < len(typeName); i++ {
-		if !upshifted && unicode.IsLetter(rune(typeName[i])) {
-			var typeChar []byte = make([]byte, 1)
-			typeChar[0] = typeName[i]
-			var upper []byte = bytes.ToUpper(typeChar)
-			_ = buf.WriteByte(upper[0])
-			upshifted = true
+		if !upshifted && unicode.IsLetter(typeName[i]) {
+			var upper byte = bytes.ToUpper(typeName[i])
+			_ := buf.WriteByte(upper)
 		} else {
-			_ = buf.WriteByte(typeName[i])
+			_ := buf.WriteByte(typeName[i])
 		}
 	}
 
