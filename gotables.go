@@ -99,6 +99,10 @@ func NewTableSetFromFile(fileName string) (*TableSet, error) {
 
 // Write a TableSet to a text file.
 func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
+	if tableSet == nil {
+		return fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+	}
+
 	var err error
 	var tableSet_String string
 	var tableSet_Bytes []byte
@@ -282,7 +286,6 @@ func (tableSet *TableSet) StringUnpadded() string {
 
 // Return parsable set of tables as a string.
 func (tableSet *TableSet) _String(horizontalSeparator byte) string {
-	var s string
 	var buf bytes.Buffer
 	//	buf.WriteString("# From file: \"" + tableSet.name + "\"\n\n")
 	var tableSep = ""
@@ -294,7 +297,8 @@ func (tableSet *TableSet) _String(horizontalSeparator byte) string {
 		buf.WriteString(fmt.Sprintf("%v", table._String(horizontalSeparator)))
 		tableSep = "\n"
 	}
-	s = buf.String()
+
+	var s string = buf.String()
 	return s
 }
 
