@@ -295,7 +295,7 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	See also: GenerateTypeStructSet()
 
-	See also: GenerateTypeStructSliceFromTable() [has sample code]
+	See also: GenerateTypeStructSliceFromTable() - convert in the opposite direction
 */
 func (tableSet *TableSet) GenerateTypeStructSliceFromTableSet() (string, error) {
 	if tableSet == nil {
@@ -362,7 +362,7 @@ func setterName(typeName string) string {
 
 	See also: GenerateTypeStructSet()
 
-	See also: GenerateTypeStructSliceFromTable()
+	See also: GenerateTypeStructSliceFromTable() - convert in the opposite direction
 
 	Source table:
 		
