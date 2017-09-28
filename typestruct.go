@@ -26,6 +26,7 @@ func GenerateWordSize() string {
 //	See also: GenerateTypeStructSet()
 //	See also: GenerateTypeStructSliceFromTable()
 //	See also: GenerateTypeStructSliceFromTableSet()
+
 /*
 	Source table:
 
