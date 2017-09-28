@@ -6,6 +6,8 @@ Sometimes data and configurations are intrinsically tabular. Trying to represent
 merely obscures tables, makes them less readable, and invites inconsistencies and lack of discipline, risking
 missing cells or superfluous leaf nodes that introduce potential bugs in host code.
 
+See also: https://urban-wombat.github.io
+
 For Go (golang) programmers:
 
 	go get github.com/urban-wombat/gotables
