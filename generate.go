@@ -465,11 +465,11 @@ func setterName(typeName string) string {
 		}
 
 		fmt.Println()
-	    a[2].i = 666
-	    a = append(a, MyTable{f: 7.7, b: true, i: 777, str: "Wonderful!!!", bb: []byte{9, 8, 7, 6, 5} })
-	    var x MyTable = MyTable{f: 8.8, b: true, i: 888, str: "Wonderful!!!", bb: []byte{1, 1, 1}}
-	    fmt.Printf("x = %v\n", x)
-	    a = append(a, x)
+		a[2].i = 666
+		a = append(a, MyTable{f: 7.7, b: true, i: 777, str: "Wonderful!!!", bb: []byte{9, 8, 7, 6, 5} })
+		var x MyTable = MyTable{f: 8.8, b: true, i: 888, str: "Wonderful!!!", bb: []byte{1, 1, 1}}
+		fmt.Printf("x = %v\n", x)
+		a = append(a, x)
 
 		var outTable *gotables.Table
 		outTable, err = TypeStructSlice_MyTable_ToTable(a)
