@@ -203,7 +203,9 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		        bb []byte
 		}
 
-		a, err := TypeStructSlice_MyTable_FromTable(table)
+		var a []MyTable
+		var err error
+		a, err = TypeStructSlice_MyTable_FromTable(table)
 		if err != nil {
 			panic(err)
 		}
