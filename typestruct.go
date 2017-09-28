@@ -21,13 +21,17 @@ func GenerateWordSize() string {
 	return s
 }
 
-//	Generate a Go struct (as a string) for storing a gotables.Table as a slice of struct.
-//	Compile the Go struct into your own programs.
-//	See also: GenerateTypeStructSet()
-//	See also: GenerateTypeStructSliceFromTable()
-//	See also: GenerateTypeStructSliceFromTableSet()
-
 /*
+	Generate a Go struct (as a string) for storing a gotables.Table as a slice of struct.
+
+	Compile the Go struct into your own programs.
+
+	See also: GenerateTypeStructSet()
+
+	See also: GenerateTypeStructSliceFromTable()
+
+	See also: GenerateTypeStructSliceFromTableSet()
+
 	Source table:
 
 		[MyTable]
