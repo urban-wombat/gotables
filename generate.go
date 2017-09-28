@@ -163,9 +163,9 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
 		Generate a slice of type MyTable struct from *gotables.Table [MyTable] for direct access in your code.
 
-		func TypeStructSlice_MyTable_FromTable(table *gotables.Table) ([]MyTable, error) {
+		func TypeStructSliceFromTable_MyTable(table *gotables.Table) ([]MyTable, error) {
 		        if table == nil {
-		                funcName := "TypeStructSlice_MyTable_FromTable"
+		                funcName := "TypeStructSliceFromTable_MyTable"
 		                return nil, fmt.Errorf("%s(table *gotables.Table) table is <nil>", funcName)
 		        }
 		
@@ -218,7 +218,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 
 		var a []MyTable
 		var err error
-		a, err = TypeStructSlice_MyTable_FromTable(table)
+		a, err = TypeStructSliceFromTable_MyTable(table)
 		if err != nil {
 			panic(err)
 		}
@@ -240,7 +240,7 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	var buf bytes.Buffer
 
 	tableName := table.Name()
-	funcName := fmt.Sprintf("TypeStructSlice_%s_FromTable", tableName)
+	funcName := fmt.Sprintf("TypeStructSliceFromTable_%s", tableName)
 	buf.WriteString("/*\n")
 	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
@@ -388,9 +388,9 @@ func setterName(typeName string) string {
 		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
 		Generate a gotables Table [MyTable] from a slice of type struct []MyTable for direct access in your code.
 
-		func TypeStructSlice_MyTable_ToTable(slice []MyTable) (*gotables.Table, error) {
+		func TypeStructSliceToTable_MyTable(slice []MyTable) (*gotables.Table, error) {
 		        if slice == nil {
-		                return nil, fmt.Errorf("TypeStructSlice_MyTable_ToTable(slice []MyTable) slice is <nil>")
+		                return nil, fmt.Errorf("TypeStructSliceToTable_MyTable(slice []MyTable) slice is <nil>")
 		        }
 		
 		        var err error
@@ -456,7 +456,7 @@ func setterName(typeName string) string {
 
 		var a []MyTable
 		var err error
-		a, err = TypeStructSlice_MyTable_FromTable(table)
+		a, err = TypeStructSliceFromTable_MyTable(table)
 		if err != nil {
 			panic(err)
 		}
@@ -472,7 +472,7 @@ func setterName(typeName string) string {
 		a = append(a, x)
 
 		var outTable *gotables.Table
-		outTable, err = TypeStructSlice_MyTable_ToTable(a)
+		outTable, err = TypeStructSliceToTable_MyTable(a)
 		if err != nil {
 			panic(err)
 		}
@@ -515,7 +515,7 @@ where()
 where()
 
 	tableName := table.Name()
-	funcName := fmt.Sprintf("TypeStructSlice_%s_ToTable", tableName)
+	funcName := fmt.Sprintf("TypeStructSliceToTable_%s", tableName)
 	buf.WriteString("/*\n")
 	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
