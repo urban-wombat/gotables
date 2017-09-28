@@ -470,12 +470,13 @@ func setterName(typeName string) string {
 	    var x MyTable = MyTable{f: 8.8, b: true, i: 888, str: "Wonderful!!!", bb: []byte{1, 1, 1}}
 	    fmt.Printf("x = %v\n", x)
 	    a = append(a, x)
-	
-	    out, err := TypeStructSlice_MyTable_ToTable(a)
-	    if err != nil {
-	        panic(err)
-	    }
-	    fmt.Println(out)
+
+		var outTable *gotables.Table
+		outTable, err = TypeStructSlice_MyTable_ToTable(a)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(outTable)
 
 	Output:
 
