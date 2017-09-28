@@ -3904,6 +3904,33 @@ func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow i
 	return newTable, nil
 }
 
+// Create a copy of table, with or without copying its rows of data.
+func (table *Table) Copy(copyRows bool) (*Table, error) {
+	var err error
+	const firstRow = 0
+	var lastRow int = 0
+	if copyRows {
+		lastRow = table.RowCount() - 1
+	}
+
+	tableCopy, err := NewTableFromRows(table, table.Name(), firstRow, lastRow)
+	if err != nil {
+		return nil, err
+	}
+
+	// This is an elegant kludge. NewTableFromRows() doesn't have an option for zero rows.
+	// We don't want to weaken its row index error checking, so we copy 1 row and then delete it.
+	if !copyRows {
+		// Delete the minimal set of 1 rows that NewTableFromRows() copies.
+		err = tableCopy.DeleteRow(lastRow)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return tableCopy, nil
+}
+
 /*
 	Create a new table from a range of rows in this table searched by keys.
 */

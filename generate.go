@@ -408,12 +408,16 @@ func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 
 	var buf bytes.Buffer
 
+where()
 	fmt.Println(table)
 	tt, err := NewTable("FRED")
+where()
 	fmt.Println(tt)
+	tt, err = table.Copy(false)
 	if err != nil { panic(err) }
-	tt, err = table.Copy()
+where()
 	fmt.Println(tt)
+where()
 
 	tableName := table.Name()
 	funcName := fmt.Sprintf("TypeStructSlice_%s_ToTable", tableName)
