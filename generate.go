@@ -476,6 +476,8 @@ func setterName(typeName string) string {
 		if err != nil {
 			panic(err)
 		}
+
+		fmt.Println()
 		fmt.Println(outTable)
 
 	Output:
@@ -485,6 +487,7 @@ func setterName(typeName string) string {
 		a[2] = {6.6 false 0 Great! [0 1 2]}
 
 		x = {8.8 true 888 Wonderful!!! [1 1 1]}
+
 		[MyTable]
 			  f b       i str            bb
 		float32 bool  int string         []byte
