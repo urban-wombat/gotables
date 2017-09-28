@@ -119,7 +119,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 }
 
 /*
-	Generate Go function (as a string) to convert a gotables.Table to a slice of struct.
+	Generate a Go function (as a string) to convert a gotables.Table to a slice of struct.
 
 	Compile the Go function into your own programs.
 
