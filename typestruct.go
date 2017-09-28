@@ -192,6 +192,30 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		
 		        return MyTable, nil
 		}
+
+	Snippets of code in your own program:
+
+		type MyTable struct {
+		        f float32
+		        b bool
+		        i int
+		        str string
+		        bb []byte
+		}
+
+		a, err := TypeStructSlice_MyTable_FromTable(table)
+		if err != nil {
+			panic(err)
+		}
+		for i := 0; i < len(a); i++ {
+			fmt.Printf("a[%d] = %v\n", i, a[i])
+		}
+
+	Output:
+
+		a[0] = {4.4 true 32 Hello! [3 2 1 0]}
+		a[1] = {5.5 true -32 Goodie! [4 5 6 7 8]}
+		a[2] = {6.6 false 0 Great! [0 1 2]}
 */
 func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	if table == nil {
