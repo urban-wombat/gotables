@@ -148,7 +148,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
 		    6.6 false   0 "Great!"  [0 1 2]
 		
-	Previously-generated type struct (using GenerateTypeStruct()):
+	Previously-generated type struct - using GenerateTypeStruct()
 		
 		type MyTable struct {
 		        f float32
@@ -158,7 +158,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		        bb []byte
 		}
 		
-	Generated Go function (using GenerateTypeStructSliceFromTable()):
+	Generated Go function - using GenerateTypeStructSliceFromTable()
 		
 		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
 		Generate a slice of type MyTable struct from *gotables.Table [MyTable] for direct access in your code.
@@ -373,7 +373,7 @@ func setterName(typeName string) string {
 		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
 		    6.6 false   0 "Great!"  [0 1 2]
 		
-	Previously-generated type struct (using GenerateTypeStruct()):
+	Previously-generated type struct - using GenerateTypeStruct()
 		
 		type MyTable struct {
 		        f float32
@@ -383,7 +383,7 @@ func setterName(typeName string) string {
 		        bb []byte
 		}
 		
-	Generated Go function (using GenerateTypeStructSliceToTable()):
+	Generated Go function - using GenerateTypeStructSliceToTable()
 
 		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
 		Generate a gotables Table [MyTable] from a slice of type struct []MyTable for direct access in your code.
