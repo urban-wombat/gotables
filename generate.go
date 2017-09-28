@@ -62,7 +62,7 @@ func (table *Table) GenerateTypeStruct() (string, error) {
 	tableName := table.Name()
 
 	buf.WriteString("/*\n")
-	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n",
+	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n\n",
 		time.Now().Format("15:04:05 Monday 2 Jan 2006")))
 	buf.WriteString(fmt.Sprintf("\ttype %s struct generated from *gotables.Table [%s] for direct access in your code.\n",
 		tableName, tableName))
@@ -148,7 +148,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
 		    6.6 false   0 "Great!"  [0 1 2]
 		
-	Previously-generated struct:
+	Previously-generated type struct (using GenerateTypeStruct()):
 		
 		type MyTable struct {
 		        f float32
@@ -158,8 +158,11 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		        bb []byte
 		}
 		
-	Generated Go function:
+	Generated Go function (using GenerateTypeStructSliceFromTable()):
 		
+		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
+		Generate a slice of type MyTable struct from *gotables.Table [MyTable] for direct access in your code.
+
 		func TypeStructSlice_MyTable_FromTable(table *gotables.Table) ([]MyTable, error) {
 		        if table == nil {
 		                funcName := "TypeStructSlice_MyTable_FromTable"
@@ -350,6 +353,146 @@ func setterName(typeName string) string {
 	return fmt.Sprintf("Set%s", accessorName(typeName))
 }
 
+/*
+	Generate a Go function (as a string) to convert a slice of struct to a gotables.Table.
+
+	Compile the Go function into your own programs.
+
+	See also: GenerateTypeStruct()
+
+	See also: GenerateTypeStructSet()
+
+	See also: GenerateTypeStructSliceFromTable()
+
+	Source table:
+		
+		[MyTable]
+		      f b       i str       bb
+		float32 bool  int string    []byte
+		    4.4 true   32 "Hello!"  [3 2 1 0]
+		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
+		    6.6 false   0 "Great!"  [0 1 2]
+		
+	Previously-generated type struct (using GenerateTypeStruct()):
+		
+		type MyTable struct {
+		        f float32
+		        b bool
+		        i int
+		        str string
+		        bb []byte
+		}
+		
+	Generated Go function (using GenerateTypeStructSliceToTable()):
+
+		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
+		Generate a gotables Table [MyTable] from a slice of type struct []MyTable for direct access in your code.
+
+		func TypeStructSlice_MyTable_ToTable(slice []MyTable) (*gotables.Table, error) {
+		        if slice == nil {
+		                return nil, fmt.Errorf("TypeStructSlice_MyTable_ToTable(slice []MyTable) slice is <nil>")
+		        }
+		
+		        var err error
+		
+		        var seedTable string = `
+		        [MyTable]
+		        f float32
+		        b bool
+		        i int
+		        str string
+		        bb []byte
+		        `
+		        var table *gotables.Table
+		        table, err = gotables.NewTableFromString(seedTable)
+		        if err != nil {
+		                return nil, err
+		        }
+		
+		        for rowIndex := 0; rowIndex < len(slice); rowIndex++ {
+		                err = table.AppendRow()
+		                if err != nil {
+		                        return nil, err
+		                }
+		
+		                err = table.SetFloat32("f", rowIndex, slice[rowIndex].f)
+		                if err != nil {
+		                        return nil, err
+		                }
+		
+		                err = table.SetBool("b", rowIndex, slice[rowIndex].b)
+		                if err != nil {
+		                        return nil, err
+		                }
+		
+		                err = table.SetInt("i", rowIndex, slice[rowIndex].i)
+		                if err != nil {
+		                        return nil, err
+		                }
+		
+		                err = table.SetString("str", rowIndex, slice[rowIndex].str)
+		                if err != nil {
+		                        return nil, err
+		                }
+		
+		                err = table.SetByteSlice("bb", rowIndex, slice[rowIndex].bb)
+		                if err != nil {
+		                        return nil, err
+		                }
+		        }
+		
+		        return table, nil
+		}
+
+	Snippets of code as they might appear in your own program:
+
+		type MyTable struct {
+		        f float32
+		        b bool
+		        i int
+		        str string
+		        bb []byte
+		}
+
+		var a []MyTable
+		var err error
+		a, err = TypeStructSlice_MyTable_FromTable(table)
+		if err != nil {
+			panic(err)
+		}
+		for i := 0; i < len(a); i++ {
+			fmt.Printf("a[%d] = %v\n", i, a[i])
+		}
+
+		fmt.Println()
+	    a[2].i = 666
+	    a = append(a, MyTable{f: 7.7, b: true, i: 777, str: "Wonderful!!!", bb: []byte{9, 8, 7, 6, 5} })
+	    var x MyTable = MyTable{f: 8.8, b: true, i: 888, str: "Wonderful!!!", bb: []byte{1, 1, 1}}
+	    fmt.Printf("x = %v\n", x)
+	    a = append(a, x)
+	
+	    out, err := TypeStructSlice_MyTable_ToTable(a)
+	    if err != nil {
+	        panic(err)
+	    }
+	    fmt.Println(out)
+
+	Output:
+
+		a[0] = {4.4 true 32 Hello! [3 2 1 0]}
+		a[1] = {5.5 true -32 Goodie! [4 5 6 7 8]}
+		a[2] = {6.6 false 0 Great! [0 1 2]}
+
+		x = {8.8 true 888 Wonderful!!! [1 1 1]}
+		[MyTable]
+			  f b       i str            bb
+		float32 bool  int string         []byte
+			4.4 true   32 "Hello!"       [3 2 1 0]
+			5.5 true  -32 "Goodie!"      [4 5 6 7 8]
+			6.6 false 666 "Great!"       [0 1 2]
+			7.7 true  777 "Wonderful!!!" [9 8 7 6 5]
+			8.8 true  888 "Wonderful!!!" [1 1 1]
+*/
 func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 	if table == nil {
 		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -370,7 +513,7 @@ where()
 	tableName := table.Name()
 	funcName := fmt.Sprintf("TypeStructSlice_%s_ToTable", tableName)
 	buf.WriteString("/*\n")
-	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n",
+	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
 	buf.WriteString(fmt.Sprintf("\tGenerate a gotables Table [%s] from a slice of type struct []%s for direct access in your code.\n",
 		tableName, tableName))
