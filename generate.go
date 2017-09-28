@@ -401,20 +401,20 @@ func setterName(typeName string) string {
 */
 
 
-func (tableDoNotModify *Table) GenerateTypeStructSliceToTable() (string, error) {
-	if tableDoNotModify == nil {
-		return "", fmt.Errorf("tableDoNotModify.%s() tableDoNotModify is <nil>", funcName())
+func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
+	if table == nil {
+		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	var buf bytes.Buffer
-	var table *Table
+	var tableCopy *Table
 	var err error
-	table, err = tableDoNotModify.Copy(false)
+	tableCopy, err = table.Copy(false)
 	if err != nil {
 		return "", err
 	}
 where()
-	fmt.Println(table)
+	fmt.Println(tableCopy)
 where()
 
 	tableName := table.Name()
