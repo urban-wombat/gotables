@@ -3881,8 +3881,6 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 
 /*
 	Create a new table from a range of rows in this table.
-
-	To copy some but not all rows, use NewTableFromRows()
 */
 func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow int) (*Table, error) {
 	var newTable *Table
@@ -3906,7 +3904,11 @@ func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow i
 	return newTable, nil
 }
 
-// Create a copy of table, with or without copying its rows of data.
+/*
+	Create a copy of table, with or without copying its rows of data.
+
+	To copy some but not all rows, use NewTableFromRows()
+*/
 func (table *Table) Copy(copyRows bool) (*Table, error) {
 	var err error
 	const firstRow = 0
