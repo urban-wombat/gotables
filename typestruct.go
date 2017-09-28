@@ -85,10 +85,15 @@ func (table *Table) GenerateTypeStruct() (string, error) {
 
 /*
 	Generate a set of Go structs (as a string) for storing a gotables.TableSet as slices of struct.
+
 	Compile the Go structs into your own programs.
+
 	See also: GenerateTypeStruct()
+
 	See also: GenerateTypeStructSliceFromTable()
+
 	See also: GenerateTypeStructSliceFromTableSet()
+
 */
 func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 	if tableSet == nil {
@@ -115,10 +120,78 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 
 /*
 	Generate Go function (as a string) to convert a gotables.Table to a slice of struct.
+
 	Compile the Go function into your own programs.
+
 	See also: GenerateTypeStruct()
+
 	See also: GenerateTypeStructSet()
+
 	See also: GenerateTypeStructSliceFromTableSet()
+
+	Source table:
+		
+		[MyTable]
+		      f b       i str       bb
+		float32 bool  int string    []byte
+		    4.4 true   32 "Hello!"  [3 2 1 0]
+		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
+		    6.6 false   0 "Great!"  [0 1 2]
+		
+	Previously-generated struct:
+		
+		type MyTable struct {
+		        f float32
+		        b bool
+		        i int
+		        str string
+		        bb []byte
+		}
+		
+	Generated Go function:
+		
+		func TypeStructSlice_MyTable_FromTable(table *gotables.Table) ([]MyTable, error) {
+		        if table == nil {
+		                funcName := "TypeStructSlice_MyTable_FromTable"
+		                return nil, fmt.Errorf("%s(table *gotables.Table) table is <nil>", funcName)
+		        }
+		
+		        var MyTable []MyTable = make([]MyTable, table.RowCount())
+		
+		        for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+		                f, err := table.GetFloat32("f", rowIndex)
+		                if err != nil {
+		                        return nil, err
+		                }
+		                MyTable[rowIndex].f = f
+		
+		                b, err := table.GetBool("b", rowIndex)
+		                if err != nil {
+		                        return nil, err
+		                }
+		                MyTable[rowIndex].b = b
+		
+		                i, err := table.GetInt("i", rowIndex)
+		                if err != nil {
+		                        return nil, err
+		                }
+		                MyTable[rowIndex].i = i
+		
+		                str, err := table.GetString("str", rowIndex)
+		                if err != nil {
+		                        return nil, err
+		                }
+		                MyTable[rowIndex].str = str
+		
+		                bb, err := table.GetByteSlice("bb", rowIndex)
+		                if err != nil {
+		                        return nil, err
+		                }
+		                MyTable[rowIndex].bb = bb
+		        }
+		
+		        return MyTable, nil
+		}
 */
 func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	if table == nil {
