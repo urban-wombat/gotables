@@ -150,14 +150,13 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 		}
 		
 	Generated Go function - using GenerateTypeStructSliceFromTable()
-		
-		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
-		Generate a slice of type MyTable struct from *gotables.Table [MyTable] for including in your code.
+
+        Automatically generated source code. DO NOT MODIFY. Generated 1:09 PM Friday 29 Sep 2017.
+        Generate a slice of type MyTable struct from *gotables.Table [MyTable] for including in your code.
 
 		func TypeStructSliceFromTable_MyTable(table *gotables.Table) ([]MyTable, error) {
 		        if table == nil {
-		                funcName := "TypeStructSliceFromTable_MyTable"
-		                return nil, fmt.Errorf("%s(table *gotables.Table) table is <nil>", funcName)
+		                return nil, fmt.Errorf("TypeStructSliceFromTable_MyTable(slice []MyTable) slice is <nil>")
 		        }
 		
 		        var MyTable []MyTable = make([]MyTable, table.RowCount())
@@ -242,9 +241,6 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	buf.WriteString(fmt.Sprintf("func %s(table *gotables.Table) ([]%s, error) {\n", funcName, tableName))
 		buf.WriteString("\tif table == nil {\n")
-//			buf.WriteString(fmt.Sprintf("\t\tfuncName := %q\n", funcName))
-//			buf.WriteString("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n")
-//			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n"))
 			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
 		buf.WriteString("\t}\n\n")
 
@@ -383,8 +379,8 @@ func setterName(typeName string) string {
 		
 	Generated Go function - using GenerateTypeStructSliceToTable()
 
-		Automatically generated source code. DO NOT MODIFY. Generated 8:38 PM Thursday 28 Sep 2017.
-		Generate a gotables Table [MyTable] from a slice of type struct []MyTable for including in your code.
+        Automatically generated source code. DO NOT MODIFY. Generated 1:12 PM Friday 29 Sep 2017.
+        Generate a gotables Table [MyTable] from a slice of type struct []MyTable for including in your code.
 
 		func TypeStructSliceToTable_MyTable(slice []MyTable) (*gotables.Table, error) {
 		        if slice == nil {
