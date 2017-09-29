@@ -5344,3 +5344,70 @@ func ExampleTable_GetTableAsCSV() {
 	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
 	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
 }
+
+func TestTable_Copy (t *testing.T) {
+
+	tableStringRows0 :=
+	`[Types]
+	i int
+	b bool
+	f64 float64
+	f32 float32
+	bb []byte
+	s string
+	`
+	tableStringRows1 :=
+	`[Table]
+	x float64 = 44.4
+	b bool = true
+	`
+	tableStringRows2 :=
+	` [Table]
+	a	b	c
+	int	int	string
+	22	23	"Another"
+	43	47	"Yet more"
+	`
+
+	var tests = []struct {
+		tableString string
+		rows int
+		copyRows bool
+	}{
+		{tableStringRows0, 0, false},
+		{tableStringRows0, 0, true},
+		{tableStringRows1, 1, false},
+		{tableStringRows1, 1, true},
+		{tableStringRows2, 2, false},
+		{tableStringRows2, 2, true},
+	}
+
+	for _, test := range tests {
+
+		table, err := NewTableFromString(test.tableString)
+		if err != nil {
+			t.Error(err)
+		}
+	
+		tableCopy, err := table.Copy(test.copyRows)
+		if err != nil {
+			t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+		}
+		tableCopy.RenameTable("Copied")
+	
+		if test.copyRows {
+			// Expecting same rows in each.
+			_, err = tableCopy.Equals(table)
+			if err != nil {
+				t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+			}
+		} else {
+			// Expecting zero rows in tableCopy.
+			// Need to delete rows in source table for Equals to compare empty with empty.
+			err = table.DeleteRowsAll()
+			if err != nil {
+				t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+			}
+		}
+	}
+}

@@ -785,6 +785,22 @@ func (table *Table) DeleteRow(rowIndex int) error {
 	return nil
 }
 
+// If table has any rows, delete them all. This is to deal simply with empty tables.
+func (table *Table) DeleteRowsAll() error {
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	if table.RowCount() > 0 {
+		err := table.DeleteRows(0, table.RowCount() -1)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
 func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if table == nil {
@@ -3911,24 +3927,29 @@ func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow i
 */
 func (table *Table) Copy(copyRows bool) (*Table, error) {
 	var err error
+	var tableCopy *Table
 	const firstRow = 0
 	var lastRow int = 0
 	if copyRows {
 		lastRow = table.RowCount() - 1
 	}
 
-	tableCopy, err := NewTableFromRows(table, table.Name(), firstRow, lastRow)
+	tableCopy, err = NewTable(table.Name())
 	if err != nil {
 		return nil, err
 	}
 
-	// This is an elegant kludge. NewTableFromRows() doesn't have an option for zero rows.
-	// We don't want to weaken its row index error checking, so we copy 1 row and then delete it.
-	if !copyRows {
-		// Delete the minimal set of 1 rows that NewTableFromRows() copies.
-		err = tableCopy.DeleteRow(lastRow)
-		if err != nil {
-			return nil, err
+	err = tableCopy.AppendColsFromTable(table)
+	if err != nil {
+		return nil, err
+	}
+
+	if copyRows {
+		if table.RowCount() > 0 {
+			err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
