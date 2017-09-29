@@ -5393,7 +5393,10 @@ func TestTable_Copy (t *testing.T) {
 		if err != nil {
 			t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
 		}
-		tableCopy.RenameTable("Copied")
+		err = tableCopy.RenameTable("Copied")
+		if err != nil {
+			t.Error(err)
+		}
 	
 		if test.copyRows {
 			// Expecting same rows in each.
