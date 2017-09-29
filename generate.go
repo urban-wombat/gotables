@@ -242,8 +242,10 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	buf.WriteString(fmt.Sprintf("func %s(table *gotables.Table) ([]%s, error) {\n", funcName, tableName))
 		buf.WriteString("\tif table == nil {\n")
-			buf.WriteString(fmt.Sprintf("\t\tfuncName := %q\n", funcName))
-			buf.WriteString("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n")
+//			buf.WriteString(fmt.Sprintf("\t\tfuncName := %q\n", funcName))
+//			buf.WriteString("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n")
+//			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(table *gotables.Table) table is <nil>\", funcName)\n"))
+			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
 		buf.WriteString("\t}\n\n")
 
 		buf.WriteString(fmt.Sprintf("\tvar %s []%s = make([]%s, table.RowCount())\n\n", tableName, tableName, tableName))
