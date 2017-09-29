@@ -9,18 +9,9 @@ import (
 	"unicode"
 )
 
-// The word size on the machine we're now running on.
+// The word size of the machine we're now running on.
 func WordSize() int {
 	return 32 << (^uint(0) >> 32 & 1)
-}
-
-// The word size on the machine the TypeStruct was generated on?
-// This may not be right.
-func GenerateWordSize() string {
-//	var buf bytes.Buffer
-
-	var s string = ""
-	return s
 }
 
 /*
@@ -241,12 +232,14 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	tableName := table.Name()
 	funcName := fmt.Sprintf("TypeStructSliceFromTable_%s", tableName)
+
 	buf.WriteString("/*\n")
 	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
 	buf.WriteString(fmt.Sprintf("\tGenerate a slice of type %s struct from *gotables.Table [%s] for direct access in your code.\n",
 		tableName, tableName))
 	buf.WriteString("*/\n")
+
 	buf.WriteString(fmt.Sprintf("func %s(table *gotables.Table) ([]%s, error) {\n", funcName, tableName))
 		buf.WriteString("\tif table == nil {\n")
 			buf.WriteString(fmt.Sprintf("\t\tfuncName := %q\n", funcName))
@@ -282,6 +275,7 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	buf.WriteString("}\n")
 
 	var typeStruct string = buf.String()
+
 	return typeStruct, nil
 }
 
@@ -336,7 +330,7 @@ func typeProper(typeName string) string {
 	return buf.String()
 }
 
-// Returns getter/setter name without prefix Get/Set
+// Returns getter/setter name without Get/Set prefix
 func accessorName(typeName string) string {
 	if strings.HasPrefix(typeName, "[]") {
 		return fmt.Sprintf("%sSlice", typeProper(typeName[2:]))
@@ -345,10 +339,12 @@ func accessorName(typeName string) string {
 	}
 }
 
+// Return getter name for this type.
 func getterName(typeName string) string {
 	return fmt.Sprintf("Get%s", accessorName(typeName))
 }
 
+// Return setter name for this type.
 func setterName(typeName string) string {
 	return fmt.Sprintf("Set%s", accessorName(typeName))
 }
@@ -509,19 +505,22 @@ func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 	if err != nil {
 		return "", err
 	}
-where()
-	tableCopy.SetStructShape(true)
-	fmt.Println(tableCopy)
-where()
+	err = tableCopy.SetStructShape(true)
+	if err != nil {
+		return "", err
+	}
+	// fmt.Println(tableCopy)
 
 	tableName := table.Name()
 	funcName := fmt.Sprintf("TypeStructSliceToTable_%s", tableName)
+
 	buf.WriteString("/*\n")
 	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
 	buf.WriteString(fmt.Sprintf("\tGenerate a gotables Table [%s] from a slice of type struct []%s for direct access in your code.\n",
 		tableName, tableName))
 	buf.WriteString("*/\n")
+
 	buf.WriteString(fmt.Sprintf("func %s(slice []%s) (*gotables.Table, error) {\n", funcName, tableName))
 		buf.WriteString("\tif slice == nil {\n")
 			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
