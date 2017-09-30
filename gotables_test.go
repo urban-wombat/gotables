@@ -3323,7 +3323,7 @@ func ExampleTableSet_StringUnpadded() {
 	// 4 22.99 255 "And now I'm not ..."
 }
 
-func TestNewTableFromCols(t *testing.T) {
+func TestNewTablesFromMetadata(t *testing.T) {
 
 	var table *Table
 	var err error
@@ -3343,12 +3343,12 @@ func TestNewTableFromCols(t *testing.T) {
 
 	for _, test := range tests {
 
-		table, err = newTableFromCols("Moviegoers", test.colNames, test.colTypes)
+		table, err = NewTablesFromMetadata("Moviegoers", test.colNames, test.colTypes)
 		if (err == nil) != test.expected {
 			if err != nil {
 				t.Error(err)
 			} else {
-				t.Errorf("Expecting fail: NewTableFromCols(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes)
+				t.Errorf("Expecting fail: NewTablesFromMetadata(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes)
 			}
 		}
 
