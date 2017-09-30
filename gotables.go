@@ -450,11 +450,11 @@ func newTableExported(tableName string) (*TableExported, error) {
 }
 
 /*
-	table, err := gotables.NewTablesFromMetadata("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
+	table, err := gotables.NewTableFromMetadata("Moviegoers", []string{"Age", "Mothballs"}, []string{"int", "bool"})
 
 	This is a "helper" function that currently doesn't provide any help. But best not public. Would rather users use other functions.
 */
-func NewTablesFromMetadata(tableName string, colNames []string, colTypes []string) (*Table, error) {
+func NewTableFromMetadata(tableName string, colNames []string, colTypes []string) (*Table, error) {
 	var newTable *Table
 	var err error
 
