@@ -19,11 +19,7 @@ func WordSize() int {
 
 	Compile the Go struct into your own programs.
 
-	See also: GenerateTypeStructSet()
-
 	See also: GenerateTypeStructSliceFromTable()
-
-	See also: GenerateTypeStructSliceFromTableSet()
 
 	Source table:
 
@@ -93,10 +89,10 @@ func (table *Table) GenerateTypeStruct() (string, error) {
 
 	See also: GenerateTypeStructSliceFromTable() [has sample code]
 
-	See also: GenerateTypeStructSliceFromTableSet()
+	UNUSED
 
 */
-func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
+func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 	if tableSet == nil {
 		return "", fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
 	}
@@ -126,8 +122,6 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 
 	See also: GenerateTypeStruct()
 
-	See also: GenerateTypeStructSet()
-
 	See also: GenerateTypeStructSliceFromTableSet()
 
 	Source table:
@@ -152,6 +146,7 @@ func (tableSet *TableSet) GenerateTypeStructSet() (string, error) {
 	Generated Go function - using GenerateTypeStructSliceFromTable()
 
         Automatically generated source code. DO NOT MODIFY. Generated 1:09 PM Friday 29 Sep 2017.
+
         Generate a slice of type MyTable struct from *gotables.Table [MyTable] for including in your code.
 
 		func TypeStructSliceFromTable_MyTable(table *gotables.Table) ([]MyTable, error) {
@@ -233,7 +228,7 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	funcName := fmt.Sprintf("TypeStructSliceFromTable_%s", tableName)
 
 	buf.WriteString("/*\n")
-	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n",
+	buf.WriteString(fmt.Sprintf("\tAutomatically generated source code. DO NOT MODIFY. Generated %s.\n\n",
 		time.Now().Format("3:04 PM Monday 2 Jan 2006")))
 	buf.WriteString(fmt.Sprintf("\tGenerate a slice of type %s struct from *gotables.Table [%s] for including in your code.\n",
 		tableName, tableName))
@@ -285,11 +280,11 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	See also: GenerateTypeStruct() [has sample code]
 
-	See also: GenerateTypeStructSet()
-
 	See also: GenerateTypeStructSliceFromTable() - convert in the opposite direction
+
+	UNUSED
 */
-func (tableSet *TableSet) GenerateTypeStructSliceFromTableSet() (string, error) {
+func (tableSet *TableSet) generateTypeStructSliceFromTableSet() (string, error) {
 	if tableSet == nil {
 		return "", fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
 	}
@@ -353,8 +348,6 @@ func setterName(typeName string) string {
 	Compile the Go function into your own programs.
 
 	See also: GenerateTypeStruct()
-
-	See also: GenerateTypeStructSet()
 
 	See also: GenerateTypeStructSliceFromTable() - convert in the opposite direction
 
