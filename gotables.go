@@ -1814,7 +1814,7 @@ func (table *Table) colInfo(colName string) (colInfo, error) {
 
 func (table *Table) GetColInfoAsTable() (*Table, error) {
 	if table == nil {
-		return nil, fmt.Errorf("*Table.%s(): *Table is <nil>", funcName())
+		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	var err error
 	var colsTable *Table
@@ -1867,6 +1867,38 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 	}
 
 	return colsTable, nil
+}
+
+/*
+	Return a slice of col names and a slice of col types:
+
+	colNames []string
+	colTypes []string
+*/
+func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
+	if table == nil {
+		return nil, nil, fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	var colNames []string = []string{}
+	var colTypes []string = []string{}
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			return nil, nil, err
+		}
+		colNames = append(colNames, colName)
+
+		colInfo, err := table.colInfo(colName)
+		if err != nil {
+			return nil, nil, err
+		}
+		colTypes = append(colTypes, colInfo.colType)
+	}
+
+	return colNames, colTypes, nil
 }
 
 func (table *Table) ColType(colName string) (string, error) {

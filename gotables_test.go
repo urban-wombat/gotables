@@ -491,6 +491,7 @@ func TestReadString13(t *testing.T) {
 		y []uint8 = []
 		j int64 = 99
 	`)
+	// Invalid uint 256
 	if err == nil {
 		t.Error(err)
 	}
@@ -5411,6 +5412,52 @@ func TestTable_Copy (t *testing.T) {
 			if err != nil {
 				t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
 			}
+		}
+	}
+}
+
+func TestGetColInfoAsSlices(t *testing.T) {
+
+	table, err := NewTableFromString(
+		`[TableWithByteSlice]
+		uintNums []byte = [0 1 255 3 4]
+		i int = 42
+		b []byte = [1 1 255]
+		u []uint8 = [2 2 255 2]
+		f float32 = 32
+		x []byte = []
+		s string = "In Between ..."
+		y []uint8 = []
+		j int64 = 99
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colNames []string
+	var colTypes []string
+	colNames, colTypes, err = table.GetColInfoAsSlices()
+	if err != nil {
+		t.Error(err)
+	}
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			t.Error(err)
+		}
+
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if colNames[colIndex] != colName {
+			t.Errorf("expecting colName %s at colNames[%d], not %s", colName, colIndex, colNames[colIndex])
+		}
+
+		if colTypes[colIndex] != colType {
+			t.Errorf("expecting colType %s at colTypes[%d], not %s", colType, colIndex, colTypes[colIndex])
 		}
 	}
 }

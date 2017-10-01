@@ -496,18 +496,8 @@ func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
-	var buf bytes.Buffer
-	var tableCopy *Table
 	var err error
-	tableCopy, err = table.Copy(false)
-	if err != nil {
-		return "", err
-	}
-	err = tableCopy.SetStructShape(true)
-	if err != nil {
-		return "", err
-	}
-	// fmt.Println(tableCopy)
+	var buf bytes.Buffer
 
 	tableName := table.Name()
 	funcName := fmt.Sprintf("TypeStructSliceToTable_%s", tableName)
@@ -525,11 +515,20 @@ func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 		buf.WriteString("\t}\n\n")
 
 		buf.WriteString("\tvar err error\n\n")
-		buf.WriteString("\tvar seedTable string = `\n")
-		buf.WriteString(indentText("\t", tableCopy.String()))
-		buf.WriteString("\t`\n")
+
+		colNames, colTypes, err := table.GetColInfoAsSlices()
+		if err != nil {
+			return "", err
+		}
+
+		tableName = table.Name()
+
 		buf.WriteString("\tvar table *gotables.Table\n")
-		buf.WriteString("\ttable, err = gotables.NewTableFromString(seedTable)\n")
+		buf.WriteString(fmt.Sprintf("\tvar tableName string = %q\n", tableName))
+		buf.WriteString(fmt.Sprintf("\tvar colNames []string = %s\n", stringSliceToLiteral(colNames)))
+		buf.WriteString(fmt.Sprintf("\tvar colTypes []string = %s\n", stringSliceToLiteral(colTypes)))
+
+		buf.WriteString("\ttable, err = gotables.NewTableFromMetadata(tableName, colNames, colTypes)\n")
 		buf.WriteString("\tif err != nil {\n")
 		buf.WriteString("\t\treturn nil, err\n")
 		buf.WriteString("\t}\n\n")
@@ -575,4 +574,21 @@ func indentText(indent string, text string) string {
 		indentedText += fmt.Sprintf("%s%s\n", indent, scanner.Text())
 	}
 	return indentedText
+}
+
+func stringSliceToLiteral(slice []string) string {
+	var buf bytes.Buffer
+
+	buf.WriteString("[]string{")
+
+	var delim string = ""
+	for i := 0; i < len(slice); i++ {
+		buf.WriteString(delim)
+		delim = ","
+		buf.WriteString(fmt.Sprintf("%q", slice[i]))
+	}
+
+	buf.WriteString("}")
+
+	return buf.String()
 }
