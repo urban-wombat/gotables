@@ -3356,8 +3356,8 @@ type Table struct {
 func funcName() string {
 	pc, _, _, _ := runtime.Caller(1)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
-	nameEnd := filepath.Ext(nameFull)        // .foo
-	name := strings.TrimPrefix(nameEnd, ".") // foo
+	nameEnd := filepath.Ext(nameFull)        //     .foo
+	name := strings.TrimPrefix(nameEnd, ".") //      foo
 	return name
 }
 
