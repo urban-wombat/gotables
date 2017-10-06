@@ -1,3 +1,5 @@
+https://travis-ci.org/urban-wombat/gotables.svg?branch=master
+
 # gotables
 
 Go (golang) Table data format - simple and self-describing.
