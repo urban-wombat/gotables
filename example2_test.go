@@ -84,3 +84,5 @@ func ExampleTable_SetByteSlice_complete() {
 	// 
 	// retrievedSlice = [72 101 108 108 111 32 115 108 105 99 101 33]
 }
+
+/* Trying to trigger Travis ... */
