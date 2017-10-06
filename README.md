@@ -1,4 +1,4 @@
-https://travis-ci.org/urban-wombat/gotables.svg?branch=master
+[Build Status](https://travis-ci.org/urban-wombat/gotables.svg?branch=master)
 
 # gotables
 
