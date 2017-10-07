@@ -1238,7 +1238,7 @@ func (table *Table) StringPadded() string {
 			var tVal bool
 			var ui8Val uint8
 			var ui8SliceVal []uint8
-			var byteSliceVal []byte
+//			var byteSliceVal []byte
 			var ui16Val uint16
 			var ui32Val uint32
 			var ui64Val uint64
@@ -1275,18 +1275,20 @@ func (table *Table) StringPadded() string {
 					ui8Val = 0
 				}
 				s = fmt.Sprintf("%d", ui8Val)
-			case "[]uint8":
+			case "[]uint8", "[]byte":
 				ui8SliceVal, exists = rowMap[table.colNames[colIndex]].([]uint8)
 				if !exists {
 					ui8SliceVal = []uint8{}
 				}
 				s = fmt.Sprintf("%v", ui8SliceVal)
+/*
 			case "[]byte":
 				byteSliceVal, exists = rowMap[table.colNames[colIndex]].([]byte)
 				if !exists {
 					byteSliceVal = []byte{}
 				}
 				s = fmt.Sprintf("%v", byteSliceVal)
+*/
 			case "uint16":
 				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
 				if !exists {
@@ -3356,8 +3358,8 @@ type Table struct {
 func funcName() string {
 	pc, _, _, _ := runtime.Caller(1)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
-	nameEnd := filepath.Ext(nameFull)        // .foo
-	name := strings.TrimPrefix(nameEnd, ".") // foo
+	nameEnd := filepath.Ext(nameFull)        //     .foo
+	name := strings.TrimPrefix(nameEnd, ".") //      foo
 	return name
 }
 
@@ -3955,12 +3957,12 @@ func NewTableFromRows(table *Table, newTableName string, firstRow int, lastRow i
 
 	To copy some but not all rows, use NewTableFromRows()
 */
-func (table *Table) Copy(copyRows bool) (*Table, error) {
+func (table *Table) Copy(copyRowsAlso bool) (*Table, error) {
 	var err error
 	var tableCopy *Table
 	const firstRow = 0
-	var lastRow int = 0
-	if copyRows {
+	var lastRow int
+	if copyRowsAlso {
 		lastRow = table.RowCount() - 1
 	}
 
@@ -3974,7 +3976,7 @@ func (table *Table) Copy(copyRows bool) (*Table, error) {
 		return nil, err
 	}
 
-	if copyRows {
+	if copyRowsAlso {
 		if table.RowCount() > 0 {
 			err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)
 			if err != nil {
@@ -4013,4 +4015,99 @@ func isAlias(aliasTypeName string, typeName string) bool {
 		} else {
 			return false
 		}
+}
+
+func (table *Table) GetColAsSliceString(colName string) ([]string, error) {
+	var err error
+	var colIndex int
+
+	colIndex, err = table.ColIndex(colName)
+	if err != nil {
+		return nil, err
+	}
+
+	rowCount := table.RowCount()
+	if err != nil {
+		return nil, err
+	}
+
+	var stringSlice []string
+/*
+	var tVal bool
+	var ui8Val uint8
+	var ui8SliceVal []uint8
+	var ui16Val uint16
+	var ui32Val uint32
+	var ui64Val uint64
+	var uiVal uint
+	var iVal int
+	var i8Val int8
+	var i16Val int16
+	var i32Val int32
+	var i64Val int64
+	var f32Val float32
+	var f64Val float64
+*/
+
+	switch table.colTypes[colIndex] {
+	case "string":
+		stringSlice = make([]string, rowCount)
+		for rowIndex := 0; rowIndex < rowCount; rowIndex++ {
+			sVal, err := table.GetString(colName, rowIndex)
+			if err != nil {
+				return nil, err
+			}
+			stringSlice[rowIndex] = sVal
+		}
+		return stringSlice, nil
+/*
+	case "bool":
+		tVal = interfaceType.(bool)
+		buf.WriteString(fmt.Sprintf("%t", tVal))
+	case "uint8", "byte":
+		ui8Val = interfaceType.(uint8)
+		buf.WriteString(fmt.Sprintf("%d", ui8Val))
+	case "[]uint8", "[]byte":
+		ui8SliceVal = interfaceType.([]uint8)
+		buf.WriteString(fmt.Sprintf("%v", ui8SliceVal))
+	case "uint16":
+		ui16Val = interfaceType.(uint16)
+		buf.WriteString(fmt.Sprintf("%d", ui16Val))
+	case "uint32":
+		ui32Val = interfaceType.(uint32)
+		buf.WriteString(fmt.Sprintf("%d", ui32Val))
+	case "uint64":
+		ui64Val = interfaceType.(uint64)
+		buf.WriteString(fmt.Sprintf("%d", ui64Val))
+	case "uint":
+		uiVal = interfaceType.(uint)
+		buf.WriteString(fmt.Sprintf("%d", uiVal))
+	case "int":
+		iVal = interfaceType.(int)
+		buf.WriteString(fmt.Sprintf("%d", iVal))
+	case "int8":
+		i8Val = interfaceType.(int8)
+		buf.WriteString(fmt.Sprintf("%d", i8Val))
+	case "int16":
+		i16Val = interfaceType.(int16)
+		buf.WriteString(fmt.Sprintf("%d", i16Val))
+	case "int32":
+		i32Val = interfaceType.(int32)
+		buf.WriteString(fmt.Sprintf("%d", i32Val))
+	case "int64":
+		i64Val = interfaceType.(int64)
+		buf.WriteString(fmt.Sprintf("%d", i64Val))
+	case "float32":
+		f32Val = interfaceType.(float32)
+		var f64ValForFormatFloat float64 = float64(f32Val)
+		buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
+	case "float64":
+		f64Val = interfaceType.(float64)
+		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+*/
+	default:
+		err = fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), table.colTypes[colIndex])
+		return nil, err
+	}
+	return nil, nil
 }
