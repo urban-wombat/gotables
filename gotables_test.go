@@ -5461,3 +5461,122 @@ func TestGetColInfoAsSlices(t *testing.T) {
 		}
 	}
 }
+
+func TestTableSet_TableIndex(t *testing.T) {
+
+	tableSet, err := NewTableSetFromString(
+		`[Table0]
+
+		[Table1]
+
+		[Table2]
+
+		[Table3]
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Get table index.
+	tableName := "Table2"
+	tableIndex, err := tableSet.TableIndex(tableName)
+	if err != nil {
+		t.Error(err)
+	}
+
+	expecting := 2
+	if tableIndex != expecting {
+		t.Errorf("expecting tableIndex %d from tableSet.TableIndex(%q), not %d", expecting, tableName, tableIndex)
+	}
+}
+
+func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
+
+	tableSet, err := NewTableSetFromString(
+		`[Table0]
+
+		[Table1]
+
+		[Table2]
+
+		[Table3]
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableCount := tableSet.TableCount()
+	expecting := 4
+	if tableCount != expecting {
+		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+	}
+
+	tableName := "Table2"
+	_, err = tableSet.Table(tableName)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Delete table.
+	tableIndex := 2
+	err = tableSet.DeleteTableByTableIndex(tableIndex)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableCount = tableSet.TableCount()
+	expecting = 3
+	if tableCount != expecting {
+		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+	}
+
+	_, err = tableSet.Table(tableName)
+	if err == nil {
+		t.Errorf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
+	}
+}
+
+func TestTableSet_DeleteTable(t *testing.T) {
+
+	tableSet, err := NewTableSetFromString(
+		`[Table0]
+
+		[Table1]
+
+		[Table2]
+
+		[Table3]
+	`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableCount := tableSet.TableCount()
+	expecting := 4
+	if tableCount != expecting {
+		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+	}
+
+	tableName := "Table2"
+	_, err = tableSet.Table(tableName)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Delete table.
+	err = tableSet.DeleteTable(tableName)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableCount = tableSet.TableCount()
+	expecting = 3
+	if tableCount != expecting {
+		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+	}
+
+	_, err = tableSet.Table(tableName)
+	if err == nil {
+		t.Errorf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
+	}
+}
