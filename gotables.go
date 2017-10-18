@@ -790,7 +790,7 @@ func (table *Table) DeleteRowsAll() error {
 	}
 
 	if table.RowCount() > 0 {
-		err := table.DeleteRows(0, table.RowCount() -1)
+		err := table.DeleteRows(0, table.RowCount()-1)
 		if err != nil {
 			return err
 		}
@@ -4014,3 +4014,56 @@ func isAlias(aliasTypeName string, typeName string) bool {
 			return false
 		}
 }
+
+func (tableSet *TableSet) DeleteTableByTableIndex(tableIndex int) error {
+	if tableSet == nil {
+		return fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+	}
+	if tableIndex < 0 || tableIndex > tableSet.TableCount()-1 {
+		return fmt.Errorf("in tableSet %q with %d tables, table index %d does not exist",
+			tableSet.Name, tableSet.TableCount(), tableIndex)
+	}
+
+	// From Ivo Balbaert p182 for deleting a single element.
+	tableSet.tables = append(tableSet.tables[:tableIndex], tableSet.tables[tableIndex+1:]...)
+
+	return nil
+}
+
+func (tableSet *TableSet) DeleteTable(tableName string) error {
+	if tableSet == nil {
+		return fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+	}
+
+	tableIndex, err := tableSet.TableIndex(tableName)
+	if err != nil {
+		return err
+	}
+
+	err = tableSet.DeleteTableByTableIndex(tableIndex)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
+	if tableSet == nil {
+		return -1, fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+	}
+
+	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
+		table, err := tableSet.TableByTableIndex(tableIndex)
+		if err != nil {
+			return -1, err
+		}
+		if table.Name() == tableName {
+			return tableIndex, nil
+		}
+	}
+
+	err := fmt.Errorf("table [%s] does not exist: %s", tableName, tableName)
+	return -1, err
+}
+
