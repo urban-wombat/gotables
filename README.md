@@ -100,7 +100,7 @@ Here's an example:
     "Uranus"   15.000     84.0    27     6 "upon"
     "Neptune"  17.000    164.0    13     7 "nine ... porcupines"
 
-Most of the Go builtin data types can be used. (But not yet: complex64, complex128, rune, byte.)
+Most of the Go builtin data types can be used. (But not yet: complex64, complex128, rune.)
 
 Here is a simple program that parses the table into a gotables.Table and echoes it back out:
 
