@@ -9,7 +9,7 @@ import (
 	"unicode"
 )
 
-// The word size of the machine we're now running on.
+// The word size (in bits) of the machine we're now running on. Typically 64 or 32 bits.
 func WordSize() int {
 	return 32 << (^uint(0) >> 32 & 1)
 }
