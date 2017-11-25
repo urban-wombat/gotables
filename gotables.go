@@ -3190,6 +3190,10 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	return nil
 }
 
+/*
+	Return the name of the column at this column index.
+	Same as table.ColNameByColIndex(colIndex)
+*/
 func (table *Table) ColName(colIndex int) (string, error) {
 	if table == nil {
 		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
@@ -3200,6 +3204,14 @@ func (table *Table) ColName(colIndex int) (string, error) {
 	}
 	colName := table.colNames[colIndex]
 	return colName, nil
+}
+
+/*
+	Return the name of the column at this column index.
+	Same as table.ColName(colIndex)
+*/
+func (table *Table) ColNameByColIndex(colIndex int) (string, error) {
+	return table.ColName(colIndex)
 }
 
 /*
