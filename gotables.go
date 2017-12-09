@@ -4033,7 +4033,7 @@ func (tableSet *TableSet) DeleteTableByTableIndex(tableIndex int) error {
 	}
 	if tableIndex < 0 || tableIndex > tableSet.TableCount()-1 {
 		return fmt.Errorf("in tableSet %q with %d tables, table index %d does not exist",
-			tableSet.Name, tableSet.TableCount(), tableIndex)
+			tableSet.Name(), tableSet.TableCount(), tableIndex)
 	}
 
 	// From Ivo Balbaert p182 for deleting a single element.

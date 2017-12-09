@@ -654,7 +654,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName, p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint8Val = uint8(uint64Val)
 			rowMap[colNames[i]] = uint8Val
