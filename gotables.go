@@ -3769,34 +3769,36 @@ func isExportableName(name string) bool {
 		4 Column types must match.
 		5 Rows order must match.
 		6 Cell values must match.
-		7 Column order need NOT match.
-		8 Table name need NOT match.
+		7 Table name must match.
+		8 Column order need NOT match.
 
 	Useful for testing.
 */
 func (table1 *Table) Equals(table2 *Table) (bool, error) {
-	var err error
-
 	if table1 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table)?: table1 is <nil>\n", funcName())
-		return false, err
+		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil\n")
 	}
 
 	if table2 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table)?: table2 is <nil>\n", funcName())
-		return false, err
+		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil\n")
 	}
 
+	// Compare table names.
+	if table1.Name() != table2.Name() {
+		return false, fmt.Errorf("[%s].Equals([%s]): table names: %s != %s\n",
+			table1.Name(), table2.Name(), table1.Name(), table2.Name())
+	}
+
+	// Compare number of rows. 
 	if table1.RowCount() != table2.RowCount() {
-		err = fmt.Errorf("[%s].%s([%s])?: [%s].RowCount() %d != [%s].RowCount() %d\n",
-			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.RowCount(), table2.Name(), table2.RowCount())
-		return false, err
+		return false, fmt.Errorf("[%s].Equals([%s]): row count: %d != %d\n",
+			table1.Name(), table2.Name(), table1.RowCount(), table2.RowCount())
 	}
 
+	// Compare number of columns.
 	if table1.ColCount() != table2.ColCount() {
-		err = fmt.Errorf("[%s].%s([%s])?: [%s].ColCount() %d != [%s].ColCount() %d\n",
-			table1.Name(), funcName(), table2.Name(), table1.Name(), table1.ColCount(), table2.Name(), table2.ColCount())
-		return false, err
+		return false, fmt.Errorf("[%s].Equals([%s]): col count: %d != %d\n",
+			table1.Name(), table2.Name(), table1.ColCount(), table2.ColCount())
 	}
 
 	// Compare column types.
@@ -3815,9 +3817,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 			return false, err
 		}
 		if type1 != type2 {
-			err = fmt.Errorf("[%s].%s([%s])?: [%s].ColType(%q) %s != [%s].ColType(%q) %s\n",
-				table1.Name(), funcName(), table2.Name(), table1.Name(), colName, type1, table2.Name(), colName, type2)
-			return false, err
+			return false, fmt.Errorf("[%s].Equals([%s]): col %q type: %s != %s\n",
+				table1.Name(), table2.Name(), colName, type1, type2)
 		}
 	}
 
@@ -3838,9 +3839,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 			if val1 != val2 {
-				err = fmt.Errorf("[%s].%s([%s]): col %q row %d: %v != %v\n",
-					table1.Name(), funcName(), table2.Name(), colName, colIndex, val1, val2)
-				return false, err
+				return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v\n",
+					table1.Name(), table2.Name(), colName, colIndex, val1, val2)
 			}
 		}
 	}

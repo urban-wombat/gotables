@@ -4317,7 +4317,7 @@ func TestTable_Equals(t *testing.T) {
 //	fmt.Println(err)
 
     t1string :=
-    `[T1]
+    `[MyTable]
     i   s       f       ui
     int string  float64 uint
     1   "abc"   5.50    50
@@ -4335,7 +4335,7 @@ func TestTable_Equals(t *testing.T) {
 //	fmt.Println(err)
 
     t2string :=
-    `[T2]
+    `[MyTable]
     ui      i   s       f
     uint    int string  float64
     50      1   "abc"   5.5
@@ -5393,10 +5393,6 @@ func TestTable_Copy (t *testing.T) {
 		tableCopy, err := table.Copy(test.copyRows)
 		if err != nil {
 			t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
-		}
-		err = tableCopy.RenameTable("Copied")
-		if err != nil {
-			t.Error(err)
 		}
 	
 		if test.copyRows {
