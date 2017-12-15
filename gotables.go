@@ -3838,8 +3838,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 			if val1 != val2 {
-				err = fmt.Errorf("[%s].%s([%s])?: [%s]col %s row %d != [%s] col %s row %d\n",
-					table1.Name(), funcName(), table2.Name(), table1.Name(), colName, colIndex, table2.Name(), colName, colIndex)
+				err = fmt.Errorf("[%s].%s([%s]): col %q row %d: %v != %v\n",
+					table1.Name(), funcName(), table2.Name(), colName, colIndex, val1, val2)
 				return false, err
 			}
 		}
