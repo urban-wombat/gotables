@@ -568,6 +568,7 @@ func IsNumericColType(colType string) (bool, error) {
 	return true, nil
 }
 
+// Note: The same validity rules apply to both table names and col names.
 func IsValidColName(colName string) (bool, error) {
 
 	result := colNameRegexp.MatchString(colName)
@@ -583,6 +584,7 @@ func IsValidColName(colName string) (bool, error) {
 	return true, nil
 }
 
+// Note: The same validity rules apply to both table names and col names.
 func IsValidTableName(tableName string) (bool, error) {
 	// Same regular expression as table name without square brackets.
 	result := colNameRegexp.MatchString(tableName)
