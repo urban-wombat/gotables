@@ -250,7 +250,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: tableSet.%s() tableSet is <nil>\n", funcName()))
 		return ""
 	}
 	return tableSet.StringPadded()
@@ -258,7 +258,7 @@ func (tableSet *TableSet) String() string {
 
 func (tableSet *TableSet) StringPadded() string {
 	if tableSet == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: tableSet.%s() tableSet is <nil>\n", funcName()))
 		return ""
 	}
 	var verticalSep string = ""
