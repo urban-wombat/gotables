@@ -610,7 +610,7 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 	var boolVal bool
 	var uint8Val uint8
 	var uint8SliceVal []uint8
-//	var byteSliceVal []byte
+	var byteSliceVal []byte
 	var uint16Val uint16
 	var uint32Val uint32
 	var uint64Val uint64
@@ -660,8 +660,8 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			}
 			uint8Val = uint8(uint64Val)
 			rowMap[colNames[i]] = uint8Val
-		case "[]uint8", "[]byte":
-			// Go stores byte as uint8, so there's no need to process byte differently.
+		case "[]uint8":
+			// Go stores byte as uint8, so there's no need to process byte differently. ???
 			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
@@ -679,6 +679,25 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
 			rowMap[colNames[i]] = uint8SliceVal
+		case "[]byte":
+			// Go stores byte as uint8, so there's no need to process byte differently. ???
+			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
+			var sliceStringSplit []string = splitSliceString(sliceString)
+			uint8SliceVal = make([]uint8, len(sliceStringSplit))
+			for el := 0; el < len(sliceStringSplit); el++ {
+				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
+				if err != nil {
+					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
+					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				}
+				byteSliceVal[el] = byte(uint64Val)
+			}
+			rowMap[colNames[i]] = byteSliceVal
 		case "uint16":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {

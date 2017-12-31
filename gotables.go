@@ -48,6 +48,9 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
+const useOldModel = true
+const useNewModel = true
+
 /*
 #####################################################################################
 TableSet
@@ -389,6 +392,11 @@ type Table struct {
 	rows           tableRows
 	sortKeys       []sortKey
 	structShape    bool
+
+	// new memory model
+	cols           []interface{}	// Array of type-specific col arrays.
+	rowIndex       []int			// Index of type-specific col arrays.
+									// Each col array is referenced via rowIndex.
 }
 type TableExported struct {
 	TableName      string
@@ -432,6 +440,7 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
 	newTable.rows = make([]tableRow, 0)
+	newTable.cols = make([]interface{}, 0)	// new memory model
 	return newTable, nil
 }
 
@@ -668,8 +677,10 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
 	case "uint":
 		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
-	case "[]uint8", "[]byte":
+	case "[]uint8":
 		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []uint8{})
+	case "[]byte":
+		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
 	case "int":
 		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
 	case "int16":
@@ -773,10 +784,6 @@ func (table *Table) DeleteRow(rowIndex int) error {
 			table.tableName, table.RowCount(), rowIndex)
 	}
 
-	/*
-		copy(table.rows[rowIndex:], table.rows[rowIndex+1:])
-		table.rows = table.rows[:len(table.rows)-1]
-	*/
 	// From Ivo Balbaert p182 for deleting a single element.
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
 
@@ -927,7 +934,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 		}
 	
 		// Rows of data
-		for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 			var rowMap tableRow
 			rowMap, err := table.rowMap(rowIndex)
 			if err != nil {
@@ -1224,7 +1231,7 @@ func (table *Table) StringPadded() string {
 	//	where(fmt.Sprintf("matrix before printMatrix(): %v", matrix))
 
 	// Rows of data
-	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		var rowMap tableRow
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
@@ -1519,7 +1526,7 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 	}
 
 	// Rows of data
-	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal string
 			sVal, err = table.GetValAsStringByColIndex(colIndex, rowIndex)
@@ -1593,7 +1600,60 @@ func (table *Table) AppendCol(colName string, colType string) error {
 		return err
 	}
 
+	// new memory model
+	col, err := newCol(colType)
+	if err != nil { return err }
+
+	table.cols = append(table.cols, col)	// new memory model
+
 	return nil
+}
+
+// new memory model
+func newCol(colType string) (interface{}, error) {
+	var col interface{}
+
+	switch colType {
+	case "bool":
+		col = make([]bool, 1)
+	case "float32":
+		col = make([]float32, 1)
+	case "float64":
+		col = make([]float64, 1)
+	case "uint":
+		col = make([]uint, 1)
+	case "[]uint8":
+		col = make([][]uint8, 1)
+	case "[]byte":
+		col = make([][]byte, 1)
+	case "int":
+		col = make([]int, 1)
+	case "int16":
+		col = make([]int16, 1)
+	case "int32":
+		col = make([]int32, 1)
+	case "int64":
+		col = make([]int64, 1)
+	case "int8":
+		col = make([]int8, 1)
+	case "string":
+		col = make([]string, 1)
+	case "uint16":
+		col = make([]uint16, 1)
+	case "uint32":
+		col = make([]uint32, 1)
+	case "uint64":
+		col = make([]uint64, 1)
+	case "uint8":
+		col = make([]uint8, 1)
+	case "byte":
+		col = make([]byte, 1)
+	default:
+		err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+		return nil, err
+	}
+
+	return col, nil
 }
 
 func (table *Table) DeleteColByColIndex(colIndex int) error {
@@ -1650,6 +1710,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 		return err
 	}
 	valType := fmt.Sprintf("%T", val)
+//	where(fmt.Sprintf("[%s] %s valType = %s val = %v", table.Name(), colName, valType, val))
 	if valType != colType {
 		if !isAlias(colType, valType) {
 			return fmt.Errorf("%s(): table [%s] col %s expecting val of type %s, not type %s: %v",
@@ -3391,6 +3452,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var tVal bool
 	var ui8Val uint8
 	var ui8SliceVal []uint8
+	var byteSliceVal []byte
 	var ui16Val uint16
 	var ui32Val uint32
 	var ui64Val uint64
@@ -3424,9 +3486,12 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "uint8", "byte":
 		ui8Val = interfaceType.(uint8)
 		buf.WriteString(fmt.Sprintf("%d", ui8Val))
-	case "[]uint8", "[]byte":
+	case "[]uint8":
 		ui8SliceVal = interfaceType.([]uint8)
 		buf.WriteString(fmt.Sprintf("%v", ui8SliceVal))
+	case "[]byte":
+		byteSliceVal = interfaceType.([]byte)
+		buf.WriteString(fmt.Sprintf("%v", byteSliceVal))
 	case "uint16":
 		ui16Val = interfaceType.(uint16)
 		buf.WriteString(fmt.Sprintf("%d", ui16Val))
