@@ -402,10 +402,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			// Found data.
 			var rowMap tableRow
+// where(fmt.Sprintf("pos = %s line = %s", p.gotFilePos(), line))
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil {
+// where("returning")
 				return nil, err
 			}
+// where("beyond if")
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
@@ -670,12 +673,20 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
+// where(fmt.Sprintf("sliceStringSplit = %v", sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
+// where(fmt.Sprintf("sliceStringSplit[%d] = %q", el, sliceStringSplit[el]))
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
+// where(fmt.Sprintf("el = %d uint64Val = %d", el, uint64Val))
+// where(err)
 				if err != nil {
+// where(err)
+// where(fmt.Sprintf("uint64Val = %d", uint64Val))
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
+// where(fmt.Sprintf("len(uint8SliceVal) = %d", len(byteSliceVal)))
+// where(fmt.Sprintf("el = %d", el))
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
 			rowMap[colNames[i]] = uint8SliceVal
@@ -688,13 +699,21 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			textFound := remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
-			uint8SliceVal = make([]uint8, len(sliceStringSplit))
+			byteSliceVal = make([]uint8, len(sliceStringSplit))
+// where(fmt.Sprintf("sliceStringSplit = %v", sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
+// where(fmt.Sprintf("sliceStringSplit[%d] = %q", el, sliceStringSplit[el]))
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
+// where(fmt.Sprintf("el = %d uint64Val = %d", el, uint64Val))
+// where(err)
 				if err != nil {
+// where(err)
+// where(fmt.Sprintf("uint64Val = %d", uint64Val))
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
+// where(fmt.Sprintf("len(byteSliceVal) = %d", len(byteSliceVal)))
+// where(fmt.Sprintf("el = %d", el))
 				byteSliceVal[el] = byte(uint64Val)
 			}
 			rowMap[colNames[i]] = byteSliceVal
