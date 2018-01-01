@@ -156,6 +156,8 @@ func NewTableSetFromString(s string) (*TableSet, error) {
 	If there's more than one table in the string, use NewTableFromStringByTableName() instead.
 */
 func NewTableFromString(s string) (*Table, error) {
+// where(fmt.Sprintf("*** NewTableSetFromString()"))
+// where(s)
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
 		return nil, err
@@ -2308,6 +2310,7 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
+	// Because old model makes it faster to look up colName than to lookup colIndex.
 	if table == nil {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -4144,3 +4147,22 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 	return -1, err
 }
 
+// Compare slice1 with slice2
+func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
+	if len(slice1) != len(slice2) {
+		return false, fmt.Errorf("len(slice1) %d != len(slice2) %d", len(slice1), len(slice2))
+	}
+
+	for i := 0; i < len(slice1); i++ {
+		if slice1[i] != slice2[i] {
+			return false, fmt.Errorf("slice1[%d] %d != slice2[%d] %d", i, slice1[i], i, slice2[i])
+		}
+	}
+
+	return true, nil
+}
+
+// Compare slice1 with slice2
+func ByteSliceEquals(slice1, slice2 []byte) (bool, error) {
+	return Uint8SliceEquals(slice1, slice2)
+}

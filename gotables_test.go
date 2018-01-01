@@ -449,16 +449,19 @@ func TestReadString12(t *testing.T) {
 func TestReadString13(t *testing.T) {
 	var err error
 
+	// Should pass: all values are in uint8 range
 	_, err = NewTableFromString(
 		`[TableWithUintSlice]
 		uintNums
 		[]uint8
-		[0 1 255 3 4]
+		[]
+		[0 1 255 3 4 1 5]
 	`)
 	if err != nil {
 		t.Error(err)
 	}
 
+	// Should fail: uint8 -1
 	_, err = NewTableFromString(
 		`[TableWithUintSlice]
 		uintNums
@@ -469,11 +472,12 @@ func TestReadString13(t *testing.T) {
 		t.Error(err)
 	}
 
+	// Should fail: uint8 256
 	_, err = NewTableFromString(
 		`[TableWithByteSlice]
 		uintNums
 		[]byte
-		[0 1 256 3 4]
+		[0 1 256 3 4 2 6]
 	`)
 	if err == nil {
 		t.Error(err)
@@ -481,7 +485,7 @@ func TestReadString13(t *testing.T) {
 
 	_, err = NewTableFromString(
 		`[TableWithByteSlice]
-		uintNums []byte = [0 1 256 3 4]
+		uintNums []byte = [0 1 256 3 4 3 7]
 		i int = 42
 		b []byte = [1 1 255]
 		u []uint8 = [2 2 255 2]
@@ -3064,7 +3068,6 @@ func ExampleTable_SetSortKeys() {
 	//     2 "user"     "string" false
 }
 
-/* UNCOMMENT after fixing []byte []uint8 equivalence issue.
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3113,7 +3116,6 @@ func ExampleTable_GobEncode_table() {
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
-*/
 
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
@@ -3537,7 +3539,8 @@ func TestTable_RenameCol(t *testing.T) {
 
 		err = table.RenameCol(test.from, test.to)
 		if (err == nil) != test.expected {
-			t.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v", test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
+			t.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
+				test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
 		}
 	}
 }
@@ -5418,7 +5421,7 @@ func TestGetColInfoAsSlices(t *testing.T) {
 
 	table, err := NewTableFromString(
 		`[TableWithByteSlice]
-		uintNums []byte = [0 1 255 3 4]
+		uintNums []byte = [0 1 255 3 4 8]
 		i int = 42
 		b []byte = [1 1 255]
 		u []uint8 = [2 2 255 2]
@@ -5583,7 +5586,7 @@ var allTypesZeroVals string = `
     [AllTypes]
 	_bool    bool    = false
 	_byte    byte    = 0
-#	_byte_   []byte  = []
+	_byte_   []byte  = []
 	_float32 float32 = 0.0
 	_float64 float64 = 0.0
 	_int     int     = 0
@@ -5597,7 +5600,7 @@ var allTypesZeroVals string = `
 	_uint32  uint32  = 0
 	_uint64  uint64  = 0
 	_uint8   uint8   = 0
-#	_uint8_  []uint8 = []
+	_uint8_  []uint8 = []
     `
 
 func TestTable_AppendRow(t *testing.T) {
@@ -5611,26 +5614,41 @@ func TestTable_AppendRow(t *testing.T) {
 		t.Errorf("expecting table.RowCount() = %d, not %d", expecting, rowCount)
 	}
 
+	// All cells in new row should be zero values.
 	table.AppendRow()
 
-// println(table.String())
-// println(table.ColCount())
+	// where(fmt.Sprintln(table.String()))
+	// where(fmt.Sprintln(table.ColCount()))
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-// println(colIndex)
+		// where(fmt.Sprintln(colIndex))
 		var rowIndex int
 		rowIndex = 0
 		expecting, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
-// fmt.Printf("col %d row %d type = %T value = %v\n", colIndex, rowIndex, expecting, expecting)
+		// where(fmt.Sprintf("col %d row %d type = %T expecting = %v\n", colIndex, rowIndex, expecting, expecting))
 
 		rowIndex = 1
 		value, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
-// fmt.Printf("col %d row %d type = %T value = %v\n", colIndex, rowIndex, expecting, expecting)
+		// where(fmt.Sprintf("col %d row %d type = %T value     = %v\n", colIndex, rowIndex, expecting, expecting))
 
-		if value != expecting {
-			t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
-		}
+		// invalid operation: value.([]uint8) != expecting.([]uint8) (slice can only be compared to nil)
+		var colType string = fmt.Sprintf("%T", value)
+		switch colType {
+			case "[]uint8":
+				if equals, _ := Uint8SliceEquals(value.([]uint8), expecting.([]uint8)); !equals {
+					t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				}
+			case "[]byte":
+				// Note: case "[]byte" seems to be never reached.
+				if equals, _ := ByteSliceEquals(value.([]byte), expecting.([]byte)); !equals {
+					t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				}
+			default:
+				if value != expecting {
+					t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				}
+			}
 	}
 }
