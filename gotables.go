@@ -4149,6 +4149,14 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 
 // Compare slice1 with slice2
 func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
+	if slice1 == nil && slice2 != nil {
+		return false, fmt.Errorf("slice1 == <nil> && slice2 != <nil>")
+	}
+
+	if slice1 != nil && slice2 == nil {
+		return false, fmt.Errorf("slice1 != <nil> && slice2 == <nil>")
+	}
+
 	if len(slice1) != len(slice2) {
 		return false, fmt.Errorf("len(slice1) %d != len(slice2) %d", len(slice1), len(slice2))
 	}
