@@ -5651,4 +5651,5 @@ func TestTable_AppendRow(t *testing.T) {
 				}
 			}
 	}
+	table.PrintCols()
 }

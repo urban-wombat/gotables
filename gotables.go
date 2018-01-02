@@ -516,7 +516,7 @@ func (table *Table) AppendRows(howMany int) error {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
-	if howMany <= 0 {
+	if howMany < 1 {
 		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
 	}
 	for i := 0; i < howMany; i++ {
@@ -1781,10 +1781,6 @@ func (table *Table) appendColNames(colNames []string) error {
 		}
 	}
 
-	/*	MOVED DOWN
-		table.colNames = append(table.colNames, colNames...)	// Explode slice with ... notation.
-	*/
-
 	for index, colName := range colNames {
 		// Make sure this col name doesn't already exist.
 		_, exists := table.colNamesLookup[colName]
@@ -1797,6 +1793,14 @@ func (table *Table) appendColNames(colNames []string) error {
 	}
 
 	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
+
+	// new memory model
+	if lenTypes == lenNames {
+		// We already have table.colTypes and now we have colNames.
+// where(fmt.Sprintf("lenTypes == lenNames"))
+		err := table.appendCols(colNames, table.colTypes)
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -1824,6 +1828,25 @@ func (table *Table) appendColTypes(colTypes []string) error {
 	}
 
 	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
+
+	if lenTypes == lenNames {
+		// We already have table.colNames and now we have colTypes.
+// where(fmt.Sprintf("lenTypes == lenNames"))
+		err := table.appendCols(table.colNames, colTypes)
+		if err != nil { return err }
+	}
+
+	return nil
+}
+
+func (table *Table) appendCols(colNames []string, colTypes []string) error {
+	// new memory model
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		col, err := newCol(table.colTypes[colIndex])
+		if err != nil { return err }
+
+		table.cols = append(table.cols, col)	// new memory model
+	}
 
 	return nil
 }
@@ -2033,7 +2056,20 @@ func (table *Table) ColCount() int {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
 		return -1
 	}
-	return len(table.colTypes)
+
+	colTypesCount := len(table.colTypes)
+
+	// Not yet working consistently.
+	colsCount := len(table.cols)
+	if colsCount != colTypesCount {
+where(fmt.Sprintf("ERROR: table.%s() len(table.colTypes) %d != len(table.cols) %d\n",
+            funcName(), colTypesCount, colsCount))
+//		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() len(table.colTypes) %d != len(table.cols) %d\n",
+//			funcName(), colTypesCount, colsCount))
+	}
+
+//	return len(table.colTypes)
+	return colTypesCount
 }
 
 /*
@@ -2310,7 +2346,7 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
-	// Because old model makes it faster to look up colName than to lookup colIndex.
+	// Because old memory model makes it faster to look up colName than to lookup colIndex.
 	if table == nil {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -4173,4 +4209,20 @@ func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
 // Compare slice1 with slice2
 func ByteSliceEquals(slice1, slice2 []byte) (bool, error) {
 	return Uint8SliceEquals(slice1, slice2)
+}
+
+func (table *Table) PrintCols() {
+	fmt.Printf("table.cols = %v\n", table.cols)	// new memory model
+}
+
+func (table *Table) appendRow() error {
+	// Note: Simpler and probably more efficient to append a row at a time.
+	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		
+	}
+
+	return nil
 }
