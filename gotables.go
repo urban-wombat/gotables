@@ -786,7 +786,7 @@ func (table *Table) DeleteRow(rowIndex int) error {
 			table.tableName, table.RowCount(), rowIndex)
 	}
 
-	// From Ivo Balbaert p182 for deleting a single element.
+	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
 
 	return nil
@@ -825,7 +825,7 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 		return fmt.Errorf("invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
 	}
 
-	// From Ivo Balbaert p182 for deleting a range of elements.
+	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
 	return nil
@@ -1674,11 +1674,23 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	}
 	delete(table.colNamesLookup, colName)
 
+/*
 	copy(table.colNames[colIndex:], table.colNames[colIndex+1:])
 	table.colNames = table.colNames[:len(table.colNames)-1]
+*/
+	// From Ivo Balbaert p182 for deleting a single element from a slice.
+	table.colNames = append(table.colNames[:colIndex], table.colNames[colIndex+1:]...)
 
+/*
 	copy(table.colTypes[colIndex:], table.colTypes[colIndex+1:])
 	table.colTypes = table.colTypes[:len(table.colTypes)-1]
+*/
+	// From Ivo Balbaert p182 for deleting a single element from a slice.
+	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
+
+	// new memory model
+	// From Ivo Balbaert p182 for deleting a single element from a slice.
+	table.cols = append(table.cols[:colIndex], table.cols[colIndex+1:]...)
 
 	return nil
 }
@@ -2062,8 +2074,8 @@ func (table *Table) ColCount() int {
 	// Not yet working consistently.
 	colsCount := len(table.cols)
 	if colsCount != colTypesCount {
-where(fmt.Sprintf("ERROR: table.%s() len(table.colTypes) %d != len(table.cols) %d\n",
-            funcName(), colTypesCount, colsCount))
+// where(fmt.Sprintf("ERROR: table.%s() len(table.colTypes) %d != len(table.cols) %d\n",
+//		funcName(), colTypesCount, colsCount))
 //		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() len(table.colTypes) %d != len(table.cols) %d\n",
 //			funcName(), colTypesCount, colsCount))
 	}
@@ -3429,6 +3441,41 @@ func (table *Table) IsValidTable() (bool, error) {
 		}
 	}
 
+	// new data model
+	if len(table.cols) != table.ColCount() {
+		panic(fmt.Sprintf("IsValidTable() len(table.cols) %d != table.ColCount() %d", len(table.cols), table.ColCount()))
+	}
+
+	// new data model
+	for colIndex := 0; colIndex < len(table.cols); colIndex++ {
+		switch colTypes[colIndex] {
+			case "bool":
+				if len(table.cols[colIndex].([]bool)) != table.RowCount() {
+					panic(fmt.Sprintf("IsValidTable() len(table.cols[%d]) %d != table.RowCount() %d",
+						colIndex, len(table.cols[colIndex].([]bool)), table.RowCount()))
+				}
+/*
+			_bool    bool    = false
+			_byte    byte    = 0
+			_byte_   []byte  = []
+			_float32 float32 = 0.0
+			_float64 float64 = 0.0
+			_int     int     = 0
+			_int16   int16   = 0
+			_int32   int32   = 0
+			_int64   int64   = 0
+			_int8    int8    = 0
+			_string  string  = ""
+			_uint    uint    = 0
+			_uint16  uint16  = 0
+			_uint32  uint32  = 0
+			_uint64  uint64  = 0
+			_uint8   uint8   = 0
+			_uint8_  []uint8 = []
+*/
+		}
+	}
+
 	return true, nil
 }
 
@@ -4140,7 +4187,7 @@ func (tableSet *TableSet) DeleteTableByTableIndex(tableIndex int) error {
 			tableSet.Name(), tableSet.TableCount(), tableIndex)
 	}
 
-	// From Ivo Balbaert p182 for deleting a single element.
+	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	tableSet.tables = append(tableSet.tables[:tableIndex], tableSet.tables[tableIndex+1:]...)
 
 	return nil
@@ -4212,7 +4259,7 @@ func ByteSliceEquals(slice1, slice2 []byte) (bool, error) {
 }
 
 func (table *Table) PrintCols() {
-	fmt.Printf("table.cols = %v\n", table.cols)	// new memory model
+	where(fmt.Sprintf("table.cols = %v\n", table.cols))	// new memory model
 }
 
 func (table *Table) appendRow() error {
