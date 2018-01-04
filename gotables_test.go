@@ -107,7 +107,7 @@ func TestTableSetRenameTable(t *testing.T) {
 	}
 }
 
-func TestReadString1(t *testing.T) {
+func TestReadString01(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[EmptyTable1]
 
@@ -163,12 +163,14 @@ func TestReadString1(t *testing.T) {
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
+where(fmt.Sprintf("table.Name() = %s", table.Name()))
+where(fmt.Sprintf("rowCount = %d", rowCount))
 
 		_, _ = table.IsValidTable()
 	}
 }
 
-func TestReadString2(t *testing.T) {
+func TestReadString02(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[EmptyTable1]
 
@@ -183,7 +185,7 @@ func TestReadString2(t *testing.T) {
 	}
 }
 
-func TestReadString3(t *testing.T) {
+func TestReadString03(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
@@ -197,7 +199,7 @@ func TestReadString3(t *testing.T) {
 	}
 }
 
-func TestReadString4(t *testing.T) {
+func TestReadString04(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
@@ -211,7 +213,7 @@ func TestReadString4(t *testing.T) {
 	}
 }
 
-func TestReadString5(t *testing.T) {
+func TestReadString05(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[TableEmpty]
 		
@@ -252,7 +254,7 @@ func TestReadString5(t *testing.T) {
 	}
 }
 
-func TestReadString6(t *testing.T) {
+func TestReadString06(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -297,7 +299,7 @@ func TestReadString6(t *testing.T) {
 	}
 }
 
-func TestReadString7(t *testing.T) {
+func TestReadString07(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -313,7 +315,7 @@ func TestReadString7(t *testing.T) {
 	}
 }
 
-func TestReadString8(t *testing.T) {
+func TestReadString08(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableShaped]
 		X Y Z
@@ -330,7 +332,7 @@ func TestReadString8(t *testing.T) {
 }
 
 // Testing struct using = with zero rows.
-func TestReadString9(t *testing.T) {
+func TestReadString09(t *testing.T) {
 	table, err := NewTableFromString(
 		`[TableStruct]
 		i int
@@ -3128,7 +3130,7 @@ func ExampleTable_SetSortKeys() {
 	//     2 "user"     "string" false
 }
 
-/*  RESTORE UNCOMMENT for new data model
+// /*  RESTORE UNCOMMENT for new data model
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3177,9 +3179,9 @@ func ExampleTable_GobEncode_table() {
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
-*/
+// */
 
-/*  RESTORE UNCOMMENT for new data model
+// /*  RESTORE UNCOMMENT for new data model
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
@@ -3263,7 +3265,7 @@ func ExampleTableSet_GobEncode_tableset() {
 	// Fred
 	//  int
 }
-*/
+// */
 
 func ExampleTableSet_String() {
 	// Deliberately unpadded (by hand) for contrast.
@@ -5679,7 +5681,8 @@ func TestTable_AppendRow(t *testing.T) {
 	}
 
 	// All cells in new row should be zero values.
-	table.AppendRow()
+	err = table.AppendRow()
+	if err != nil { t.Error(err) }
 	_, _ = table.IsValidTable()
 
 	// where(fmt.Sprintln(table.String()))

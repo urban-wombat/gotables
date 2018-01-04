@@ -1,0 +1,83 @@
+package gotables
+
+/*
+	helpers.go
+	DO NOT MODIFY
+	{{.Generated}}
+
+	go run ../gotablesmain/helpersmain.go
+*/
+
+import (
+	"fmt"
+)
+
+func (table *Table) model_AppendRowMap(newRow tableRow) error {
+	// new memory model
+	// Note: Simpler and probably more efficient to append a row at a time.
+	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+
+	for colIndex, colName := range table.colNames {
+
+		colType, err := table.ColType(colName)
+		if err != nil { return err }
+
+		switch colType {
+			{{range .Types -}}
+			case "{{.}}":
+				val, _ := newRow[colName]
+				table.cols[colIndex] = append(table.cols[colIndex].([]{{.}}), val.({{.}}))
+			{{end}}
+			default:
+				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+				return err
+		}
+	}
+
+	return nil
+}
+
+func (table *Table) model_rowsEqualRows() error {
+	// new memory model
+
+	// Loop through all the cols defined in the table.
+	for colIndex, colName := range table.colNames {
+
+		colType, err := table.ColType(colName)
+		if err != nil { return err }
+
+		switch colType {
+			{{range .Types -}}
+			case "{{.}}":
+				if len(table.cols[colIndex].([]{{.}})) != table.RowCount() {
+					panic(fmt.Sprintf("%s() table [%s] {{.}} len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]{{.}})), table.RowCount()))
+				}
+			{{end}}
+			default:
+				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+				return err
+		}
+	}
+
+	return nil
+}
+
+func model_newCol(colType string) (interface{}, error) {
+	// new memory model
+	var col interface{}
+
+	switch colType {
+		{{range .Types -}}
+		case "{{.}}":
+			col = make([]{{.}}, 0)
+where(fmt.Sprintf("[]{{.}} len(col.([]{{.}})) = %d", len(col.([]{{.}}))))
+		{{end}}
+		default:
+			err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+			return nil, err
+	}
+
+	return col, nil
+}
