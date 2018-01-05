@@ -505,8 +505,16 @@ func (table *Table) appendRowOfNil() error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
+where(fmt.Sprintf("BEFORE table.RowCount() = %d", table.RowCount()))
 	newRow := make(tableRow)
 	table.rows = append(table.rows, newRow)
+where(fmt.Sprintf("AFTER  table.RowCount() = %d", table.RowCount()))
+
+where(fmt.Sprintf("BEFORE table.model_RowCount() = %d", table.model_RowCount()))
+	err := table.model_AppendRow()
+where(fmt.Sprintf("AFTER  table.model_RowCount() = %d", table.model_RowCount()))
+	if err != nil { return err }
+
 	return nil
 }
 
@@ -531,6 +539,7 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
+where("AppendRow()")
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -546,6 +555,15 @@ func (table *Table) AppendRow() error {
 	if err != nil {
 		return err
 	}
+
+	// new memory model
+var count int
+count = table.model_RowCount()
+where(fmt.Sprintf("BEFORE count = %d", count))
+where("table.model_AppendRow()")
+	err = table.model_AppendRow()
+	if err != nil { return err }
+where(fmt.Sprintf("AFTER  count = %d", count))
 
 	return nil
 }
@@ -745,8 +763,14 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 		}
 		// where(fmt.Sprintf("colName[%d] = %q\n", i, colName))
 
-		// Check that a col has been provided for each corresponding col in the table.
 		// (We don't [yet] check to see if excess cols have been provided.)
+		// Now we do ...
+		if len(newRow) != len(table.colNames) {
+			return fmt.Errorf("%s(newRow): table [%s] len(newRow) %d != table.ColCount() %d",
+				funcName(), table.tableName, len(newRow), table.ColCount())
+		}
+
+		// Check that a col has been provided for each corresponding col in the table.
 		_, exists = newRow[colName]
 		if !exists {
 			// For some types (float32 and float64) there is a missing value: NaN
@@ -773,6 +797,11 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 
 	// Append the thoroughly checked and complete row to existing rows.
 	table.rows = append(table.rows, newRow)
+
+	// new memory model
+	// append an element to this cols slice.
+	err = table.model_AppendRowMap(newRow)
+	if err != nil { return err }
 
 	return nil
 }
@@ -1603,7 +1632,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	}
 
 	// new memory model
-	col, err := newCol(colType)
+	col, err := model_newCol(colType)
 	if err != nil { return err }
 
 	table.cols = append(table.cols, col)	// new memory model
@@ -1611,52 +1640,54 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	return nil
 }
 
-// new memory model
-func newCol(colType string) (interface{}, error) {
-	var col interface{}
-
-	switch colType {
-	case "bool":
-		col = make([]bool, 1)
-	case "float32":
-		col = make([]float32, 1)
-	case "float64":
-		col = make([]float64, 1)
-	case "uint":
-		col = make([]uint, 1)
-	case "[]uint8":
-		col = make([][]uint8, 1)
-	case "[]byte":
-		col = make([][]byte, 1)
-	case "int":
-		col = make([]int, 1)
-	case "int16":
-		col = make([]int16, 1)
-	case "int32":
-		col = make([]int32, 1)
-	case "int64":
-		col = make([]int64, 1)
-	case "int8":
-		col = make([]int8, 1)
-	case "string":
-		col = make([]string, 1)
-	case "uint16":
-		col = make([]uint16, 1)
-	case "uint32":
-		col = make([]uint32, 1)
-	case "uint64":
-		col = make([]uint64, 1)
-	case "uint8":
-		col = make([]uint8, 1)
-	case "byte":
-		col = make([]byte, 1)
-	default:
-		err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
-		return nil, err
-	}
-
-	return col, nil
-}
+///*
+//// new memory model
+//func newCol(colType string) (interface{}, error) {
+//	var col interface{}
+//
+//	switch colType {
+//	case "bool":
+//		col = make([]bool, 1)
+//	case "float32":
+//		col = make([]float32, 1)
+//	case "float64":
+//		col = make([]float64, 1)
+//	case "uint":
+//		col = make([]uint, 1)
+//	case "[]uint8":
+//		col = make([][]uint8, 1)
+//	case "[]byte":
+//		col = make([][]byte, 1)
+//	case "int":
+//		col = make([]int, 1)
+//	case "int16":
+//		col = make([]int16, 1)
+//	case "int32":
+//		col = make([]int32, 1)
+//	case "int64":
+//		col = make([]int64, 1)
+//	case "int8":
+//		col = make([]int8, 1)
+//	case "string":
+//		col = make([]string, 1)
+//	case "uint16":
+//		col = make([]uint16, 1)
+//	case "uint32":
+//		col = make([]uint32, 1)
+//	case "uint64":
+//		col = make([]uint64, 1)
+//	case "uint8":
+//		col = make([]uint8, 1)
+//	case "byte":
+//		col = make([]byte, 1)
+//	default:
+//		err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+//		return nil, err
+//	}
+//
+//	return col, nil
+//}
+//*/
 
 func (table *Table) DeleteColByColIndex(colIndex int) error {
 	if table == nil {
@@ -1688,9 +1719,11 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
 
+/*
 	// new memory model
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.cols = append(table.cols[:colIndex], table.cols[colIndex+1:]...)
+*/
 
 	return nil
 }
@@ -1841,6 +1874,7 @@ func (table *Table) appendColTypes(colTypes []string) error {
 
 	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
 
+	// new memory model
 	if lenTypes == lenNames {
 		// We already have table.colNames and now we have colTypes.
 // where(fmt.Sprintf("lenTypes == lenNames"))
@@ -1854,7 +1888,7 @@ func (table *Table) appendColTypes(colTypes []string) error {
 func (table *Table) appendCols(colNames []string, colTypes []string) error {
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		col, err := newCol(table.colTypes[colIndex])
+		col, err := model_newCol(table.colTypes[colIndex])
 		if err != nil { return err }
 
 		table.cols = append(table.cols, col)	// new memory model
@@ -2061,6 +2095,15 @@ func (table *Table) Name() string {
 		return ""
 	}
 	return table.tableName
+}
+
+func (table *Table) model_ColCount() int {
+	if table == nil {
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		return -1
+	}
+
+	return len(table.cols)
 }
 
 func (table *Table) ColCount() int {
@@ -3441,40 +3484,14 @@ func (table *Table) IsValidTable() (bool, error) {
 		}
 	}
 
-	// new data model
+	// new memory model
 	if len(table.cols) != table.ColCount() {
-		panic(fmt.Sprintf("IsValidTable() len(table.cols) %d != table.ColCount() %d", len(table.cols), table.ColCount()))
+		panic(fmt.Sprintf("IsValidTable() table [%s] len(table.cols) %d != table.ColCount() %d",
+			table.Name(), len(table.cols), table.ColCount()))
 	}
 
-	// new data model
-	for colIndex := 0; colIndex < len(table.cols); colIndex++ {
-		switch colTypes[colIndex] {
-			case "bool":
-				if len(table.cols[colIndex].([]bool)) != table.RowCount() {
-					panic(fmt.Sprintf("IsValidTable() len(table.cols[%d]) %d != table.RowCount() %d",
-						colIndex, len(table.cols[colIndex].([]bool)), table.RowCount()))
-				}
-/*
-			_bool    bool    = false
-			_byte    byte    = 0
-			_byte_   []byte  = []
-			_float32 float32 = 0.0
-			_float64 float64 = 0.0
-			_int     int     = 0
-			_int16   int16   = 0
-			_int32   int32   = 0
-			_int64   int64   = 0
-			_int8    int8    = 0
-			_string  string  = ""
-			_uint    uint    = 0
-			_uint16  uint16  = 0
-			_uint32  uint32  = 0
-			_uint64  uint64  = 0
-			_uint8   uint8   = 0
-			_uint8_  []uint8 = []
-*/
-		}
-	}
+	err = table.model_rowsEqualRows()
+	if err != nil { return false, err }
 
 	return true, nil
 }
@@ -4262,14 +4279,62 @@ func (table *Table) PrintCols() {
 	where(fmt.Sprintf("table.cols = %v\n", table.cols))	// new memory model
 }
 
-func (table *Table) appendRow() error {
-	// Note: Simpler and probably more efficient to append a row at a time.
-	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+/*
+//func (table *Table) modelAppendRowMap(newRow tableRow) error {
+//	// new memory model
+//	// Note: Simpler and probably more efficient to append a row at a time.
+//	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
+//	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+//
+//	var err error
+//	var colType string
+//
+//	// Loop through all the cols defined in the table.
+//	for colIndex, colName := range table.colNames {
+//		colType, err = table.ColType(colName)
+//		if err != nil { return err }
+//
+//where(fmt.Sprintf("Adding [%s].%s[%d] %v", table.Name(), colName, colIndex, newRow[colName]))
+//
+//		switch colType {
+//			case "string":
+//				val, _ := newRow[colName]
+//				table.cols[colIndex] = append(table.cols[colIndex].([]string), val.(string))
+//			case "int":
+//				val, _ := newRow[colName]
+//				table.cols[colIndex] = append(table.cols[colIndex].([]int), val.(int))
+//			case "[]uint8":
+//				val, _ := newRow[colName]
+//				table.cols[colIndex] = append(table.cols[colIndex].([][]uint8), val.([]uint8))
+//			case "[]byte":
+//				val, _ := newRow[colName]
+//				table.cols[colIndex] = append(table.cols[colIndex].([][]byte), val.([]byte))
+//			default:
+//				where(fmt.Sprintf("Skipping type %s", colType))
+//		}
+//	}
+//
+//	return nil
+//}
+*/
 
-	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		
-	}
+/*
+	Mute all but one val from a multi-value function return.
+	Returns an array of return values.
 
-	return nil
+	Assume that RowCount() is defined like this:
+
+	func (table *Table) RowCount() (int, error)
+
+	To ignore the error and use the int:
+
+	mu(table.RowCount())[0].(int)
+
+	fmt.Sprintf("RowCount() = %d", mu(table.RowCount())[0].(int))
+
+	0 is the index of the return value we want.
+	And the return value in this case must be asserted to be type int: .(int)
+*/
+func mu(all ...interface{}) []interface{} {
+	return all
 }
