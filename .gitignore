@@ -235,3 +235,4 @@ ExampleNewTableFromFileByTableName.txt
 malcover-exclude.txt
 TestGoTableSet_FileName.txt
 TestTableSet_FileName.txt
+helpers.go

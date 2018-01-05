@@ -145,28 +145,32 @@ func TestReadString01(t *testing.T) {
 		{"TableWithRows", 3, 2, true},
 	}
 
+where(fmt.Sprintf("len(tests) = %d", len(tests)))
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
+where(fmt.Sprintf("About to test [%s]", table.Name()))
+		_, _ = table.IsValidTable()
 		if err != nil {
 			t.Errorf("[%d] %v", i, err)
 		}
 		if (err == nil) != test.succeeds {
 			t.Errorf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
 		}
+		_, _ = table.IsValidTable()
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
 			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
+		_, _ = table.IsValidTable()
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-where(fmt.Sprintf("table.Name() = %s", table.Name()))
-where(fmt.Sprintf("rowCount = %d", rowCount))
-
+where(fmt.Sprintf("table.Name() = [%s] rowCount = %d", table.Name(), rowCount))
 		_, _ = table.IsValidTable()
+
 	}
 }
 
@@ -255,6 +259,7 @@ func TestReadString05(t *testing.T) {
 }
 
 func TestReadString06(t *testing.T) {
+where()
 	tableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -266,6 +271,7 @@ func TestReadString06(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+where()
 
 	tests := []struct {
 		tableName string
@@ -278,24 +284,27 @@ func TestReadString06(t *testing.T) {
 
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
+		_, _ = table.IsValidTable()
 		if err != nil {
 			t.Errorf("[%d] %v", i, err)
 		}
 		if (err == nil) != test.succeeds {
 			t.Errorf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
 		}
+		_, _ = table.IsValidTable()
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
 			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
+		_, _ = table.IsValidTable()
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-
 		_, _ = table.IsValidTable()
+
 	}
 }
 

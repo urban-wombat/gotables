@@ -248,6 +248,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 		case _COL_NAMES: // Also proxy for a line of a table struct in the form: name type = value
 
+where()
 			// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
 			var lineSplit []string = whiteRegexp.Split(line, _ALL_SUBSTRINGS)
 			const structNameIndex = 0
@@ -263,6 +264,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			// (a) name type
 			// (b) name type = value
 
+where()
 			// Note: strings can mean len(lineSplit) is > 4 but still valid. So can't just test for exactly 4.
 			var lenLineSplit int = len(lineSplit)
 			var looksLikeStructShape bool
@@ -282,8 +284,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				}
 			}
 
+where()
 			if looksLikeStructShape {
 
+where()
 				// (1) Get the table struct (name, type and optional equals value) of this line.
 
 				tableShape = _STRUCT_SHAPE
@@ -298,11 +302,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				var colNameSlice []string = []string{colName}
 				var colTypeSlice []string = []string{colType}
 
+where()
 				err = table.AppendCol(colName, colType)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
+where()
 				// where(p.gotFilePos())
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
 				if table.ColCount() == 1 {	// The first struct item.
@@ -311,6 +317,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				}
 				// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
 
+where()
 				if structHasRowData && isNameTypeStruct {
 					return nil, fmt.Errorf("%s expecting: %s %s = <value> but found: %s %s",
 						p.gotFilePos(), colName, colType, lineSplit[0], lineSplit[1])
@@ -334,7 +341,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					var rangeFound []int = equalsRegexp.FindStringIndex(line)
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
-//where()
+where()
+
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
 					// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
 					if err != nil {
@@ -342,18 +350,21 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						// where(err)
 						return nil, err
 					}
-//where()
+where()
+
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
 					if table.RowCount() == 0 {
+where(fmt.Sprintf("[%s].appendRowOfNil()", table.Name()))
 						err = table.appendRowOfNil()
 						if err != nil {
 							return nil, err
 						}
 					}
 
+where()
 					var val interface{} = rowMapOfStruct[colName]
 					err = table.SetVal(colName, 0, val)
 					if err != nil {
@@ -362,11 +373,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
-					return nil, fmt.Errorf("%s expecting more struct lines ( name type ) or ( name type = value ) but found: %s", p.gotFilePos(), line)
+					return nil, fmt.Errorf("%s expecting more struct lines ( name type ) or ( name type = value ) but found: %s",
+						p.gotFilePos(), line)
 				}
 
+where()
 				tableShape = _TABLE_SHAPE
 
+where()
 				// (2) Get the col names.
 
 				parserColNames, err = p.getColNames(lineSplit)
@@ -380,8 +394,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				expecting = _COL_TYPES
 			}
 
+where()
 		case _COL_TYPES:
 
+where()
 			parserColTypes, err = p.getColTypes(line)
 			if err != nil {
 //				return nil, err
@@ -398,6 +414,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			}
 			expecting = _COL_ROWS
 
+where()
 		case _COL_ROWS:
 
 			// Found data.
@@ -412,13 +429,16 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
-				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
+				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
+					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
+where(table.Name())
 			err = table.appendRowMap(rowMap)
 			if err != nil {
 				return tables, err
 			}
 		}
+where(table.Name())
 
 		if readError == io.EOF {
 			return tables, nil // It's not an error to reach EOF. It just means end of document.
