@@ -146,10 +146,10 @@ func TestReadString01(t *testing.T) {
 		{"TableWithRows", 3, 2, true},
 	}
 
-where(fmt.Sprintf("len(tests) = %d", len(tests)))
+//where(fmt.Sprintf("len(tests) = %d", len(tests)))
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
-where(fmt.Sprintf("About to test [%s]", table.Name()))
+//where(fmt.Sprintf("About to test [%s]", table.Name()))
 		_, _ = table.IsValidTable()
 		if err != nil {
 			t.Errorf("[%d] %v", i, err)
@@ -169,7 +169,7 @@ where(fmt.Sprintf("About to test [%s]", table.Name()))
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-where(fmt.Sprintf("table.Name() = [%s] rowCount = %d", table.Name(), rowCount))
+//where(fmt.Sprintf("table.Name() = [%s] rowCount = %d", table.Name(), rowCount))
 		_, _ = table.IsValidTable()
 
 	}
@@ -260,7 +260,7 @@ func TestReadString05(t *testing.T) {
 }
 
 func TestReadString06(t *testing.T) {
-where()
+//where()
 	tableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -272,7 +272,7 @@ where()
 	if err != nil {
 		t.Error(err)
 	}
-where()
+//where()
 
 	tests := []struct {
 		tableName string
@@ -656,41 +656,41 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 	// Note: Tests are collected inside code blocks for human readability.
 
-where()
+//where()
 	{ // bool tests
 
-where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
+//where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
 		err = table.AppendCol("bVal", "bool")
 		if err != nil {
 			t.Error(err)
 		}
-where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
+//where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
 
-where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
+//where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
 		// After first col has been appended.
-if table.RowCount() != table.model_RowCount() {
-where(fmt.Sprintf("HEY1! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+//if table.RowCount() != table.model_RowCount() {
+//where(fmt.Sprintf("HEY1! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
 // debug.PrintStack()
-}
+//}
 		if table.RowCount() == 0 {
-where()
+//where()
 			err = table.AppendRow()
 			if err != nil {
-where()
+//where()
 				t.Error(err)
 			}
-where()
-if table.RowCount() != table.model_RowCount() {
-where(fmt.Sprintf("HEY2! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+//where()
+//if table.RowCount() != table.model_RowCount() {
+//where(fmt.Sprintf("HEY2! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
 // debug.PrintStack()
-}
+//}
 		}
-if table.RowCount() != table.model_RowCount() {
-where(fmt.Sprintf("HEY3! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+//if table.RowCount() != table.model_RowCount() {
+//where(fmt.Sprintf("HEY3! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
 // debug.PrintStack()
-}
+//}
 		_, _ = table.IsValidTable()
-where()
+//where()
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
@@ -1737,6 +1737,8 @@ func BenchmarkTableSetToString_unpadded(b *testing.B) {
 	}
 }
 
+/*  RESTORE UNCOMMENT for new data model
+// Will need to redesign Gob library for new memory model.
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1751,7 +1753,10 @@ func BenchmarkGobEncode(b *testing.B) {
 		}
 	}
 }
+*/
 
+/*  RESTORE UNCOMMENT for new data model
+// Will need to redesign Gob library for new memory model.
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1772,6 +1777,7 @@ func BenchmarkGobDecode(b *testing.B) {
 		}
 	}
 }
+*/
 
 func BenchmarkNewTableSetFromFile(b *testing.B) {
 	// Set up for benchmark.
@@ -1910,16 +1916,16 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 		t.Errorf("expecting row count of 1, not: %d", rowCount)
 	}
 
-where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where(fmt.Sprintf("BEFORE [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
-where("\n" + table.String())
+//where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
+//where(fmt.Sprintf("BEFORE [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
+//where("\n" + table.String())
 	err = table.DeleteRow(0)
 	if err != nil {
 		t.Error(err)
 	}
-where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where(fmt.Sprintf("AFTER  [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
-where("\n" + table.String())
+//where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
+//where(fmt.Sprintf("AFTER  [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
+//where("\n" + table.String())
 	_, _ = table.IsValidTable()
 
 	rowCount = table.RowCount()
@@ -3176,7 +3182,8 @@ func ExampleTable_SetSortKeys() {
 	//     2 "user"     "string" false
 }
 
-// /*  RESTORE UNCOMMENT for new data model
+/*  RESTORE UNCOMMENT for new data model
+// Will need to redesign Gob library for new memory model.
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3225,9 +3232,10 @@ func ExampleTable_GobEncode_table() {
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
-// */
+*/
 
-// /*  RESTORE UNCOMMENT for new data model
+/*  RESTORE UNCOMMENT for new data model
+// Will need to redesign Gob library for new memory model.
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
@@ -3311,7 +3319,7 @@ func ExampleTableSet_GobEncode_tableset() {
 	// Fred
 	//  int
 }
-// */
+*/
 
 func ExampleTableSet_String() {
 	// Deliberately unpadded (by hand) for contrast.

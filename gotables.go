@@ -506,22 +506,29 @@ func (table *Table) appendRowOfNil() error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
+
+/*	RESTORE UNDELETE when doing further work on new data model.
 if table.RowCount() != table.model_RowCount() {
-where(fmt.Sprintf("WHAT1? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+//where(fmt.Sprintf("WHAT1? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
 }
-where(fmt.Sprintf("BEFORE table.RowCount() = %d", table.RowCount()))
+//where(fmt.Sprintf("BEFORE table.RowCount() = %d", table.RowCount()))
+*/
+
 	newRow := make(tableRow)
 	table.rows = append(table.rows, newRow)
-where(fmt.Sprintf("AFTER  table.RowCount() = %d", table.RowCount()))
 
-where(fmt.Sprintf("BEFORE table.model_RowCount() = %d", table.model_RowCount()))
+/*	RESTORE UNDELETE when doing further work on new data model.
+//where(fmt.Sprintf("AFTER  table.RowCount() = %d", table.RowCount()))
+
+//where(fmt.Sprintf("BEFORE table.model_RowCount() = %d", table.model_RowCount()))
 	err := table.model_AppendRow()
-where(fmt.Sprintf("AFTER  table.model_RowCount() = %d", table.model_RowCount()))
+//where(fmt.Sprintf("AFTER  table.model_RowCount() = %d", table.model_RowCount()))
 	if err != nil { return err }
 
-if table.RowCount() != table.model_RowCount() {
-where(fmt.Sprintf("WHAT2? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
-}
+//if table.RowCount() != table.model_RowCount() {
+//where(fmt.Sprintf("WHAT2? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+//}
+*/
 
 	return nil
 }
@@ -547,7 +554,7 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
-where("AppendRow()")
+//where("AppendRow()")
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -563,15 +570,6 @@ where("AppendRow()")
 	if err != nil {
 		return err
 	}
-
-// 	// new memory model
-// var count int
-// count = table.model_RowCount()
-// where(fmt.Sprintf("BEFORE count = %d", count))
-// where("table.model_AppendRow()")
-// 	err = table.model_AppendRow()
-// 	if err != nil { return err }
-// where(fmt.Sprintf("AFTER  count = %d", count))
 
 	return nil
 }
@@ -806,10 +804,12 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 	// Append the thoroughly checked and complete row to existing rows.
 	table.rows = append(table.rows, newRow)
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
 	// append an element to this cols slice.
 	err = table.model_AppendRowMap(newRow)
 	if err != nil { return err }
+*/
 
 	return nil
 }
@@ -826,8 +826,10 @@ func (table *Table) DeleteRow(rowIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	err := table.model_DeleteRow(rowIndex)
 	if err != nil { return err }
+*/
 
 	return nil
 }
@@ -864,19 +866,21 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if firstRowIndex > lastRowIndex {
 		return fmt.Errorf("invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
 	}
-where(fmt.Sprintf("Deleting %d rows", lastRowIndex - firstRowIndex + 1))
+//where(fmt.Sprintf("Deleting %d rows", lastRowIndex - firstRowIndex + 1))
 
-where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
+//where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
-where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
+//where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
 
-where(fmt.Sprintf("BEFORE [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+/*	RESTORE UNDELETE when doing further work on new data model.
+//where(fmt.Sprintf("BEFORE [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
 	// new memory model
 	err := table.model_DeleteRows(firstRowIndex, lastRowIndex)
-where(fmt.Sprintf("AFTER1 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+//where(fmt.Sprintf("AFTER1 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
 	if err != nil { return err }
-where(fmt.Sprintf("AFTER2 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+//where(fmt.Sprintf("AFTER2 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+*/
 
 	return nil
 }
@@ -1624,7 +1628,7 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 	}
 */
 func (table *Table) AppendCol(colName string, colType string) error {
-where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
+//where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1653,9 +1657,11 @@ where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
 		return err
 	}
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
 	err = table.model_AppendCol(colType)
 	if err != nil { return err }
+*/
 
 	return nil
 }
@@ -1731,15 +1737,17 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
 	err = table.model_DeleteColByColIndex(colIndex)
 	if err != nil { return err }
+*/
 
 	return nil
 }
 
 func (table *Table) DeleteCol(colName string) error {
-where(fmt.Sprintf("[%s].%s(%s)", table.Name(), funcName(), colName))
+//where(fmt.Sprintf("[%s].%s(%s)", table.Name(), funcName(), colName))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1850,13 +1858,15 @@ func (table *Table) appendColNames(colNames []string) error {
 
 	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
 	if lenTypes == lenNames {
 		// We already have table.colTypes and now we have colNames.
 // where(fmt.Sprintf("lenTypes == lenNames"))
-		err := table.appendCols(colNames, table.colTypes)
+		err := table.model_appendCols(colNames, table.colTypes)
 		if err != nil { return err }
 	}
+*/
 
 	return nil
 }
@@ -1885,18 +1895,20 @@ func (table *Table) appendColTypes(colTypes []string) error {
 
 	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
 	if lenTypes == lenNames {
 		// We already have table.colNames and now we have colTypes.
 // where(fmt.Sprintf("lenTypes == lenNames"))
-		err := table.appendCols(table.colNames, colTypes)
+		err := table.model_appendCols(table.colNames, colTypes)
 		if err != nil { return err }
 	}
+*/
 
 	return nil
 }
 
-func (table *Table) appendCols(colNames []string, colTypes []string) error {
+func (table *Table) model_appendCols(colNames []string, colTypes []string) error {
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		err := table.model_AppendCol(table.colTypes[colIndex])
@@ -3494,22 +3506,26 @@ func (table *Table) IsValidTable() (bool, error) {
 		}
 	}
 
+/*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
-	if len(table.cols) != table.ColCount() {
-		panic(fmt.Sprintf("IsValidTable() table [%s] len(table.cols) %d != table.ColCount() %d",
-			table.Name(), len(table.cols), table.ColCount()))
+	if table.model_ColCount() != table.ColCount() {
+		panic(fmt.Sprintf("IsValidTable() table [%s] table.model_ColCount() %d != table.ColCount() %d",
+			table.Name(), table.model_ColCount(), table.ColCount()))
 	}
 
+	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		colType := table.colTypes[colIndex]
 		colsType := fmt.Sprintf("%T", table.cols[colIndex])[2:]	// Elide slice "[]"
 		if colType != colsType && !isAlias(colType, colsType) {
-panic(fmt.Sprintf("[%s] [%d] %s %s %s", table.Name(), colIndex, table.colNames[colIndex], colType, colsType))
+panic(fmt.Sprintf("[%s] [%d] %s colType %s != (model) colsType %s", table.Name(), colIndex, table.colNames[colIndex], colType, colsType))
 		}
 	}
 
+	// new memory model
 	err = table.model_rowsEqualRows()
 	if err != nil { return false, err }
+*/
 
 	return true, nil
 }
