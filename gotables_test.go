@@ -8,6 +8,7 @@ import (
 	"math"
 	"math/rand"
 //	"os"
+//	"runtime/debug"
 	"sort"
 	"strconv"
 	"strings"
@@ -646,20 +647,50 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 
+/*
 	err = table.AppendRow()
 	if err != nil {
 		t.Error(err)
 	}
+*/
 
 	// Note: Tests are collected inside code blocks for human readability.
 
+where()
 	{ // bool tests
 
+where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
 		err = table.AppendCol("bVal", "bool")
 		if err != nil {
 			t.Error(err)
 		}
+where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
+
+where(fmt.Sprintf("table.model_RowCount() = %d table.RowCount() = %d", table.model_RowCount(), table.RowCount()))
+		// After first col has been appended.
+if table.RowCount() != table.model_RowCount() {
+where(fmt.Sprintf("HEY1! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+// debug.PrintStack()
+}
+		if table.RowCount() == 0 {
+where()
+			err = table.AppendRow()
+			if err != nil {
+where()
+				t.Error(err)
+			}
+where()
+if table.RowCount() != table.model_RowCount() {
+where(fmt.Sprintf("HEY2! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+// debug.PrintStack()
+}
+		}
+if table.RowCount() != table.model_RowCount() {
+where(fmt.Sprintf("HEY3! table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+// debug.PrintStack()
+}
 		_, _ = table.IsValidTable()
+where()
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
@@ -1879,10 +1910,16 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 		t.Errorf("expecting row count of 1, not: %d", rowCount)
 	}
 
+where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
+where(fmt.Sprintf("BEFORE [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
+where("\n" + table.String())
 	err = table.DeleteRow(0)
 	if err != nil {
 		t.Error(err)
 	}
+where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
+where(fmt.Sprintf("AFTER  [%s].table.model_RowCount() = %d", table.Name(), table.model_RowCount()))
+where("\n" + table.String())
 	_, _ = table.IsValidTable()
 
 	rowCount = table.RowCount()

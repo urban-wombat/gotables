@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -255,7 +256,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: tableSet.%s() tableSet is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s() tableSet is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 	return tableSet.StringPadded()
@@ -263,7 +264,7 @@ func (tableSet *TableSet) String() string {
 
 func (tableSet *TableSet) StringPadded() string {
 	if tableSet == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: tableSet.%s() tableSet is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s() tableSet is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 	var verticalSep string = ""
@@ -412,7 +413,7 @@ type TableExported struct {
 
 func (table *Table) getColTypes() []string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return nil
 	}
 	return table.colTypes
@@ -505,6 +506,9 @@ func (table *Table) appendRowOfNil() error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
+if table.RowCount() != table.model_RowCount() {
+where(fmt.Sprintf("WHAT1? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+}
 where(fmt.Sprintf("BEFORE table.RowCount() = %d", table.RowCount()))
 	newRow := make(tableRow)
 	table.rows = append(table.rows, newRow)
@@ -514,6 +518,10 @@ where(fmt.Sprintf("BEFORE table.model_RowCount() = %d", table.model_RowCount()))
 	err := table.model_AppendRow()
 where(fmt.Sprintf("AFTER  table.model_RowCount() = %d", table.model_RowCount()))
 	if err != nil { return err }
+
+if table.RowCount() != table.model_RowCount() {
+where(fmt.Sprintf("WHAT2? table.RowCount() %d != table.model_RowCount() %d", table.RowCount(), table.model_RowCount()))
+}
 
 	return nil
 }
@@ -556,14 +564,14 @@ where("AppendRow()")
 		return err
 	}
 
-	// new memory model
-var count int
-count = table.model_RowCount()
-where(fmt.Sprintf("BEFORE count = %d", count))
-where("table.model_AppendRow()")
-	err = table.model_AppendRow()
-	if err != nil { return err }
-where(fmt.Sprintf("AFTER  count = %d", count))
+// 	// new memory model
+// var count int
+// count = table.model_RowCount()
+// where(fmt.Sprintf("BEFORE count = %d", count))
+// where("table.model_AppendRow()")
+// 	err = table.model_AppendRow()
+// 	if err != nil { return err }
+// where(fmt.Sprintf("AFTER  count = %d", count))
 
 	return nil
 }
@@ -811,12 +819,15 @@ func (table *Table) DeleteRow(rowIndex int) error {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return fmt.Errorf("in table [%s] with %d rows, row index %d does not exist",
-			table.tableName, table.RowCount(), rowIndex)
+		return fmt.Errorf("%s(): in table [%s] with %d rows, row index %d does not exist",
+			funcName(), table.tableName, table.RowCount(), rowIndex)
 	}
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
+
+	err := table.model_DeleteRow(rowIndex)
+	if err != nil { return err }
 
 	return nil
 }
@@ -853,9 +864,19 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if firstRowIndex > lastRowIndex {
 		return fmt.Errorf("invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
 	}
+where(fmt.Sprintf("Deleting %d rows", lastRowIndex - firstRowIndex + 1))
 
+where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
+where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
+
+where(fmt.Sprintf("BEFORE [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+	// new memory model
+	err := table.model_DeleteRows(firstRowIndex, lastRowIndex)
+where(fmt.Sprintf("AFTER1 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
+	if err != nil { return err }
+where(fmt.Sprintf("AFTER2 [%s].model_RowCount() = %d", table.Name(), table.model_RowCount()))
 
 	return nil
 }
@@ -909,7 +930,7 @@ func (table *Table) stringTabWriter() (string, error) {
 func (table *Table) StringUnpadded() string {
 
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 
@@ -921,7 +942,7 @@ Return a parsable table as a string. Intended for internal library use.
 */
 func (table *Table) _String(horizontalSeparator byte) string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -970,7 +991,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 			rowMap, err := table.rowMap(rowIndex)
 			if err != nil {
 				// Admittedly, a rowIndex error can't happen here. This is paranoid.
-				_, _ = os.Stderr.WriteString(err.Error())
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): %s", funcSource(), funcName(), err.Error()))
 				return ""
 			}
 			horizontalSep = ""
@@ -1188,7 +1209,7 @@ Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 	return table.StringPadded()
@@ -1196,7 +1217,7 @@ func (table *Table) String() string {
 
 func (table *Table) StringPadded() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 
@@ -1267,7 +1288,7 @@ func (table *Table) StringPadded() string {
 		rowMap, err := table.rowMap(rowIndex)
 		if err != nil {
 			// Admittedly, a rowIndex error can't happen here. This is paranoid.
-			_, _ = os.Stderr.WriteString(err.Error())
+			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): %s", funcSource(), funcName(), err.Error()))
 			return ""
 		}
 		horizontalSep = "" // No gap on left of first column.
@@ -1442,7 +1463,7 @@ func (table *Table) StringPadded() string {
 
 func printStruct(table *Table) string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 	}
 
 	var err error
@@ -1457,7 +1478,7 @@ func printStruct(table *Table) string {
 			const RowIndexZero = 0
 			asString, err = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
 			if err != nil {
-				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s(): %s\n", funcName(), err))
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): %s\n", funcSource(), funcName(), err))
 			}
 			if table.colTypes[colIndex] == "string" {
 				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
@@ -1603,6 +1624,7 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 	}
 */
 func (table *Table) AppendCol(colName string, colType string) error {
+where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1622,8 +1644,8 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 	table.colNames = append(table.colNames, colName)
 	table.colTypes = append(table.colTypes, colType)
-	colIndex := len(table.colNames) - 1
 
+	colIndex := len(table.colNames) - 1
 	table.colNamesLookup[colName] = colIndex
 
 	err := table.SetColCellsToZeroValue(colName)
@@ -1632,10 +1654,8 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	}
 
 	// new memory model
-	col, err := model_newCol(colType)
+	err = table.model_AppendCol(colType)
 	if err != nil { return err }
-
-	table.cols = append(table.cols, col)	// new memory model
 
 	return nil
 }
@@ -1705,30 +1725,21 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	}
 	delete(table.colNamesLookup, colName)
 
-/*
-	copy(table.colNames[colIndex:], table.colNames[colIndex+1:])
-	table.colNames = table.colNames[:len(table.colNames)-1]
-*/
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colNames = append(table.colNames[:colIndex], table.colNames[colIndex+1:]...)
 
-/*
-	copy(table.colTypes[colIndex:], table.colTypes[colIndex+1:])
-	table.colTypes = table.colTypes[:len(table.colTypes)-1]
-*/
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
 
-/*
 	// new memory model
-	// From Ivo Balbaert p182 for deleting a single element from a slice.
-	table.cols = append(table.cols[:colIndex], table.cols[colIndex+1:]...)
-*/
+	err = table.model_DeleteColByColIndex(colIndex)
+	if err != nil { return err }
 
 	return nil
 }
 
 func (table *Table) DeleteCol(colName string) error {
+where(fmt.Sprintf("[%s].%s(%s)", table.Name(), funcName(), colName))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1888,10 +1899,8 @@ func (table *Table) appendColTypes(colTypes []string) error {
 func (table *Table) appendCols(colNames []string, colTypes []string) error {
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		col, err := model_newCol(table.colTypes[colIndex])
+		err := table.model_AppendCol(table.colTypes[colIndex])
 		if err != nil { return err }
-
-		table.cols = append(table.cols, col)	// new memory model
 	}
 
 	return nil
@@ -2091,7 +2100,8 @@ func (table *Table) lastRowIndex() (int, error) {
 
 func (table *Table) Name() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s() table is <nil>\n", funcSource(), funcName()))
+debug.PrintStack()
 		return ""
 	}
 	return table.tableName
@@ -2099,7 +2109,7 @@ func (table *Table) Name() string {
 
 func (table *Table) model_ColCount() int {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
 
@@ -2108,7 +2118,7 @@ func (table *Table) model_ColCount() int {
 
 func (table *Table) ColCount() int {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
 
@@ -2133,7 +2143,7 @@ func (table *Table) ColCount() int {
 */
 func (table *Table) RowCount() int {
 	if table == nil {
-		// os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s() table is <nil>\n", funcName()))
+		// os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
 	return len(table.rows)
@@ -3490,6 +3500,14 @@ func (table *Table) IsValidTable() (bool, error) {
 			table.Name(), len(table.cols), table.ColCount()))
 	}
 
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colType := table.colTypes[colIndex]
+		colsType := fmt.Sprintf("%T", table.cols[colIndex])[2:]	// Elide slice "[]"
+		if colType != colsType && !isAlias(colType, colsType) {
+panic(fmt.Sprintf("[%s] [%d] %s %s %s", table.Name(), colIndex, table.colNames[colIndex], colType, colsType))
+		}
+	}
+
 	err = table.model_rowsEqualRows()
 	if err != nil { return false, err }
 
@@ -3544,6 +3562,18 @@ func funcNameFull() string {
 	}
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
 	return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
+}
+
+func funcSource() string {
+//	pc, sourceFile, lineNumber, ok := runtime.Caller(1)
+	_, sourceFile, lineNumber, ok := runtime.Caller(1)
+	if !ok {
+		return "Could not obtain func name and source file information."
+	}
+//	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+//	nameBase := filepath.Base(nameFull)
+	sourceBase := filepath.Base(sourceFile)
+	return fmt.Sprintf("%s[%d]", sourceBase, lineNumber)
 }
 
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {

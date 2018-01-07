@@ -438,7 +438,7 @@ where(table.Name())
 				return tables, err
 			}
 		}
-where(table.Name())
+// where(table.Name())
 
 		if readError == io.EOF {
 			return tables, nil // It's not an error to reach EOF. It just means end of document.
