@@ -218,16 +218,12 @@ pip-log.txt
 *.swp
 *.~
 *.OLD
-junk
+junk*
 ExampleNewGoTableFromFile.txt
 ExampleNewGoTableFromFileByTableName.txt
 *.xml
 .idea/gotable.iml
 *.out
-junk1
-junk2
-junk2!
-junk2.csv
 *.csv
 doc.bat
 ExampleNewTableFromFile.txt
@@ -235,4 +231,3 @@ ExampleNewTableFromFileByTableName.txt
 malcover-exclude.txt
 TestGoTableSet_FileName.txt
 TestTableSet_FileName.txt
-helpers.go

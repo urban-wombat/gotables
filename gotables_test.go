@@ -139,11 +139,11 @@ func TestReadString01(t *testing.T) {
 		rowCount  int
 		succeeds  bool
 	}{
-		{"EmptyTable1", 0, 0, true},
-		{"EmptyTable2", 0, 0, true},
+		{"EmptyTable1",               0, 0, true},
+		{"EmptyTable2",               0, 0, true},
 		{"TableWithColNamesAndTypes", 3, 0, true},
-		{"TableWithRow", 3, 1, true},
-		{"TableWithRows", 3, 2, true},
+		{"TableWithRow",              3, 1, true},
+		{"TableWithRows",             3, 2, true},
 	}
 
 //where(fmt.Sprintf("len(tests) = %d", len(tests)))

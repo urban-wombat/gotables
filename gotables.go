@@ -49,8 +49,7 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-const useOldModel = true
-const useNewModel = true
+const model_ bool = true
 
 /*
 #####################################################################################
@@ -515,6 +514,7 @@ if table.RowCount() != table.model_RowCount() {
 */
 
 	newRow := make(tableRow)
+where(fmt.Sprintf("%s(%v): table.rows = append()", funcName(), newRow))
 	table.rows = append(table.rows, newRow)
 
 /*	RESTORE UNDELETE when doing further work on new data model.
@@ -554,7 +554,7 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
-//where("AppendRow()")
+where("AppendRow()")
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -569,6 +569,13 @@ func (table *Table) AppendRow() error {
 	err = table.SetRowCellsToZeroValue(rowIndex)
 	if err != nil {
 		return err
+	}
+
+	if model_ {
+		table.model_AppendRow()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -748,7 +755,7 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	    panic(err)
 	}
 */
-func (table *Table) appendRowMap(newRow tableRow) error {
+func (table *Table) appendRowMap(rowMap tableRow) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -771,13 +778,13 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 
 		// (We don't [yet] check to see if excess cols have been provided.)
 		// Now we do ...
-		if len(newRow) != len(table.colNames) {
-			return fmt.Errorf("%s(newRow): table [%s] len(newRow) %d != table.ColCount() %d",
-				funcName(), table.tableName, len(newRow), table.ColCount())
+		if len(rowMap) != len(table.colNames) {
+			return fmt.Errorf("%s(rowMap): table [%s] len(rowMap) %d != table.ColCount() %d",
+				funcName(), table.tableName, len(rowMap), table.ColCount())
 		}
 
 		// Check that a col has been provided for each corresponding col in the table.
-		_, exists = newRow[colName]
+		_, exists = rowMap[colName]
 		if !exists {
 			// For some types (float32 and float64) there is a missing value: NaN
 			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
@@ -786,11 +793,11 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 				return fmt.Errorf("%s(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
 					funcName(), table.tableName, colName, colType)
 			}
-			newRow[colName] = missingValue
+			rowMap[colName] = missingValue
 		}
 
 		// Check that the new value col type is the same as the table col type.
-		valuePossiblyUpdated = newRow[colName]
+		valuePossiblyUpdated = rowMap[colName]
 		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
 		if valType != colType {
 			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
@@ -802,14 +809,15 @@ func (table *Table) appendRowMap(newRow tableRow) error {
 	}
 
 	// Append the thoroughly checked and complete row to existing rows.
-	table.rows = append(table.rows, newRow)
+where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
+	table.rows = append(table.rows, rowMap)
 
-/*	RESTORE UNDELETE when doing further work on new data model.
-	// new memory model
-	// append an element to this cols slice.
-	err = table.model_AppendRowMap(newRow)
-	if err != nil { return err }
-*/
+	if model_ {
+		// new memory model
+		// append an element to each cols slice.
+		err = table.model_AppendRowMap(rowMap)
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -824,6 +832,7 @@ func (table *Table) DeleteRow(rowIndex int) error {
 	}
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
+where(fmt.Sprintf("%s(): table.rows = append()", funcName()))
 	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
 
 /*	RESTORE UNDELETE when doing further work on new data model.
@@ -870,6 +879,7 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 
 //where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("%s(%d, %d): table.rows = append()", funcName(), firstRowIndex, lastRowIndex))
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 //where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
 
@@ -1659,7 +1669,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 /*	RESTORE UNDELETE when doing further work on new data model.
 	// new memory model
-	err = table.model_AppendCol(colType)
+	err = table.model_AppendCol(colName, colType)
 	if err != nil { return err }
 */
 
@@ -1911,7 +1921,7 @@ func (table *Table) appendColTypes(colTypes []string) error {
 func (table *Table) model_appendCols(colNames []string, colTypes []string) error {
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		err := table.model_AppendCol(table.colTypes[colIndex])
+		err := table.model_AppendCol(table.colNames[colIndex], table.colTypes[colIndex])
 		if err != nil { return err }
 	}
 
