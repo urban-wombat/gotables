@@ -1928,6 +1928,29 @@ where(fmt.Sprintf("%s()", funcName()))
 	return nil
 }
 
+/*
+	A new function for the old memory model.
+	This is to avoid use of appendColNames() and appendColTypes() in parseString().
+	so that it is easier to create columns (name and type together) with new memory model.
+*/
+func (table *Table) appendCols(colNames []string, colTypes []string) error {
+	// old memory model
+
+	// Check for invalid input.
+	if len(colNames) != len(colTypes) {
+		return fmt.Errorf("%s(colNames, colTypes) len(colNames)=%d != len(colTypes)=%d",
+			funcName(), len(colNames), len(colTypes))
+	}
+
+	for colIndex := 0; colIndex < len(colNames); colIndex++ {
+		err := table.AppendCol(colNames[colIndex], colTypes[colIndex])
+		if err != nil { return err }
+	}
+
+	return nil
+}
+
+// New memory model.
 func (table *Table) model_appendCols(colNames []string, colTypes []string) error {
 where(fmt.Sprintf("%s()", funcName()))
 	// new memory model

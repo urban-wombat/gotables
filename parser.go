@@ -387,11 +387,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				if err != nil {
 					return nil, err
 				}
-where(fmt.Sprintf("appendColNames(%v)", parserColNames))
-				err = table.appendColNames(parserColNames)
-				if err != nil {
-					return nil, err
-				}
+
 				expecting = _COL_TYPES
 			}
 
@@ -409,11 +405,12 @@ where(fmt.Sprintf("appendColNames(%v)", parserColNames))
 			if lenColTypes != lenColNames {
 				return nil, fmt.Errorf("%s expecting: %d col type%s but found: %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
-where(fmt.Sprintf("appendColTypes(%v)", parserColTypes))
-			err = table.appendColTypes(parserColTypes)
-			if err != nil {
-				return nil, err
-			}
+
+			// Append cols here now that both parserColNames and parserColTypes are available.
+			// Trust that gotables syntax error handling will ensure both are available here.
+			err = table.appendCols(parserColNames, parserColTypes)
+			if err != nil { return nil, err }
+
 			expecting = _COL_ROWS
 
 //where()
