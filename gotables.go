@@ -441,7 +441,7 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
-	newTable.rows = make([]tableRow, 0)
+	newTable.rows = make([]tableRow, 0)	// NewTable()
 	newTable.cols = make([]interface{}, 0)	// new memory model
 	return newTable, nil
 }
@@ -516,7 +516,7 @@ if table.RowCount() != table.model_RowCount() {
 
 	newRow := make(tableRow)
 where(fmt.Sprintf("%s(%v): table.rows = append()", funcName(), newRow))
-	table.rows = append(table.rows, newRow)
+	table.rows = append(table.rows, newRow)	// appendRowOfNil()
 
 /*	RESTORE UNDELETE when doing further work on new data model.
 //where(fmt.Sprintf("AFTER  table.RowCount() = %d", table.RowCount()))
@@ -771,7 +771,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	var missingValue interface{}
 
 	// Loop through all the cols defined in the table.
-	for _, colName = range table.colNames {
+	for _, colName = range table.colNames {	// appendRowMap()
 		colType, err = table.ColType(colName)
 		if err != nil {
 			return err
@@ -780,7 +780,7 @@ where(fmt.Sprintf("%s()", funcName()))
 
 		// (We don't [yet] check to see if excess cols have been provided.)
 		// Now we do ...
-		if len(rowMap) != len(table.colNames) {
+		if len(rowMap) != len(table.colNames) {	// appendRowMap()
 			return fmt.Errorf("%s(rowMap): table [%s] len(rowMap) %d != table.ColCount() %d",
 				funcName(), table.tableName, len(rowMap), table.ColCount())
 		}
@@ -811,7 +811,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	}
 
 	// Append the thoroughly checked and complete row to existing rows.
-	table.rows = append(table.rows, rowMap)
+	table.rows = append(table.rows, rowMap)	// appendRowMap()
 where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
 
 	if model_ {
@@ -886,7 +886,7 @@ where(fmt.Sprintf("%s()", funcName()))
 //where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 where(fmt.Sprintf("%s(%d, %d): table.rows = append()", funcName(), firstRowIndex, lastRowIndex))
-	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
+	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)	// DeleteRows()
 //where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
 
 /*	RESTORE UNDELETE when doing further work on new data model.
@@ -984,9 +984,9 @@ func (table *Table) _String(horizontalSeparator byte) string {
 		buf.WriteString("]\n")
 	
 		// Col names
-		if len(table.colNames) > 0 {
+		if len(table.colNames) > 0 {	// _String()
 			horizontalSep = ""
-			for _, colName := range table.colNames {
+			for _, colName := range table.colNames { // _String()
 				buf.WriteString(horizontalSep)
 				buf.WriteString(colName)
 				horizontalSep = string(horizontalSeparator)
@@ -1015,7 +1015,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				return ""
 			}
 			horizontalSep = ""
-			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {	// _String()
 				var sVal string
 				var tVal bool
 				var ui8Val uint8
@@ -1034,7 +1034,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				buf.WriteString(horizontalSep)
 				switch table.colTypes[colIndex] {
 				case "string":
-					sVal, exists = rowMap[table.colNames[colIndex]].(string)
+					sVal, exists = rowMap[table.colNames[colIndex]].(string)	// _String()
 					if !exists {
 						sVal = ""
 					}
@@ -1043,80 +1043,80 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
 					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
 				case "bool":
-					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+					tVal, exists = rowMap[table.colNames[colIndex]].(bool)	// _String()
 					if !exists {
 						tVal = false
 					}
 					buf.WriteString(fmt.Sprintf("%t", tVal))
 				case "uint8":
-					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)	// _String()
 					if !exists {
 						ui8Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", ui8Val))
 				case "uint16":
-					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)	// _String()
 					if !exists {
 						ui16Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", ui16Val))
 				case "uint32":
-					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)	// _String()
 					if !exists {
 						ui32Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", ui32Val))
 				case "uint64":
-					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)	// _String()
 					if !exists {
 						ui64Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", ui64Val))
 				case "uint":
-					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)	// _String()
 					if !exists {
 						uiVal = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", uiVal))
 				case "int":
-					iVal, exists = rowMap[table.colNames[colIndex]].(int)
+					iVal, exists = rowMap[table.colNames[colIndex]].(int)	// _String()
 					if !exists {
 						iVal = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", iVal))
 				case "int8":
-					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)	// _String()
 					if !exists {
 						i8Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", i8Val))
 				case "int16":
-					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)	// _String()
 					if !exists {
 						i16Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", i16Val))
 				case "int32":
-					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)	// _String()
 					if !exists {
 						i32Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", i32Val))
 				case "int64":
-					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)	// _String()
 					if !exists {
 						i64Val = 0
 					}
 					buf.WriteString(fmt.Sprintf("%d", i64Val))
 				case "float32":
-					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)	// _String()
 					if !exists {
 						f32Val = 0.0
 					}
 					var f64ValForFormatFloat float64 = float64(f32Val)
 					buf.WriteString(strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32)) // -1 strips off excess decimal places.
 				case "float64":
-					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)	// _String()
 					if !exists {
 						f64Val = 0.0
 					}
@@ -1312,7 +1312,7 @@ func (table *Table) StringPadded() string {
 			return ""
 		}
 		horizontalSep = "" // No gap on left of first column.
-		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {	// String()
 			var sVal string
 			var tVal bool
 			var ui8Val uint8
@@ -1802,7 +1802,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]
+	rowMap := table.rows[rowIndex]	// SetVal()
 	rowMap[colName] = val
 
 	return nil
@@ -1835,7 +1835,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]
+	rowMap := table.rows[rowIndex]	// SetValByColIndex()
 	rowMap[colName] = val
 
 	return nil
@@ -2179,7 +2179,7 @@ where(fmt.Sprintf("%s()", funcName()))
 		// os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
-	return len(table.rows)
+	return len(table.rows)	// RowCount()
 }
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
@@ -2192,7 +2192,7 @@ where(fmt.Sprintf("%s()", funcName()))
 		return nil, fmt.Errorf("#1 table [%s] has %d row%s. Row index out of range (0..%d): %d",
 			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
 	}
-	return table.rows[rowIndex], nil
+	return table.rows[rowIndex], nil	// rowMap()
 }
 
 func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
@@ -2456,7 +2456,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	if !hasRow {
 		return nil, err
 	}
-	rowMap := table.rows[rowIndex]
+	rowMap := table.rows[rowIndex]	// GetVal()
 
 	val, exists := rowMap[colName]
 	if !exists {
@@ -2483,7 +2483,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	if !hasRow {
 		return nil, err
 	}
-	rowMap := table.rows[rowIndex]
+	rowMap := table.rows[rowIndex]	// GetValByColIndex()
 
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex {
