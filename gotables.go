@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
-	"runtime/debug"
+//	"runtime/debug"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -397,8 +397,8 @@ type Table struct {
 
 	// new memory model
 	cols           []interface{}	// Array of type-specific col arrays.
-	rowIndex       []int			// Index of type-specific col arrays.
-									// Each col array is referenced via rowIndex.
+	rowsIndex      []int			// Index into type-specific col arrays.
+									// Each col array element is referenced via rowsIndex.
 }
 type TableExported struct {
 	TableName      string
@@ -502,6 +502,7 @@ Add (append) a new blank row to this table. This does NOT initialise the cell va
 Note: This is used by the parser. Not for use by end-users.
 */
 func (table *Table) appendRowOfNil() error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -756,6 +757,7 @@ This is for adding an entire new row of data to a table in bulk, so to speak.
 	}
 */
 func (table *Table) appendRowMap(rowMap tableRow) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -809,13 +811,14 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	}
 
 	// Append the thoroughly checked and complete row to existing rows.
-where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
 	table.rows = append(table.rows, rowMap)
+where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
 
 	if model_ {
 		// new memory model
 		// append an element to each cols slice.
-		err = table.model_AppendRowMap(rowMap)
+where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
+		err = table.model_appendRowMap(rowMap)
 		if err != nil { return err }
 	}
 
@@ -823,6 +826,7 @@ where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName()
 }
 
 func (table *Table) DeleteRow(rowIndex int) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -831,9 +835,10 @@ func (table *Table) DeleteRow(rowIndex int) error {
 			funcName(), table.tableName, table.RowCount(), rowIndex)
 	}
 
-	// From Ivo Balbaert p182 for deleting a single element from a slice.
-where(fmt.Sprintf("%s(): table.rows = append()", funcName()))
-	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
+//	// From Ivo Balbaert p182 for deleting a single element from a slice.
+//	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
+
+	return table.DeleteRows(rowIndex, rowIndex)
 
 /*	RESTORE UNDELETE when doing further work on new data model.
 	err := table.model_DeleteRow(rowIndex)
@@ -861,6 +866,7 @@ func (table *Table) DeleteRowsAll() error {
 
 // Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
 func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1772,6 +1778,7 @@ func (table *Table) DeleteCol(colName string) error {
 // This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1804,6 +1811,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 // This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1840,6 +1848,7 @@ The column sequence is maintained.
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
 func (table *Table) appendColNames(colNames []string) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1888,6 +1897,7 @@ The column sequence is maintained.
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
 func (table *Table) appendColTypes(colTypes []string) error {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -1919,6 +1929,7 @@ func (table *Table) appendColTypes(colTypes []string) error {
 }
 
 func (table *Table) model_appendCols(colNames []string, colTypes []string) error {
+where(fmt.Sprintf("%s()", funcName()))
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		err := table.model_AppendCol(table.colNames[colIndex], table.colTypes[colIndex])
@@ -2123,7 +2134,6 @@ func (table *Table) lastRowIndex() (int, error) {
 func (table *Table) Name() string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s() table is <nil>\n", funcSource(), funcName()))
-debug.PrintStack()
 		return ""
 	}
 	return table.tableName
@@ -2164,6 +2174,7 @@ func (table *Table) ColCount() int {
 	Returns -1 if there is an error (namely: the table variable is nil).
 */
 func (table *Table) RowCount() int {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		// os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
@@ -2173,6 +2184,7 @@ func (table *Table) RowCount() int {
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
 func (table *Table) rowMap(rowIndex int) (tableRow, error) {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -2432,6 +2444,7 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
+where(fmt.Sprintf("%s()", funcName()))
 	// Why don't we simply call GetValByColIndex() ???
 	// Because old memory model makes it faster to look up colName than to lookup colIndex.
 	if table == nil {
@@ -2460,6 +2473,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
+where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
@@ -4334,45 +4348,6 @@ func ByteSliceEquals(slice1, slice2 []byte) (bool, error) {
 func (table *Table) PrintCols() {
 	where(fmt.Sprintf("table.cols = %v\n", table.cols))	// new memory model
 }
-
-/*
-//func (table *Table) modelAppendRowMap(newRow tableRow) error {
-//	// new memory model
-//	// Note: Simpler and probably more efficient to append a row at a time.
-//	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
-//	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
-//
-//	var err error
-//	var colType string
-//
-//	// Loop through all the cols defined in the table.
-//	for colIndex, colName := range table.colNames {
-//		colType, err = table.ColType(colName)
-//		if err != nil { return err }
-//
-//where(fmt.Sprintf("Adding [%s].%s[%d] %v", table.Name(), colName, colIndex, newRow[colName]))
-//
-//		switch colType {
-//			case "string":
-//				val, _ := newRow[colName]
-//				table.cols[colIndex] = append(table.cols[colIndex].([]string), val.(string))
-//			case "int":
-//				val, _ := newRow[colName]
-//				table.cols[colIndex] = append(table.cols[colIndex].([]int), val.(int))
-//			case "[]uint8":
-//				val, _ := newRow[colName]
-//				table.cols[colIndex] = append(table.cols[colIndex].([][]uint8), val.([]uint8))
-//			case "[]byte":
-//				val, _ := newRow[colName]
-//				table.cols[colIndex] = append(table.cols[colIndex].([][]byte), val.([]byte))
-//			default:
-//				where(fmt.Sprintf("Skipping type %s", colType))
-//		}
-//	}
-//
-//	return nil
-//}
-*/
 
 /*
 	Mute all but one val from a multi-value function return.

@@ -11,7 +11,7 @@ import (
 )
 
 /*
-Copyright (c) 2018 Malcolm Gorman
+Copyright (c) 2017 Malcolm Gorman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-func (table *Table) model_AppendRowMap(rowMap tableRow) error {
+func (table *Table) model_appendRowMap(rowMap tableRow) error {
 where()
 where(fmt.Sprintf("[%s].model_AppendRowMap(%v)", table.Name(), rowMap))
 	// new memory model
@@ -1445,179 +1445,182 @@ func (table *Table) model_DeleteRow(rowIndex int) error {
 		return fmt.Errorf("%s(): in table [%s] with %d rows, row index %d does not exist",
 			funcName(), table.tableName, table.model_RowCount(), rowIndex)
 	}
-where(fmt.Sprintf("BEFORE deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
 
-	for colIndex, colName := range table.colNames {
+	return table.model_DeleteRows(rowIndex, rowIndex)
 
-		colType, err := table.ColType(colName)
-		if err != nil { return err }
-// where(colIndex)
-// where(colName)
-// where(colType)
-// where(fmt.Sprintf("[%s] %d %s %s []col type = %T", table.Name(), colIndex, colName, colType, table.cols[colIndex]))
-
-		switch colType {
-			case "string":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]string)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "bool":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]bool)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "int":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]int)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "int8":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]int8)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "int16":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]int16)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "int32":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]int32)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "int64":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]int64)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "uint":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]uint)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "byte":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]byte)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "uint8":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]uint8)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "uint16":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]uint16)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "uint32":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]uint32)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "uint64":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]uint64)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "float32":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]float32)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "float64":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([]float64)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "[]byte":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([][]byte)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			case "[]uint8":
-where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
-				col := table.cols[colIndex].([][]uint8)
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-				// From Ivo Balbaert p182 for deleting a single element from a slice.
-				col = append(col[:rowIndex], col[rowIndex+1:]...)
-				table.cols[colIndex] = col	// append may have returned a new col slice variable.
-where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
-// where()
-			default:
-				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
-				return err
-		}
-	}
-where(fmt.Sprintf("AFTER  deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
-
-	return nil
+//where(fmt.Sprintf("BEFORE deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
+//
+//	for colIndex, colName := range table.colNames {
+//
+//		colType, err := table.ColType(colName)
+//		if err != nil { return err }
+//// where(colIndex)
+//// where(colName)
+//// where(colType)
+//// where(fmt.Sprintf("[%s] %d %s %s []col type = %T", table.Name(), colIndex, colName, colType, table.cols[colIndex]))
+//
+//		switch colType {
+//			//			case "string":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]string)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "bool":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]bool)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "int":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]int)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "int8":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]int8)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "int16":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]int16)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "int32":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]int32)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "int64":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]int64)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "uint":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]uint)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "byte":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]byte)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "uint8":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]uint8)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "uint16":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]uint16)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "uint32":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]uint32)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "uint64":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]uint64)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "float32":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]float32)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "float64":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([]float64)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "[]byte":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([][]byte)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//			//			case "[]uint8":
+//where(fmt.Sprintf("%s(): deleting table.cols[%d][%d]", funcName(), colIndex, rowIndex))
+//				col := table.cols[colIndex].([][]uint8)
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//				// From Ivo Balbaert p182 for deleting a single element from a slice.
+//				col = append(col[:rowIndex], col[rowIndex+1:]...)
+//				table.cols[colIndex] = col	// append may have returned a new col slice variable.
+//where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len(col)))
+//// where()
+//		//			default:
+//				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+//				return err
+//		}
+//	}
+//where(fmt.Sprintf("AFTER  deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
+//
+//	return nil
 }
 
 /*
