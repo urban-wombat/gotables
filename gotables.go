@@ -49,7 +49,8 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-const model_ bool = true
+const old_model bool = true
+const new_model bool = true
 
 /*
 #####################################################################################
@@ -572,7 +573,7 @@ where("AppendRow()")
 		return err
 	}
 
-	if model_ {
+	if new_model {
 		table.model_AppendRow()
 		if err != nil {
 			return err
@@ -814,7 +815,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	table.rows = append(table.rows, rowMap)	// appendRowMap()
 where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
 
-	if model_ {
+	if new_model {
 		// new memory model
 		// append an element to each cols slice.
 where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
@@ -1942,19 +1943,41 @@ func (table *Table) appendCols(colNames []string, colTypes []string) error {
 			funcName(), len(colNames), len(colTypes))
 	}
 
+where(fmt.Sprintf("XXX1 table.colNames = %v", table.colNames))
+where(fmt.Sprintf("XXX1 table.colTypes = %v", table.colTypes))
+where(fmt.Sprintf("XXX1 table.cols = %v", table.cols))
 	for colIndex := 0; colIndex < len(colNames); colIndex++ {
 		err := table.AppendCol(colNames[colIndex], colTypes[colIndex])
 		if err != nil { return err }
 	}
+where(fmt.Sprintf("XXX2 table.colNames = %v", table.colNames))
+where(fmt.Sprintf("XXX2 table.colTypes = %v", table.colTypes))
+where(fmt.Sprintf("XXX2 table.cols = %v", table.cols))
+
+	if new_model {
+where(fmt.Sprintf("XXX3 new_model = %v", new_model))
+		err := table.model_appendCols(colNames, colTypes)
+		if err != nil { return err }
+where(fmt.Sprintf("XXX5 table.colNames = %v", table.colNames))
+where(fmt.Sprintf("XXX5 table.colTypes = %v", table.colTypes))
+where(fmt.Sprintf("XXX5 table.cols = %v", table.cols))
+	}
+where(fmt.Sprintf("XXX6 table.colNames = %v", table.colNames))
+where(fmt.Sprintf("XXX6 table.colTypes = %v", table.colTypes))
+where(fmt.Sprintf("XXX6 table.cols = %v", table.cols))
 
 	return nil
 }
 
 // New memory model.
 func (table *Table) model_appendCols(colNames []string, colTypes []string) error {
-where(fmt.Sprintf("%s()", funcName()))
+where(fmt.Sprintf("%s() [%s]", funcName(), table.Name()))
 	// new memory model
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+where(fmt.Sprintf("XXX4 colIndex = %d", colIndex))
+where(fmt.Sprintf("XXX4 table.colNames = %v", table.colNames))
+where(fmt.Sprintf("XXX4 table.colTypes = %v", table.colTypes))
+where(fmt.Sprintf("XXX4 table.cols = %v", table.cols))
 		err := table.model_AppendCol(table.colNames[colIndex], table.colTypes[colIndex])
 		if err != nil { return err }
 	}
@@ -2202,6 +2225,7 @@ where(fmt.Sprintf("%s()", funcName()))
 		// os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
+where(fmt.Sprintf("%s() = %d", funcName(), len(table.rows)))
 	return len(table.rows)	// RowCount()
 }
 

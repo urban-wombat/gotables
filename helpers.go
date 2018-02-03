@@ -73,6 +73,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []string = make([]string, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -105,6 +106,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []bool = make([]bool, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -137,6 +139,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []int = make([]int, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -169,6 +172,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []int8 = make([]int8, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -201,6 +205,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []int16 = make([]int16, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -233,6 +238,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []int32 = make([]int32, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -265,6 +271,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []int64 = make([]int64, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -297,6 +304,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []uint = make([]uint, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -329,6 +337,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []byte = make([]byte, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -361,6 +370,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []uint8 = make([]uint8, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -393,6 +403,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []uint16 = make([]uint16, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -425,6 +436,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []uint32 = make([]uint32, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -457,6 +469,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []uint64 = make([]uint64, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -489,6 +502,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []float32 = make([]float32, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -521,6 +535,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col []float64 = make([]float64, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -553,6 +568,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col [][]byte = make([][]byte, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -585,6 +601,7 @@ where(fmt.Sprintf("append col: %s", colName))
 					var col [][]uint8 = make([][]uint8, 0)	// ???
 where(fmt.Sprintf("MIDDLE 3 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len(col)))
+where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
 //					err = table.model_AppendCol(colName, colType)
@@ -831,91 +848,110 @@ where(fmt.Sprintf("%s(%s, %s)", funcName(), colName, colType))
 	var rowCount int = table.model_RowCount()
 where(fmt.Sprintf("BEFORE append() in %s(): [%s].model_RowCount(%s, %s) = %d",
 funcName(), table.Name(), colName, colType, table.model_RowCount()))
+where(fmt.Sprintf("ZZZ BEFORE table.cols = %v", table.cols))
+where(fmt.Sprintf("ZZZ BEFORE len(table.cols) = %d", len(table.cols)))
 
 	switch colType {
 		case "string":
 where(fmt.Sprintf("%s(): col = make([]string, rowCount=%d)", funcName(), rowCount))
 			col = make([]string, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]string))))
 		case "bool":
 where(fmt.Sprintf("%s(): col = make([]bool, rowCount=%d)", funcName(), rowCount))
 			col = make([]bool, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]bool))))
 		case "int":
 where(fmt.Sprintf("%s(): col = make([]int, rowCount=%d)", funcName(), rowCount))
 			col = make([]int, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]int))))
 		case "int8":
 where(fmt.Sprintf("%s(): col = make([]int8, rowCount=%d)", funcName(), rowCount))
 			col = make([]int8, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]int8))))
 		case "int16":
 where(fmt.Sprintf("%s(): col = make([]int16, rowCount=%d)", funcName(), rowCount))
 			col = make([]int16, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]int16))))
 		case "int32":
 where(fmt.Sprintf("%s(): col = make([]int32, rowCount=%d)", funcName(), rowCount))
 			col = make([]int32, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]int32))))
 		case "int64":
 where(fmt.Sprintf("%s(): col = make([]int64, rowCount=%d)", funcName(), rowCount))
 			col = make([]int64, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]int64))))
 		case "uint":
 where(fmt.Sprintf("%s(): col = make([]uint, rowCount=%d)", funcName(), rowCount))
 			col = make([]uint, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]uint))))
 		case "byte":
 where(fmt.Sprintf("%s(): col = make([]byte, rowCount=%d)", funcName(), rowCount))
 			col = make([]byte, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]byte))))
 		case "uint8":
 where(fmt.Sprintf("%s(): col = make([]uint8, rowCount=%d)", funcName(), rowCount))
 			col = make([]uint8, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]uint8))))
 		case "uint16":
 where(fmt.Sprintf("%s(): col = make([]uint16, rowCount=%d)", funcName(), rowCount))
 			col = make([]uint16, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]uint16))))
 		case "uint32":
 where(fmt.Sprintf("%s(): col = make([]uint32, rowCount=%d)", funcName(), rowCount))
 			col = make([]uint32, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]uint32))))
 		case "uint64":
 where(fmt.Sprintf("%s(): col = make([]uint64, rowCount=%d)", funcName(), rowCount))
 			col = make([]uint64, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]uint64))))
 		case "float32":
 where(fmt.Sprintf("%s(): col = make([]float32, rowCount=%d)", funcName(), rowCount))
 			col = make([]float32, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]float32))))
 		case "float64":
 where(fmt.Sprintf("%s(): col = make([]float64, rowCount=%d)", funcName(), rowCount))
 			col = make([]float64, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([]float64))))
 		case "[]byte":
 where(fmt.Sprintf("%s(): col = make([][]byte, rowCount=%d)", funcName(), rowCount))
 			col = make([][]byte, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([][]byte))))
 		case "[]uint8":
 where(fmt.Sprintf("%s(): col = make([][]uint8, rowCount=%d)", funcName(), rowCount))
 			col = make([][]uint8, rowCount)
+where(fmt.Sprintf("BBB table.cols = append(table.cols, %v)", col))
 			table.cols = append(table.cols, col)
 where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([][]uint8))))
 
@@ -925,8 +961,14 @@ where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([][]uint8))))
 	}
 where(fmt.Sprintf("AFTER  append() in %s(): [%s].model_RowCount(%s, %s) = %d",
 funcName(), table.Name(), colName, colType, table.model_RowCount()))
+where(fmt.Sprintf("ZZZ AFTER  table.cols = %v", table.cols))
+where(fmt.Sprintf("ZZZ AFTER  len(table.cols) = %d", len(table.cols)))
 
+/*
+where("WHAT?")
+where(fmt.Sprintf("CCC table.cols = append(table.cols, %v)", col))
 	table.cols = append(table.cols, col)
+*/
 
 	return nil
 }
@@ -1163,20 +1205,72 @@ where(fmt.Sprintf("[%s].model_RowCount()", table.Name()))
 		return -1
 	}
 
+	if !new_model {
+		// Skip these checks. Old model will have already created table.colNames and table.colTypes
+
+		if len(table.colNames) != len(table.cols) {
+			err := fmt.Errorf("%s ERROR: %s(): len([%s].colNames) %d != len([%s].cols) %d\n",
+				funcSource(),
+				funcName(),
+				table.Name(),
+				len(table.colNames),
+				table.Name(),
+				len(table.cols),
+			)
+			_,_ = os.Stderr.WriteString(err.Error())
+			panic(err)
+		}
+
+		if len(table.colTypes) != len(table.cols) {
+			err := fmt.Errorf("%s ERROR: %s(): len([%s].colTypes) %d != len([%s].cols) %d\n",
+				funcSource(),
+				funcName(),
+				table.Name(),
+				len(table.colTypes),
+				table.Name(),
+				len(table.cols),
+			)
+			_,_ = os.Stderr.WriteString(err.Error())
+			panic(err)
+		}
+	}
+
+	if len(table.colTypes) != len(table.colNames) {
+		err := fmt.Errorf("%s ERROR: %s(): len([%s].colTypes) %d != len([%s].colNames) %d\n",
+			funcSource(),
+			funcName(),
+			table.Name(),
+			len(table.colTypes),
+			table.Name(),
+			len(table.colNames),
+		)
+		_,_ = os.Stderr.WriteString(err.Error())
+		panic(err)
+	}
+
 	if len(table.cols) == 0 {
 		// Avoid index out of range indexing into table.cols in switch statement.
 		// This implies rows cannot be appended before at least one column has been appended.
 //debug.PrintStack()
-		return 0
+		rowCount = 0
+		return
 	}
 // where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
 
 	var modelRowCount int = -1
 	var prevModelRowCount int = -1
 
-// where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
+// debug.PrintStack()
+where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
+where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
+
 	for colIndex := 0; colIndex < len(table.cols); colIndex++ {
-where(fmt.Sprintf("colIndex = %d", colIndex))
+
+where(fmt.Sprintf("YYY colNames = %v", table.colNames))
+where(fmt.Sprintf("YYY colTypes = %v", table.colTypes))
+where(fmt.Sprintf("YYY table.cols = %v", table.cols))
+where(fmt.Sprintf("YYY len(table.cols) = %d", len(table.cols)))
+where(fmt.Sprintf("YYY colIndex = %d", colIndex))
 
 		colType := table.colTypes[colIndex]
 
@@ -1425,6 +1519,7 @@ where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex
 		}
 	}
 
+where(fmt.Sprintf("%s() = %d", funcName(), modelRowCount))
 	return modelRowCount
 }
 
