@@ -5,7 +5,7 @@ package gotables
 */
 
 import (
-//	"runtime/debug"
+	"runtime/debug"
 	"fmt"
 	"os"
 )
@@ -32,30 +32,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-func (table *Table) model_appendRowMap(rowMap tableRow) error {
+func (table *Table) new_model_appendRowMap(rowMap tableRow) error {
 where()
-where(fmt.Sprintf("[%s].model_AppendRowMap(%v)", table.Name(), rowMap))
+where(fmt.Sprintf("[%s].new_model_AppendRowMap(%v)", table.Name(), rowMap))
 	// new memory model
 	// Note: Simpler and probably more efficient to append a row at a time.
 	// See: "Growing slices" at https://blog.golang.org/go-slices-usage-and-internals
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 //	var err error
 
 where(fmt.Sprintf("BEFORE %s(): table.cols = %v", funcName(), table.cols))
-where(fmt.Sprintf("BEFORE %s(): [%s].model_RowCount() = %d", funcName(), table.Name(), table.model_RowCount()))
+where(fmt.Sprintf("BEFORE %s(): [%s].new_model_RowCount() = %d", funcName(), table.Name(), table.new_model_RowCount()))
 
 	for colIndex, colName := range table.colNames {
 
 //		colType, err := table.ColType(colName)
 //		if err != nil { return err }
 		var colType string = table.colTypes[colIndex]
-// where(fmt.Sprintf("%s(): BEFORE append colIndex = %d [%s].model_RowCount() = %d",
-// funcName(), colIndex, table.Name(), table.model_RowCount()))
+// where(fmt.Sprintf("%s(): BEFORE append colIndex = %d [%s].new_model_RowCount() = %d",
+// funcName(), colIndex, table.Name(), table.new_model_RowCount()))
 
 		switch colType {
 			case "string":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -63,11 +63,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []string = make([]string, 0)	// ???
@@ -76,7 +76,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -88,7 +88,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "bool":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -96,11 +96,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []bool = make([]bool, 0)	// ???
@@ -109,7 +109,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -121,7 +121,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "int":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -129,11 +129,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []int = make([]int, 0)	// ???
@@ -142,7 +142,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -154,7 +154,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "int8":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -162,11 +162,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []int8 = make([]int8, 0)	// ???
@@ -175,7 +175,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -187,7 +187,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "int16":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -195,11 +195,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []int16 = make([]int16, 0)	// ???
@@ -208,7 +208,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -220,7 +220,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "int32":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -228,11 +228,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []int32 = make([]int32, 0)	// ???
@@ -241,7 +241,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -253,7 +253,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "int64":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -261,11 +261,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []int64 = make([]int64, 0)	// ???
@@ -274,7 +274,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -286,7 +286,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "uint":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -294,11 +294,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []uint = make([]uint, 0)	// ???
@@ -307,7 +307,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -319,7 +319,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "byte":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -327,11 +327,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []byte = make([]byte, 0)	// ???
@@ -340,7 +340,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -352,7 +352,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "uint8":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -360,11 +360,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []uint8 = make([]uint8, 0)	// ???
@@ -373,7 +373,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -385,7 +385,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "uint16":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -393,11 +393,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []uint16 = make([]uint16, 0)	// ???
@@ -406,7 +406,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -418,7 +418,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "uint32":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -426,11 +426,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []uint32 = make([]uint32, 0)	// ???
@@ -439,7 +439,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -451,7 +451,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "uint64":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -459,11 +459,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []uint64 = make([]uint64, 0)	// ???
@@ -472,7 +472,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -484,7 +484,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "float32":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -492,11 +492,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []float32 = make([]float32, 0)	// ???
@@ -505,7 +505,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -517,7 +517,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "float64":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -525,11 +525,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col []float64 = make([]float64, 0)	// ???
@@ -538,7 +538,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -550,7 +550,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "[]byte":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -558,11 +558,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col [][]byte = make([][]byte, 0)	// ???
@@ -571,7 +571,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -583,7 +583,7 @@ where(fmt.Sprintf("MIDDLE 6 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("val =  %v", val))
 			case "[]uint8":
-				colCount := table.model_ColCount()
+				colCount := table.new_model_ColCount()
 where(fmt.Sprintf("MIDDLE 1 %s(): table.cols = %v", funcName(), table.cols))
 				if colCount < colIndex+1 {
 where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
@@ -591,11 +591,11 @@ where(fmt.Sprintf("MIDDLE 2 %s(): table.cols = %v", funcName(), table.cols))
 // where(fmt.Sprintf("%s(): colCount %d < colIndex %d + 1 = %d", funcName(), colCount, colIndex, colIndex + 1))
 where(fmt.Sprintf("append col: %s", colName))
 					// This is the first cell of this new column. Make just one row.
-					// Don't call table.model_AppendCol() which will attempt to make zero rows.
-//					if colCount >= 1 && table.model_RowCount() > 1 {
+					// Don't call table.new_model_AppendCol() which will attempt to make zero rows.
+//					if colCount >= 1 && table.new_model_RowCount() > 1 {
 //						// Something has gone seriously wrong. Not expecting existing values for this column.
-//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.model_RowCount() %d > 1 something has gone seriously wrong",
-//							funcName(), colCount, table.model_RowCount())
+//						err = fmt.Errorf("%s(): colCount %d >= 1 && table.new_model_RowCount() %d > 1 something has gone seriously wrong",
+//							funcName(), colCount, table.new_model_RowCount())
 //						return err
 //					}
 					var col [][]uint8 = make([][]uint8, 0)	// ???
@@ -604,7 +604,7 @@ where(fmt.Sprintf("MIDDLE 3a %s(): col = %v len(col) = %d", funcName(), col, len
 where(fmt.Sprintf("AAA table.cols = append(table.cols, %v)", col))
 					table.cols = append(table.cols, col)
 where(fmt.Sprintf("MIDDLE 4 %s(): table.cols = %v", funcName(), table.cols))
-//					err = table.model_AppendCol(colName, colType)
+//					err = table.new_model_AppendCol(colName, colType)
 //					if err != nil { return err }
 				}
 				val, _ := rowMap[colName]
@@ -621,16 +621,16 @@ where(fmt.Sprintf("MIDDLE 7 %s(): table.cols = %v", funcName(), table.cols))
 		}
 where(fmt.Sprintf("MIDDLE 8 %s(): table.cols = %v", funcName(), table.cols))
 	}
-// where(fmt.Sprintf("%s(): [%s].model_ColCount() = %d", funcName(), table.Name(), table.model_ColCount()))
-// where(fmt.Sprintf("%s(): AFTER  append colIndex = %d [%s].model_RowCount() = %d",
-// funcName(), colIndex, table.Name(), table.model_RowCount()))
+// where(fmt.Sprintf("%s(): [%s].new_model_ColCount() = %d", funcName(), table.Name(), table.new_model_ColCount()))
+// where(fmt.Sprintf("%s(): AFTER  append colIndex = %d [%s].new_model_RowCount() = %d",
+// funcName(), colIndex, table.Name(), table.new_model_RowCount()))
 where(fmt.Sprintf("AFTER  %s(): table.cols = %v", funcName(), table.cols))
-where(fmt.Sprintf("AFTER  %s(): [%s].model_RowCount() = %d", funcName(), table.Name(), table.model_RowCount()))
+where(fmt.Sprintf("AFTER  %s(): [%s].new_model_RowCount() = %d", funcName(), table.Name(), table.new_model_RowCount()))
 
 	return nil
 }
 
-func (table *Table) model_rowsEqualRows() error {
+func (table *Table) new_model_rowsEqualRows() error {
 	// new memory model
 
 	// Loop through all the cols defined in the table.
@@ -838,18 +838,19 @@ where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
 	return nil
 }
 
-func (table *Table) model_AppendCol(colName string, colType string) error {
+func (table *Table) new_model_AppendCol(colName string, colType string) error {
 	// new memory model
-where(fmt.Sprintf("%s(%s, %s)", funcName(), colName, colType))
+where(fmt.Sprintf("FFF %s(colName=%s, colType=%s)", funcName(), colName, colType))
+debug.PrintStack()
 
 	var col interface{}
 
 	// Make new column the same rowCount size as (any) existing columns.
-	var rowCount int = table.model_RowCount()
-where(fmt.Sprintf("BEFORE append() in %s(): [%s].model_RowCount(%s, %s) = %d",
-funcName(), table.Name(), colName, colType, table.model_RowCount()))
-where(fmt.Sprintf("ZZZ BEFORE table.cols = %v", table.cols))
-where(fmt.Sprintf("ZZZ BEFORE len(table.cols) = %d", len(table.cols)))
+	var rowCount int = table.new_model_RowCount()
+where(fmt.Sprintf("FFF BEFORE append() in %s(): [%s].new_model_RowCount(%s, %s) = %d",
+	funcName(), table.Name(), colName, colType, rowCount))
+where(fmt.Sprintf("FFF ZZZ BEFORE table.cols = %v", table.cols))
+where(fmt.Sprintf("FFF ZZZ BEFORE len(table.cols) = %d", len(table.cols)))
 
 	switch colType {
 		case "string":
@@ -959,10 +960,10 @@ where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([][]uint8))))
 			err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
 			return err
 	}
-where(fmt.Sprintf("AFTER  append() in %s(): [%s].model_RowCount(%s, %s) = %d",
-funcName(), table.Name(), colName, colType, table.model_RowCount()))
-where(fmt.Sprintf("ZZZ AFTER  table.cols = %v", table.cols))
-where(fmt.Sprintf("ZZZ AFTER  len(table.cols) = %d", len(table.cols)))
+where(fmt.Sprintf("AFTER  append() in %s(): [%s].new_model_RowCount(%s, %s) = %d",
+funcName(), table.Name(), colName, colType, table.new_model_RowCount()))
+where(fmt.Sprintf("FFF ZZZ AFTER  table.cols = %v", table.cols))
+where(fmt.Sprintf("FFF ZZZ AFTER  len(table.cols) = %d", len(table.cols)))
 
 /*
 where("WHAT?")
@@ -976,9 +977,9 @@ where(fmt.Sprintf("CCC table.cols = append(table.cols, %v)", col))
 /*
 	Append a new row to this table.
 */
-func (table *Table) model_AppendRow() error {
-where(fmt.Sprintf("*** [%s].model_AppendRow()", table.Name()))
-where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
+func (table *Table) new_model_AppendRow() error {
+where(fmt.Sprintf("*** [%s].new_model_AppendRow()", table.Name()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 // debug.PrintStack()
 	// new memory model
 	// Note: Simpler and probably more efficient to append a row at a time.
@@ -987,13 +988,13 @@ where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
 	// Note technique for appending a zero value to a slice without knowing the type.
 
 	/*
-		model_AppendRow replaces need for appendRowOfNil() and SetRowCellsToZeroValue()
+		new_model_AppendRow replaces need for appendRowOfNil() and SetRowCellsToZeroValue()
 		because Go initialises an element to zero value.
 	*/
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-//where(fmt.Sprintf("table.model_ColCount() = %d", table.model_ColCount()))
-//where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
+//where(fmt.Sprintf("table.new_model_ColCount() = %d", table.new_model_ColCount()))
+//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
 	if len(table.cols) == 0 {
 //debug.PrintStack()
@@ -1001,7 +1002,7 @@ where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
 			table.Name(), funcName())
 	}
 
-//where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
+//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	for colIndex, colName := range table.colNames {
 
 		colType, err := table.ColType(colName)
@@ -1183,7 +1184,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]uint8), val
 				return err
 		}
 	}
-//where(fmt.Sprintf("table.model_RowCount() = %d", table.model_RowCount()))
+//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
 	return nil
 }
@@ -1191,9 +1192,9 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]uint8), val
 /*
 	Return the number of rows in this table.
 */
-func (table *Table) model_RowCount() (rowCount int) {
-	// new memory model
-where(fmt.Sprintf("[%s].model_RowCount()", table.Name()))
+func (table *Table) new_model_RowCount() (rowCount int) {
+where(fmt.Sprintf("inside [%s].%s()", table.Name(), funcName()))
+// debug.PrintStack()
 
 	if table == nil {
 		_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): table is <nil>\n", funcSource(), funcName()))
@@ -1203,6 +1204,22 @@ where(fmt.Sprintf("[%s].model_RowCount()", table.Name()))
 	if table.cols == nil {
 		_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): [%s].cols = nil\n", funcSource(), table.Name(), funcName()))
 		return -1
+	}
+
+	// Temporary check? This should never happen in production.
+	if new_model {
+	    if len(table.cols) > len(table.colNames) {
+	        err := fmt.Errorf("%s ERROR: %s(): len([%s].cols) %d > len([%s].colNames) %d\n",
+	            funcSource(),
+	            funcName(),
+	            table.Name(),
+	            len(table.cols),
+	            table.Name(),
+	            len(table.colNames),
+	        )
+	        _,_ = os.Stderr.WriteString(err.Error())
+	        panic(err)
+	    }
 	}
 
 	if !new_model {
@@ -1253,6 +1270,7 @@ where(fmt.Sprintf("[%s].model_RowCount()", table.Name()))
 		// This implies rows cannot be appended before at least one column has been appended.
 //debug.PrintStack()
 		rowCount = 0
+where(fmt.Sprintf("MIDDLE OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
 		return
 	}
 // where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
@@ -1266,11 +1284,11 @@ where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
 
 	for colIndex := 0; colIndex < len(table.cols); colIndex++ {
 
-where(fmt.Sprintf("YYY colNames = %v", table.colNames))
-where(fmt.Sprintf("YYY colTypes = %v", table.colTypes))
-where(fmt.Sprintf("YYY table.cols = %v", table.cols))
-where(fmt.Sprintf("YYY len(table.cols) = %d", len(table.cols)))
-where(fmt.Sprintf("YYY colIndex = %d", colIndex))
+where(fmt.Sprintf("YYY [%s] colNames = %v", table.Name(), table.colNames))
+where(fmt.Sprintf("YYY [%s] colTypes = %v", table.Name(), table.colTypes))
+where(fmt.Sprintf("YYY [%s] table.cols = %v", table.Name(), table.cols))
+where(fmt.Sprintf("YYY [%s] len(table.cols) = %d", table.Name(), len(table.cols)))
+where(fmt.Sprintf("YYY [%s] colIndex = %d", table.Name(), colIndex))
 
 		colType := table.colTypes[colIndex]
 
@@ -1519,14 +1537,15 @@ where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex
 		}
 	}
 
-where(fmt.Sprintf("%s() = %d", funcName(), modelRowCount))
-	return modelRowCount
+where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
+	rowCount = modelRowCount
+	return
 }
 
 /*
 	Delete a row from this table.
 */
-func (table *Table) model_DeleteRow(rowIndex int) error {
+func (table *Table) new_model_DeleteRow(rowIndex int) error {
 	// new memory model
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -1536,14 +1555,14 @@ func (table *Table) model_DeleteRow(rowIndex int) error {
 			table.Name(), funcName())
 	}
 
-	if rowIndex < 0 || rowIndex > table.model_RowCount()-1 {
+	if rowIndex < 0 || rowIndex > table.new_model_RowCount()-1 {
 		return fmt.Errorf("%s(): in table [%s] with %d rows, row index %d does not exist",
-			funcName(), table.tableName, table.model_RowCount(), rowIndex)
+			funcName(), table.tableName, table.new_model_RowCount(), rowIndex)
 	}
 
-	return table.model_DeleteRows(rowIndex, rowIndex)
+	return table.new_model_DeleteRows(rowIndex, rowIndex)
 
-//where(fmt.Sprintf("BEFORE deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
+//where(fmt.Sprintf("BEFORE deleting row %d table.new_model_RowCount() = %d", rowIndex, table.new_model_RowCount()))
 //
 //	for colIndex, colName := range table.colNames {
 //
@@ -1713,7 +1732,7 @@ func (table *Table) model_DeleteRow(rowIndex int) error {
 //				return err
 //		}
 //	}
-//where(fmt.Sprintf("AFTER  deleting row %d table.model_RowCount() = %d", rowIndex, table.model_RowCount()))
+//where(fmt.Sprintf("AFTER  deleting row %d table.new_model_RowCount() = %d", rowIndex, table.new_model_RowCount()))
 //
 //	return nil
 }
@@ -1721,7 +1740,7 @@ func (table *Table) model_DeleteRow(rowIndex int) error {
 /*
 	Delete a col from this table.
 */
-func (table *Table) model_DeleteColByColIndex(colIndex int) error {
+func (table *Table) new_model_DeleteColByColIndex(colIndex int) error {
 	// new memory model
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -1731,9 +1750,9 @@ func (table *Table) model_DeleteColByColIndex(colIndex int) error {
 			table.Name(), funcName())
 	}
 
-	if colIndex < 0 || colIndex > table.model_ColCount()-1 {
+	if colIndex < 0 || colIndex > table.new_model_ColCount()-1 {
 		err := fmt.Errorf("in table [%s] with %d cols, col index %d does not exist",
-			table.tableName, table.model_ColCount(), colIndex)
+			table.tableName, table.new_model_ColCount(), colIndex)
 		return err
 	}
 
@@ -1750,30 +1769,30 @@ func (table *Table) model_DeleteColByColIndex(colIndex int) error {
 	Delete rows from firstRowIndex to lastRowIndex inclusive.
 	This means lastRowIndex will be deleted.
 */
-func (table *Table) model_DeleteRows(firstRowIndex int, lastRowIndex int) error {
+func (table *Table) new_model_DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	// new memory model
 
-	if table == nil { return fmt.Errorf("(model) table.%s(): table is <nil>", funcName()) }
+	if table == nil { return fmt.Errorf("(new model) table.%s(): table is <nil>", funcName()) }
 
 	if len(table.cols) == 0 {
-		return fmt.Errorf("(model) [%s].%s(): cannot delete rows from table with zero cols",
+		return fmt.Errorf("(new model) [%s].%s(): cannot delete rows from table with zero cols",
 			table.Name(), funcName())
 	}
 
-	if firstRowIndex < 0 || firstRowIndex > table.model_RowCount()-1 {
-		return fmt.Errorf("(model) in table [%s] with %d rows, firstRowIndex %d does not exist",
-			table.tableName, table.model_RowCount(), firstRowIndex)
+	if firstRowIndex < 0 || firstRowIndex > table.new_model_RowCount()-1 {
+		return fmt.Errorf("(new model) in table [%s] with %d rows, firstRowIndex %d does not exist",
+			table.tableName, table.new_model_RowCount(), firstRowIndex)
 	}
 
-    if lastRowIndex < 0 || lastRowIndex > table.model_RowCount()-1 {
-        return fmt.Errorf("(model) in table [%s] with %d rows, lastRowIndex %d does not exist",
-            table.tableName, table.model_RowCount(), lastRowIndex)
+    if lastRowIndex < 0 || lastRowIndex > table.new_model_RowCount()-1 {
+        return fmt.Errorf("(new model) in table [%s] with %d rows, lastRowIndex %d does not exist",
+            table.tableName, table.new_model_RowCount(), lastRowIndex)
     }
 
     if firstRowIndex > lastRowIndex {
-        return fmt.Errorf("(model) invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
+        return fmt.Errorf("(new model) invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
     }
-where(fmt.Sprintf("BEFORE model_DeleteRows() model_RowCount() = %d", table.model_RowCount()))
+where(fmt.Sprintf("BEFORE new_model_DeleteRows() new_model_RowCount() = %d", table.new_model_RowCount()))
 
 	for colIndex, colName := range table.colNames {
 
@@ -1875,7 +1894,110 @@ where(fmt.Sprintf("BEFORE model_DeleteRows() model_RowCount() = %d", table.model
 				return err
 		}
 	}
-where(fmt.Sprintf("AFTER  model_DeleteRows() model_RowCount() = %d", table.model_RowCount()))
+where(fmt.Sprintf("AFTER  new_model_DeleteRows() new_model_RowCount() = %d", table.new_model_RowCount()))
+
+	return nil
+}
+
+/*
+	Set an interface{} val where you don't know or cannot easily select the specific type.
+*/
+func (table *Table) new_model_SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
+where(fmt.Sprintf("%s(colIndex=%d, rowIndex=%d, val=%v)", funcName(), colIndex, rowIndex, val))
+where(fmt.Sprintf("new_model_ColCount() = %d", table.new_model_ColCount()))
+	// Note: With helper functions it is easy to set a val by its specific type.
+	//       Essentially, it is now faster to set val by specific type than as an interface() value.
+	//       For consistency, we retain this method.
+
+	if table == nil { return fmt.Errorf("(new model) table.%s(): table is <nil>", funcName()) }
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	valType := fmt.Sprintf("%T", val)
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			colName, err := table.ColNameByColIndex(colIndex)
+			if err != nil { return err }
+			return fmt.Errorf("%s(): table [%s] col index %d col name %s expecting type %s not type %s",
+				funcName(), table.Name(), colIndex, colName, colType, valType)
+		}
+	}
+
+	switch colType {
+		case "string":
+			col := table.cols[colIndex].([]string)
+			col[rowIndex] = val.(string)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "bool":
+			col := table.cols[colIndex].([]bool)
+			col[rowIndex] = val.(bool)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "int":
+			col := table.cols[colIndex].([]int)
+			col[rowIndex] = val.(int)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "int8":
+			col := table.cols[colIndex].([]int8)
+			col[rowIndex] = val.(int8)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "int16":
+			col := table.cols[colIndex].([]int16)
+			col[rowIndex] = val.(int16)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "int32":
+			col := table.cols[colIndex].([]int32)
+			col[rowIndex] = val.(int32)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "int64":
+			col := table.cols[colIndex].([]int64)
+			col[rowIndex] = val.(int64)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "uint":
+			col := table.cols[colIndex].([]uint)
+			col[rowIndex] = val.(uint)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "byte":
+			col := table.cols[colIndex].([]byte)
+			col[rowIndex] = val.(byte)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "uint8":
+			col := table.cols[colIndex].([]uint8)
+			col[rowIndex] = val.(uint8)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "uint16":
+			col := table.cols[colIndex].([]uint16)
+			col[rowIndex] = val.(uint16)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "uint32":
+			col := table.cols[colIndex].([]uint32)
+			col[rowIndex] = val.(uint32)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "uint64":
+			col := table.cols[colIndex].([]uint64)
+			col[rowIndex] = val.(uint64)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "float32":
+			col := table.cols[colIndex].([]float32)
+			col[rowIndex] = val.(float32)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "float64":
+			col := table.cols[colIndex].([]float64)
+			col[rowIndex] = val.(float64)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "[]byte":
+			col := table.cols[colIndex].([][]byte)
+			col[rowIndex] = val.([]byte)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+		case "[]uint8":
+			col := table.cols[colIndex].([][]uint8)
+			col[rowIndex] = val.([]uint8)
+//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
+
+		default:
+			err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
+			return err
+	}
 
 	return nil
 }

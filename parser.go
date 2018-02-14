@@ -219,6 +219,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			expecting = _TABLE_NAME
 			tableShape = _UNDEFINED_SHAPE
 			// The only other place there is a need to test len(line) is in case _TABLE_NAME.
+
+where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 		}
 
 		switch expecting {
@@ -308,6 +310,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
+/*
+				if new_model {
+					err = table.new_model_AppendCol(colName, colType)
+					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
+				}
+*/
+
 //where()
 				// where(p.gotFilePos())
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
@@ -358,10 +367,17 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Exactly one row is needed for a struct table.
 					if table.RowCount() == 0 {
 //where(fmt.Sprintf("[%s].appendRowOfNil()", table.Name()))
+where(fmt.Sprintf("%s() BEFORE table.RowCount() = %d", funcName(), table.RowCount()))
+where(fmt.Sprintf("%s() BEFORE table.new_model_RowCount() = %d", funcName(), table.new_model_RowCount()))
 						err = table.appendRowOfNil()
-						if err != nil {
-							return nil, err
+						if err != nil { return nil, err }
+
+						if new_model {
+							err = table.new_model_AppendRow()
+							if err != nil { return nil, err }
 						}
+where(fmt.Sprintf("%s() AFTER  table.RowCount() = %d", funcName(), table.RowCount()))
+where(fmt.Sprintf("%s() AFTER  table.new_model_RowCount() = %d", funcName(), table.new_model_RowCount()))
 					}
 
 //where()
