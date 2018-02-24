@@ -565,28 +565,25 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
-where("AppendRow()")
+where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 
+where()
 	err := table.appendRowOfNil()
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
+where()
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
 	err = table.SetRowCellsToZeroValue(rowIndex)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
+where()
 	if new_model {
 		table.new_model_AppendRow()
-		if err != nil {
-			return err
-		}
+		if err != nil { return err }
 	}
 
 	return nil

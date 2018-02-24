@@ -671,71 +671,71 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 	// Note: Tests are collected inside code blocks for human readability.
 
-//where()
+where()
 	{ // bool tests
 
-//where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 		err = table.AppendCol("bVal", "bool")
 		if err != nil {
 			t.Error(err)
 		}
-//where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 
-//where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 		// After first col has been appended.
-//if table.RowCount() != table.new_model_RowCount() {
-//where(fmt.Sprintf("HEY1! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-// debug.PrintStack()
-//}
+if table.RowCount() != table.new_model_RowCount() {
+where(fmt.Sprintf("HEY1! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
+debug.PrintStack()
+}
+
 		if table.RowCount() == 0 {
-//where()
+where()
 			err = table.AppendRow()
-			if err != nil {
-//where()
-				t.Error(err)
-			}
-//where()
-//if table.RowCount() != table.new_model_RowCount() {
-//where(fmt.Sprintf("HEY2! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-// debug.PrintStack()
-//}
+			if err != nil { t.Error(err) }
+where()
+if table.RowCount() != table.new_model_RowCount() {
+where(fmt.Sprintf("HEY2! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
+debug.PrintStack()
+}
 		}
-//if table.RowCount() != table.new_model_RowCount() {
-//where(fmt.Sprintf("HEY3! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-// debug.PrintStack()
-//}
+if table.RowCount() != table.new_model_RowCount() {
+where(fmt.Sprintf("HEY3! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
+debug.PrintStack()
+}
 		_, _ = table.IsValidTable()
-//where()
+where()
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
-		if err != nil {
-			t.Error(err)
-		}
+		if err != nil { t.Error(err) }
+
+where()
 		bVal, err = table.GetBool("bVal", rowIndex)
-		if err != nil {
-			t.Error(err)
-		}
+		if err != nil { t.Error(err) }
+
+where()
 		if bVal != expected {
 			t.Errorf("expecting GetBool() value %t, not %t\n", expected, bVal)
 		}
 		_, _ = table.IsValidTable()
 
+where()
 		expected = false
 		err = table.SetBoolByColIndex(colIndex, rowIndex, expected)
-		if err != nil {
-			t.Error(err)
-		}
+		if err != nil { t.Error(err) }
+
+where()
 		bVal, err = table.GetBoolByColIndex(colIndex, rowIndex)
-		if err != nil {
-			t.Error(err)
-		}
+		if err != nil { t.Error(err) }
+
+where()
 		if bVal != expected {
 			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", expected, bVal)
 		}
 		_, _ = table.IsValidTable()
 	}
 
+where()
 	{ // float32 tests
 
 		err = table.AppendCol("f32Val", "float32")
