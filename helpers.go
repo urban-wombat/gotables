@@ -976,7 +976,7 @@ where(fmt.Sprintf("CCC table.cols = append(table.cols, %v)", col))
 
 //Append a new row to this table.
 func (table *Table) new_model_AppendRow() error {
-where(fmt.Sprintf("*** [%s].new_model_AppendRow()", table.Name()))
+where(fmt.Sprintf("AAA [%s].new_model_AppendRow()", table.Name()))
 where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 // debug.PrintStack()
 	// new memory model
@@ -991,8 +991,8 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount())
 	*/
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-//where(fmt.Sprintf("table.new_model_ColCount() = %d", table.new_model_ColCount()))
-//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
+where(fmt.Sprintf("table.new_model_ColCount() = %d", table.new_model_ColCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
 	if len(table.cols) == 0 {
 //debug.PrintStack()
@@ -1000,189 +1000,156 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount())
 			table.Name(), funcName())
 	}
 
-//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	for colIndex, colName := range table.colNames {
 
 		colType, err := table.ColType(colName)
 		if err != nil { return err }
 
+where(fmt.Sprintf("[%s].%s", table.Name(), colName))
 		switch colType {
 			case "string":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]string))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]string))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(string)	// Pointer to zero value string
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]string), val.(string)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]string), *val)
 //				rowCount = len(table.cols[colIndex].([]string))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "bool":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]bool))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]bool))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(bool)	// Pointer to zero value bool
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]bool), val.(bool)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]bool), *val)
 //				rowCount = len(table.cols[colIndex].([]bool))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]int))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]int))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int)	// Pointer to zero value int
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int), val.(int)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]int), *val)
 //				rowCount = len(table.cols[colIndex].([]int))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int8":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]int8))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]int8))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int8)	// Pointer to zero value int8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int8), val.(int8)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]int8), *val)
 //				rowCount = len(table.cols[colIndex].([]int8))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int16":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]int16))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]int16))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int16)	// Pointer to zero value int16
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int16), val.(int16)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]int16), *val)
 //				rowCount = len(table.cols[colIndex].([]int16))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int32":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]int32))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]int32))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int32)	// Pointer to zero value int32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int32), val.(int32)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]int32), *val)
 //				rowCount = len(table.cols[colIndex].([]int32))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int64":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]int64))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]int64))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int64)	// Pointer to zero value int64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int64), val.(int64)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]int64), *val)
 //				rowCount = len(table.cols[colIndex].([]int64))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]uint))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]uint))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint)	// Pointer to zero value uint
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint), val.(uint)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]uint), *val)
 //				rowCount = len(table.cols[colIndex].([]uint))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "byte":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]byte))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]byte))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(byte)	// Pointer to zero value byte
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]byte), val.(byte)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]byte), *val)
 //				rowCount = len(table.cols[colIndex].([]byte))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint8":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]uint8))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]uint8))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint8)	// Pointer to zero value uint8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint8), val.(uint8)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]uint8), *val)
 //				rowCount = len(table.cols[colIndex].([]uint8))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint16":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]uint16))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]uint16))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint16)	// Pointer to zero value uint16
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint16), val.(uint16)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]uint16), *val)
 //				rowCount = len(table.cols[colIndex].([]uint16))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint32":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]uint32))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]uint32))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint32)	// Pointer to zero value uint32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint32), val.(uint32)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]uint32), *val)
 //				rowCount = len(table.cols[colIndex].([]uint32))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint64":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]uint64))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]uint64))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint64)	// Pointer to zero value uint64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint64), val.(uint64)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]uint64), *val)
 //				rowCount = len(table.cols[colIndex].([]uint64))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "float32":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]float32))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]float32))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(float32)	// Pointer to zero value float32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float32), val.(float32)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]float32), *val)
 //				rowCount = len(table.cols[colIndex].([]float32))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "float64":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([]float64))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([]float64))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(float64)	// Pointer to zero value float64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float64), val.(float64)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([]float64), *val)
 //				rowCount = len(table.cols[colIndex].([]float64))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "[]byte":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([][]byte))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([][]byte))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new([]byte)	// Pointer to zero value []byte
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]byte), val.([]byte)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([][]byte), *val)
 //				rowCount = len(table.cols[colIndex].([][]byte))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "[]uint8":
-//				var rowCount int
-//				rowCount = len(table.cols[colIndex].([][]uint8))
-//where(fmt.Sprintf("[%s].%s", table.Name(), colName))
-//where(fmt.Sprintf("BEFORE append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+var rowCount int = len(table.cols[colIndex].([][]uint8))
+where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new([]uint8)	// Pointer to zero value []uint8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]uint8), val.([]uint8)) %v", funcName(), colIndex, colIndex, *val))
 				table.cols[colIndex] = append(table.cols[colIndex].([][]uint8), *val)
 //				rowCount = len(table.cols[colIndex].([][]uint8))
-//where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
+where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			default:
 				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
 				return err
 		}
 	}
-//where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
+where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
 	return nil
 }

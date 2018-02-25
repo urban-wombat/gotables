@@ -689,8 +689,10 @@ debug.PrintStack()
 }
 
 		if table.RowCount() == 0 {
-where()
+where("AAA")
+where(table)
 			err = table.AppendRow()
+where("AAA")
 			if err != nil { t.Error(err) }
 where()
 if table.RowCount() != table.new_model_RowCount() {

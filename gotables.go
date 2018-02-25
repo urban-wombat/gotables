@@ -566,24 +566,32 @@ func (table *Table) AppendRows(howMany int) error {
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
 where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
-	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+where("AAA")
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) } 
+
+where("AAA")
+	if new_model {
+where("AAA")
+		err := table.new_model_AppendRow()
+		if err != nil { return err }
 	}
 
 where()
+where("AAA")
 	err := table.appendRowOfNil()
 	if err != nil { return err }
 
 where()
+where("AAA")
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
+where("AAA")
 	err = table.SetRowCellsToZeroValue(rowIndex)
-	if err != nil { return err }
-
-where()
-	if new_model {
-		table.new_model_AppendRow()
-		if err != nil { return err }
+where("AAA")
+	if err != nil {
+where("AAA")
+where(err)
+		return err
 	}
 
 	return nil
@@ -632,16 +640,14 @@ func (table *Table) SetAllFloatCellsToNaN() error {
 
 // Set all cells in this row to their zero value, such as 0, "", or false.
 func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
-	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
 	var err error
 
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+where("AAA")
 		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
-		if err != nil {
-			return err
-		}
+		if err != nil { return err }
 	}
 
 	return nil
