@@ -2278,12 +2278,14 @@ where(fmt.Sprintf("%s()", funcName()))
 	return table.rows[rowIndex], nil	// rowMap()
 }
 
+/*	Replaced by helper function.
 func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
 func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
 	if table == nil {
@@ -2292,12 +2294,14 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue str
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+/*	Replaced by helper function.
 func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
 func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
 	if table == nil {
@@ -2306,20 +2310,25 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+/*	Replaced by helper function.
 func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8()
 func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 	if table == nil {
@@ -2327,7 +2336,9 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8()
 func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	if table == nil {
@@ -2335,7 +2346,9 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
 func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error {
 	if table == nil {
@@ -2343,7 +2356,9 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8Slice()
 func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error {
 	if table == nil {
@@ -2351,55 +2366,70 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
 func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
 	if table == nil {
@@ -2496,12 +2526,14 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+/*	Replaced by helper function.
 func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
 func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
 	if table == nil {
@@ -2510,12 +2542,14 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
 
+/*	Replaced by helper function.
 func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetVal(colName, rowIndex, newValue)
 }
+*/
 
 func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
 	if table == nil {
@@ -3583,39 +3617,39 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 	if table.colNames == nil {
-		err = fmt.Errorf("ERROR %s(): table [%s] colNames == nil", funcName, table.tableName)
+		err = fmt.Errorf("ERROR %s(): table [%s] colNames == nil", funcName(), table.tableName)
 		debug.PrintStack()
 		return false, err
 	}
 	if table.colTypes == nil {
-		err = fmt.Errorf("ERROR %s(): table [%s] colTypes == nil", funcName, table.tableName)
+		err = fmt.Errorf("ERROR %s(): table [%s] colTypes == nil", funcName(), table.tableName)
 		debug.PrintStack()
 		return false, err
 	}
 	if table.colNamesLookup == nil {
-		err = fmt.Errorf("ERROR %s(): table [%s] colNamesLookup == nil", funcName, table.tableName)
+		err = fmt.Errorf("ERROR %s(): table [%s] colNamesLookup == nil", funcName(), table.tableName)
 		debug.PrintStack()
 		return false, err
 	}
 	if table.rows == nil {
-		err = fmt.Errorf("ERROR %s(): table [%s] rows == nil", funcName, table.tableName)
+		err = fmt.Errorf("ERROR %s(): table [%s] rows == nil", funcName(), table.tableName)
 		debug.PrintStack()
 		return false, err
 	}
 	if new_model {
 		if table.cols == nil {
-			err = fmt.Errorf("ERROR %s(): table [%s] cols == nil", funcName, table.tableName)
+			err = fmt.Errorf("ERROR %s(): table [%s] cols == nil", funcName(), table.tableName)
 			debug.PrintStack()
 			return false, err
 		}
 		if table.rowsIndex == nil {
-			err = fmt.Errorf("ERROR %s(): table [%s] rowsIndex == nil", funcName, table.tableName)
+			err = fmt.Errorf("ERROR %s(): table [%s] rowsIndex == nil", funcName(), table.tableName)
 			debug.PrintStack()
 			return false, err
 		}
 		if len(table.rowsIndex) != table.new_model_RowCount() {
 			err = fmt.Errorf("ERROR %s(): table [%s] len(table.rowsIndex) != table.new_model_RowCount()",
-				funcName, table.tableName)
+				funcName(), table.tableName)
 			debug.PrintStack()
 			return false, err
 		}
