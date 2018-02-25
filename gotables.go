@@ -1806,7 +1806,7 @@ where(fmt.Sprintf("%s(colName=%q, rowIndex=%d, val=%v)", funcName(), colName, ro
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]	// SetVal()
+	rowMap := table.rows[rowIndex]
 	rowMap[colName] = val
 
 	return nil
@@ -2679,8 +2679,8 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return false, fmt.Errorf("#2 table [%s] has %d row%s. Row index out of range (0..%d): %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
+		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index %d is out of range (0..%d): %d",
+			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex, table.RowCount()-1, rowIndex)
 	}
 	return true, nil
 }
@@ -2690,8 +2690,8 @@ func (table *Table) new_model_HasRow(rowIndex int) (bool, error) {
 		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	if rowIndex < 0 || rowIndex > table.new_model_RowCount()-1 {
-		return false, fmt.Errorf("#2 table [%s] has %d row%s. Row index out of range (0..%d): %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
+		return false, fmt.Errorf("#2b table [%s] has %d row%s. Row index %d is out of range (0..%d): %d",
+			table.Name(), table.new_model_RowCount(), plural(table.new_model_RowCount()), rowIndex, table.new_model_RowCount()-1, rowIndex)
 	}
 	return true, nil
 }
