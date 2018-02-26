@@ -1986,6 +1986,7 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]string)
 		col[rowIndex] = newValue
 	}
@@ -2010,6 +2011,7 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]bool)
 		col[rowIndex] = newValue
 	}
@@ -2034,6 +2036,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]int)
 		col[rowIndex] = newValue
 	}
@@ -2058,6 +2061,7 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]int8)
 		col[rowIndex] = newValue
 	}
@@ -2082,6 +2086,7 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]int16)
 		col[rowIndex] = newValue
 	}
@@ -2106,6 +2111,7 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]int32)
 		col[rowIndex] = newValue
 	}
@@ -2130,6 +2136,7 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]int64)
 		col[rowIndex] = newValue
 	}
@@ -2154,6 +2161,7 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]uint)
 		col[rowIndex] = newValue
 	}
@@ -2178,6 +2186,7 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]byte)
 		col[rowIndex] = newValue
 	}
@@ -2202,6 +2211,7 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]uint8)
 		col[rowIndex] = newValue
 	}
@@ -2226,6 +2236,7 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]uint16)
 		col[rowIndex] = newValue
 	}
@@ -2250,6 +2261,7 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]uint32)
 		col[rowIndex] = newValue
 	}
@@ -2274,6 +2286,7 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]uint64)
 		col[rowIndex] = newValue
 	}
@@ -2298,6 +2311,7 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]float32)
 		col[rowIndex] = newValue
 	}
@@ -2322,6 +2336,7 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([]float64)
 		col[rowIndex] = newValue
 	}
@@ -2346,6 +2361,7 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([][]byte)
 		col[rowIndex] = newValue
 	}
@@ -2370,6 +2386,7 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
+
 		col := table.cols[colIndex].([][]uint8)
 		col[rowIndex] = newValue
 	}

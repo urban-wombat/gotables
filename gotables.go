@@ -487,14 +487,15 @@ func NewTableFromMetadata(tableName string, colNames []string, colTypes []string
 		return nil, err
 	}
 
-	err = newTable.appendColNames(colNames)
-	if err != nil {
-		return nil, err
-	}
+	if new_model {
+		err = newTable.appendCols(colNames, colTypes)
+		if err != nil { return nil, err }
+	} else {
+		err = newTable.appendColNames(colNames)
+		if err != nil { return nil, err }
 
-	err = newTable.appendColTypes(colTypes)
-	if err != nil {
-		return nil, err
+		err = newTable.appendColTypes(colTypes)
+		if err != nil { return nil, err }
 	}
 
 	_, err = newTable.IsValidTable()
@@ -1763,11 +1764,10 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
 
-/*	RESTORE UNDELETE when doing further work on new data model.
-	// new memory model
-	err = table.new_model_DeleteColByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	if new_model {
+		err = table.new_model_DeleteColByColIndex(colIndex)
+		if err != nil { return err }
+	}
 
 	return nil
 }
