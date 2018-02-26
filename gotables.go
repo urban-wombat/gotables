@@ -50,7 +50,7 @@ func init() {
 }
 
 const old_model bool = true
-const new_model bool = false
+const new_model bool = true
 
 /*
 #####################################################################################
