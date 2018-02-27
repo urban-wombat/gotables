@@ -685,7 +685,7 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table
 		// After first col has been appended.
 if table.RowCount() != table.new_model_RowCount() {
 where(fmt.Sprintf("HEY1! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-debug.PrintStack()
+if debugging { debug.PrintStack() }
 }
 
 		if table.RowCount() == 0 {
@@ -697,12 +697,12 @@ where("AAA")
 where()
 if table.RowCount() != table.new_model_RowCount() {
 where(fmt.Sprintf("HEY2! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-debug.PrintStack()
+if debugging { debug.PrintStack() }
 }
 		}
 if table.RowCount() != table.new_model_RowCount() {
 where(fmt.Sprintf("HEY3! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-debug.PrintStack()
+if debugging { debug.PrintStack() }
 }
 		_, _ = table.IsValidTable()
 where()

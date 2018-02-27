@@ -47,8 +47,6 @@ SOFTWARE.
 */
 
 func init() {
-	log.SetFlags(log.Llongfile) // For var where
-
 	typeAliasMap = map[string]string {
 		"[]uint8" : "[]byte",
 		  "uint8" :   "byte",
@@ -56,8 +54,6 @@ func init() {
 //		  "int32" :   "rune",
 	}
 }
-
-var where = log.Print
 
 var globalLineNum int
 

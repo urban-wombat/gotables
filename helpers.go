@@ -841,7 +841,7 @@ where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
 func (table *Table) new_model_AppendCol(colName string, colType string) error {
 	// new memory model
 where(fmt.Sprintf("FFF %s(colName=%s, colType=%s)", funcName(), colName, colType))
-debug.PrintStack()
+if debugging { debug.PrintStack() }
 
 	var col interface{}
 
@@ -1161,14 +1161,16 @@ func (table *Table) new_model_RowCount() (rowCount int) {
 where(fmt.Sprintf("inside [%s].%s()", table.Name(), funcName()))
 // debug.PrintStack()
 
-	if table == nil {
-		_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): table is <nil>\n", funcSource(), funcName()))
-		return -1
-	}
+	if new_model {
+		if table == nil {
+			_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): table is <nil>\n", funcSource(), funcName()))
+			return -1
+		}
 
-	if table.cols == nil {
-		_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): [%s].cols = nil\n", funcSource(), table.Name(), funcName()))
-		return -1
+		if table.cols == nil {
+			_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): [%s].cols = nil\n", funcSource(), table.Name(), funcName()))
+			return -1
+		}
 	}
 
 	// Temporary check? This should never happen in production.
@@ -1187,7 +1189,7 @@ where(fmt.Sprintf("inside [%s].%s()", table.Name(), funcName()))
 	    }
 	}
 
-	if !new_model {
+	if new_model {
 		// Skip these checks. Old model will have already created table.colNames and table.colTypes
 
 		if len(table.colNames) != len(table.cols) {
