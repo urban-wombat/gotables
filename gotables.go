@@ -46,8 +46,8 @@ SOFTWARE.
 */
 
 const old_model bool = true
-const new_model bool = false
-const debugging bool = false
+const new_model bool = true
+const debugging bool = true
 
 var where = log.Print
 
@@ -2300,12 +2300,14 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 }
 */
 
+/*	Replaced by helper function.
 func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
 /*	Replaced by helper function.
 func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
@@ -2316,12 +2318,14 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 }
 */
 
+/*	Replaced by helper function.
 func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
 /*	Replaced by helper function.
 func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
@@ -2444,20 +2448,25 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 }
 */
 
+/*	Replaced by helper function.
 func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 	if table == nil {
@@ -2465,7 +2474,9 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
 	if table == nil {
@@ -2473,7 +2484,9 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte)
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
 	if table == nil {
@@ -2481,7 +2494,9 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue 
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be stored with SetUint8ByColIndex()
 func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
 	if table == nil {
@@ -2489,55 +2504,70 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
+/*	Replaced by helper function.
 func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
 /*	Replaced by helper function.
 func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
@@ -2548,12 +2578,14 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 }
 */
 
+/*	Replaced by helper function.
 func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
 /*	Replaced by helper function.
 func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
@@ -2564,12 +2596,14 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 }
 */
 
+/*	Replaced by helper function.
 func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 	return table.SetValByColIndex(colIndex, rowIndex, newValue)
 }
+*/
 
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.

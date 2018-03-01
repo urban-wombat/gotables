@@ -1969,7 +1969,9 @@ where(fmt.Sprintf("new_model_ColCount() = %d", table.new_model_ColCount()))
 	return nil
 }
 
-// Set<type> functions for each of 17 types.
+//	-------------------------------------------------------
+//	Set<type>() functions for each of 17 types.
+//	-------------------------------------------------------
 
 //	Set table cell in colName at rowIndex to newValue string
 func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
@@ -2389,6 +2391,384 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return err }
 
+		col := table.cols[colIndex].([][]uint8)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	-----------------------------------------------------------------
+//	Set<type>ByColIndex() functions for each of 17 types.
+//	-----------------------------------------------------------------
+
+//	Set table cell in colIndex at rowIndex to newValue string
+func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]string)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue bool
+func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]bool)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int
+func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int8
+func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int8)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int16
+func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int16)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int32
+func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int32)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int64
+func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int64)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint
+func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue byte
+func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]byte)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint8
+func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint8)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint16
+func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint16)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint32
+func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint32)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint64
+func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint64)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float32
+func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]float32)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float64
+func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]float64)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue []byte
+func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([][]byte)
+		col[rowIndex] = newValue
+	}
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue []uint8
+func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	// old_model
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	// new_model
+	if new_model {
 		col := table.cols[colIndex].([][]uint8)
 		col[rowIndex] = newValue
 	}
