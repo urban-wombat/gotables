@@ -2776,3 +2776,568 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 	return nil
 }
 
+//	-------------------------------------------------------
+//	Get<type>() functions for each of 17 types.
+//	-------------------------------------------------------
+
+//	Get string table cell from colName at rowIndex
+func (table *Table) GetString(colName string, rowIndex int) (value string, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(string)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]string)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get bool table cell from colName at rowIndex
+func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(bool)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]bool)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get int table cell from colName at rowIndex
+func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(int)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]int)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get int8 table cell from colName at rowIndex
+func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(int8)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]int8)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get int16 table cell from colName at rowIndex
+func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(int16)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]int16)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get int32 table cell from colName at rowIndex
+func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(int32)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]int32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get int64 table cell from colName at rowIndex
+func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(int64)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]int64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get uint table cell from colName at rowIndex
+func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(uint)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]uint)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get byte table cell from colName at rowIndex
+func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(byte)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]byte)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get uint8 table cell from colName at rowIndex
+func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(uint8)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]uint8)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get uint16 table cell from colName at rowIndex
+func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(uint16)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]uint16)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get uint32 table cell from colName at rowIndex
+func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(uint32)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]uint32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get uint64 table cell from colName at rowIndex
+func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(uint64)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]uint64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get float32 table cell from colName at rowIndex
+func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(float32)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]float32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get float64 table cell from colName at rowIndex
+func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.(float64)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([]float64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get []byte table cell from colName at rowIndex
+func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.([]byte)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([][]byte)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Get []uint8 table cell from colName at rowIndex
+func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, err error) {
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	old_model_value, valid := interfaceType.([]uint8)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	// new_model
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return value, err}
+
+		col := table.cols[colIndex].([][]uint8)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != value {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+

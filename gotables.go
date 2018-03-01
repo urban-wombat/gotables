@@ -2743,6 +2743,7 @@ func (table *Table) new_model_HasRow(rowIndex int) (bool, error) {
 	return true, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetString(colName string, rowIndex int) (string, error) {
 
 	var err error
@@ -2766,6 +2767,7 @@ func (table *Table) GetString(colName string, rowIndex int) (string, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	const zeroVal = ""
@@ -2786,6 +2788,7 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (string, err
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetFloat32(colName string, rowIndex int) (float32, error) {
 	const zeroVal = 0.0
 	if table == nil {
@@ -2804,6 +2807,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (float32, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32, error) {
 	const zeroVal = 0.0
@@ -2824,6 +2828,7 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (float32, e
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetFloat64(colName string, rowIndex int) (float64, error) {
 	const zeroVal = 0.0
 	if table == nil {
@@ -2842,6 +2847,7 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (float64, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64, error) {
 	const zeroVal = 0.0
@@ -2862,6 +2868,7 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (float64, e
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetUint(colName string, rowIndex int) (uint, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -2880,6 +2887,7 @@ func (table *Table) GetUint(colName string, rowIndex int) (uint, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (uint, error) {
 	const zeroVal = 0
@@ -2900,6 +2908,7 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (uint, error) 
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetInt(colName string, rowIndex int) (int, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -2918,6 +2927,7 @@ func (table *Table) GetInt(colName string, rowIndex int) (int, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
 	const zeroVal = 0
@@ -2938,6 +2948,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (int, error) {
 	return val, nil
 }
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be gotten with GetUint8()
 func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 	const zeroVal = 0
@@ -2957,6 +2968,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (uint8, error) {
 
 	return val, err
 }
+*/
 
 // byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
 func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error) {
@@ -2978,6 +2990,7 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (uint8, error
 	return val, nil
 }
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be gotten with GetUint8()
 func (table *Table) GetByte(colName string, rowIndex int) (byte, error) {
 	const zeroVal = 0
@@ -2997,6 +3010,7 @@ func (table *Table) GetByte(colName string, rowIndex int) (byte, error) {
 
 	return val, err
 }
+*/
 
 // byte is an alias for uint8, so byte values can be gotten with GetUint8ByColIndex()
 func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (byte, error) {
@@ -3018,6 +3032,7 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (byte, error) 
 	return val, nil
 }
 
+/*	Replaced by helper function.
 // []byte is an []alias for uint8, so byte values can be gotten with GetUint8Slice()
 func (table *Table) GetUint8Slice(colName string, rowIndex int) ([]uint8, error) {
 	var zeroVal []uint8 = []uint8{}
@@ -3037,6 +3052,7 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) ([]uint8, error)
 
 	return val, err
 }
+*/
 
 // byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
 func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) ([]uint8, error) {
@@ -3058,6 +3074,7 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) ([]uint8
 	return val, nil
 }
 
+/*	Replaced by helper function.
 // byte is an alias for uint8, so byte values can be gotten with GetUint8Slice()
 func (table *Table) GetByteSlice(colName string, rowIndex int) ([]byte, error) {
 	var zeroVal []byte = []byte{}
@@ -3077,6 +3094,7 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) ([]byte, error) {
 
 	return val, err
 }
+*/
 
 // byte is an alias for uint8, so byte values can be gotten with GetUint8SliceByColIndex()
 func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) ([]byte, error) {
@@ -3098,6 +3116,7 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) ([]byte, 
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetUint16(colName string, rowIndex int) (uint16, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3116,6 +3135,7 @@ func (table *Table) GetUint16(colName string, rowIndex int) (uint16, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, error) {
 	const zeroVal = 0
@@ -3136,6 +3156,7 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (uint16, err
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetUint32(colName string, rowIndex int) (uint32, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3154,6 +3175,7 @@ func (table *Table) GetUint32(colName string, rowIndex int) (uint32, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, error) {
 	const zeroVal = 0
@@ -3174,6 +3196,7 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (uint32, err
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetUint64(colName string, rowIndex int) (uint64, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3192,6 +3215,7 @@ func (table *Table) GetUint64(colName string, rowIndex int) (uint64, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, error) {
 	const zeroVal = 0
@@ -3212,6 +3236,7 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (uint64, err
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetInt8(colName string, rowIndex int) (int8, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3230,6 +3255,7 @@ func (table *Table) GetInt8(colName string, rowIndex int) (int8, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error) {
 	const zeroVal = 0
@@ -3250,6 +3276,7 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (int8, error) 
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetInt16(colName string, rowIndex int) (int16, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3268,6 +3295,7 @@ func (table *Table) GetInt16(colName string, rowIndex int) (int16, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, error) {
 	const zeroVal = 0
@@ -3288,6 +3316,7 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (int16, error
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetInt32(colName string, rowIndex int) (int32, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3306,6 +3335,7 @@ func (table *Table) GetInt32(colName string, rowIndex int) (int32, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, error) {
 	const zeroVal = 0
@@ -3326,6 +3356,7 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (int32, error
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetInt64(colName string, rowIndex int) (int64, error) {
 	const zeroVal = 0
 	if table == nil {
@@ -3344,6 +3375,7 @@ func (table *Table) GetInt64(colName string, rowIndex int) (int64, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, error) {
 	const zeroVal = 0
@@ -3364,6 +3396,7 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (int64, error
 	return val, nil
 }
 
+/*	Replaced by helper function.
 func (table *Table) GetBool(colName string, rowIndex int) (bool, error) {
 	const zeroVal = false
 	if table == nil {
@@ -3382,6 +3415,7 @@ func (table *Table) GetBool(colName string, rowIndex int) (bool, error) {
 
 	return val, err
 }
+*/
 
 func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (bool, error) {
 	const zeroVal = false
