@@ -2803,7 +2803,7 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 		col := table.cols[colIndex].([]string)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -2836,7 +2836,7 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 		col := table.cols[colIndex].([]bool)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -2869,7 +2869,7 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 		col := table.cols[colIndex].([]int)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -2902,7 +2902,7 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 		col := table.cols[colIndex].([]int8)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -2935,7 +2935,7 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 		col := table.cols[colIndex].([]int16)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -2968,7 +2968,7 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 		col := table.cols[colIndex].([]int32)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3001,7 +3001,7 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 		col := table.cols[colIndex].([]int64)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3034,7 +3034,7 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 		col := table.cols[colIndex].([]uint)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3067,7 +3067,7 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 		col := table.cols[colIndex].([]byte)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3100,7 +3100,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 		col := table.cols[colIndex].([]uint8)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3133,7 +3133,7 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 		col := table.cols[colIndex].([]uint16)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3166,7 +3166,7 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 		col := table.cols[colIndex].([]uint32)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3199,7 +3199,7 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 		col := table.cols[colIndex].([]uint64)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3232,7 +3232,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 		col := table.cols[colIndex].([]float32)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3265,7 +3265,7 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 		col := table.cols[colIndex].([]float64)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
+		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
 	}
@@ -3298,9 +3298,7 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 		col := table.cols[colIndex].([][]byte)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-		}
+		new_model_value = new_model_value	// Avoid compiler error.
 	}
 
 	value = old_model_value
@@ -3331,9 +3329,7 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 		col := table.cols[colIndex].([][]uint8)
 		new_model_value := col[rowIndex]
 
-		if new_model_value != value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-		}
+		new_model_value = new_model_value	// Avoid compiler error.
 	}
 
 	value = old_model_value
