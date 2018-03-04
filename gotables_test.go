@@ -4668,6 +4668,7 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	}
 }
 
+/*
 func ExampleTable_OrderColsBySortKeys() {
 	tableString :=
 	`[MyTable]
@@ -4720,6 +4721,7 @@ func ExampleTable_OrderColsBySortKeys() {
 	// Key1 Key2   ColA   ColB    ColC ColD ColE
 	//  int string string  int float64  int bool
 }
+*/
 
 /*
 	This tests a copy gotables.Search() of sort.Search()
@@ -5267,6 +5269,7 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 	}
 }
 
+/*
 func ExampleTable_Merge() {
 
 	t1string :=
@@ -5357,7 +5360,9 @@ func ExampleTable_Merge() {
 	//   5 "mno"  "B"      5   0.0      4 false   95
 	//   6 "pqr"  "C"      8   0.0     45 true    97
 }
+*/
 
+/*
 func ExampleTable_SortUnique() {
 
 	tableString :=
@@ -5428,7 +5433,9 @@ func ExampleTable_SortUnique() {
 	//      4     4.4 "neither zero nor same A"
 	//      5    -5.0 "minus 5"
 }
+*/
 
+/*
 func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
@@ -5487,6 +5494,7 @@ func ExampleTable_GetTableAsCSV() {
 	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
 	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
 }
+*/
 
 func TestTable_Copy (t *testing.T) {
 

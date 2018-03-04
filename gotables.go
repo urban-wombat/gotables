@@ -46,8 +46,8 @@ SOFTWARE.
 */
 
 const old_model bool = true
-const new_model bool = true
-const debugging bool = true
+const new_model bool = false
+const debugging bool = false
 
 var where = log.Print
 

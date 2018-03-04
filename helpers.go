@@ -5,9 +5,10 @@ package gotables
 */
 
 import (
-	"runtime/debug"
+	"bytes"
 	"fmt"
 	"os"
+	"runtime/debug"
 )
 
 /*
@@ -1157,7 +1158,7 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount())
 /*
 	Return the number of rows in this table.
 */
-func (table *Table) new_model_RowCount() (rowCount int) {
+func (table *Table) new_model_checkRowCount() (rowCount int) {
 where(fmt.Sprintf("inside [%s].%s()", table.Name(), funcName()))
 // debug.PrintStack()
 
@@ -1506,6 +1507,304 @@ where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex
 
 where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
 	rowCount = modelRowCount
+
+	return
+}
+
+/*
+	Return the number of rows in this table.
+*/
+func (table *Table) new_model_RowCount() (rowCount int) {
+where(fmt.Sprintf("inside [%s].%s()", table.Name(), funcName()))
+// debug.PrintStack()
+
+	if new_model {
+		if table == nil {
+			_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): table is <nil>\n", funcSource(), funcName()))
+			return -1
+		}
+
+		if table.cols == nil {
+			_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(): [%s].cols = nil\n", funcSource(), table.Name(), funcName()))
+			return -1
+		}
+	}
+
+	if len(table.cols) == 0 {
+		// Avoid index out of range indexing into table.cols in switch statement.
+		// This implies rows cannot be appended before at least one column has been appended.
+//debug.PrintStack()
+		rowCount = 0
+where(fmt.Sprintf("MIDDLE OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
+		return
+	}
+// where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
+
+	var modelRowCount int = -1
+	var prevModelRowCount int = -1
+
+// debug.PrintStack()
+where(fmt.Sprintf("len(table.colNames) = %d", len(table.colNames)))
+where(fmt.Sprintf("len(table.cols) = %d", len(table.cols)))
+
+	for colIndex := 0; colIndex < len(table.cols); colIndex++ {
+
+where(fmt.Sprintf("YYY [%s] colNames = %v", table.Name(), table.colNames))
+where(fmt.Sprintf("YYY [%s] colTypes = %v", table.Name(), table.colTypes))
+where(fmt.Sprintf("YYY [%s] table.cols = %v", table.Name(), table.cols))
+where(fmt.Sprintf("YYY [%s] len(table.cols) = %d", table.Name(), len(table.cols)))
+where(fmt.Sprintf("YYY [%s] colIndex = %d", table.Name(), colIndex))
+
+		colType := table.colTypes[colIndex]
+
+		switch colType {
+			case "string":
+				modelRowCount = len(table.cols[colIndex].([]string))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "bool":
+				modelRowCount = len(table.cols[colIndex].([]bool))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "int":
+				modelRowCount = len(table.cols[colIndex].([]int))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "int8":
+				modelRowCount = len(table.cols[colIndex].([]int8))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "int16":
+				modelRowCount = len(table.cols[colIndex].([]int16))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "int32":
+				modelRowCount = len(table.cols[colIndex].([]int32))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "int64":
+				modelRowCount = len(table.cols[colIndex].([]int64))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "uint":
+				modelRowCount = len(table.cols[colIndex].([]uint))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "byte":
+				modelRowCount = len(table.cols[colIndex].([]byte))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "uint8":
+				modelRowCount = len(table.cols[colIndex].([]uint8))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "uint16":
+				modelRowCount = len(table.cols[colIndex].([]uint16))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "uint32":
+				modelRowCount = len(table.cols[colIndex].([]uint32))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "uint64":
+				modelRowCount = len(table.cols[colIndex].([]uint64))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "float32":
+				modelRowCount = len(table.cols[colIndex].([]float32))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "float64":
+				modelRowCount = len(table.cols[colIndex].([]float64))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "[]byte":
+				modelRowCount = len(table.cols[colIndex].([][]byte))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			case "[]uint8":
+				modelRowCount = len(table.cols[colIndex].([][]uint8))
+where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex, modelRowCount))
+				if prevModelRowCount > -1 && modelRowCount != prevModelRowCount {
+					panic(fmt.Errorf("%s(): col %s (prevModelRowCount) %d != col %s modelRowCount %d ([%s].RowCount() = %d)",
+						funcName(),
+						table.colNames[colIndex-1],
+						prevModelRowCount,
+						table.colNames[colIndex],
+						modelRowCount,
+						table.Name(),
+						table.RowCount()))
+				}
+				prevModelRowCount = modelRowCount
+			default:
+				_,_ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR IN %s(): unknown type: %s\n", funcSource(), funcName(), colType))
+				return -1
+		}
+	}
+
+where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
+	rowCount = modelRowCount
+
 	return
 }
 
@@ -2802,6 +3101,7 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 
 		col := table.cols[colIndex].([]string)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -2835,6 +3135,7 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 
 		col := table.cols[colIndex].([]bool)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -2868,6 +3169,7 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 
 		col := table.cols[colIndex].([]int)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -2901,6 +3203,7 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 
 		col := table.cols[colIndex].([]int8)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -2934,6 +3237,7 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 
 		col := table.cols[colIndex].([]int16)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -2967,6 +3271,7 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 
 		col := table.cols[colIndex].([]int32)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3000,6 +3305,7 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 
 		col := table.cols[colIndex].([]int64)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3033,6 +3339,7 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 
 		col := table.cols[colIndex].([]uint)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3066,6 +3373,7 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 
 		col := table.cols[colIndex].([]byte)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3099,6 +3407,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 
 		col := table.cols[colIndex].([]uint8)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3132,6 +3441,7 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 
 		col := table.cols[colIndex].([]uint16)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3165,6 +3475,7 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 
 		col := table.cols[colIndex].([]uint32)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3198,6 +3509,7 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 
 		col := table.cols[colIndex].([]uint64)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3231,6 +3543,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 
 		col := table.cols[colIndex].([]float32)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3264,6 +3577,7 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 
 		col := table.cols[colIndex].([]float64)
 		new_model_value := col[rowIndex]
+		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
@@ -3297,8 +3611,11 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 
 		col := table.cols[colIndex].([][]byte)
 		new_model_value := col[rowIndex]
-
 		new_model_value = new_model_value	// Avoid compiler error.
+
+		if !bytes.Equal(new_model_value, old_model_value) {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
 	}
 
 	value = old_model_value
@@ -3328,8 +3645,11 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 
 		col := table.cols[colIndex].([][]uint8)
 		new_model_value := col[rowIndex]
-
 		new_model_value = new_model_value	// Avoid compiler error.
+
+		if !bytes.Equal(new_model_value, old_model_value) {
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
 	}
 
 	value = old_model_value
