@@ -3613,6 +3613,7 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 		new_model_value := col[rowIndex]
 		new_model_value = new_model_value	// Avoid compiler error.
 
+		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
 		if !bytes.Equal(new_model_value, old_model_value) {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
@@ -3647,6 +3648,7 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 		new_model_value := col[rowIndex]
 		new_model_value = new_model_value	// Avoid compiler error.
 
+		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
 		if !bytes.Equal(new_model_value, old_model_value) {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
 		}
