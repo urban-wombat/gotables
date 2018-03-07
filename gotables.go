@@ -46,8 +46,8 @@ SOFTWARE.
 */
 
 const old_model bool = true
-const new_model bool = false
-const debugging bool = false
+const new_model bool = true
+const debugging bool = true
 
 var where = log.Print
 
@@ -523,7 +523,7 @@ where(fmt.Sprintf("%s()", funcName()))
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
-if debugging { debug.PrintStack() }
+//if debugging { debug.PrintStack() }
 
 /*	RESTORE UNDELETE when doing further work on new data model.
 if table.RowCount() != table.new_model_RowCount() {
@@ -1829,7 +1829,7 @@ where(fmt.Sprintf("%s(colName=%q, rowIndex=%d, val=%v)", funcName(), colName, ro
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 where(fmt.Sprintf("%s(colIndex=%d, rowIndex=%d, val=%v)", funcName(), colIndex, rowIndex, val))
-if debugging { debug.PrintStack() }
+//if debugging { debug.PrintStack() }
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
@@ -2253,7 +2253,7 @@ func (table *Table) ColCount() int {
 		if colsCount != colNamesCount {
 where(fmt.Sprintf("ERROR: table.%s(): len(table.colNames) %d != len(table.cols) %d\n",
 		funcName(), colNamesCount, colsCount))
-if debugging { debug.PrintStack() }
+// if debugging { debug.PrintStack() }
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("ERROR: table.%s(): len(table.colNames) %d != len(table.cols) %d\n",
 			funcName(), colNamesCount, colsCount))
 		}

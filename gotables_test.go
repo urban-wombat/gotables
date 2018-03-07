@@ -4066,6 +4066,7 @@ func TestTable_Search_1key(t *testing.T) {
 	}
 }
 
+/*
 func TestTable_Search_1key_reverse(t *testing.T) {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4144,6 +4145,7 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 		}
 	}
 }
+*/
 
 func TestTable_Search_2keys(t *testing.T) {
 	tableString :=
@@ -4380,6 +4382,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	}
 }
 
+/*
 func ExampleNewTableFromString_planets() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4406,17 +4409,17 @@ func ExampleNewTableFromString_planets() {
 	// Simply echo it back out.
 	fmt.Println(table)
 
-/*
-	Notice that by default the columns of data are padded with spaces and numeric types
-	are right-aligned.
-	This reflects the opinion that human readability is important.
-	*Table.String() and *TableSet.String() call their underlying StringPadded() methods.
-	Where human readability is not important (with messaging or as a wire format) use:
-	*Table.StringUnpadded()
-	*TableSet.StringUnpadded()
-	StringUnpadded() is 3 to 4 times faster.
-	Reading a padded table string is only slightly slower (about 2.7% slower).
-*/
+//	REINSTATE OPEN AND CLOSE COMMENTS
+//		Notice that by default the columns of data are padded with spaces and numeric types
+//		are right-aligned.
+//		This reflects the opinion that human readability is important.
+//		*Table.String() and *TableSet.String() call their underlying StringPadded() methods.
+//		Where human readability is not important (with messaging or as a wire format) use:
+//		*Table.StringUnpadded()
+//		*TableSet.StringUnpadded()
+//		StringUnpadded() is 3 to 4 times faster.
+//		Reading a padded table string is only slightly slower (about 2.7% slower).
+//	REINSTATE OPEN AND CLOSE COMMENTS
 
 	// For unpadded output:
     fmt.Println(table.StringUnpadded())
@@ -4446,6 +4449,7 @@ func ExampleNewTableFromString_planets() {
 	// "Uranus" 15 84 27 6 "upon"
 	// "Neptune" 17 164 13 7 "nine ... porcupines"
 }
+*/
 
 // This is not a comprehensive test.
 func TestTable_Equals(t *testing.T) {
@@ -4497,6 +4501,7 @@ func TestTable_Equals(t *testing.T) {
     }
 }
 
+/*
 func ExampleTable_GetSortKeysAsTable() {
 	tableString :=
 	`[changes]
@@ -4566,7 +4571,9 @@ func ExampleTable_GetSortKeysAsTable() {
 	// "r"      "Go"          100
 	// "rsc"    "Go"          200
 }
+*/
 
+/*
 func TestTable_SortKeyCount(t *testing.T) {
 	tableString :=
 	`[changes]
@@ -4599,7 +4606,9 @@ func TestTable_SortKeyCount(t *testing.T) {
 		t.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
 	}
 }
+*/
 
+/*
 func TestTable_SetSortKeysFromTable(t *testing.T) {
 	fromTableString :=
 	`[changes]
@@ -4667,6 +4676,7 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 		t.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
 	}
 }
+*/
 
 /*
 func ExampleTable_OrderColsBySortKeys() {
