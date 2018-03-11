@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"runtime/debug"
+//	"runtime/debug"
 )
 
 /*
@@ -634,13 +634,15 @@ where(fmt.Sprintf("AFTER  %s(): [%s].new_model_RowCount() = %d", funcName(), tab
 func (table *Table) new_model_rowsEqualRows() error {
 	// new memory model
 
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	old_model_rowCount := table.RowCount()
+
 	// Loop through all the cols defined in the table.
 	for colIndex, colName := range table.colNames {
 
 		colType, err := table.ColType(colName)
 		if err != nil { return err }
-
-		rowCount := table.RowCount()
 
 		switch colType {
 			case "string":
@@ -648,187 +650,187 @@ col := table.cols[colIndex].([]string)
 x := len(col)
 y := len(table.cols[colIndex].([]string))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]string)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] string len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]string)), table.RowCount()))
+				if len(table.cols[colIndex].([]string)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] string len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]string)), table.RowCount())
 				}
 			case "bool":
 col := table.cols[colIndex].([]bool)
 x := len(col)
 y := len(table.cols[colIndex].([]bool))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]bool)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] bool len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]bool)), table.RowCount()))
+				if len(table.cols[colIndex].([]bool)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] bool len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]bool)), table.RowCount())
 				}
 			case "int":
 col := table.cols[colIndex].([]int)
 x := len(col)
 y := len(table.cols[colIndex].([]int))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]int)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] int len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int)), table.RowCount()))
+				if len(table.cols[colIndex].([]int)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] int len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int)), table.RowCount())
 				}
 			case "int8":
 col := table.cols[colIndex].([]int8)
 x := len(col)
 y := len(table.cols[colIndex].([]int8))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]int8)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] int8 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int8)), table.RowCount()))
+				if len(table.cols[colIndex].([]int8)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] int8 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int8)), table.RowCount())
 				}
 			case "int16":
 col := table.cols[colIndex].([]int16)
 x := len(col)
 y := len(table.cols[colIndex].([]int16))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]int16)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] int16 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int16)), table.RowCount()))
+				if len(table.cols[colIndex].([]int16)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] int16 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int16)), table.RowCount())
 				}
 			case "int32":
 col := table.cols[colIndex].([]int32)
 x := len(col)
 y := len(table.cols[colIndex].([]int32))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]int32)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] int32 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int32)), table.RowCount()))
+				if len(table.cols[colIndex].([]int32)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] int32 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int32)), table.RowCount())
 				}
 			case "int64":
 col := table.cols[colIndex].([]int64)
 x := len(col)
 y := len(table.cols[colIndex].([]int64))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]int64)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] int64 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int64)), table.RowCount()))
+				if len(table.cols[colIndex].([]int64)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] int64 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]int64)), table.RowCount())
 				}
 			case "uint":
 col := table.cols[colIndex].([]uint)
 x := len(col)
 y := len(table.cols[colIndex].([]uint))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]uint)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] uint len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint)), table.RowCount()))
+				if len(table.cols[colIndex].([]uint)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] uint len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint)), table.RowCount())
 				}
 			case "byte":
 col := table.cols[colIndex].([]byte)
 x := len(col)
 y := len(table.cols[colIndex].([]byte))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]byte)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] byte len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]byte)), table.RowCount()))
+				if len(table.cols[colIndex].([]byte)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] byte len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]byte)), table.RowCount())
 				}
 			case "uint8":
 col := table.cols[colIndex].([]uint8)
 x := len(col)
 y := len(table.cols[colIndex].([]uint8))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]uint8)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] uint8 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint8)), table.RowCount()))
+				if len(table.cols[colIndex].([]uint8)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] uint8 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint8)), table.RowCount())
 				}
 			case "uint16":
 col := table.cols[colIndex].([]uint16)
 x := len(col)
 y := len(table.cols[colIndex].([]uint16))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]uint16)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] uint16 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint16)), table.RowCount()))
+				if len(table.cols[colIndex].([]uint16)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] uint16 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint16)), table.RowCount())
 				}
 			case "uint32":
 col := table.cols[colIndex].([]uint32)
 x := len(col)
 y := len(table.cols[colIndex].([]uint32))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]uint32)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] uint32 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint32)), table.RowCount()))
+				if len(table.cols[colIndex].([]uint32)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] uint32 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint32)), table.RowCount())
 				}
 			case "uint64":
 col := table.cols[colIndex].([]uint64)
 x := len(col)
 y := len(table.cols[colIndex].([]uint64))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]uint64)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] uint64 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint64)), table.RowCount()))
+				if len(table.cols[colIndex].([]uint64)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] uint64 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]uint64)), table.RowCount())
 				}
 			case "float32":
 col := table.cols[colIndex].([]float32)
 x := len(col)
 y := len(table.cols[colIndex].([]float32))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]float32)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] float32 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]float32)), table.RowCount()))
+				if len(table.cols[colIndex].([]float32)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] float32 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]float32)), table.RowCount())
 				}
 			case "float64":
 col := table.cols[colIndex].([]float64)
 x := len(col)
 y := len(table.cols[colIndex].([]float64))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([]float64)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] float64 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]float64)), table.RowCount()))
+				if len(table.cols[colIndex].([]float64)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] float64 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([]float64)), table.RowCount())
 				}
 			case "[]byte":
 col := table.cols[colIndex].([][]byte)
 x := len(col)
 y := len(table.cols[colIndex].([][]byte))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([][]byte)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] []byte len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([][]byte)), table.RowCount()))
+				if len(table.cols[colIndex].([][]byte)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] []byte len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([][]byte)), table.RowCount())
 				}
 			case "[]uint8":
 col := table.cols[colIndex].([][]uint8)
 x := len(col)
 y := len(table.cols[colIndex].([][]uint8))
 if x != y {
-where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
+where(fmt.Sprintf("NNN WARNING: x %d != y %d", x, y))
 }
-				if len(table.cols[colIndex].([][]uint8)) != rowCount {
-					panic(fmt.Sprintf("*** %s() table [%s] []uint8 len(table.cols[%d]) %d != table.RowCount() %d",
-						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([][]uint8)), table.RowCount()))
+				if len(table.cols[colIndex].([][]uint8)) != old_model_rowCount {
+					return fmt.Errorf("NNN %s() table [%s] []uint8 len(table.cols[%d]) %d != table.RowCount() %d",
+						funcName(), table.Name(), colIndex, len(table.cols[colIndex].([][]uint8)), table.RowCount())
 				}
 			default:
 				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
@@ -842,8 +844,9 @@ where(fmt.Sprintf("WARNING: x %d != y %d", x, y))
 func (table *Table) new_model_AppendCol(colName string, colType string) error {
 	// new memory model
 where(fmt.Sprintf("FFF %s(colName=%s, colType=%s)", funcName(), colName, colType))
-if debugging { debug.PrintStack() }
+// if debugging { debug.PrintStack() }
 
+	var err error
 	var col interface{}
 
 	// Make new column the same rowCount size as (any) existing columns.
@@ -961,6 +964,8 @@ where(fmt.Sprintf("%s(): len(col) = %d", funcName(), len((col).([][]uint8))))
 			err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
 			return err
 	}
+	_, err = table.IsValidTable()
+	if err != nil { return err }
 where(fmt.Sprintf("AFTER  append() in %s(): [%s].new_model_RowCount(%s, %s) = %d",
 funcName(), table.Name(), colName, colType, table.new_model_RowCount()))
 where(fmt.Sprintf("FFF ZZZ AFTER  table.cols = %v", table.cols))
@@ -988,18 +993,23 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount())
 
 	/*
 		new_model_AppendRow replaces need for appendRowOfNil() and SetRowCellsToZeroValue()
-		because Go initialises an element to zero value.
+		because Go initialises elements to zero value.
 	*/
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 where(fmt.Sprintf("table.new_model_ColCount() = %d", table.new_model_ColCount()))
 where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
+	_, err := table.IsValidTable()
+	if err != nil { return err }
+
 	if len(table.cols) == 0 {
 //debug.PrintStack()
 		return fmt.Errorf("[%s].%s(): cannot append row to table with zero cols",
 			table.Name(), funcName())
 	}
+
+	var rowCount int
 
 where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	for colIndex, colName := range table.colNames {
@@ -1010,7 +1020,7 @@ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount())
 where(fmt.Sprintf("[%s].%s", table.Name(), colName))
 		switch colType {
 			case "string":
-var rowCount int = len(table.cols[colIndex].([]string))
+				rowCount = len(table.cols[colIndex].([]string))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(string)	// Pointer to zero value string
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]string), val.(string)) %v", funcName(), colIndex, colIndex, *val))
@@ -1018,7 +1028,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]string), val.
 //				rowCount = len(table.cols[colIndex].([]string))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "bool":
-var rowCount int = len(table.cols[colIndex].([]bool))
+				rowCount = len(table.cols[colIndex].([]bool))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(bool)	// Pointer to zero value bool
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]bool), val.(bool)) %v", funcName(), colIndex, colIndex, *val))
@@ -1026,7 +1036,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]bool), val.(b
 //				rowCount = len(table.cols[colIndex].([]bool))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int":
-var rowCount int = len(table.cols[colIndex].([]int))
+				rowCount = len(table.cols[colIndex].([]int))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int)	// Pointer to zero value int
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int), val.(int)) %v", funcName(), colIndex, colIndex, *val))
@@ -1034,7 +1044,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int), val.(in
 //				rowCount = len(table.cols[colIndex].([]int))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int8":
-var rowCount int = len(table.cols[colIndex].([]int8))
+				rowCount = len(table.cols[colIndex].([]int8))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int8)	// Pointer to zero value int8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int8), val.(int8)) %v", funcName(), colIndex, colIndex, *val))
@@ -1042,7 +1052,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int8), val.(i
 //				rowCount = len(table.cols[colIndex].([]int8))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int16":
-var rowCount int = len(table.cols[colIndex].([]int16))
+				rowCount = len(table.cols[colIndex].([]int16))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int16)	// Pointer to zero value int16
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int16), val.(int16)) %v", funcName(), colIndex, colIndex, *val))
@@ -1050,7 +1060,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int16), val.(
 //				rowCount = len(table.cols[colIndex].([]int16))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int32":
-var rowCount int = len(table.cols[colIndex].([]int32))
+				rowCount = len(table.cols[colIndex].([]int32))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int32)	// Pointer to zero value int32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int32), val.(int32)) %v", funcName(), colIndex, colIndex, *val))
@@ -1058,7 +1068,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int32), val.(
 //				rowCount = len(table.cols[colIndex].([]int32))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "int64":
-var rowCount int = len(table.cols[colIndex].([]int64))
+				rowCount = len(table.cols[colIndex].([]int64))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(int64)	// Pointer to zero value int64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int64), val.(int64)) %v", funcName(), colIndex, colIndex, *val))
@@ -1066,7 +1076,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]int64), val.(
 //				rowCount = len(table.cols[colIndex].([]int64))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint":
-var rowCount int = len(table.cols[colIndex].([]uint))
+				rowCount = len(table.cols[colIndex].([]uint))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint)	// Pointer to zero value uint
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint), val.(uint)) %v", funcName(), colIndex, colIndex, *val))
@@ -1074,7 +1084,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint), val.(u
 //				rowCount = len(table.cols[colIndex].([]uint))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "byte":
-var rowCount int = len(table.cols[colIndex].([]byte))
+				rowCount = len(table.cols[colIndex].([]byte))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(byte)	// Pointer to zero value byte
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]byte), val.(byte)) %v", funcName(), colIndex, colIndex, *val))
@@ -1082,7 +1092,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]byte), val.(b
 //				rowCount = len(table.cols[colIndex].([]byte))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint8":
-var rowCount int = len(table.cols[colIndex].([]uint8))
+				rowCount = len(table.cols[colIndex].([]uint8))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint8)	// Pointer to zero value uint8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint8), val.(uint8)) %v", funcName(), colIndex, colIndex, *val))
@@ -1090,7 +1100,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint8), val.(
 //				rowCount = len(table.cols[colIndex].([]uint8))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint16":
-var rowCount int = len(table.cols[colIndex].([]uint16))
+				rowCount = len(table.cols[colIndex].([]uint16))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint16)	// Pointer to zero value uint16
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint16), val.(uint16)) %v", funcName(), colIndex, colIndex, *val))
@@ -1098,7 +1108,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint16), val.
 //				rowCount = len(table.cols[colIndex].([]uint16))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint32":
-var rowCount int = len(table.cols[colIndex].([]uint32))
+				rowCount = len(table.cols[colIndex].([]uint32))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint32)	// Pointer to zero value uint32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint32), val.(uint32)) %v", funcName(), colIndex, colIndex, *val))
@@ -1106,7 +1116,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint32), val.
 //				rowCount = len(table.cols[colIndex].([]uint32))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "uint64":
-var rowCount int = len(table.cols[colIndex].([]uint64))
+				rowCount = len(table.cols[colIndex].([]uint64))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(uint64)	// Pointer to zero value uint64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint64), val.(uint64)) %v", funcName(), colIndex, colIndex, *val))
@@ -1114,7 +1124,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]uint64), val.
 //				rowCount = len(table.cols[colIndex].([]uint64))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "float32":
-var rowCount int = len(table.cols[colIndex].([]float32))
+				rowCount = len(table.cols[colIndex].([]float32))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(float32)	// Pointer to zero value float32
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float32), val.(float32)) %v", funcName(), colIndex, colIndex, *val))
@@ -1122,7 +1132,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float32), val
 //				rowCount = len(table.cols[colIndex].([]float32))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "float64":
-var rowCount int = len(table.cols[colIndex].([]float64))
+				rowCount = len(table.cols[colIndex].([]float64))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new(float64)	// Pointer to zero value float64
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float64), val.(float64)) %v", funcName(), colIndex, colIndex, *val))
@@ -1130,7 +1140,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([]float64), val
 //				rowCount = len(table.cols[colIndex].([]float64))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "[]byte":
-var rowCount int = len(table.cols[colIndex].([][]byte))
+				rowCount = len(table.cols[colIndex].([][]byte))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new([]byte)	// Pointer to zero value []byte
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]byte), val.([]byte)) %v", funcName(), colIndex, colIndex, *val))
@@ -1138,7 +1148,7 @@ where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]byte), val.
 //				rowCount = len(table.cols[colIndex].([][]byte))
 where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcName(), rowCount))
 			case "[]uint8":
-var rowCount int = len(table.cols[colIndex].([][]uint8))
+				rowCount = len(table.cols[colIndex].([][]uint8))
 where(fmt.Sprintf("BEFORE append new row %s() rowCount = %d", funcName(), rowCount))
 				val := new([]uint8)	// Pointer to zero value []uint8
 where(fmt.Sprintf("%s(): table.cols[%d] = append(table.cols[%d].([][]uint8), val.([]uint8)) %v", funcName(), colIndex, colIndex, *val))
@@ -1151,6 +1161,12 @@ where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcN
 		}
 	}
 where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
+
+	_, err = table.IsValidTable()
+	if err != nil { return err }
+	table.rowsIndex = append(table.rowsIndex, rowCount-1)
+	_, err = table.IsValidTable()
+	if err != nil { return err }
 
 	return nil
 }
@@ -1505,7 +1521,7 @@ where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex
 		}
 	}
 
-where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
+where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), modelRowCount))
 	rowCount = modelRowCount
 
 	return
@@ -1802,7 +1818,7 @@ where(fmt.Sprintf("%s(): colIndex = %d modelRowCount = %d", funcName(), colIndex
 		}
 	}
 
-where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCount))
+where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), modelRowCount))
 	rowCount = modelRowCount
 
 	return
@@ -1813,19 +1829,29 @@ where(fmt.Sprintf("END OF FUNC [%s].%s() = %d", table.Name(), funcName(), rowCou
 */
 func (table *Table) new_model_DeleteRow(rowIndex int) error {
 	// new memory model
+where(funcName())
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	_, err := table.IsValidTable()
+	if err != nil { return err }
+
+where()
 	if len(table.cols) == 0 {
 		return fmt.Errorf("[%s].%s(): cannot delete rows from table with zero cols",
 			table.Name(), funcName())
 	}
 
+where()
 	if rowIndex < 0 || rowIndex > table.new_model_RowCount()-1 {
 		return fmt.Errorf("%s(): in table [%s] with %d rows, row index %d does not exist",
 			funcName(), table.tableName, table.new_model_RowCount(), rowIndex)
 	}
 
+	_, err = table.IsValidTable()
+	if err != nil { return err }
+
+where()
 	return table.new_model_DeleteRows(rowIndex, rowIndex)
 
 //where(fmt.Sprintf("BEFORE deleting row %d table.new_model_RowCount() = %d", rowIndex, table.new_model_RowCount()))
@@ -2037,6 +2063,7 @@ func (table *Table) new_model_DeleteColByColIndex(colIndex int) error {
 */
 func (table *Table) new_model_DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	// new memory model
+where(funcName())
 
 	if table == nil { return fmt.Errorf("(new model) table.%s(): table is <nil>", funcName()) }
 
@@ -2064,96 +2091,130 @@ where(fmt.Sprintf("BEFORE new_model_DeleteRows() new_model_RowCount() = %d", tab
 
 		colType, err := table.ColType(colName)
 		if err != nil { return err }
-// where(colIndex)
-// where(colName)
-// where(colType)
-// where(fmt.Sprintf("[%s] %d %s %s []col type = %T", table.Name(), colIndex, colName, colType, table.cols[colIndex]))
+where(colIndex)
+where(colName)
+where(colType)
+where(fmt.Sprintf("[%s] %d %s %s []col type = %T", table.Name(), colIndex, colName, colType, table.cols[colIndex]))
 
 		switch colType {
 			case "string":
 				col := table.cols[colIndex].([]string)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "bool":
 				col := table.cols[colIndex].([]bool)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int":
 				col := table.cols[colIndex].([]int)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int8":
 				col := table.cols[colIndex].([]int8)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int16":
 				col := table.cols[colIndex].([]int16)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int32":
 				col := table.cols[colIndex].([]int32)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int64":
 				col := table.cols[colIndex].([]int64)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint":
 				col := table.cols[colIndex].([]uint)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "byte":
 				col := table.cols[colIndex].([]byte)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint8":
 				col := table.cols[colIndex].([]uint8)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint16":
 				col := table.cols[colIndex].([]uint16)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint32":
 				col := table.cols[colIndex].([]uint32)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint64":
 				col := table.cols[colIndex].([]uint64)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "float32":
 				col := table.cols[colIndex].([]float32)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "float64":
 				col := table.cols[colIndex].([]float64)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "[]byte":
 				col := table.cols[colIndex].([][]byte)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "[]uint8":
 				col := table.cols[colIndex].([][]uint8)
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			default:
 				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
@@ -2161,6 +2222,15 @@ where(fmt.Sprintf("BEFORE new_model_DeleteRows() new_model_RowCount() = %d", tab
 		}
 	}
 where(fmt.Sprintf("AFTER  new_model_DeleteRows() new_model_RowCount() = %d", table.new_model_RowCount()))
+
+where("NNN BEFORE deleting from table.rowIndex")
+where(table.rowsIndex)
+	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+	table.rowsIndex = append(table.rowsIndex[:firstRowIndex], table.rowsIndex[lastRowIndex+1:]...)
+where("NNN AFTER  deleting from table.rowIndex")
+where(table.rowsIndex)
+	_, err := table.IsValidTable()
+	if err != nil { return err }
 
 	return nil
 }
@@ -3651,6 +3721,556 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
 		if !bytes.Equal(new_model_value, old_model_value) {
 			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	-----------------------------------------------------------------
+//	Get<type>ByColIndex() functions for each of 17 types.
+//	-----------------------------------------------------------------
+
+//	Set table cell in colIndex at rowIndex to newValue string
+func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value string, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(string)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]string)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue bool
+func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(bool)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]bool)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int
+func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(int)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int8
+func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(int8)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int8)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int16
+func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(int16)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int16)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int32
+func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(int32)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int64
+func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(int64)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]int64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint
+func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(uint)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue byte
+func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(byte)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]byte)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint8
+func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(uint8)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint8)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint16
+func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint16, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(uint16)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint16)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint32
+func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint32, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(uint32)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue uint64
+func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint64, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(uint64)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]uint64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float32
+func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value float32, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(float32)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]float32)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float64
+func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value float64, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.(float64)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([]float64)
+		new_model_value := col[rowIndex]
+
+		if new_model_value != old_model_value {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue []byte
+func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []byte, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.([]byte)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([][]byte)
+		new_model_value := col[rowIndex]
+
+		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
+		if !bytes.Equal(new_model_value, old_model_value) {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
+		}
+	}
+
+	value = old_model_value
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue []uint8
+func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value []uint8, err error) {
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	// old_model
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	old_model_value := interfaceValue.([]uint8)
+
+	// new_model
+	if new_model {
+		col := table.cols[colIndex].([][]uint8)
+		new_model_value := col[rowIndex]
+
+		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
+		if !bytes.Equal(new_model_value, old_model_value) {
+			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return
 		}
 	}
 
