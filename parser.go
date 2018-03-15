@@ -362,18 +362,8 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
 					if table.RowCount() == 0 {
-//where(fmt.Sprintf("[%s].appendRowOfNil()", table.Name()))
-where(fmt.Sprintf("%s() BEFORE table.RowCount() = %d", funcName(), table.RowCount()))
-where(fmt.Sprintf("%s() BEFORE table.new_model_RowCount() = %d", funcName(), table.new_model_RowCount()))
 						err = table.appendRowOfNil()
 						if err != nil { return nil, err }
-
-						if new_model {
-							err = table.new_model_AppendRow()
-							if err != nil { return nil, err }
-						}
-where(fmt.Sprintf("%s() AFTER  table.RowCount() = %d", funcName(), table.RowCount()))
-where(fmt.Sprintf("%s() AFTER  table.new_model_RowCount() = %d", funcName(), table.new_model_RowCount()))
 					}
 
 //where()

@@ -689,18 +689,12 @@ func TestSetAndGetFunctions(t *testing.T) {
 where()
 	{ // bool tests
 
-where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 		err = table.AppendCol("bVal", "bool")
 		if err != nil {
 			t.Error(err)
 		}
-where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 
-where(fmt.Sprintf("table.new_model_RowCount() = %d table.RowCount() = %d", table.new_model_RowCount(), table.RowCount()))
 		// After first col has been appended.
-if table.RowCount() != table.new_model_RowCount() {
-where(fmt.Sprintf("HEY1! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-if debugging { debug.PrintStack() }
 }
 
 		if table.RowCount() == 0 {
@@ -710,15 +704,6 @@ where(table)
 where("AAA")
 			if err != nil { t.Error(err) }
 where()
-if table.RowCount() != table.new_model_RowCount() {
-where(fmt.Sprintf("HEY2! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-if debugging { debug.PrintStack() }
-}
-		}
-if table.RowCount() != table.new_model_RowCount() {
-where(fmt.Sprintf("HEY3! table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-if debugging { debug.PrintStack() }
-}
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 where()
@@ -1966,14 +1951,12 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	}
 
 where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where(fmt.Sprintf("BEFORE [%s].table.new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
 where("\n" + table.String())
 	err = table.DeleteRow(0)
 	if err != nil {
 		t.Error(err)
 	}
 where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where(fmt.Sprintf("AFTER  [%s].table.new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
 where("\n" + table.String())
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
@@ -2100,10 +2083,8 @@ func TestDeleteRow(t *testing.T) {
 	const deleteRow = 4
 
 where(fmt.Sprintf("RRR BEFORE table.RowCount() = %d", table.RowCount()))
-where(fmt.Sprintf("RRR BEFORE table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	err = table.DeleteRow(deleteRow)
 where(fmt.Sprintf("RRR AFTER table.RowCount() = %d", table.RowCount()))
-where(fmt.Sprintf("RRR AFTER table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	if err != nil {
 		t.Error(err)
 	}
@@ -2479,9 +2460,7 @@ func ExampleTable_DeleteRows() {
 	if err != nil { log.Println(err) }
 
  where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
- where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	err = table.DeleteRows(4, 6)
- where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
  where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 _, err = table.IsValidTable()
 if err != nil { log.Println(err) }

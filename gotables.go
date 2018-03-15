@@ -568,13 +568,6 @@ where(fmt.Sprintf("%s()", funcName()))
 	}
 //if debugging { debug.PrintStack() }
 
-/*	RESTORE UNDELETE when doing further work on new data model.
-if table.RowCount() != table.new_model_RowCount() {
-//where(fmt.Sprintf("WHAT1? table.RowCount() %d != table.new_model_RowCount() %d", table.RowCount(), table.new_model_RowCount()))
-}
-//where(fmt.Sprintf("BEFORE table.RowCount() = %d", table.RowCount()))
-*/
-
 	newRow := make(tableRow)
 where(fmt.Sprintf("%s(%v): table.rows = append()", funcName(), newRow))
 	table.rows = append(table.rows, newRow)	// appendRowOfNil()
@@ -629,13 +622,6 @@ where("AAA")
 
 	_, err := table.IsValidTable()
 	if err != nil { return err }
-
-where("AAA")
-	if new_model {
-where("AAA")
-		err := table.new_model_AppendRow()
-		if err != nil { return err }
-	}
 
 where()
 where("AAA")
@@ -891,14 +877,6 @@ where(fmt.Sprintf("%s()", funcName()))
 	table.rows = append(table.rows, rowMap)	// appendRowMap()
 where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
 
-	if new_model {
-		// new memory model
-		// append an element to each cols slice.
-where(fmt.Sprintf("%s(): table.rows = append(table.rows, rowMap %v)", funcName(), rowMap))
-		err = table.new_model_appendRowMap(rowMap)
-		if err != nil { return err }
-	}
-
 	return nil
 }
 
@@ -919,12 +897,6 @@ where()
 where(fmt.Sprintf("%s() calling DeleteRows()", funcName()))
 	err = table.DeleteRows(rowIndex, rowIndex)
 	if err != nil { return nil }
-
-where()
-	if new_model {
-		err := table.new_model_DeleteRow(rowIndex)
-		if err != nil { return err }
-	}
 
 	_, err = table.IsValidTable()
 	if err != nil { return err }
@@ -993,19 +965,6 @@ where(fmt.Sprintf("%s(%d, %d): table.rows = append()", funcName(), firstRowIndex
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
 where(fmt.Sprintf("OOO AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
-
-where("OOO")
-	if new_model {
-where("OOO")
-where(fmt.Sprintf("OOO BEFORE [%s].new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
-where(fmt.Sprintf("OOO BEFORE [%s].new_model_DeleteRows(%d, %d)", table.Name(), firstRowIndex, lastRowIndex))
-where(fmt.Sprintf("%s() calling new_model_DeleteRows()", funcName()))
-		err := table.new_model_DeleteRows(firstRowIndex, lastRowIndex)
-if err != nil { debug.PrintStack() }
-where(fmt.Sprintf("OOO AFTER1 [%s].new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
-		if err != nil { return err }
-where(fmt.Sprintf("OOO AFTER2 [%s].new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
-	}
 
 	_, err = table.IsValidTable()
 	if err != nil {
@@ -1780,12 +1739,6 @@ where(fmt.Sprintf("[%s].%s(colName=%s, colType=%s)", table.Name(), funcName(), c
 	colIndex := len(table.colNames) - 1
 	table.colNamesLookup[colName] = colIndex
 
-	if new_model {
-where(fmt.Sprintf("About to call new_model_AppendCol(colName=%s, colType=%s)", colName, colType))
-		err := table.new_model_AppendCol(colName, colType)
-		if err != nil { return err }
-	}
-
 where()
 	err := table.SetColCellsToZeroValue(colName)
 	if err != nil { return err }
@@ -2090,24 +2043,6 @@ where(fmt.Sprintf("XXX6 table.cols = %v", table.cols))
 	return nil
 }
 
-// New memory model.
-func (table *Table) new_model_appendCols(colNames []string, colTypes []string) error {
-where(fmt.Sprintf("%s() [%s]", funcName(), table.Name()))
-	// new memory model
-where("before for")
-	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-where("after for")
-where(fmt.Sprintf("XXX4 colIndex = %d", colIndex))
-where(fmt.Sprintf("XXX4 table.colNames = %v", table.colNames))
-where(fmt.Sprintf("XXX4 table.colTypes = %v", table.colTypes))
-where(fmt.Sprintf("XXX4 table.cols = %v", table.cols))
-		err := table.new_model_AppendCol(table.colNames[colIndex], table.colTypes[colIndex])
-		if err != nil { return err }
-	}
-
-	return nil
-}
-
 type colInfo struct {
 	colName string
 	colType string
@@ -2367,9 +2302,8 @@ where(fmt.Sprintf("%s()", funcName()))
 		// os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s(): table is <nil>\n", funcSource(), funcName()))
 		return -1
 	}
-where(fmt.Sprintf("[%s].%s() = %d", table.Name(), funcName(), len(table.rows)))
-where(fmt.Sprintf("[%s].new_model_%s() = %d", table.Name(), funcName(), table.new_model_RowCount()))
-	return len(table.rows)	// RowCount()
+
+	return len(table.rows)
 }
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
@@ -2803,11 +2737,6 @@ func (table *Table) new_model_HasCellByColIndex(colIndex int, rowIndex int) (boo
 		return false, err
 	}
 
-	hasRow, err := table.new_model_HasRow(rowIndex)
-	if !hasRow {
-		return false, err
-	}
-
 	return true, nil
 }
 
@@ -2818,17 +2747,6 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index %d is out of range (0..%d): %d",
 			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex, table.RowCount()-1, rowIndex)
-	}
-	return true, nil
-}
-
-func (table *Table) new_model_HasRow(rowIndex int) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
-	if rowIndex < 0 || rowIndex > table.new_model_RowCount()-1 {
-		return false, fmt.Errorf("#2b table [%s] has %d row%s. Row index %d is out of range (0..%d): %d",
-			table.Name(), table.new_model_RowCount(), plural(table.new_model_RowCount()), rowIndex, table.new_model_RowCount()-1, rowIndex)
 	}
 	return true, nil
 }
@@ -3854,13 +3772,6 @@ func (table *Table) IsValidTable() (bool, error) {
 			return false, err
 		}
 
-		if len(table.rowsIndex) != table.new_model_RowCount() {
-			err = fmt.Errorf("ERROR %s(): table [%s] len(table.rowsIndex) %d != table.new_model_RowCount() %d",
-				funcName(), table.tableName, len(table.rowsIndex), table.new_model_RowCount())
-			if printstack && isvalidtable_printstack { where(err); debug.PrintStack(); where(err) }
-			return false, err
-		}
-
 		// Check that rowsIndex values are ordered and complete.
 		var rowsIndexCopy []int
 		copy(rowsIndexCopy, table.rowsIndex)
@@ -3937,27 +3848,6 @@ func (table *Table) IsValidTable() (bool, error) {
 			err = fmt.Errorf("table [%s].sortKeys[%d].sortFunc == nil", tableName, keyIndex)
 			return false, err
 		}
-	}
-
-	if new_model {
-		// new memory model
-		if table.new_model_ColCount() != table.ColCount() {
-			panic(fmt.Sprintf("IsValidTable() table [%s] table.new_model_ColCount() %d != table.ColCount() %d",
-				table.Name(), table.new_model_ColCount(), table.ColCount()))
-		}
-
-		// new memory model
-		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-			colType := table.colTypes[colIndex]
-			colsType := fmt.Sprintf("%T", table.cols[colIndex])[2:]	// Elide slice "[]"
-			if colType != colsType && !isAlias(colType, colsType) {
-panic(fmt.Sprintf("[%s] [%d] %s colType %s != (model) colsType %s", table.Name(), colIndex, table.colNames[colIndex], colType, colsType))
-			}
-		}
-
-		// new memory model
-		err = table.new_model_rowsEqualRows()
-		if err != nil { return false, err }
 	}
 
 	return true, nil
