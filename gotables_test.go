@@ -2103,7 +2103,11 @@ func TestDeleteRow(t *testing.T) {
 
 	const deleteRow = 4
 
+where(fmt.Sprintf("RRR BEFORE table.RowCount() = %d", table.RowCount()))
+where(fmt.Sprintf("RRR BEFORE table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	err = table.DeleteRow(deleteRow)
+where(fmt.Sprintf("RRR AFTER table.RowCount() = %d", table.RowCount()))
+where(fmt.Sprintf("RRR AFTER table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	if err != nil {
 		t.Error(err)
 	}
@@ -2478,7 +2482,11 @@ func ExampleTable_DeleteRows() {
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 
+ where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
+ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 	err = table.DeleteRows(4, 6)
+ where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
+ where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 _, err = table.IsValidTable()
 if err != nil { log.Println(err) }
 

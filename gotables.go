@@ -17,6 +17,7 @@ import (
 	"reflect"
 	"runtime"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -50,6 +51,7 @@ const new_model bool = true
 const debugging bool = true
 const printstack bool = true
 const isvalidtable_printstack bool = true
+const todo bool = true
 
 var where = log.Print
 
@@ -154,10 +156,12 @@ func (table *Table) WriteFile(fileName string, mode os.FileMode) error {
 // Read and parse a gotables string into a TableSet.
 func NewTableSetFromString(s string) (*TableSet, error) {
 	var p parser
+
 	tables, err := p.parseString(s)
 	if err != nil {
 		return nil, err
 	}
+
 	return tables, nil
 }
 
@@ -166,8 +170,8 @@ func NewTableSetFromString(s string) (*TableSet, error) {
 	If there's more than one table in the string, use NewTableFromStringByTableName() instead.
 */
 func NewTableFromString(s string) (*Table, error) {
-// where(fmt.Sprintf("*** NewTableSetFromString()"))
-// where(s)
+where(fmt.Sprintf("*** NewTableSetFromString()"))
+where(s)
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
 		return nil, err
@@ -591,8 +595,9 @@ where(fmt.Sprintf("%s(%v): table.rows = append()", funcName(), newRow))
 	return nil
 }
 
-// Note: Can append rows to an empty (no columns) table, and later append columns.
+// Note: Can append rows to an empty (no columns) table, and later append columns - but not for long!
 func (table *Table) AppendRows(howMany int) error {
+if debugging { where(funcName()) }
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	_, err := table.IsValidTable()
@@ -617,6 +622,7 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
+if debugging { where(funcName()) }
 where(fmt.Sprintf("[%s].%s()", table.Name(), funcName()))
 where("AAA")
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) } 
@@ -908,11 +914,9 @@ where(funcName())
 			funcName(), table.tableName, table.RowCount(), rowIndex)
 	}
 
+// DUPLICATE CALL?
 where()
-//	// From Ivo Balbaert p182 for deleting a single element from a slice.
-//	table.rows = append(table.rows[:rowIndex], table.rows[rowIndex+1:]...)
-
-where()
+where(fmt.Sprintf("%s() calling DeleteRows()", funcName()))
 	err = table.DeleteRows(rowIndex, rowIndex)
 	if err != nil { return nil }
 
@@ -937,6 +941,7 @@ func (table *Table) DeleteRowsAll() error {
 	if err != nil { return err }
 
 	if table.RowCount() > 0 {
+where(fmt.Sprintf("%s() calling DeleteRows()", funcName()))
 		err := table.DeleteRows(0, table.RowCount()-1)
 		if err != nil {
 			return err
@@ -972,7 +977,7 @@ if err != nil { debug.PrintStack() }
 
 	if firstRowIndex > lastRowIndex {
 if err != nil { debug.PrintStack() }
-		return fmt.Errorf("invalid row index range: firstRowIndex %d > lastRowIndex %d", firstRowIndex, lastRowIndex)
+		return fmt.Errorf("%s(): invalid row index range: firstRowIndex %d > lastRowIndex %d", funcName(), firstRowIndex, lastRowIndex)
 	}
 where(fmt.Sprintf("Deleting %d rows", lastRowIndex - firstRowIndex + 1))
 
@@ -982,22 +987,19 @@ where(fmt.Sprintf("Deleting %d rows", lastRowIndex - firstRowIndex + 1))
 		debug.PrintStack()
 	}
 
-where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
-	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+where(fmt.Sprintf("OOO BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
 where(fmt.Sprintf("%s(%d, %d): table.rows = append()", funcName(), firstRowIndex, lastRowIndex))
-	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)	// DeleteRows()
+	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
+	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
-	_, err = table.IsValidTable()
-	if err != nil {
-		return err
-		debug.PrintStack()
-	}
+where(fmt.Sprintf("OOO AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
 
-where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
-
+where("OOO")
 	if new_model {
+where("OOO")
 where(fmt.Sprintf("OOO BEFORE [%s].new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
-	// new memory model
+where(fmt.Sprintf("OOO BEFORE [%s].new_model_DeleteRows(%d, %d)", table.Name(), firstRowIndex, lastRowIndex))
+where(fmt.Sprintf("%s() calling new_model_DeleteRows()", funcName()))
 		err := table.new_model_DeleteRows(firstRowIndex, lastRowIndex)
 if err != nil { debug.PrintStack() }
 where(fmt.Sprintf("OOO AFTER1 [%s].new_model_RowCount() = %d", table.Name(), table.new_model_RowCount()))
@@ -1006,7 +1008,10 @@ where(fmt.Sprintf("OOO AFTER2 [%s].new_model_RowCount() = %d", table.Name(), tab
 	}
 
 	_, err = table.IsValidTable()
-	if err != nil { return err }
+	if err != nil {
+		return err
+		debug.PrintStack()
+	}
 
 	return nil
 }
@@ -3842,16 +3847,29 @@ func (table *Table) IsValidTable() (bool, error) {
 			if printstack && isvalidtable_printstack { where(err); debug.PrintStack(); where(err) }
 			return false, err
 		}
+
 		if table.rowsIndex == nil {
 			err = fmt.Errorf("ERROR %s(): table [%s] rowsIndex == nil", funcName(), table.tableName)
 			if printstack && isvalidtable_printstack { where(err); debug.PrintStack(); where(err) }
 			return false, err
 		}
+
 		if len(table.rowsIndex) != table.new_model_RowCount() {
 			err = fmt.Errorf("ERROR %s(): table [%s] len(table.rowsIndex) %d != table.new_model_RowCount() %d",
 				funcName(), table.tableName, len(table.rowsIndex), table.new_model_RowCount())
 			if printstack && isvalidtable_printstack { where(err); debug.PrintStack(); where(err) }
 			return false, err
+		}
+
+		// Check that rowsIndex values are ordered and complete.
+		var rowsIndexCopy []int
+		copy(rowsIndexCopy, table.rowsIndex)
+		sort.Ints(rowsIndexCopy)
+		for i := 0; i < len(rowsIndexCopy); i++ {
+			if rowsIndexCopy[i] != i {
+				err = fmt.Errorf("ERROR %s(): table [%s] rowsIndex is invalid: %v", funcName(), table.tableName, table.rowsIndex)
+				return false, err
+			}
 		}
 	}
 
@@ -4525,6 +4543,8 @@ func (table *Table) AppendColsFromTable(fromTable *Table) error {
 }
 
 func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRow int) error {
+if debugging { where(funcName()) }
+if todo { where(fmt.Sprintf("TODO: (1) Add test for AppendRowsFromTable() (2) Add code for new_model")) }
 	var err error
 
 	if toTable == nil { return fmt.Errorf("toTable.table.%s(): table is <nil>", funcName()) }

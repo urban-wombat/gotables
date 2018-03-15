@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-//	"runtime/debug"
+	"runtime/debug"
 )
 
 /*
@@ -628,6 +628,11 @@ where(fmt.Sprintf("MIDDLE 8 %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("AFTER  %s(): table.cols = %v", funcName(), table.cols))
 where(fmt.Sprintf("AFTER  %s(): [%s].new_model_RowCount() = %d", funcName(), table.Name(), table.new_model_RowCount()))
 
+	rowCount := table.new_model_RowCount()
+	if rowCount < 0 { return fmt.Errorf("%s(): [%s].new_model_RowCount() = %d", funcName(), table.Name(), rowCount) }
+	nextIndex := rowCount-1
+	table.rowsIndex = append(table.rowsIndex, nextIndex)
+
 	return nil
 }
 
@@ -1162,9 +1167,9 @@ where(fmt.Sprintf("AFTER  append new value %v in %s() rowCount = %d", val, funcN
 	}
 where(fmt.Sprintf("table.new_model_RowCount() = %d", table.new_model_RowCount()))
 
-	_, err = table.IsValidTable()
-	if err != nil { return err }
-	table.rowsIndex = append(table.rowsIndex, rowCount-1)
+	nextIndex := rowCount-1
+	table.rowsIndex = append(table.rowsIndex, nextIndex)
+
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 
@@ -1852,6 +1857,7 @@ where()
 	if err != nil { return err }
 
 where()
+	where(fmt.Sprintf("%s() calling new_model_DeleteRows()", funcName()))
 	return table.new_model_DeleteRows(rowIndex, rowIndex)
 
 //where(fmt.Sprintf("BEFORE deleting row %d table.new_model_RowCount() = %d", rowIndex, table.new_model_RowCount()))
@@ -2064,6 +2070,7 @@ func (table *Table) new_model_DeleteColByColIndex(colIndex int) error {
 func (table *Table) new_model_DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	// new memory model
 where(funcName())
+debug.PrintStack()
 
 	if table == nil { return fmt.Errorf("(new model) table.%s(): table is <nil>", funcName()) }
 
@@ -2099,135 +2106,169 @@ where(fmt.Sprintf("[%s] %d %s %s []col type = %T", table.Name(), colIndex, colNa
 		switch colType {
 			case "string":
 				col := table.cols[colIndex].([]string)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "bool":
 				col := table.cols[colIndex].([]bool)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int":
 				col := table.cols[colIndex].([]int)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int8":
 				col := table.cols[colIndex].([]int8)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int16":
 				col := table.cols[colIndex].([]int16)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int32":
 				col := table.cols[colIndex].([]int32)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "int64":
 				col := table.cols[colIndex].([]int64)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint":
 				col := table.cols[colIndex].([]uint)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "byte":
 				col := table.cols[colIndex].([]byte)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint8":
 				col := table.cols[colIndex].([]uint8)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint16":
 				col := table.cols[colIndex].([]uint16)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint32":
 				col := table.cols[colIndex].([]uint32)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "uint64":
 				col := table.cols[colIndex].([]uint64)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "float32":
 				col := table.cols[colIndex].([]float32)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "float64":
 				col := table.cols[colIndex].([]float64)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "[]byte":
 				col := table.cols[colIndex].([][]byte)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			case "[]uint8":
 				col := table.cols[colIndex].([][]uint8)
+where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
+where(fmt.Sprintf("QQQ BEFORE len(col) = %d col = %v", len(col), col))
 				// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-where(fmt.Sprintf("NNN BEFORE delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
 				col = append(col[:firstRowIndex], col[lastRowIndex+1:]...)
-where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d", table.Name(), colName, len(col)))
+where(fmt.Sprintf("QQQ AFTER  len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("NNN AFTER  delete [%s].%s len(col) = %d col = %v rowsIndex = %v", table.Name(), colName, len(col), col, table.rowsIndex))
 				table.cols[colIndex] = col	// append may have returned a new col slice variable.
 			default:
 				err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
 				return err
 		}
 	}
-where(fmt.Sprintf("AFTER  new_model_DeleteRows() new_model_RowCount() = %d", table.new_model_RowCount()))
+where(fmt.Sprintf("QQQ AFTER  new_model_DeleteRows() new_model_RowCount() = %d", table.new_model_RowCount()))
 
-where("NNN BEFORE deleting from table.rowIndex")
+where("PPP BEFORE deleting from table.rowIndex")
 where(table.rowsIndex)
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rowsIndex = append(table.rowsIndex[:firstRowIndex], table.rowsIndex[lastRowIndex+1:]...)
-where("NNN AFTER  deleting from table.rowIndex")
+where("PPP AFTER  deleting from table.rowIndex")
 where(table.rowsIndex)
 	_, err := table.IsValidTable()
 	if err != nil { return err }
@@ -2344,6 +2385,9 @@ where(fmt.Sprintf("new_model_ColCount() = %d", table.new_model_ColCount()))
 
 //	Set table cell in colName at rowIndex to newValue string
 func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2369,6 +2413,9 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 
 //	Set table cell in colName at rowIndex to newValue bool
 func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2394,6 +2441,9 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 
 //	Set table cell in colName at rowIndex to newValue int
 func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2419,6 +2469,9 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 
 //	Set table cell in colName at rowIndex to newValue int8
 func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2444,6 +2497,9 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 
 //	Set table cell in colName at rowIndex to newValue int16
 func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2469,6 +2525,9 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 
 //	Set table cell in colName at rowIndex to newValue int32
 func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2494,6 +2553,9 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 
 //	Set table cell in colName at rowIndex to newValue int64
 func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2519,6 +2581,9 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 
 //	Set table cell in colName at rowIndex to newValue uint
 func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2544,6 +2609,9 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 
 //	Set table cell in colName at rowIndex to newValue byte
 func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2569,6 +2637,9 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 
 //	Set table cell in colName at rowIndex to newValue uint8
 func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2594,6 +2665,9 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 
 //	Set table cell in colName at rowIndex to newValue uint16
 func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2619,6 +2693,9 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 
 //	Set table cell in colName at rowIndex to newValue uint32
 func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2644,6 +2721,9 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 
 //	Set table cell in colName at rowIndex to newValue uint64
 func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2669,6 +2749,9 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 
 //	Set table cell in colName at rowIndex to newValue float32
 func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2694,6 +2777,9 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 
 //	Set table cell in colName at rowIndex to newValue float64
 func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2719,6 +2805,9 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 
 //	Set table cell in colName at rowIndex to newValue []byte
 func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2744,6 +2833,9 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 
 //	Set table cell in colName at rowIndex to newValue []uint8
 func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error {
+
+	// See: Set<type>() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2773,6 +2865,9 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 
 //	Set table cell in colIndex at rowIndex to newValue string
 func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2795,6 +2890,9 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue str
 
 //	Set table cell in colIndex at rowIndex to newValue bool
 func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2817,6 +2915,9 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 
 //	Set table cell in colIndex at rowIndex to newValue int
 func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2839,6 +2940,9 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 
 //	Set table cell in colIndex at rowIndex to newValue int8
 func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2861,6 +2965,9 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8)
 
 //	Set table cell in colIndex at rowIndex to newValue int16
 func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2883,6 +2990,9 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int1
 
 //	Set table cell in colIndex at rowIndex to newValue int32
 func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2905,6 +3015,9 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int3
 
 //	Set table cell in colIndex at rowIndex to newValue int64
 func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2927,6 +3040,9 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 
 //	Set table cell in colIndex at rowIndex to newValue uint
 func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2949,6 +3065,9 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint)
 
 //	Set table cell in colIndex at rowIndex to newValue byte
 func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2971,6 +3090,9 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte)
 
 //	Set table cell in colIndex at rowIndex to newValue uint8
 func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -2993,6 +3115,9 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint
 
 //	Set table cell in colIndex at rowIndex to newValue uint16
 func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3015,6 +3140,9 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uin
 
 //	Set table cell in colIndex at rowIndex to newValue uint32
 func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3037,6 +3165,9 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uin
 
 //	Set table cell in colIndex at rowIndex to newValue uint64
 func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3059,6 +3190,9 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uin
 
 //	Set table cell in colIndex at rowIndex to newValue float32
 func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3081,6 +3215,9 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 
 //	Set table cell in colIndex at rowIndex to newValue float64
 func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3103,6 +3240,9 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 
 //	Set table cell in colIndex at rowIndex to newValue []byte
 func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3125,6 +3265,9 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue 
 
 //	Set table cell in colIndex at rowIndex to newValue []uint8
 func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
+
+	// See: Set<type>ByColIndex() functions
+
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
@@ -3152,6 +3295,8 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 //	Get string table cell from colName at rowIndex
 func (table *Table) GetString(colName string, rowIndex int) (value string, err error) {
 
+	// See: Get<type>() functions
+
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	var interfaceType interface{}
@@ -3164,17 +3309,18 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]string)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3185,6 +3331,8 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 
 //	Get bool table cell from colName at rowIndex
 func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3198,17 +3346,18 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]bool)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3219,6 +3368,8 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 
 //	Get int table cell from colName at rowIndex
 func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3232,17 +3383,18 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]int)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3253,6 +3405,8 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 
 //	Get int8 table cell from colName at rowIndex
 func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3266,17 +3420,18 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]int8)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3287,6 +3442,8 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 
 //	Get int16 table cell from colName at rowIndex
 func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3300,17 +3457,18 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]int16)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3321,6 +3479,8 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 
 //	Get int32 table cell from colName at rowIndex
 func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3334,17 +3494,18 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]int32)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3355,6 +3516,8 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 
 //	Get int64 table cell from colName at rowIndex
 func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3368,17 +3531,18 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]int64)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3389,6 +3553,8 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 
 //	Get uint table cell from colName at rowIndex
 func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3402,17 +3568,18 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]uint)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3423,6 +3590,8 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 
 //	Get byte table cell from colName at rowIndex
 func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3436,17 +3605,18 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]byte)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3457,6 +3627,8 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 
 //	Get uint8 table cell from colName at rowIndex
 func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3470,17 +3642,18 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]uint8)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3491,6 +3664,8 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 
 //	Get uint16 table cell from colName at rowIndex
 func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3504,17 +3679,18 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]uint16)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3525,6 +3701,8 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 
 //	Get uint32 table cell from colName at rowIndex
 func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3538,17 +3716,18 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]uint32)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3559,6 +3738,8 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 
 //	Get uint64 table cell from colName at rowIndex
 func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3572,17 +3753,18 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]uint64)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3593,6 +3775,8 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 
 //	Get float32 table cell from colName at rowIndex
 func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3606,17 +3790,18 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]float32)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3627,6 +3812,8 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 
 //	Get float64 table cell from colName at rowIndex
 func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3640,17 +3827,18 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([]float64)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
+			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
+				rowIndex, col)
 		}
 	}
 
@@ -3661,6 +3849,8 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 
 //	Get []byte table cell from colName at rowIndex
 func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, err error) {
+
+	// See: Get<type>() functions
 
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
@@ -3674,14 +3864,14 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([][]byte)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
 		if !bytes.Equal(new_model_value, old_model_value) {
@@ -3697,6 +3887,8 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 //	Get []uint8 table cell from colName at rowIndex
 func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, err error) {
 
+	// See: Get<type>() functions
+
 	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	var interfaceType interface{}
@@ -3709,14 +3901,14 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 		return value, err
 	}
 
-	// new_model
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
 		if err != nil { return value, err}
 
 		col := table.cols[colIndex].([][]uint8)
+where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
+where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
 		new_model_value := col[rowIndex]
-		new_model_value = new_model_value	// Avoid compiler error.
 
 		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
 		if !bytes.Equal(new_model_value, old_model_value) {
@@ -3736,6 +3928,8 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 //	Set table cell in colIndex at rowIndex to newValue string
 func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value string, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3749,7 +3943,6 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value strin
 	if err != nil { return }
 	old_model_value := interfaceValue.(string)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]string)
 		new_model_value := col[rowIndex]
@@ -3768,6 +3961,8 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value strin
 //	Set table cell in colIndex at rowIndex to newValue bool
 func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3781,7 +3976,6 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, e
 	if err != nil { return }
 	old_model_value := interfaceValue.(bool)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]bool)
 		new_model_value := col[rowIndex]
@@ -3800,6 +3994,8 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, e
 //	Set table cell in colIndex at rowIndex to newValue int
 func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3813,7 +4009,6 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err
 	if err != nil { return }
 	old_model_value := interfaceValue.(int)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]int)
 		new_model_value := col[rowIndex]
@@ -3832,6 +4027,8 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err
 //	Set table cell in colIndex at rowIndex to newValue int8
 func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3845,7 +4042,6 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, e
 	if err != nil { return }
 	old_model_value := interfaceValue.(int8)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]int8)
 		new_model_value := col[rowIndex]
@@ -3864,6 +4060,8 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, e
 //	Set table cell in colIndex at rowIndex to newValue int16
 func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3877,7 +4075,6 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16,
 	if err != nil { return }
 	old_model_value := interfaceValue.(int16)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]int16)
 		new_model_value := col[rowIndex]
@@ -3896,6 +4093,8 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16,
 //	Set table cell in colIndex at rowIndex to newValue int32
 func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3909,7 +4108,6 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32,
 	if err != nil { return }
 	old_model_value := interfaceValue.(int32)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]int32)
 		new_model_value := col[rowIndex]
@@ -3928,6 +4126,8 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32,
 //	Set table cell in colIndex at rowIndex to newValue int64
 func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3941,7 +4141,6 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64,
 	if err != nil { return }
 	old_model_value := interfaceValue.(int64)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]int64)
 		new_model_value := col[rowIndex]
@@ -3960,6 +4159,8 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64,
 //	Set table cell in colIndex at rowIndex to newValue uint
 func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -3973,7 +4174,6 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, e
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]uint)
 		new_model_value := col[rowIndex]
@@ -3992,6 +4192,8 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, e
 //	Set table cell in colIndex at rowIndex to newValue byte
 func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4005,7 +4207,6 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, e
 	if err != nil { return }
 	old_model_value := interfaceValue.(byte)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]byte)
 		new_model_value := col[rowIndex]
@@ -4024,6 +4225,8 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, e
 //	Set table cell in colIndex at rowIndex to newValue uint8
 func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4037,7 +4240,6 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8,
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint8)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]uint8)
 		new_model_value := col[rowIndex]
@@ -4056,6 +4258,8 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8,
 //	Set table cell in colIndex at rowIndex to newValue uint16
 func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint16, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4069,7 +4273,6 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint1
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint16)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]uint16)
 		new_model_value := col[rowIndex]
@@ -4088,6 +4291,8 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint1
 //	Set table cell in colIndex at rowIndex to newValue uint32
 func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint32, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4101,7 +4306,6 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint3
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint32)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]uint32)
 		new_model_value := col[rowIndex]
@@ -4120,6 +4324,8 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint3
 //	Set table cell in colIndex at rowIndex to newValue uint64
 func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint64, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4133,7 +4339,6 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint6
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint64)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]uint64)
 		new_model_value := col[rowIndex]
@@ -4152,6 +4357,8 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint6
 //	Set table cell in colIndex at rowIndex to newValue float32
 func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value float32, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4165,7 +4372,6 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value floa
 	if err != nil { return }
 	old_model_value := interfaceValue.(float32)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]float32)
 		new_model_value := col[rowIndex]
@@ -4184,6 +4390,8 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value floa
 //	Set table cell in colIndex at rowIndex to newValue float64
 func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value float64, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4197,7 +4405,6 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value floa
 	if err != nil { return }
 	old_model_value := interfaceValue.(float64)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([]float64)
 		new_model_value := col[rowIndex]
@@ -4216,6 +4423,8 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value floa
 //	Set table cell in colIndex at rowIndex to newValue []byte
 func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []byte, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4229,7 +4438,6 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []
 	if err != nil { return }
 	old_model_value := interfaceValue.([]byte)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([][]byte)
 		new_model_value := col[rowIndex]
@@ -4249,6 +4457,8 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []
 //	Set table cell in colIndex at rowIndex to newValue []uint8
 func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value []uint8, err error) {
 
+	// See: Get<type>ByColIndex() functions
+
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
 		return
@@ -4262,7 +4472,6 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value [
 	if err != nil { return }
 	old_model_value := interfaceValue.([]uint8)
 
-	// new_model
 	if new_model {
 		col := table.cols[colIndex].([][]uint8)
 		new_model_value := col[rowIndex]

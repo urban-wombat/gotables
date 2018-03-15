@@ -445,7 +445,9 @@ where(fmt.Sprintf("%s() AFTER  table.new_model_RowCount() = %d", funcName(), tab
 			}
 //where(table.Name())
 where(fmt.Sprintf("appendRowMap(%v)", rowMap))
+where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 			err = table.appendRowMap(rowMap)
+where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 			if err != nil {
 				return tables, err
 			}
