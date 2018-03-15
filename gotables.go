@@ -47,10 +47,10 @@ SOFTWARE.
 */
 
 const old_model bool = true
-const new_model bool = true
-const debugging bool = true
-const printstack bool = true
-const isvalidtable_printstack bool = true
+const new_model bool = false
+const debugging bool = false
+const printstack bool = false
+const isvalidtable_printstack bool = false
 const todo bool = true
 
 var where = log.Print

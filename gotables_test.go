@@ -1788,7 +1788,6 @@ func BenchmarkTableSetToString_unpadded(b *testing.B) {
 	}
 }
 
-/*  RESTORE UNCOMMENT for new data model
 // Will need to redesign Gob library for new memory model.
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
@@ -1804,9 +1803,7 @@ func BenchmarkGobEncode(b *testing.B) {
 		}
 	}
 }
-*/
 
-/*  RESTORE UNCOMMENT for new data model
 // Will need to redesign Gob library for new memory model.
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
@@ -1828,7 +1825,6 @@ func BenchmarkGobDecode(b *testing.B) {
 		}
 	}
 }
-*/
 
 func BenchmarkNewTableSetFromFile(b *testing.B) {
 	// Set up for benchmark.
@@ -3292,7 +3288,6 @@ func ExampleTable_SetSortKeys() {
 }
 */
 
-/*  RESTORE UNCOMMENT for new data model
 // Will need to redesign Gob library for new memory model.
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
@@ -3342,9 +3337,7 @@ func ExampleTable_GobEncode_table() {
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
-*/
 
-/*  RESTORE UNCOMMENT for new data model
 // Will need to redesign Gob library for new memory model.
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
@@ -3429,9 +3422,7 @@ func ExampleTableSet_GobEncode_tableset() {
 	// Fred
 	//  int
 }
-*/
 
-/*
 func ExampleTableSet_String() {
 	// Deliberately unpadded (by hand) for contrast.
 	s := `[sable_fur]
@@ -3477,9 +3468,7 @@ func ExampleTableSet_String() {
 	//   2 "xyz"      4.5 false
 	//   3 "ssss"     4.9 false
 }
-*/
 
-/*
 func ExampleTable_StringUnpadded() {
 	// Deliberately padded (by hand) for contrast.
 	s := `[sable_fur]
@@ -3513,9 +3502,7 @@ func ExampleTable_StringUnpadded() {
 	// 2 "xyz" 4.5 false 6
 	// 3 "s  s" 4.9 false 5.5
 }
-*/
 
-/*
 func ExampleTableSet_StringUnpadded() {
 	// Deliberately padded (by hand) for contrast.
 	s :=
@@ -3562,7 +3549,6 @@ func ExampleTableSet_StringUnpadded() {
 	// 3 44.55 2 "Here I am!"
 	// 4 22.99 255 "And now I'm not ..."
 }
-*/
 
 func TestNewTableFromMetadata(t *testing.T) {
 
@@ -3617,7 +3603,6 @@ func TestNewTableFromMetadata(t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_SetRowFloatCellsToNaN() {
 	s := `[three_rows]
 	  i s            f b	 f2
@@ -3659,9 +3644,7 @@ func ExampleTable_SetRowFloatCellsToNaN() {
 	//   1 "xyz"      NaN false     NaN
 	//   2 "s  s"     4.9 false      44
 }
-*/
 
-/*
 func ExampleTable_SetCellToZeroValue() {
 	s := `[three_rows]
 	i    s        f1 	b	 f2
@@ -3747,7 +3730,6 @@ func ExampleTable_SetCellToZeroValue() {
 	//   1 ""         4.5 false      43
 	//   0 "s  s"     4.9 false      44
 }
-*/
 
 func TestTable_RenameCol(t *testing.T) {
 
@@ -3922,7 +3904,6 @@ func TestIsValidColValue (t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_Search_keys1() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4011,9 +3992,7 @@ func ExampleTable_Search_keys1() {
 	// (4) Search for name: Pluto
 	// Found Pluto at rowIndex = -1 (missing)
 }
-*/
 
-/*
 func ExampleTable_Search_keys1Reverse() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4100,9 +4079,7 @@ func ExampleTable_Search_keys1Reverse() {
 	// (4) Search for name: Pluto
 	// Found Pluto at rowIndex = -1 (missing)
 }
-*/
 
-/*
 func TestTable_Search_1key(t *testing.T) {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4173,9 +4150,7 @@ func TestTable_Search_1key(t *testing.T) {
 		}
 	}
 }
-*/
 
-/*
 func TestTable_Search_1key_reverse(t *testing.T) {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4254,7 +4229,6 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 		}
 	}
 }
-*/
 
 func TestTable_Search_2keys(t *testing.T) {
 	tableString :=
@@ -4491,7 +4465,6 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	}
 }
 
-/*
 func ExampleNewTableFromString_planets() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4558,7 +4531,6 @@ func ExampleNewTableFromString_planets() {
 	// "Uranus" 15 84 27 6 "upon"
 	// "Neptune" 17 164 13 7 "nine ... porcupines"
 }
-*/
 
 // This is not a comprehensive test.
 func TestTable_Equals(t *testing.T) {
@@ -4610,7 +4582,6 @@ func TestTable_Equals(t *testing.T) {
     }
 }
 
-/*
 func ExampleTable_GetSortKeysAsTable() {
 	tableString :=
 	`[changes]
@@ -4680,9 +4651,7 @@ func ExampleTable_GetSortKeysAsTable() {
 	// "r"      "Go"          100
 	// "rsc"    "Go"          200
 }
-*/
 
-/*
 func TestTable_SortKeyCount(t *testing.T) {
 	tableString :=
 	`[changes]
@@ -4715,9 +4684,7 @@ func TestTable_SortKeyCount(t *testing.T) {
 		t.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
 	}
 }
-*/
 
-/*
 func TestTable_SetSortKeysFromTable(t *testing.T) {
 	fromTableString :=
 	`[changes]
@@ -4785,9 +4752,7 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 		t.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
 	}
 }
-*/
 
-/*
 func ExampleTable_OrderColsBySortKeys() {
 	tableString :=
 	`[MyTable]
@@ -4840,7 +4805,6 @@ func ExampleTable_OrderColsBySortKeys() {
 	// Key1 Key2   ColA   ColB    ColC ColD ColE
 	//  int string string  int float64  int bool
 }
-*/
 
 /*
 	This tests a copy gotables.Search() of sort.Search()
@@ -5388,7 +5352,6 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_Merge() {
 
 	t1string :=
@@ -5479,9 +5442,7 @@ func ExampleTable_Merge() {
 	//   5 "mno"  "B"      5   0.0      4 false   95
 	//   6 "pqr"  "C"      8   0.0     45 true    97
 }
-*/
 
-/*
 func ExampleTable_SortUnique() {
 
 	tableString :=
@@ -5552,9 +5513,7 @@ func ExampleTable_SortUnique() {
 	//      4     4.4 "neither zero nor same A"
 	//      5    -5.0 "minus 5"
 }
-*/
 
-/*
 func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
@@ -5613,7 +5572,6 @@ func ExampleTable_GetTableAsCSV() {
 	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
 	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
 }
-*/
 
 func TestTable_Copy (t *testing.T) {
 
