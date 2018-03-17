@@ -5,7 +5,7 @@ package gotables
 */
 
 import (
-	"bytes"
+//	"bytes"
 	"fmt"
 //	"os"
 //	"runtime/debug"
@@ -33,135 +33,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/*
-	Delete a col from this table.
-*/
-func (table *Table) new_model_DeleteColByColIndex(colIndex int) error {
-	// new memory model
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	if len(table.cols) == 0 {
-		return fmt.Errorf("[%s].%s(): cannot delete cols from table with zero cols",
-			table.Name(), funcName())
-	}
-
-	if colIndex < 0 || colIndex > table.new_model_ColCount()-1 {
-		err := fmt.Errorf("in table [%s] with %d cols, col index %d does not exist",
-			table.tableName, table.new_model_ColCount(), colIndex)
-		return err
-	}
-
-	// new memory model
-	// From Ivo Balbaert p182 for deleting a single element from a slice.
-	table.cols = append(table.cols[:colIndex], table.cols[colIndex+1:]...)
-
-	return nil
-}
-
-/*
-	Set an interface{} val where you don't know or cannot easily select the specific type.
-*/
-func (table *Table) new_model_SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
-where(fmt.Sprintf("%s(colIndex=%d, rowIndex=%d, val=%v)", funcName(), colIndex, rowIndex, val))
-where(fmt.Sprintf("new_model_ColCount() = %d", table.new_model_ColCount()))
-	// Note: With helper functions it is easy to set a val by its specific type.
-	//       Essentially, it is now faster to set val by specific type than as an interface() value.
-	//       For consistency, we retain this method.
-
-	if table == nil { return fmt.Errorf("(new model) table.%s(): table is <nil>", funcName()) }
-
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-
-	valType := fmt.Sprintf("%T", val)
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			colName, err := table.ColNameByColIndex(colIndex)
-			if err != nil { return err }
-			return fmt.Errorf("%s(): table [%s] col index %d col name %s expecting type %s not type %s",
-				funcName(), table.Name(), colIndex, colName, colType, valType)
-		}
-	}
-
-	switch colType {
-		case "string":
-			col := table.cols[colIndex].([]string)
-			col[rowIndex] = val.(string)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "bool":
-			col := table.cols[colIndex].([]bool)
-			col[rowIndex] = val.(bool)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "int":
-			col := table.cols[colIndex].([]int)
-			col[rowIndex] = val.(int)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "int8":
-			col := table.cols[colIndex].([]int8)
-			col[rowIndex] = val.(int8)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "int16":
-			col := table.cols[colIndex].([]int16)
-			col[rowIndex] = val.(int16)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "int32":
-			col := table.cols[colIndex].([]int32)
-			col[rowIndex] = val.(int32)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "int64":
-			col := table.cols[colIndex].([]int64)
-			col[rowIndex] = val.(int64)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "uint":
-			col := table.cols[colIndex].([]uint)
-			col[rowIndex] = val.(uint)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "byte":
-			col := table.cols[colIndex].([]byte)
-			col[rowIndex] = val.(byte)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "uint8":
-			col := table.cols[colIndex].([]uint8)
-			col[rowIndex] = val.(uint8)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "uint16":
-			col := table.cols[colIndex].([]uint16)
-			col[rowIndex] = val.(uint16)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "uint32":
-			col := table.cols[colIndex].([]uint32)
-			col[rowIndex] = val.(uint32)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "uint64":
-			col := table.cols[colIndex].([]uint64)
-			col[rowIndex] = val.(uint64)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "float32":
-			col := table.cols[colIndex].([]float32)
-			col[rowIndex] = val.(float32)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "float64":
-			col := table.cols[colIndex].([]float64)
-			col[rowIndex] = val.(float64)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "[]byte":
-			col := table.cols[colIndex].([][]byte)
-			col[rowIndex] = val.([]byte)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-		case "[]uint8":
-			col := table.cols[colIndex].([][]uint8)
-			col[rowIndex] = val.([]uint8)
-//			table.cols[colIndex] = col	// append may have returned a new col slice variable.
-
-		default:
-			err := fmt.Errorf("ERROR IN %s(): unknown type: %s\n", funcName(), colType)
-			return err
-	}
-
-	return nil
-}
-
 //	-------------------------------------------------------
 //	Set<type>() functions for each of 17 types.
 //	-------------------------------------------------------
@@ -182,15 +53,6 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]string)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -209,15 +71,6 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]bool)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -238,15 +91,6 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]int)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -265,15 +109,6 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]int8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -294,15 +129,6 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]int16)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -321,15 +147,6 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]int32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -350,15 +167,6 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]int64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -377,15 +185,6 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]uint)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -406,15 +205,6 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]byte)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -433,15 +223,6 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]uint8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -462,15 +243,6 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]uint16)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -489,15 +261,6 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]uint32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -518,15 +281,6 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]uint64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -545,15 +299,6 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]float32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -574,15 +319,6 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([]float64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -602,15 +338,6 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([][]byte)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -629,15 +356,6 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return err }
-
-		col := table.cols[colIndex].([][]uint8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -662,12 +380,6 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue str
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]string)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -686,12 +398,6 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]bool)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -712,12 +418,6 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]int)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -736,12 +436,6 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8)
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]int8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -762,12 +456,6 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int1
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]int16)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -786,12 +474,6 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int3
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]int32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -812,12 +494,6 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]int64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -836,12 +512,6 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint)
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]uint)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -862,12 +532,6 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte)
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]byte)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -886,12 +550,6 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]uint8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -912,12 +570,6 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uin
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]uint16)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -936,12 +588,6 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uin
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]uint32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -962,12 +608,6 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uin
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]uint64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -986,12 +626,6 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]float32)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -1012,12 +646,6 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([]float64)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -1037,12 +665,6 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([][]byte)
-		col[rowIndex] = newValue
-	}
-
 	return nil
 }
 
@@ -1061,12 +683,6 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
-
-	// new_model
-	if new_model {
-		col := table.cols[colIndex].([][]uint8)
-		col[rowIndex] = newValue
-	}
 
 	return nil
 }
@@ -1092,21 +708,6 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]string)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1127,21 +728,6 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]bool)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1166,21 +752,6 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]int)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1201,21 +772,6 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]int8)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1240,21 +796,6 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]int16)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1275,21 +816,6 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]int32)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1314,21 +840,6 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]int64)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1349,21 +860,6 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]uint)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1388,21 +884,6 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]byte)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1423,21 +904,6 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]uint8)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1462,21 +928,6 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]uint16)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1497,21 +948,6 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]uint32)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1536,21 +972,6 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]uint64)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1571,21 +992,6 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]float32)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
 	}
 
 	value = old_model_value
@@ -1610,21 +1016,6 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([]float64)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v (rowIndex = %d col = %v)", new_model_value, old_model_value,
-				rowIndex, col)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1647,21 +1038,6 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 		return value, err
 	}
 
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([][]byte)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
-		if !bytes.Equal(new_model_value, old_model_value) {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1682,21 +1058,6 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
-	}
-
-	if new_model {
-		colIndex, err := table.ColIndex(colName)
-		if err != nil { return value, err}
-
-		col := table.cols[colIndex].([][]uint8)
-where(fmt.Sprintf("len(col) = %d col = %v", len(col), col))
-where(fmt.Sprintf("len(rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table.rowsIndex))
-		new_model_value := col[rowIndex]
-
-		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
-		if !bytes.Equal(new_model_value, old_model_value) {
-			return value, fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-		}
 	}
 
 	value = old_model_value
@@ -1726,16 +1087,6 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value strin
 	if err != nil { return }
 	old_model_value := interfaceValue.(string)
 
-	if new_model {
-		col := table.cols[colIndex].([]string)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1758,16 +1109,6 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, e
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(bool)
-
-	if new_model {
-		col := table.cols[colIndex].([]bool)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -1792,16 +1133,6 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err
 	if err != nil { return }
 	old_model_value := interfaceValue.(int)
 
-	if new_model {
-		col := table.cols[colIndex].([]int)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1824,16 +1155,6 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, e
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(int8)
-
-	if new_model {
-		col := table.cols[colIndex].([]int8)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -1858,16 +1179,6 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16,
 	if err != nil { return }
 	old_model_value := interfaceValue.(int16)
 
-	if new_model {
-		col := table.cols[colIndex].([]int16)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1890,16 +1201,6 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32,
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(int32)
-
-	if new_model {
-		col := table.cols[colIndex].([]int32)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -1924,16 +1225,6 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64,
 	if err != nil { return }
 	old_model_value := interfaceValue.(int64)
 
-	if new_model {
-		col := table.cols[colIndex].([]int64)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -1956,16 +1247,6 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, e
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint)
-
-	if new_model {
-		col := table.cols[colIndex].([]uint)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -1990,16 +1271,6 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, e
 	if err != nil { return }
 	old_model_value := interfaceValue.(byte)
 
-	if new_model {
-		col := table.cols[colIndex].([]byte)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -2022,16 +1293,6 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8,
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint8)
-
-	if new_model {
-		col := table.cols[colIndex].([]uint8)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -2056,16 +1317,6 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint1
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint16)
 
-	if new_model {
-		col := table.cols[colIndex].([]uint16)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -2088,16 +1339,6 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint3
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint32)
-
-	if new_model {
-		col := table.cols[colIndex].([]uint32)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -2122,16 +1363,6 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint6
 	if err != nil { return }
 	old_model_value := interfaceValue.(uint64)
 
-	if new_model {
-		col := table.cols[colIndex].([]uint64)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -2154,16 +1385,6 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value floa
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.(float32)
-
-	if new_model {
-		col := table.cols[colIndex].([]float32)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 
@@ -2188,16 +1409,6 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value floa
 	if err != nil { return }
 	old_model_value := interfaceValue.(float64)
 
-	if new_model {
-		col := table.cols[colIndex].([]float64)
-		new_model_value := col[rowIndex]
-
-		if new_model_value != old_model_value {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -2221,17 +1432,6 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []
 	if err != nil { return }
 	old_model_value := interfaceValue.([]byte)
 
-	if new_model {
-		col := table.cols[colIndex].([][]byte)
-		new_model_value := col[rowIndex]
-
-		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
-		if !bytes.Equal(new_model_value, old_model_value) {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
-
 	value = old_model_value
 
 	return
@@ -2254,17 +1454,6 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value [
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	old_model_value := interfaceValue.([]uint8)
-
-	if new_model {
-		col := table.cols[colIndex].([][]uint8)
-		new_model_value := col[rowIndex]
-
-		// We need to use bytes.Equal() to compare []byte and []uint8 slices.
-		if !bytes.Equal(new_model_value, old_model_value) {
-			err = fmt.Errorf("new_model_value %v != old_model_value %v", new_model_value, old_model_value)
-			return
-		}
-	}
 
 	value = old_model_value
 

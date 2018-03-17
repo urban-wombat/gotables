@@ -215,8 +215,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			expecting = _TABLE_NAME
 			tableShape = _UNDEFINED_SHAPE
 			// The only other place there is a need to test len(line) is in case _TABLE_NAME.
-
-where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 		}
 
 		switch expecting {
@@ -246,7 +244,6 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 
 		case _COL_NAMES: // Also proxy for a line of a table struct in the form: name type = value
 
-//where()
 			// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
 			var lineSplit []string = whiteRegexp.Split(line, _ALL_SUBSTRINGS)
 			const structNameIndex = 0
@@ -262,7 +259,6 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 			// (a) name type
 			// (b) name type = value
 
-//where()
 			// Note: strings can mean len(lineSplit) is > 4 but still valid. So can't just test for exactly 4.
 			var lenLineSplit int = len(lineSplit)
 			var looksLikeStructShape bool
@@ -282,10 +278,8 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 				}
 			}
 
-//where()
 			if looksLikeStructShape {
 
-//where()
 				// (1) Get the table struct (name, type and optional equals value) of this line.
 
 				tableShape = _STRUCT_SHAPE
@@ -300,29 +294,16 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 				var colNameSlice []string = []string{colName}
 				var colTypeSlice []string = []string{colType}
 
-//where()
 				err = table.AppendCol(colName, colType)
 				if err != nil {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
-/*
-				if new_model {
-					err = table.new_model_AppendCol(colName, colType)
-					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
-				}
-*/
-
-//where()
-				// where(p.gotFilePos())
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
 				if table.ColCount() == 1 {	// The first struct item.
 					structHasRowData = isNameTypeEqualsValueStruct
-					// where(fmt.Sprintf("%s: setting structHasRowData = %t", p.gotFilePos(), structHasRowData))
 				}
-				// where(fmt.Sprintf("%s: structHasRowData = %t", p.gotFilePos(), structHasRowData))
 
-//where()
 				if structHasRowData && isNameTypeStruct {
 					return nil, fmt.Errorf("%s expecting: %s %s = <value> but found: %s %s",
 						p.gotFilePos(), colName, colType, lineSplit[0], lineSplit[1])
@@ -340,22 +321,17 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 */
 
 				if structHasRowData {
-					// where(fmt.Sprintf("%s: if structHasRowData = %t", p.gotFilePos(), structHasRowData))
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
 					// We know it's there (from the line split above), so don't check for nil returned.
 					var rangeFound []int = equalsRegexp.FindStringIndex(line)
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
-//where()
 
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
-					// where(fmt.Sprintf("len(lineSplit) = %d", len(lineSplit)))
 					if err != nil {
 						//							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						// where(err)
 						return nil, err
 					}
-//where()
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
@@ -366,7 +342,6 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 						if err != nil { return nil, err }
 					}
 
-//where()
 					var val interface{} = rowMapOfStruct[colName]
 					err = table.SetVal(colName, 0, val)
 					if err != nil {
@@ -379,10 +354,8 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 						p.gotFilePos(), line)
 				}
 
-//where()
 				tableShape = _TABLE_SHAPE
 
-//where()
 				// (2) Get the col names.
 
 				parserColNames, err = p.getColNames(lineSplit)
@@ -393,10 +366,8 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 				expecting = _COL_TYPES
 			}
 
-//where()
 		case _COL_TYPES:
 
-//where()
 			parserColTypes, err = p.getColTypes(line)
 			if err != nil {
 //				return nil, err
@@ -415,34 +386,25 @@ where(fmt.Sprintf("case _TABLE_NAME:\n\n%s\n", tables))
 
 			expecting = _COL_ROWS
 
-//where()
 		case _COL_ROWS:
 
 			// Found data.
 			var rowMap tableRow
-// where(fmt.Sprintf("pos = %s line = %s", p.gotFilePos(), line))
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil {
-// where("returning")
 				return nil, err
 			}
-// where("beyond if")
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-//where(table.Name())
-where(fmt.Sprintf("appendRowMap(%v)", rowMap))
-where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 			err = table.appendRowMap(rowMap)
-where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 			if err != nil {
 				return tables, err
 			}
 		}
-// where(table.Name())
 
 		if readError == io.EOF {
 			return tables, nil // It's not an error to reach EOF. It just means end of document.
@@ -697,20 +659,12 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
-// where(fmt.Sprintf("sliceStringSplit = %v", sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
-// where(fmt.Sprintf("sliceStringSplit[%d] = %q", el, sliceStringSplit[el]))
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
-// where(fmt.Sprintf("el = %d uint64Val = %d", el, uint64Val))
-// where(err)
 				if err != nil {
-// where(err)
-// where(fmt.Sprintf("uint64Val = %d", uint64Val))
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
-// where(fmt.Sprintf("len(uint8SliceVal) = %d", len(byteSliceVal)))
-// where(fmt.Sprintf("el = %d", el))
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
 			rowMap[colNames[i]] = uint8SliceVal
@@ -724,20 +678,12 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			byteSliceVal = make([]uint8, len(sliceStringSplit))
-// where(fmt.Sprintf("sliceStringSplit = %v", sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
-// where(fmt.Sprintf("sliceStringSplit[%d] = %q", el, sliceStringSplit[el]))
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
-// where(fmt.Sprintf("el = %d uint64Val = %d", el, uint64Val))
-// where(err)
 				if err != nil {
-// where(err)
-// where(fmt.Sprintf("uint64Val = %d", uint64Val))
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
-// where(fmt.Sprintf("len(byteSliceVal) = %d", len(byteSliceVal)))
-// where(fmt.Sprintf("el = %d", el))
 				byteSliceVal[el] = byte(uint64Val)
 			}
 			rowMap[colNames[i]] = byteSliceVal
@@ -910,12 +856,10 @@ func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow,
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			//				where(fmt.Sprintf("textFound: %s", textFound))
 			float64Val, err = strconv.ParseFloat(textFound, _BITS_64)
 			if err != nil {
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
-			//				where(fmt.Sprintf("float64Val: %f", float64Val))
 			if math.IsNaN(float64Val) && textFound != "NaN" {
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)

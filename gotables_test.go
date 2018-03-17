@@ -8,7 +8,7 @@ import (
 	"math"
 	"math/rand"
 //	"os"
-	"runtime/debug"
+//	"runtime/debug"
 	"sort"
 	"strconv"
 	"strings"
@@ -147,10 +147,8 @@ func TestReadString01(t *testing.T) {
 		{"TableWithRows",             3, 2, true},
 	}
 
-//where(fmt.Sprintf("len(tests) = %d", len(tests)))
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
-//where(fmt.Sprintf("About to test [%s]", table.Name()))
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 		if err != nil {
@@ -173,7 +171,6 @@ func TestReadString01(t *testing.T) {
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-//where(fmt.Sprintf("table.Name() = [%s] rowCount = %d", table.Name(), rowCount))
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 
@@ -266,7 +263,6 @@ func TestReadString05(t *testing.T) {
 }
 
 func TestReadString06(t *testing.T) {
-//where()
 	tableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -276,14 +272,8 @@ func TestReadString06(t *testing.T) {
 
 		`)
 	if err != nil {
-		if new_model {
-			debug.PrintStack()
-			t.Fatal(err)
-		} else {
-			t.Error(err)
-		}
+		t.Error(err)
 	}
-//where()
 
 	tests := []struct {
 		tableName string
@@ -443,12 +433,7 @@ func TestReadString11(t *testing.T) {
 		s string = "ABC"
 	`)
 	if err != nil {
-		if new_model {
-			debug.PrintStack()
-			t.Fatal(err)
-		} else {
-			t.Error(err)
-		}
+		t.Error(err)
 	}
 
 	tests := []struct {
@@ -582,12 +567,7 @@ func TestReadString14(t *testing.T) {
 	`
 	table, err = NewTableFromString(s)
 	if err != nil {
-		if new_model {
-			debug.PrintStack()
-			t.Fatal(err)
-		} else {
-			t.Error(err)
-		}
+		t.Error(err)
 	}
 
 	_, err = table.IsValidTable()
@@ -677,16 +657,8 @@ func TestSetAndGetFunctions(t *testing.T) {
 		t.Error(err)
 	}
 
-/*
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-*/
-
 	// Note: Tests are collected inside code blocks for human readability.
 
-where()
 	{ // bool tests
 
 		err = table.AppendCol("bVal", "bool")
@@ -698,41 +670,31 @@ where()
 }
 
 		if table.RowCount() == 0 {
-where("AAA")
-where(table)
 			err = table.AppendRow()
-where("AAA")
 			if err != nil { t.Error(err) }
-where()
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
-where()
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
 		if err != nil { t.Error(err) }
 
-where()
 		bVal, err = table.GetBool("bVal", rowIndex)
 		if err != nil { t.Error(err) }
 
-where()
 		if bVal != expected {
 			t.Errorf("expecting GetBool() value %t, not %t\n", expected, bVal)
 		}
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 
-where()
 		expected = false
 		err = table.SetBoolByColIndex(colIndex, rowIndex, expected)
 		if err != nil { t.Error(err) }
 
-where()
 		bVal, err = table.GetBoolByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
 
-where()
 		if bVal != expected {
 			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", expected, bVal)
 		}
@@ -740,7 +702,6 @@ where()
 	if err != nil { log.Println(err) }
 	}
 
-where()
 	{ // float32 tests
 
 		err = table.AppendCol("f32Val", "float32")
@@ -1773,7 +1734,6 @@ func BenchmarkTableSetToString_unpadded(b *testing.B) {
 	}
 }
 
-// Will need to redesign Gob library for new memory model.
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1789,7 +1749,6 @@ func BenchmarkGobEncode(b *testing.B) {
 	}
 }
 
-// Will need to redesign Gob library for new memory model.
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1950,14 +1909,10 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 		t.Errorf("expecting row count of 1, not: %d", rowCount)
 	}
 
-where(fmt.Sprintf("BEFORE [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where("\n" + table.String())
 	err = table.DeleteRow(0)
 	if err != nil {
 		t.Error(err)
 	}
-where(fmt.Sprintf("AFTER  [%s].RowCount() = %d", table.Name(), table.RowCount()))
-where("\n" + table.String())
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
 
@@ -2082,9 +2037,7 @@ func TestDeleteRow(t *testing.T) {
 
 	const deleteRow = 4
 
-where(fmt.Sprintf("RRR BEFORE table.RowCount() = %d", table.RowCount()))
 	err = table.DeleteRow(deleteRow)
-where(fmt.Sprintf("RRR AFTER table.RowCount() = %d", table.RowCount()))
 	if err != nil {
 		t.Error(err)
 	}
@@ -2459,9 +2412,7 @@ func ExampleTable_DeleteRows() {
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 
- where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 	err = table.DeleteRows(4, 6)
- where(fmt.Sprintf("len(table.rowsIndex) = %d rowsIndex = %v", len(table.rowsIndex), table. rowsIndex))
 _, err = table.IsValidTable()
 if err != nil { log.Println(err) }
 
@@ -2498,7 +2449,6 @@ if err != nil { log.Println(err) }
 	//    9
 }
 
-/*
 func ExampleTable_JoinColVals() {
 
 	tableString := `
@@ -2532,9 +2482,7 @@ func ExampleTable_JoinColVals() {
 	//
 	// echo myfile | wc -l
 }
-*/
 
-/*
 func ExampleTable_JoinColValsByColIndex() {
 
 	tableString := `
@@ -2569,7 +2517,6 @@ func ExampleTable_JoinColValsByColIndex() {
 	//
 	// echo myfile | wc -l
 }
-*/
 
 func TestGetValAsString(t *testing.T) {
 	tableString := `
@@ -3001,7 +2948,6 @@ func TestIsColType(t *testing.T) {
 	}
 }
 
-/*
 func ExampleTable_Sort() {
 	tableString :=
 	`[planets]
@@ -3076,9 +3022,7 @@ func ExampleTable_Sort() {
 	// "Mars"      0.107      1.5
 	// "Earth"     1.0        1.0
 }
-*/
 
-/*
 func ExampleTable_SetSortKeys() {
 	tableString :=
 	`[changes]
@@ -3265,9 +3209,7 @@ func ExampleTable_SetSortKeys() {
 	//     1 "lines"    "int"    false
 	//     2 "user"     "string" false
 }
-*/
 
-// Will need to redesign Gob library for new memory model.
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3317,7 +3259,6 @@ func ExampleTable_GobEncode_table() {
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
 
-// Will need to redesign Gob library for new memory model.
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
@@ -4229,7 +4170,6 @@ func TestTable_Search_2keys(t *testing.T) {
 		t.Error(err)
 	}
 
-// where("SORTING")
 	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
@@ -4239,9 +4179,7 @@ func TestTable_Search_2keys(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-// fmt.Printf("here:\n%s", table)
 
-// where("SEARCHING")
 	var searchValues []interface{} = make([]interface{}, 2)
 	var expecting int
 	var found int
@@ -4256,10 +4194,7 @@ func TestTable_Search_2keys(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
-// where(fmt.Sprintf("test searchValues = %v", searchValues))
 		expecting := i
-// where()
 		found, err := table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
@@ -4279,7 +4214,6 @@ func TestTable_Search_2keys(t *testing.T) {
 	for _, item := range dontExist {
 		searchValues = item
 		expecting = -1
-// where()
 		found, err = table.Search(searchValues...)
 		if found != expecting {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
@@ -4322,7 +4256,6 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 	}
 // fmt.Printf("here:\n%s", table)
 
-// where("SEARCHING")
 	var searchValues []interface{} = make([]interface{}, 2)
 	var expecting int
 	var found int
@@ -4337,10 +4270,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-// where(fmt.Sprintf("test len(searchValues) = %d", len(searchValues)))
-// where(fmt.Sprintf("test searchValues = %v", searchValues))
 		expecting := i
-// where()
 		found, err := table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
@@ -4360,7 +4290,6 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 	for _, item := range dontExist {
 		searchValues = item
 		expecting = -1
-// where()
 		found, err = table.Search(searchValues...)
 		if found != expecting {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
@@ -5821,21 +5750,15 @@ func TestTable_AppendRow(t *testing.T) {
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
 
-	// where(fmt.Sprintln(table.String()))
-	// where(fmt.Sprintln(table.ColCount()))
-
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		// where(fmt.Sprintln(colIndex))
 		var rowIndex int
 		rowIndex = 0
 		expecting, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
-		// where(fmt.Sprintf("col %d row %d type = %T expecting = %v\n", colIndex, rowIndex, expecting, expecting))
 
 		rowIndex = 1
 		value, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
-		// where(fmt.Sprintf("col %d row %d type = %T value     = %v\n", colIndex, rowIndex, expecting, expecting))
 
 		// invalid operation: value.([]uint8) != expecting.([]uint8) (slice can only be compared to nil)
 		var colType string = fmt.Sprintf("%T", value)
