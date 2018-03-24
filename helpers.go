@@ -49,7 +49,6 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -68,7 +67,6 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -87,7 +85,6 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -106,7 +103,6 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -125,7 +121,6 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -144,7 +139,6 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -163,7 +157,6 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -182,7 +175,6 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -201,7 +193,6 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -220,7 +211,6 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -239,7 +229,6 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -258,7 +247,6 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -277,7 +265,6 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -296,7 +283,6 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -315,7 +301,6 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -334,7 +319,6 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -353,7 +337,6 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -376,7 +359,6 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue str
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -395,7 +377,6 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -414,7 +395,6 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -433,7 +413,6 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8)
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -452,7 +431,6 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int1
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -471,7 +449,6 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int3
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -490,7 +467,6 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -509,7 +485,6 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint)
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -528,7 +503,6 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte)
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -547,7 +521,6 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -566,7 +539,6 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uin
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -585,7 +557,6 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uin
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -604,7 +575,6 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uin
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -623,7 +593,6 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -642,7 +611,6 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -661,7 +629,6 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue 
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -680,7 +647,6 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	// old_model
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -702,13 +668,11 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(string)
+	value, valid := interfaceType.(string)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -724,13 +688,11 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(bool)
+	value, valid := interfaceType.(bool)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -746,13 +708,11 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(int)
+	value, valid := interfaceType.(int)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -768,13 +728,11 @@ func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(int8)
+	value, valid := interfaceType.(int8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -790,13 +748,11 @@ func (table *Table) GetInt16(colName string, rowIndex int) (value int16, err err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(int16)
+	value, valid := interfaceType.(int16)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -812,13 +768,11 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(int32)
+	value, valid := interfaceType.(int32)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -834,13 +788,11 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(int64)
+	value, valid := interfaceType.(int64)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -856,13 +808,11 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(uint)
+	value, valid := interfaceType.(uint)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -878,13 +828,11 @@ func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(byte)
+	value, valid := interfaceType.(byte)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -900,13 +848,11 @@ func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(uint8)
+	value, valid := interfaceType.(uint8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -922,13 +868,11 @@ func (table *Table) GetUint16(colName string, rowIndex int) (value uint16, err e
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(uint16)
+	value, valid := interfaceType.(uint16)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -944,13 +888,11 @@ func (table *Table) GetUint32(colName string, rowIndex int) (value uint32, err e
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(uint32)
+	value, valid := interfaceType.(uint32)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -966,13 +908,11 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(uint64)
+	value, valid := interfaceType.(uint64)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -988,13 +928,11 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(float32)
+	value, valid := interfaceType.(float32)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -1010,13 +948,11 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.(float64)
+	value, valid := interfaceType.(float64)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -1032,13 +968,11 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, er
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.([]byte)
+	value, valid := interfaceType.([]byte)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -1054,13 +988,11 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, 
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	old_model_value, valid := interfaceType.([]uint8)
+	value, valid := interfaceType.([]uint8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
 	}
-
-	value = old_model_value
 
 	return
 }
@@ -1082,12 +1014,9 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value strin
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(string)
-
-	value = old_model_value
+	value = interfaceValue.(string)
 
 	return
 }
@@ -1105,12 +1034,9 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, e
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(bool)
-
-	value = old_model_value
+	value = interfaceValue.(bool)
 
 	return
 }
@@ -1128,12 +1054,9 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(int)
-
-	value = old_model_value
+	value = interfaceValue.(int)
 
 	return
 }
@@ -1151,12 +1074,9 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, e
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(int8)
-
-	value = old_model_value
+	value = interfaceValue.(int8)
 
 	return
 }
@@ -1174,12 +1094,9 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (value int16,
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(int16)
-
-	value = old_model_value
+	value = interfaceValue.(int16)
 
 	return
 }
@@ -1197,12 +1114,9 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32,
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(int32)
-
-	value = old_model_value
+	value = interfaceValue.(int32)
 
 	return
 }
@@ -1220,12 +1134,9 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64,
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(int64)
-
-	value = old_model_value
+	value = interfaceValue.(int64)
 
 	return
 }
@@ -1243,12 +1154,9 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, e
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(uint)
-
-	value = old_model_value
+	value = interfaceValue.(uint)
 
 	return
 }
@@ -1266,12 +1174,9 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, e
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(byte)
-
-	value = old_model_value
+	value = interfaceValue.(byte)
 
 	return
 }
@@ -1289,12 +1194,9 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8,
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(uint8)
-
-	value = old_model_value
+	value = interfaceValue.(uint8)
 
 	return
 }
@@ -1312,12 +1214,9 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (value uint1
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(uint16)
-
-	value = old_model_value
+	value = interfaceValue.(uint16)
 
 	return
 }
@@ -1335,12 +1234,9 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (value uint3
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(uint32)
-
-	value = old_model_value
+	value = interfaceValue.(uint32)
 
 	return
 }
@@ -1358,12 +1254,9 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint6
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(uint64)
-
-	value = old_model_value
+	value = interfaceValue.(uint64)
 
 	return
 }
@@ -1381,12 +1274,9 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value floa
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(float32)
-
-	value = old_model_value
+	value = interfaceValue.(float32)
 
 	return
 }
@@ -1404,12 +1294,9 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value floa
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.(float64)
-
-	value = old_model_value
+	value = interfaceValue.(float64)
 
 	return
 }
@@ -1427,12 +1314,9 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.([]byte)
-
-	value = old_model_value
+	value = interfaceValue.([]byte)
 
 	return
 }
@@ -1450,12 +1334,9 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value [
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return }
 
-	// old_model
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	old_model_value := interfaceValue.([]uint8)
-
-	value = old_model_value
+	value = interfaceValue.([]uint8)
 
 	return
 }
