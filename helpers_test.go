@@ -54,20 +54,27 @@ func TestSetString(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected string
+	var tests = []struct {
+		expected string
+	}{
 
-	expected = "abc"
+		{ "ABC" },
+		{ "abc" },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetString(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetString(colName, rowIndex)
+		err = table.SetString(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetString(colName, rowIndex)
 
-		t.Errorf("expecting .GetString() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetString() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -87,20 +94,27 @@ func TestSetBool(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected bool
+	var tests = []struct {
+		expected bool
+	}{
 
-	expected = true
+		{ false },
+		{ true },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetBool(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetBool(colName, rowIndex)
+		err = table.SetBool(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetBool(colName, rowIndex)
 
-		t.Errorf("expecting .GetBool() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetBool() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -120,20 +134,27 @@ func TestSetInt(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected int
+	var tests = []struct {
+		expected int
+	}{
 
-	expected = 9223372036854775807
+		{ -9223372036854775808 },
+		{ 9223372036854775807 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetInt(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetInt(colName, rowIndex)
+		err = table.SetInt(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetInt(colName, rowIndex)
 
-		t.Errorf("expecting .GetInt() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetInt() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -153,20 +174,27 @@ func TestSetInt8(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected int8
+	var tests = []struct {
+		expected int8
+	}{
 
-	expected = 127
+		{ -128 },
+		{ 127 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetInt8(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetInt8(colName, rowIndex)
+		err = table.SetInt8(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetInt8(colName, rowIndex)
 
-		t.Errorf("expecting .GetInt8() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetInt8() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -186,20 +214,27 @@ func TestSetInt16(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected int16
+	var tests = []struct {
+		expected int16
+	}{
 
-	expected = 32767
+		{ -32768 },
+		{ 32767 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetInt16(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetInt16(colName, rowIndex)
+		err = table.SetInt16(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetInt16(colName, rowIndex)
 
-		t.Errorf("expecting .GetInt16() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetInt16() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -219,20 +254,27 @@ func TestSetInt32(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected int32
+	var tests = []struct {
+		expected int32
+	}{
 
-	expected = 2147483647
+		{ -2147483648 },
+		{ 2147483647 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetInt32(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetInt32(colName, rowIndex)
+		err = table.SetInt32(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetInt32(colName, rowIndex)
 
-		t.Errorf("expecting .GetInt32() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetInt32() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -252,20 +294,27 @@ func TestSetInt64(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected int64
+	var tests = []struct {
+		expected int64
+	}{
 
-	expected = 9223372036854775807
+		{ -9223372036854775808 },
+		{ 9223372036854775807 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetInt64(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetInt64(colName, rowIndex)
+		err = table.SetInt64(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetInt64(colName, rowIndex)
 
-		t.Errorf("expecting .GetInt64() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetInt64() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -285,20 +334,27 @@ func TestSetUint(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected uint
+	var tests = []struct {
+		expected uint
+	}{
 
-	expected = 18446744073709551615
+		{ 0 },
+		{ 18446744073709551615 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint(colName, rowIndex)
+		err = table.SetUint(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetUint(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetUint() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -318,20 +374,27 @@ func TestSetByte(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected byte
+	var tests = []struct {
+		expected byte
+	}{
 
-	expected = 255
+		{ 0 },
+		{ 255 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetByte(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetByte(colName, rowIndex)
+		err = table.SetByte(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetByte(colName, rowIndex)
 
-		t.Errorf("expecting .GetByte() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetByte() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -351,20 +414,27 @@ func TestSetUint8(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected uint8
+	var tests = []struct {
+		expected uint8
+	}{
 
-	expected = 255
+		{ 0 },
+		{ 255 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint8(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint8(colName, rowIndex)
+		err = table.SetUint8(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetUint8(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint8() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetUint8() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -384,20 +454,27 @@ func TestSetUint16(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected uint16
+	var tests = []struct {
+		expected uint16
+	}{
 
-	expected = 65535
+		{ 0 },
+		{ 65535 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint16(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint16(colName, rowIndex)
+		err = table.SetUint16(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetUint16(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint16() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetUint16() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -417,20 +494,27 @@ func TestSetUint32(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected uint32
+	var tests = []struct {
+		expected uint32
+	}{
 
-	expected = 4294967295
+		{ 0 },
+		{ 4294967295 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint32(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint32(colName, rowIndex)
+		err = table.SetUint32(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetUint32(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint32() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetUint32() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -450,20 +534,27 @@ func TestSetUint64(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected uint64
+	var tests = []struct {
+		expected uint64
+	}{
 
-	expected = 18446744073709551615
+		{ 0 },
+		{ 18446744073709551615 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint64(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint64(colName, rowIndex)
+		err = table.SetUint64(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetUint64(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint64() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetUint64() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -483,20 +574,27 @@ func TestSetFloat32(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected float32
+	var tests = []struct {
+		expected float32
+	}{
 
-	expected = 3.4028234663852886e+38
+		{ 1.401298464324817e-45 },
+		{ 3.4028234663852886e+38 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetFloat32(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetFloat32(colName, rowIndex)
+		err = table.SetFloat32(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetFloat32(colName, rowIndex)
 
-		t.Errorf("expecting .GetFloat32() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetFloat32() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -516,20 +614,27 @@ func TestSetFloat64(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected float64
+	var tests = []struct {
+		expected float64
+	}{
 
-	expected = 1.7976931348623157e+308
+		{ 5e-324 },
+		{ 1.7976931348623157e+308 },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetFloat64(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetFloat64(colName, rowIndex)
+		err = table.SetFloat64(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if value != expected {
+		value, _ := table.GetFloat64(colName, rowIndex)
 
-		t.Errorf("expecting .GetFloat64() value %v, not %v", expected, value)
+		if value != test.expected {
+
+			t.Errorf("expecting .GetFloat64() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -549,20 +654,27 @@ func TestSetByteSlice(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected []byte
+	var tests = []struct {
+		expected []byte
+	}{
 
-	expected = []byte{ 255 }
+		{ []byte{ 0 } },
+		{ []byte{ 255 } },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetByteSlice(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetByteSlice(colName, rowIndex)
+		err = table.SetByteSlice(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if !bytes.Equal(value, expected) {
+		value, _ := table.GetByteSlice(colName, rowIndex)
 
-		t.Errorf("expecting .GetByteSlice() value %v, not %v", expected, value)
+		if !bytes.Equal(value, test.expected) {
+
+			t.Errorf("expecting .GetByteSlice() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
@@ -582,20 +694,27 @@ func TestSetUint8Slice(t *testing.T) {
 	err = table.AppendRow()
     if err != nil { t.Error(err) }
 
-	var expected []uint8
+	var tests = []struct {
+		expected []uint8
+	}{
 
-	expected = []uint8{ 255 }
+		{ []uint8{ 0 } },
+		{ []uint8{ 255 } },
+	}
 
-	rowIndex := 0
+	const rowIndex = 0
 
-	err = table.SetUint8Slice(colName, rowIndex, expected)
-    if err != nil { t.Error(err) }
+	for _, test := range tests {
 
-	value, err := table.GetUint8Slice(colName, rowIndex)
+		err = table.SetUint8Slice(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
 
-	if !bytes.Equal(value, expected) {
+		value, _ := table.GetUint8Slice(colName, rowIndex)
 
-		t.Errorf("expecting .GetUint8Slice() value %v, not %v", expected, value)
+		if !bytes.Equal(value, test.expected) {
+
+			t.Errorf("expecting .GetUint8Slice() value %v, not %v", test.expected, value)
+		}
 	}
 }
 
