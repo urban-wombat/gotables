@@ -5794,3 +5794,30 @@ func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 		t.Errorf("expecting error tableSet is <nil>, but no error was returned")
 	}
 }
+
+func TestByteSliceEquals(t *testing.T) {
+
+	var tests = []struct {
+		slice1 []byte
+		slice2 []byte
+		succeeds bool
+	}{
+		{ []byte{1,2,3}, []byte{1,2,3}, true  },
+		{ nil          , []byte{1,2,3}, false },
+		{ []byte{1,2,3}, nil          , false },
+		{ nil          , nil          , true  },
+	}
+
+	var equals bool
+	for i, test := range tests {
+		equals, _ = ByteSliceEquals(test.slice1, test.slice2)
+		if equals != test.succeeds {
+			t.Errorf("test[%d]: ByteSliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+		}
+
+		equals = bytes.Equal(test.slice1, test.slice2)
+		if equals != test.succeeds {
+			t.Errorf("test[%d]: bytes.Equal(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+		}
+	}
+}
