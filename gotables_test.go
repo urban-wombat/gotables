@@ -5780,3 +5780,17 @@ func TestTable_AppendRow(t *testing.T) {
 	}
 //	table.PrintCols()
 }
+
+/*
+	Seems pointless trying to test for err!=nil in functions.
+	If there is more than one possible return, no specific error return is tested.
+*/
+func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
+
+	var nilTableSet *TableSet
+
+	err := nilTableSet.WriteFile("", 0644)
+	if err == nil {
+		t.Errorf("expecting error tableSet is <nil>, but no error was returned")
+	}
+}

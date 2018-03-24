@@ -121,7 +121,8 @@ func (tableSet *TableSet) WriteFile(fileName string, mode os.FileMode) error {
 
 	tableSet_String = tableSet.String()
 	tableSet_Bytes = []byte(tableSet_String)
-	if mode == 0 { // No permissions set.
+	if mode == 0 {
+		// No permissions set.
 		mode = 0666
 	}
 	err = ioutil.WriteFile(fileName, tableSet_Bytes, mode)
