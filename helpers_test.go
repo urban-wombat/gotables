@@ -73,7 +73,7 @@ func TestSetAndGetString(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetString() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetString() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -113,7 +113,7 @@ func TestSetAndGetBool(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetBool() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetBool() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -153,7 +153,7 @@ func TestSetAndGetInt(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -193,7 +193,7 @@ func TestSetAndGetInt8(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt8() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt8() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -233,7 +233,7 @@ func TestSetAndGetInt16(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt16() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt16() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -273,7 +273,7 @@ func TestSetAndGetInt32(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt32() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -313,7 +313,7 @@ func TestSetAndGetInt64(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt64() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -353,7 +353,7 @@ func TestSetAndGetUint(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -393,7 +393,7 @@ func TestSetAndGetByte(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetByte() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetByte() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -433,7 +433,7 @@ func TestSetAndGetUint8(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint8() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint8() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -473,7 +473,7 @@ func TestSetAndGetUint16(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint16() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint16() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -513,7 +513,7 @@ func TestSetAndGetUint32(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint32() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -553,7 +553,7 @@ func TestSetAndGetUint64(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint64() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -593,7 +593,7 @@ func TestSetAndGetFloat32(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetFloat32() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetFloat32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -633,7 +633,7 @@ func TestSetAndGetFloat64(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetFloat64() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetFloat64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -673,7 +673,7 @@ func TestSetAndGetByteSlice(t *testing.T) {
 
 		if !bytes.Equal(value, test.expected) {
 
-			t.Errorf("expecting .GetByteSlice() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetByteSlice() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -713,7 +713,7 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 
 		if !bytes.Equal(value, test.expected) {
 
-			t.Errorf("expecting .GetUint8Slice() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint8Slice() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -757,7 +757,7 @@ func TestSetAndGetStringByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetStringByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetStringByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -797,7 +797,7 @@ func TestSetAndGetBoolByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetBoolByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetBoolByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -837,7 +837,7 @@ func TestSetAndGetIntByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetIntByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetIntByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -877,7 +877,7 @@ func TestSetAndGetInt8ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt8ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt8ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -917,7 +917,7 @@ func TestSetAndGetInt16ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt16ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt16ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -957,7 +957,7 @@ func TestSetAndGetInt32ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt32ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -997,7 +997,7 @@ func TestSetAndGetInt64ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetInt64ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetInt64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1037,7 +1037,7 @@ func TestSetAndGetUintByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUintByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUintByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1077,7 +1077,7 @@ func TestSetAndGetByteByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetByteByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetByteByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1117,7 +1117,7 @@ func TestSetAndGetUint8ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint8ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint8ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1157,7 +1157,7 @@ func TestSetAndGetUint16ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint16ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint16ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1197,7 +1197,7 @@ func TestSetAndGetUint32ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint32ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1237,7 +1237,7 @@ func TestSetAndGetUint64ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetUint64ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1277,7 +1277,7 @@ func TestSetAndGetFloat32ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetFloat32ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetFloat32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1317,7 +1317,7 @@ func TestSetAndGetFloat64ByColIndex(t *testing.T) {
 
 		if value != test.expected {
 
-			t.Errorf("expecting .GetFloat64ByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetFloat64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1357,7 +1357,7 @@ func TestSetAndGetByteSliceByColIndex(t *testing.T) {
 
 		if !bytes.Equal(value, test.expected) {
 
-			t.Errorf("expecting .GetByteSliceByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetByteSliceByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1397,7 +1397,7 @@ func TestSetAndGetUint8SliceByColIndex(t *testing.T) {
 
 		if !bytes.Equal(value, test.expected) {
 
-			t.Errorf("expecting .GetUint8SliceByColIndex() value %v, not %v", test.expected, value)
+			t.Errorf("expecting GetUint8SliceByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
