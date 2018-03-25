@@ -46,7 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -3209,6 +3209,8 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 
 // Compare slice1 with slice2
 func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
+	// UNUSED BUT retain this to repurpose as a slice comparison for other types.
+	// Confirm logic by looking at bytes.Equal() code.
 	if slice1 == nil && slice2 != nil {
 		return false, fmt.Errorf("slice1 == <nil> && slice2 != <nil>")
 	}
@@ -3228,11 +3230,6 @@ func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
 	}
 
 	return true, nil
-}
-
-// Compare slice1 with slice2
-func ByteSliceEquals(slice1, slice2 []byte) (bool, error) {
-	return Uint8SliceEquals(slice1, slice2)
 }
 
 /*

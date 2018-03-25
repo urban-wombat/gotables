@@ -5764,12 +5764,12 @@ func TestTable_AppendRow(t *testing.T) {
 		var colType string = fmt.Sprintf("%T", value)
 		switch colType {
 			case "[]uint8":
-				if equals, _ := Uint8SliceEquals(value.([]uint8), expecting.([]uint8)); !equals {
+				if equals := bytes.Equal(value.([]uint8), expecting.([]uint8)); !equals {
 					t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
 				}
 			case "[]byte":
 				// Note: case "[]byte" seems to be never reached.
-				if equals, _ := ByteSliceEquals(value.([]byte), expecting.([]byte)); !equals {
+				if equals := bytes.Equal(value.([]byte), expecting.([]byte)); !equals {
 					t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
 				}
 			default:
@@ -5810,11 +5810,14 @@ func TestByteSliceEquals(t *testing.T) {
 
 	var equals bool
 	for i, test := range tests {
-		equals, _ = ByteSliceEquals(test.slice1, test.slice2)
+		// UNUSED BUT retain Uint8SliceEquals to repurpose as a slice comparison for other types.
+		// This test helps confirm the logic is correct. But perhaps look at bytes.Equal() code.
+		equals, _ = Uint8SliceEquals(test.slice1, test.slice2)
 		if equals != test.succeeds {
-			t.Errorf("test[%d]: ByteSliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+			t.Errorf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
 
+		// This is the official comparison function. Need to replace my hand-coded functions.
 		equals = bytes.Equal(test.slice1, test.slice2)
 		if equals != test.succeeds {
 			t.Errorf("test[%d]: bytes.Equal(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
