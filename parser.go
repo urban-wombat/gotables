@@ -583,7 +583,7 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowData(line string, colNames, colTypes []string) (tableRow, error) {
+func (p *parser) getRowData(line string, colNames []string, colTypes []string) (tableRow, error) {
 
 	var err error
 	rowMap := make(tableRow)

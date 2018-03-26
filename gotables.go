@@ -46,6 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+const new_model bool = true
 const debugging bool = true
 const printstack bool = false
 const todo bool = false
@@ -437,6 +438,7 @@ type Table struct {
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
 	rows           tableRows
+	rows2          tableRows2
 	sortKeys       []sortKey
 	structShape    bool
 }
@@ -447,6 +449,7 @@ type TableExported struct {
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
 	Rows           tableRows
+	Rows2          tableRows2
 	SortKeys       []SortKeyExported
 	StructShape    bool
 }
@@ -461,6 +464,8 @@ func (table *Table) getColTypes() []string {
 
 type tableRow map[string]interface{}
 type tableRows []tableRow
+type tableRow2 []interface{}
+type tableRows2 []tableRow2
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
@@ -483,6 +488,7 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
 	newTable.rows = make([]tableRow, 0)
+	newTable.rows2 = make([]tableRow2, 0)
 
 	return newTable, nil
 }
@@ -498,6 +504,7 @@ func newTableExported(tableName string) (*TableExported, error) {
 	NewTableExported.ColTypes = make([]string, 0)
 	NewTableExported.ColNamesLookup = map[string]int{}
 	NewTableExported.Rows = make([]tableRow, 0)
+	NewTableExported.Rows2 = make([]tableRow2, 0)
 	return NewTableExported, nil
 }
 
@@ -540,8 +547,10 @@ func (table *Table) appendRowOfNil() error {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
 
-	newRow := make(tableRow)
+	newRow := make(tableRow, 0)
+	newRow2 := make(tableRow2, 0)
 	table.rows = append(table.rows, newRow)	// appendRowOfNil()
+	table.rows2 = append(table.rows2, newRow2)	// appendRowOfNil()
 
 	return nil
 }
@@ -778,7 +787,7 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	var missingValue interface{}
 
 	// Loop through all the cols defined in the table.
-	for _, colName = range table.colNames {	// appendRowMap()
+	for _, colName = range table.colNames {
 		colType, err = table.ColType(colName)
 		if err != nil {
 			return err
@@ -786,7 +795,7 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 
 		// (We don't [yet] check to see if excess cols have been provided.)
 		// Now we do ...
-		if len(rowMap) != len(table.colNames) {	// appendRowMap()
+		if len(rowMap) != len(table.colNames) {
 			return fmt.Errorf("%s(rowMap): table [%s] len(rowMap) %d != table.ColCount() %d",
 				funcName(), table.tableName, len(rowMap), table.ColCount())
 		}
@@ -817,7 +826,7 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	}
 
 	// Append the thoroughly checked and complete row to existing rows.
-	table.rows = append(table.rows, rowMap)	// appendRowMap()
+	table.rows = append(table.rows, rowMap)
 
 	return nil
 }
