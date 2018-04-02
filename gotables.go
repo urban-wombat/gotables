@@ -558,14 +558,16 @@ func (table *Table) appendRowOfNil() error {
 func (table *Table) AppendRows(howMany int) error {
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
-	_, err := table.IsValidTable()
+	var err error
+
+	_, err = table.IsValidTable()
 	if err != nil { return err }
 
 	if howMany < 1 {
 		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
 	}
 	for i := 0; i < howMany; i++ {
-		err := table.AppendRow()
+		err = table.AppendRow()
 		if err != nil {
 			return err
 		}
@@ -916,11 +918,13 @@ func (table *Table) DeleteRow(rowIndex int) error {
 func (table *Table) DeleteRowsAll() error {
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
-	_, err := table.IsValidTable()
+	var err error
+
+	_, err = table.IsValidTable()
 	if err != nil { return err }
 
 	if table.RowCount() > 0 {
-		err := table.DeleteRows(0, table.RowCount()-1)
+		err = table.DeleteRows(0, table.RowCount()-1)
 		if err != nil {
 			return err
 		}
@@ -1398,7 +1402,6 @@ func (table *Table) StringPadded() string {
 			var f64Val float64
 			var exists bool
 			buf.WriteString(horizontalSep)
-			var s string
 			switch table.colTypes[colIndex] {
 			case "string":
 				sVal, exists = rowMap[table.colNames[colIndex]].(string)
@@ -3050,6 +3053,8 @@ func (table *Table) AppendColsFromTable(fromTable *Table) error {
 	if fromTable == nil {
 		return fmt.Errorf("fromTable.table.%s(): table is <nil>", funcName())
 	}
+
+	var err error
 
 	colsTable, err := fromTable.GetColInfoAsTable()
 	if err != nil {

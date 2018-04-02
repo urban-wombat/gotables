@@ -4042,8 +4042,8 @@ func TestTable_Search_1key(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expecting := i
-		rowIndex, err := table.Search(searchValue)
+		expecting = i
+		rowIndex, err = table.Search(searchValue)
 		if err != nil {
 			t.Error(err)
 		}
@@ -4117,9 +4117,9 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expecting := i
+		expecting = i
 
-		rowIndex, err := table.Search(searchValue)
+		rowIndex, err = table.Search(searchValue)
 		if err != nil {
 			t.Error(err)
 		}
@@ -4194,8 +4194,8 @@ func TestTable_Search_2keys(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expecting := i
-		found, err := table.Search(searchValues...)
+		expecting = i
+		found, err = table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
 		}
@@ -4270,8 +4270,8 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expecting := i
-		found, err := table.Search(searchValues...)
+		expecting = i
+		found, err = table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
 		}
@@ -4345,7 +4345,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 			t.Error(err)
 		}
 		expecting = i
-		found, err := table.Search(searchValues...)
+		found, err = table.Search(searchValues...)
 		if err != nil {
 			t.Error(err)
 		}

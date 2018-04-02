@@ -655,7 +655,7 @@ func (p *parser) getRowData(line string, colNames []string, colTypes []string) (
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
@@ -674,7 +674,7 @@ func (p *parser) getRowData(line string, colNames []string, colTypes []string) (
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			byteSliceVal = make([]uint8, len(sliceStringSplit))
