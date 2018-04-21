@@ -2134,7 +2134,8 @@ func TestDeleteRows(t *testing.T) {
 		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
-		item, err := table.GetInt("item", i)
+		var item int
+		item, err = table.GetInt("item", i)
 		if err != nil {
 			t.Error(err)
 		}
@@ -2167,7 +2168,8 @@ func TestDeleteRows(t *testing.T) {
 		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
-		item, err := table.GetInt("item", i)
+		var item int
+		item, err = table.GetInt("item", i)
 		if err != nil {
 			t.Error(err)
 		}
@@ -2203,7 +2205,8 @@ func TestDeleteRows(t *testing.T) {
 		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
-		item, err := table.GetInt("item", i)
+		var item int
+		item, err = table.GetInt("item", i)
 		if err != nil {
 			t.Error(err)
 		}

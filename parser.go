@@ -335,14 +335,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
 
-						var colName string
+						var colName2 string
 						var val1 interface{}
 						var sval1 string
 						var val2 interface{}
 						var sval2 string
 						for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
-							colName = colNameSlice[colIndex]
-							val1 = rowMapOfStruct[colName]
+							colName2 = colNameSlice[colIndex]
+							val1 = rowMapOfStruct[colName2]
 							sval1 = fmt.Sprintf("%v", val1)
 							val2 = rowSliceOfStruct[colIndex]
 							sval2 = fmt.Sprintf("%v", val2)
@@ -975,7 +975,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
@@ -994,7 +994,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			textFound := remaining[rangeFound[0]:rangeFound[1]]
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			byteSliceVal = make([]uint8, len(sliceStringSplit))

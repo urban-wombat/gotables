@@ -962,8 +962,8 @@ if err != nil { debug.PrintStack() }
 
 	_, err = table.IsValidTable()
 	if err != nil {
-		return err
 		debug.PrintStack()
+		return err
 	}
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
@@ -971,8 +971,8 @@ if err != nil { debug.PrintStack() }
 
 	_, err = table.IsValidTable()
 	if err != nil {
-		return err
 		debug.PrintStack()
+		return err
 	}
 
 	return nil
@@ -1915,7 +1915,7 @@ func (table *Table) appendCols(colNames []string, colTypes []string) error {
 	return nil
 }
 
-type colInfo struct {
+type colInfoStruct struct {
 	colName string
 	colType string
 }
@@ -1925,7 +1925,7 @@ func (table *Table) HasCol(colName string) (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
-	_, err := table.colInfo(colName)
+	_, err := table.getColInfo(colName)
 	var exists bool = err == nil
 	return exists, err
 }
@@ -1945,8 +1945,8 @@ func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
 	return true, nil
 }
 
-func (table *Table) colInfo(colName string) (colInfo, error) {
-	var cInfo colInfo
+func (table *Table) getColInfo(colName string) (colInfoStruct, error) {
+	var cInfo colInfoStruct
 	if table == nil {
 		return cInfo, fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
@@ -2002,7 +2002,7 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 			return nil, err
 		}
 
-		colInfo, err := table.colInfo(colName)
+		colInfo, err := table.getColInfo(colName)
 		if err != nil {
 			return nil, err
 		}
@@ -2041,7 +2041,7 @@ func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 		}
 		colNames = append(colNames, colName)
 
-		colInfo, err := table.colInfo(colName)
+		colInfo, err := table.getColInfo(colName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -3074,7 +3074,8 @@ func (table *Table) AppendColsFromTable(fromTable *Table) error {
 		if err != nil {
 			if hasCol, _ := table.HasCol(colName); hasCol {
 				// Skip duplicate column name, but only if it has same type.
-				colInfo, err := table.colInfo(colName)
+				var colInfo colInfoStruct
+				colInfo, err = table.getColInfo(colName)
 				if err != nil {
 					return err
 				}
@@ -3115,12 +3116,14 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 		}
 
 		for fromCol := 0; fromCol < fromTable.ColCount(); fromCol++ {
-			colName, err := fromTable.ColName(fromCol)
+			var colName string
+			colName, err = fromTable.ColName(fromCol)
 			if err != nil {
 				return err
 			}
 
-			cellVal, err := fromTable.GetValByColIndex(fromCol, fromRow)
+			var cellVal interface{}
+			cellVal, err = fromTable.GetValByColIndex(fromCol, fromRow)
 			if err != nil {
 				return err
 			}

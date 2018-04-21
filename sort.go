@@ -231,7 +231,7 @@ func (table *Table) AppendSortKey(colName string) error {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	//	where(fmt.Sprintf("AppendSortKey(%q)\n", colName))
-	colInfo, err := table.colInfo(colName)
+	colInfo, err := table.getColInfo(colName)
 	if err != nil {
 		// Col doesn't exist.
 		return err
@@ -264,7 +264,7 @@ func (table *Table) DeleteSortKey(keyName string) error {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 //	where(fmt.Sprintf("[%s].%s(%q)\n", table.Name(), funcName(), keyName))
-	_, err := table.colInfo(keyName)
+	_, err := table.getColInfo(keyName)
 	if err != nil {
 		// Col doesn't exist.
 		return err
@@ -812,12 +812,14 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 
 	for rowIndex := 0; rowIndex < keysTable.RowCount(); rowIndex++ {
 
-		colName, err := keysTable.GetString("colName", rowIndex)
+		var colName string
+		colName, err = keysTable.GetString("colName", rowIndex)
 		if err != nil {
 			return err
 		}
 
-		reverse, err := keysTable.GetBool("reverse", rowIndex)
+		var reverse bool
+		reverse, err = keysTable.GetBool("reverse", rowIndex)
 		if err != nil {
 			return err
 		}
@@ -868,7 +870,8 @@ func (table *Table) OrderColsBySortKeys() error {
 	row := table.SortKeyCount()
 	for col := 0; col < table.ColCount(); col++ {
 		colName := table.colNames[col]
-		isSortKey, err := table.IsSortKey(colName)
+		var isSortKey bool
+		isSortKey, err = table.IsSortKey(colName)
 		if err != nil {
 			return err
 		}

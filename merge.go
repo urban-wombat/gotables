@@ -261,7 +261,8 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		rowIndex1 := rowIndex
 		rowIndex2 := rowIndex+1
 
-		comparison, err := merged.CompareRows(rowIndex, rowIndex+1)
+		var comparison int
+		comparison, err = merged.CompareRows(rowIndex, rowIndex+1)
 		if err != nil {
 			return nil, err
 		}
@@ -270,7 +271,8 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 			// They are equal.
 			// Loop through columns, short of the last (temporary) column(s).
 			for colIndex := 0; colIndex < merged.ColCount()-tempColCount; colIndex++ {
-				colType, err := merged.ColTypeByColIndex(colIndex)
+				var colType string
+				colType, err = merged.ColTypeByColIndex(colIndex)
 				if err != nil {
 					return nil, err
 				}
@@ -423,7 +425,8 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 						// Otherwise both vals must be zero. Do nothing.
 					default:
 						// Should never reach here.
-						isValid, err := IsValidColType(colType)
+						var isValid bool
+						isValid, err = IsValidColType(colType)
 						if !isValid {
 							return nil, err
 						} else {
