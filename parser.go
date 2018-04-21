@@ -183,7 +183,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowMapOfStruct tableRow // Needs to persist over multiple lines.
+	var rowMapOfStruct tableRow		// Needs to persist over multiple lines.
+	var rowSliceOfStruct tableRow2	// Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -328,9 +329,29 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
 
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
-					if err != nil {
-						//							return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-						return nil, err
+					if err != nil { return nil, err }
+
+					if new_model {
+						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
+						if err != nil { return nil, err }
+
+						var colName string
+						var val1 interface{}
+						var sval1 string
+						var val2 interface{}
+						var sval2 string
+						for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
+							colName = colNameSlice[colIndex]
+							val1 = rowMapOfStruct[colName]
+							sval1 = fmt.Sprintf("%v", val1)
+							val2 = rowSliceOfStruct[colIndex]
+							sval2 = fmt.Sprintf("%v", val2)
+							if sval2 != sval1 {
+								err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
+								return nil, err
+							}
+						}
+// os.Exit(3)
 					}
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
@@ -584,7 +605,6 @@ func IsValidTableName(tableName string) (bool, error) {
 }
 
 func (p *parser) getRowData(line string, colNames []string, colTypes []string) (tableRow, error) {
-
 	var err error
 	rowMap := make(tableRow)
 
@@ -883,11 +903,10 @@ func (p *parser) getRowData(line string, colNames []string, colTypes []string) (
 	return rowMap, nil
 }
 
-/*
+// new_model
 func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow2, error) {
-
 	var err error
-	rowSlice := make(tableRow2)
+	rowSlice := make(tableRow2, len(colNames))
 
 	remaining := line // Remainder of line left to parse.
 	var rangeFound []int
@@ -925,7 +944,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
-			rowMap[colNames[i]] = stringVal
+			rowSlice[i] = stringVal
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -936,7 +955,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			if err != nil { // This error check probably redundant.
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
-			rowMap[colNames[i]] = boolVal
+			rowSlice[i] = boolVal
 		case "uint8", "byte":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -949,7 +968,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint8Val = uint8(uint64Val)
-			rowMap[colNames[i]] = uint8Val
+			rowSlice[i] = uint8Val
 		case "[]uint8":
 			// Go stores byte as uint8, so there's no need to process byte differently. ???
 			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
@@ -968,7 +987,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				}
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
-			rowMap[colNames[i]] = uint8SliceVal
+			rowSlice[i] = uint8SliceVal
 		case "[]byte":
 			// Go stores byte as uint8, so there's no need to process byte differently. ???
 			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
@@ -987,7 +1006,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				}
 				byteSliceVal[el] = byte(uint64Val)
 			}
-			rowMap[colNames[i]] = byteSliceVal
+			rowSlice[i] = byteSliceVal
 		case "uint16":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1000,7 +1019,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint16Val = uint16(uint64Val)
-			rowMap[colNames[i]] = uint16Val
+			rowSlice[i] = uint16Val
 		case "uint32":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1013,7 +1032,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint32Val = uint32(uint64Val)
-			rowMap[colNames[i]] = uint32Val
+			rowSlice[i] = uint32Val
 		case "uint64":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1025,7 +1044,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
 				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
-			rowMap[colNames[i]] = uint64Val
+			rowSlice[i] = uint64Val
 		case "uint":
 			rangeFound = uintRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1053,7 +1072,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uintVal = uint(uint64Val) // May be unnecessary.
-			rowMap[colNames[i]] = uintVal
+			rowSlice[i] = uintVal
 		case "int":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1081,7 +1100,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			intVal = int(int64Val) // May be unnecessary.
-			rowMap[colNames[i]] = intVal
+			rowSlice[i] = intVal
 		case "int8":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1095,7 +1114,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			int8Val = int8(int64Val)
-			rowMap[colNames[i]] = int8Val
+			rowSlice[i] = int8Val
 		case "int16":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1108,7 +1127,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			int16Val = int16(int64Val)
-			rowMap[colNames[i]] = int16Val
+			rowSlice[i] = int16Val
 		case "int32":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1121,7 +1140,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s%s ", p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			int32Val = int32(int64Val)
-			rowMap[colNames[i]] = int32Val
+			rowSlice[i] = int32Val
 		case "int64":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1133,7 +1152,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				rangeMsg := rangeForIntegerType(math.MinInt64, math.MaxInt64)
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
-			rowMap[colNames[i]] = int64Val
+			rowSlice[i] = int64Val
 		case "float32":
 			rangeFound = floatRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1150,7 +1169,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			float32Val = float32(float64Val)
-			rowMap[colNames[i]] = float32Val
+			rowSlice[i] = float32Val
 		case "float64":
 			rangeFound = floatRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1165,7 +1184,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
-			rowMap[colNames[i]] = float64Val
+			rowSlice[i] = float64Val
 		default:
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
@@ -1181,9 +1200,8 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 
 	}
 
-	return rowMap, nil
+	return rowSlice, nil
 }
-*/
 
 func rangeForIntegerType(min int64, max uint64) string {
 	return fmt.Sprintf("(%d to %d)", min, max)

@@ -16,7 +16,7 @@ For Go (golang) programmers:
 
 ## Here's the API ...
 
-[gotables API](https://godoc.org/github.com/urban-wombat/gotables) - a rich set of helper functions and methds
+[gotables API](https://godoc.org/github.com/urban-wombat/gotables) - a rich set of helper functions and methods
 
 ## Here are the Release Notes ...
 
