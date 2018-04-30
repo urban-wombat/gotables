@@ -412,9 +412,32 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			// Found data.
 			var rowMap tableRow
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
-			if err != nil {
-				return nil, err
+			if err != nil { return nil, err }
+
+			if new_model {
+				var rowSlice tableRow2
+				rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
+				if err != nil { return nil, err }
+
+				var colName2 string
+				var val1 interface{}
+				var sval1 string
+				var val2 interface{}
+				var sval2 string
+				for colIndex := 0; colIndex < len(rowSlice); colIndex++ {
+					colName2 = parserColNames[colIndex]
+					val1 = rowMap[colName2]
+					sval1 = fmt.Sprintf("%v", val1)
+					val2 = rowSlice[colIndex]
+					sval2 = fmt.Sprintf("%v", val2)
+					if sval2 != sval1 {
+						err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
+						return nil, err
+					}
+				}
+// os.Exit(3)
 			}
+
 			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
