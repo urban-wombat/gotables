@@ -397,7 +397,9 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColNames := len(parserColNames)
 			lenColTypes := len(parserColTypes)
 			if lenColTypes != lenColNames {
-				return nil, fmt.Errorf("%s expecting: %d col type%s but found: %d", p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
+				return nil,
+				fmt.Errorf("%s expecting: %d col type%s but found: %d",
+					p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
 
 			// Append cols here now that both parserColNames and parserColTypes are available.
