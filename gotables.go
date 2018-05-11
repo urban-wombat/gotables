@@ -831,10 +831,74 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	return nil
 }
 
+///*
+//This is for adding an entire new row of data to a table in bulk, so to speak.
+//
+//	var row2 gotables.tableRow2 = make(gotables.tableRow2)
+//	row2 = append(row2, "JC")
+//	row2 = append(row2, 12)
+//	err = table.appendRowSlice(row2)
+//	if err != nil { panic(err) }
+//*/
+//func (table *Table) appendRowSlice(rowSlice tableRow2) error {
+//	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+//
+//	// Check types match what the table is expecting.
+//	var err error
+//	var colName string
+//	var colType string
+//	var valuePossiblyUpdated interface{}
+//	var exists bool
+//	var valType string
+//	var missingValue interface{}
+//
+//	// Loop through all the cols defined in the table.
+//	for _, colName = range table.colNames {
+//		colType, err = table.ColType(colName)
+//		if err != nil {
+//			return err
+//		}
+//
+//		// (We don't [yet] check to see if excess cols have been provided.)
+//		// Now we do ...
+//		if len(rowSlice) != len(table.colNames) {
+//			return fmt.Errorf("%s(rowSlice): table [%s] len(rowSlice) %d != table.ColCount() %d",
+//				funcName(), table.tableName, len(rowSlice), table.ColCount())
+//		}
+//
+//		// Check that a col has been provided for each corresponding col in the table.
+//		_, exists = rowMap[colName]
+//		if !exists {
+//			// For some types (float32 and float64) there is a missing value: NaN
+//			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
+//			if !exists {
+//				// Don't permit a misleading missing value to be present for ints, bools, strings.
+//				return fmt.Errorf("%s(): Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
+//					funcName(), table.tableName, colName, colType)
+//			}
+//			rowMap[colName] = missingValue
+//		}
+//
+//		// Check that the new value col type is the same as the table col type.
+//		valuePossiblyUpdated = rowMap[colName]
+//		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
+//		if valType != colType {
+//			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
+//			if !isAlias(colType, valType) {
+//				return fmt.Errorf("%s(): table [%s] col %s expecting type %s but found type %s",
+//					funcName(), table.tableName, colName, colType, valType)
+//			}
+//		}
+//	}
+//
+//	// Append the thoroughly checked and complete row to existing rows.
+//	table.rows = append(table.rows, rowMap)
+//
+//	return nil
+//}
+
 func (table *Table) appendRowSlice(rowSlice tableRow2) error {
-	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	// We're going to assume that all error checking was done in getRowData2()
 

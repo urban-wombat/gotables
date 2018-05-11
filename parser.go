@@ -414,10 +414,21 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
 			if err != nil { return nil, err }
 
+			lenColTypes := len(parserColTypes)
+
 			if new_model {
 				var rowSlice tableRow2
 				rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
 				if err != nil { return nil, err }
+
+				err = table.appendRowSlice(rowSlice)
+				if err != nil { return tables, err }
+
+				lenRowSlice := len(rowSlice)
+				if lenColTypes != lenRowSlice {
+					return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
+						p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
+				}
 
 				var colName2 string
 				var val1 interface{}
@@ -438,16 +449,15 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 // os.Exit(3)
 			}
 
-			lenColTypes := len(parserColTypes)
 			lenRowMap := len(rowMap)
 			if lenColTypes != lenRowMap {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
+
 			err = table.appendRowMap(rowMap)
-			if err != nil {
-				return tables, err
-			}
+			if err != nil { return tables, err }
+
 		}
 
 		if readError == io.EOF {
