@@ -350,6 +350,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 							sval1 = fmt.Sprintf("%v", val1)
 							val2 = rowSliceOfStruct[colIndex]
 							sval2 = fmt.Sprintf("%v", val2)
+							fmt.Printf("sval1: %s  sval2: %s\n", sval1, sval2)
 							if sval2 != sval1 {
 								err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
 								return nil, err

@@ -3393,3 +3393,12 @@ func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
 func mu(all ...interface{}) []interface{} {
 	return all
 }
+
+func PrintRowsAndRows2(table *Table) {
+	fmt.Printf("%s: ", table.Name())
+	fmt.Println(table.rows[0])
+	fmt.Printf("len(table.rows) = %d\n", len(table.rows))
+	fmt.Printf("%s: ", table.Name())
+	fmt.Println(table.rows2[0])
+	fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+}
