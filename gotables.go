@@ -900,7 +900,7 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
-	// We're going to assume that all error checking was done in getRowData2()
+	// We're going to assume that all error checking was done in getRowSlice()
 
 /*
 	// Check types match what the table is expecting.

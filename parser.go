@@ -335,6 +335,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
 
+						err = table.appendRowSlice(rowSliceOfStruct)
+						if err != nil { return tables, err }
+
+						// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
 						var colName2 string
 						var val1 interface{}
 						var sval1 string
@@ -351,7 +355,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 								return nil, err
 							}
 						}
-// os.Exit(3)
 					}
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
@@ -432,6 +435,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
 				}
 
+				// Compare rowSlice with rowMap. This is temporary code.
 				var colName2 string
 				var val1 interface{}
 				var sval1 string
@@ -448,7 +452,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						return nil, err
 					}
 				}
-// os.Exit(3)
 			}
 
 			lenRowMap := len(rowMap)
