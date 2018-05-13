@@ -3394,6 +3394,7 @@ func mu(all ...interface{}) []interface{} {
 	return all
 }
 
+// This is for testing only, and will be removed.
 func PrintRowsAndRows2(table *Table) {
 	fmt.Printf("%s: ", table.Name())
 	fmt.Println(table.rows[0])
