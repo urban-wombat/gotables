@@ -46,7 +46,7 @@ SOFTWARE.
 */
 
 const new_model bool = true
-const debugging bool = true
+const debugging bool = false
 const printstack bool = false
 const todo bool = false
 
@@ -951,8 +951,13 @@ func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 	}
 */
 
-	// Append row2 to existing rows2.
-	table.rows2 = append(table.rows2, rowSlice)
+	if debugging {
+		// Append row2 to existing rows2.
+		where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
+		where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
+		table.rows2 = append(table.rows2, rowSlice)
+		where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
+	}
 
 	return nil
 }
@@ -3396,10 +3401,37 @@ func mu(all ...interface{}) []interface{} {
 
 // This is for testing only, and will be removed.
 func PrintRowsAndRows2(table *Table) {
-	fmt.Printf("%s: ", table.Name())
+	fmt.Println("MAP")
+	fmt.Printf("%s:\n", table.Name())
+	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
+		row := table.rows[rowIndex]
+		len := len(row)
+		fmt.Printf("[%d] len(%d): ", rowIndex, len)
+		for k, v := range row {
+			fmt.Printf("%s:%v ", k, v)
+		}
+		fmt.Println()
+	}
+
+	fmt.Println("---------------------------------")
+
+	fmt.Println("SLICE")
+	fmt.Printf("%s:\n", table.Name())
+	for rowIndex := 0; rowIndex < len(table.rows2); rowIndex++ {
+		row := table.rows2[rowIndex]
+		len := len(row)
+		fmt.Printf("[%d] len(%d): ", rowIndex, len)
+		for v := range row {
+			fmt.Printf("%v ", v)
+		}
+		fmt.Println()
+	}
+
+/*
 	fmt.Println(table.rows[0])
 	fmt.Printf("len(table.rows) = %d\n", len(table.rows))
-	fmt.Printf("%s: ", table.Name())
+	fmt.Printf("%s:\n", table.Name())
 	fmt.Println(table.rows2[0])
 	fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+*/
 }
