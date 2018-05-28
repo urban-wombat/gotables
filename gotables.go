@@ -46,7 +46,7 @@ SOFTWARE.
 */
 
 const new_model bool = true
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -55,6 +55,7 @@ var where = log.Print
 func init() {
 	if debugging {
 		log.SetFlags(log.Lshortfile)
+		log.SetOutput(os.Stderr)
 	} else {
 		log.SetOutput(ioutil.Discard)
 	}
@@ -957,6 +958,7 @@ func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 		where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
 		table.rows2 = append(table.rows2, rowSlice)
 		where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
+		where(fmt.Sprintf("\n")
 	}
 
 	return nil
