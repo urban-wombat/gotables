@@ -958,7 +958,7 @@ func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 		where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
 		table.rows2 = append(table.rows2, rowSlice)
 		where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
-		where(fmt.Sprintf("\n")
+		where(fmt.Sprintf("\n"))
 	}
 
 	return nil
