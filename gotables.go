@@ -45,8 +45,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const new_model bool = true
-const debugging bool = true
+const new_model bool = false
+const debugging bool = false
 const printstack bool = false
 const todo bool = false
 
@@ -899,6 +899,9 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 //}
 
 func (table *Table) appendRowSlice(rowSlice tableRow2) error {
+	if debugging {
+		where(fmt.Sprintf("appendRowSlice(%v)\n", rowSlice))
+	}
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	// We're going to assume that all error checking was done in getRowSlice()
@@ -952,13 +955,18 @@ func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 	}
 */
 
-	if debugging {
+	if new_model {
 		// Append row2 to existing rows2.
-		where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
-		where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
+		if debugging {
+			where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
+			where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
+			where(fmt.Sprintf("append(%v, %v)\n", table.rows2, rowSlice))
+		}
 		table.rows2 = append(table.rows2, rowSlice)
-		where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
-		where(fmt.Sprintf("\n"))
+		if debugging {
+			where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
+			where(fmt.Sprintf("\n"))
+		}
 	}
 
 	return nil

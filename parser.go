@@ -332,6 +332,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					if err != nil { return nil, err }
 
 					if new_model {
+						if debugging {
+							where(fmt.Sprintf("NameSlice = %v\n", colNameSlice))
+							where(fmt.Sprintf("TypeSlice = %v\n", colTypeSlice))
+							where(fmt.Sprintf("valueData = %v\n", valueData))
+							where(fmt.Sprintf("\n"))
+						}
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
 
