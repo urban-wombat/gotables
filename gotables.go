@@ -547,9 +547,22 @@ func (table *Table) appendRowOfNil() error {
 	}
 
 	newRow := make(tableRow, 0)
-	newRow2 := make(tableRow2, 0)
-	table.rows = append(table.rows, newRow)	// appendRowOfNil()
-	table.rows2 = append(table.rows2, newRow2)	// appendRowOfNil()
+	table.rows = append(table.rows, newRow)
+
+/*
+// We don't know here how many cols to append.
+	if new_model {
+		newRow2 := make(tableRow2, 0)
+		table.rows2 = append(table.rows2, newRow2)
+
+		if debugging {
+			fmt.Printf(">>> newRow          = %v\n", newRow)
+			fmt.Printf(">>> len(table.rows) = %v\n", len(table.rows))
+			fmt.Printf(">>> newRow2          = %v\n", newRow2)
+			fmt.Printf(">>> len(table.rows2) = %v\n", len(table.rows2))
+		}
+	}
+*/
 
 	return nil
 }
@@ -1854,6 +1867,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", funcName())
 	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell {
 		return err
@@ -1863,6 +1877,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	if err != nil {
 		return err
 	}
+
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1903,8 +1918,12 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]	// SetValByColIndex()
+	rowMap := table.rows[rowIndex]
 	rowMap[colName] = val
+
+	/* NOTE: reinstate this when old model is removed.
+	table.rows2[rowIndex][colIndex] = val
+	*/
 
 	return nil
 }
@@ -2011,9 +2030,7 @@ func (table *Table) HasCol(colName string) (bool, error) {
 
 // Checks whether col exists
 func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		err := fmt.Errorf("%s(): in table [%s] with %d col%s, col index %d does not exist",
@@ -2306,9 +2323,8 @@ func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 
 // Returns true if this table has colIndex and has rowIndex.
 func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex {
 		return false, err
@@ -3206,6 +3222,7 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 			if err != nil {
 				return err
 			}
+
 			err = toTable.SetVal(colName, toRow, cellVal)
 			if err != nil {
 				return err
@@ -3410,28 +3427,27 @@ func mu(all ...interface{}) []interface{} {
 }
 
 // This is for testing only, and will be removed.
-func PrintRowsAndRows2(table *Table) {
+func PrintRowsAndRows2_DEPRECATED(table *Table) {
+	fmt.Println("---------------------------------")
+	fmt.Printf("table = [%s]\n", table.Name())
 	fmt.Println("MAP")
-	fmt.Printf("%s:\n", table.Name())
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		row := table.rows[rowIndex]
 		len := len(row)
-		fmt.Printf("[%d] len(%d): ", rowIndex, len)
+		fmt.Printf("[rowIndex=%d] len(row)=%d: ", rowIndex, len)
 		for k, v := range row {
 			fmt.Printf("%s:%v ", k, v)
 		}
 		fmt.Println()
 	}
 
-	fmt.Println("---------------------------------")
-
 	fmt.Println("SLICE")
-	fmt.Printf("%s:\n", table.Name())
 	for rowIndex := 0; rowIndex < len(table.rows2); rowIndex++ {
 		row := table.rows2[rowIndex]
 		len := len(row)
-		fmt.Printf("[%d] len(%d): ", rowIndex, len)
-		for v := range row {
+		fmt.Printf("[rowIndex=%d] len(row)=%d: ", rowIndex, len)
+		for i := 0; i < len; i++ {
+			v := row[i]
 			fmt.Printf("%v ", v)
 		}
 		fmt.Println()

@@ -330,6 +330,18 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
+					if new_model {
+						if debugging {
+							fmt.Printf("/// rowMapOfStruct = %v\n", rowMapOfStruct)
+						}
+					}
+
+					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
+					// Exactly one row is needed for a struct table.
+					if table.RowCount() == 0 {
+						err = table.appendRowOfNil()
+						if err != nil { return nil, err }
+					}
 
 					if new_model {
 						if debugging {
@@ -338,11 +350,48 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 							where(fmt.Sprintf("valueData = %v\n", valueData))
 							where(fmt.Sprintf("\n"))
 						}
+
+						var RowCount2 func() int = func() int { return len(table.rows2) }
+
+						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
+						// Exactly one row is needed for a struct table.
+						if debugging {
+							fmt.Printf("table.RowCount() = %d\n", table.RowCount())
+						}
+						if RowCount2() == 0 {
+							var newRow2 tableRow2 = make(tableRow2, 0)
+							if debugging {
+								where(fmt.Sprintf("newRow2 = %v\n", newRow2))
+							}
+							table.rows2 = append(table.rows2, newRow2)
+							if debugging {
+								fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+							}
+						}
+						if debugging {
+							fmt.Printf("table.RowCount() = %d\n", table.RowCount())
+							fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+						}
+						// Note: We don't know how many col elements to append, so we append one at a time.
+						//       Unlike the old model which uses a map as row storage.
+						table.rows2[0] = append(table.rows2[0], nil)
+
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
+						if debugging {
+							fmt.Printf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)
+						}
 
-						err = table.appendRowSlice(rowSliceOfStruct)
-						if err != nil { return tables, err }
+						var val interface{} = rowSliceOfStruct[0]
+						var colIndex int = len(table.rows2[0]) - 1
+						where(fmt.Sprintf("val = %v\n", val))
+						var rowIndexAlwaysZero int = 0
+						table.rows2[rowIndexAlwaysZero][colIndex] = val
+						/* NOTE: Reinstate function call when old model is removed.
+						         This (if called now) double-sets the value.
+						err = table.SetValByColIndex(colIndex, 0, val)
+						if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
+						*/
 
 						// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
 						var colName2 string
@@ -366,18 +415,11 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
-					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-					// Exactly one row is needed for a struct table.
-					if table.RowCount() == 0 {
-						err = table.appendRowOfNil()
-						if err != nil { return nil, err }
-					}
-
+					// rowMapOfStruct is a variable of type tableRow which is a map: map[string]interface{}
+					// Look up the value by reference to the colName.
 					var val interface{} = rowMapOfStruct[colName]
 					err = table.SetVal(colName, 0, val)
-					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					}
+					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
