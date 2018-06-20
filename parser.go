@@ -310,7 +310,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						p.gotFilePos(), colName, colType, lineSplit[0], lineSplit[1])
 				}
 
-/* Unreachable because len(lineSplit) here can only be 2 or 4.
+				/* Unreachable because len(lineSplit) here can only be 2 or 4.
 				if !structHasRowData && len(lineSplit) > tokenCountForNameType {
 					// An approximate way to construct text for the error message. Spacing may be different.
 					var remaining string
@@ -319,7 +319,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					}
 					return nil, fmt.Errorf("%s expecting 0 values after = but found: %s", p.gotFilePos(), remaining)
 				}
-*/
+				*/
 
 				if structHasRowData {
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
@@ -339,7 +339,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table.
 					if table.RowCount() == 0 {
-						err = table.appendRowOfNil()
+//						err = table.appendRowOfNil()
+						err = table.AppendRow()
 						if err != nil { return nil, err }
 					}
 
@@ -354,37 +355,40 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						var RowCount2 func() int = func() int { return len(table.rows2) }
 
 						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-						// Exactly one row is needed for a struct table.
+						// Zero rows or one row is needed for a struct table.
 						if debugging {
 							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						}
 						if RowCount2() == 0 {
+							err := table.AppendRow()
+							if err != nil { return nil, err }
+/* Now done in AppendRow()
 							var newRow2 tableRow2 = make(tableRow2, 0)
-							if debugging {
-								where(fmt.Sprintf("newRow2 = %v\n", newRow2))
-							}
 							table.rows2 = append(table.rows2, newRow2)
-							if debugging {
-								where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
-							}
+							if debugging { where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2))) }
+*/
 						}
 						if debugging {
 							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 							where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 						}
+/* Now done in AppendCol()
 						// Note: We don't know how many col elements to append, so we append one at a time.
 						//       Unlike the old model which uses a map as row storage.
 						table.rows2[0] = append(table.rows2[0], nil)
+*/
 
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
-						if debugging {
-							where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct))
-						}
+						if debugging { where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)) }
 
+where()
 						var val interface{} = rowSliceOfStruct[0]
+where()
 						var colIndex int = len(table.rows2[0]) - 1
+where()
 						where(fmt.Sprintf("val = %v\n", val))
+where()
 						var rowIndexAlwaysZero int = 0
 						table.rows2[rowIndexAlwaysZero][colIndex] = val
 						/* NOTE: Reinstate function call when old model is removed.

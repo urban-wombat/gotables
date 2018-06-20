@@ -1734,6 +1734,7 @@ func BenchmarkTableSetToString_unpadded(b *testing.B) {
 	}
 }
 
+/*
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1748,7 +1749,9 @@ func BenchmarkGobEncode(b *testing.B) {
 		}
 	}
 }
+*/
 
+/*
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
 	tableSet, err := NewTableSetFromString(tableSetString)
@@ -1769,6 +1772,7 @@ func BenchmarkGobDecode(b *testing.B) {
 		}
 	}
 }
+*/
 
 func BenchmarkNewTableSetFromFile(b *testing.B) {
 	// Set up for benchmark.
@@ -3213,6 +3217,7 @@ func ExampleTable_SetSortKeys() {
 	//     2 "user"     "string" false
 }
 
+/*
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3261,7 +3266,9 @@ func ExampleTable_GobEncode_table() {
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
 }
+*/
 
+/*
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
@@ -3345,6 +3352,7 @@ func ExampleTableSet_GobEncode_tableset() {
 	// Fred
 	//  int
 }
+*/
 
 func ExampleTableSet_String() {
 	// Deliberately unpadded (by hand) for contrast.
