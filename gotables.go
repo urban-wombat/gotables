@@ -45,7 +45,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const new_model bool = false
+const new_model bool = true
 const debugging bool = false
 const printstack bool = false
 const todo bool = false
@@ -610,6 +610,12 @@ func (table *Table) AppendRow() error {
 		return err
 	}
 
+	if new_model {
+		if debugging { where(fmt.Sprintf("[%s].AppendRow()\n", table.Name())) }
+		var newRow2 tableRow2 = make(tableRow2, table.ColCount())
+		table.rows2 = append(table.rows2, newRow2)
+	}
+
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 
@@ -722,9 +728,11 @@ func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 
 func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
 	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
-	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", funcName())
-	}
+
+	// NOTE: This initialisation of newly created cells may be unnecessary with the new data model.
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
 	var err error
 	var colType string
 
@@ -1821,6 +1829,14 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	err := table.SetColCellsToZeroValue(colName)
 	if err != nil { return err }
 
+	if new_model {
+		if debugging { where(fmt.Sprintf("[%s].AppendCol()\n", table.Name())) }
+		// Extend each row by 1 element. The new element will default to a zero value.
+		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+			table.rows2[rowIndex] = append(table.rows2[rowIndex], nil)
+		}
+	}
+
 	return nil
 }
 
@@ -2580,7 +2596,8 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 		var colName string = colNames[colIndex]
 		_, ok = rowMap[colName]
 		if !ok {
-			msg := fmt.Sprintf("table [%s] col %q row %d cell value is missing", table.Name(), colName, rowIndex)
+			msg := fmt.Sprintf("table.%s(): table [%s] col %q row %d cell value is missing",
+				funcName(), table.Name(), colName, rowIndex)
 			err := errors.New(msg)
 			return false, err
 		}
@@ -2673,6 +2690,16 @@ func (table *Table) IsValidTable() (bool, error) {
 			err = fmt.Errorf("table [%s] with %d cols expecting %d values per row but in row %d found: %d",
 				tableName, colNamesCount, colNamesCount, rowIndex, len(rowMap))
 			return false, err
+		}
+
+		if new_model {
+			if len(table.rows2[rowIndex]) != colNamesCount {
+				err := fmt.Errorf("table [%s] row length %d != colName count %d",
+					table.Name(), len(table.rows2[rowIndex]), len(table.colNames))
+				err = fmt.Errorf("table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+					tableName, colNamesCount, colNamesCount, rowIndex, len(table.rows2[rowIndex]))
+				return false, err
+			}
 		}
 	}
 
