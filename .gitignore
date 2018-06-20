@@ -233,3 +233,4 @@ TestGoTableSet_FileName.txt
 TestTableSet_FileName.txt
 *.exe
 mem.profile
+rmswap.sh

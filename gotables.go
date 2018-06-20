@@ -3427,7 +3427,7 @@ func mu(all ...interface{}) []interface{} {
 }
 
 // This is for testing only, and will be removed.
-func PrintRowsAndRows2_DEPRECATED(table *Table) {
+func PrintRowsAndRows2_deprecated(table *Table) {
 	fmt.Println("---------------------------------")
 	fmt.Printf("table = [%s]\n", table.Name())
 	fmt.Println("MAP")

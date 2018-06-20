@@ -332,7 +332,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					if err != nil { return nil, err }
 					if new_model {
 						if debugging {
-							fmt.Printf("/// rowMapOfStruct = %v\n", rowMapOfStruct)
+							where(fmt.Sprintf("/// rowMapOfStruct = %v\n", rowMapOfStruct))
 						}
 					}
 
@@ -356,7 +356,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 						// Exactly one row is needed for a struct table.
 						if debugging {
-							fmt.Printf("table.RowCount() = %d\n", table.RowCount())
+							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						}
 						if RowCount2() == 0 {
 							var newRow2 tableRow2 = make(tableRow2, 0)
@@ -365,12 +365,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 							}
 							table.rows2 = append(table.rows2, newRow2)
 							if debugging {
-								fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+								where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 							}
 						}
 						if debugging {
-							fmt.Printf("table.RowCount() = %d\n", table.RowCount())
-							fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
+							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
+							where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 						}
 						// Note: We don't know how many col elements to append, so we append one at a time.
 						//       Unlike the old model which uses a map as row storage.
@@ -379,7 +379,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 						if err != nil { return nil, err }
 						if debugging {
-							fmt.Printf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)
+							where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct))
 						}
 
 						var val interface{} = rowSliceOfStruct[0]
