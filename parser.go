@@ -330,21 +330,21 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
-					if new_model {
-						if debugging {
-							where(fmt.Sprintf("/// rowMapOfStruct = %v\n", rowMapOfStruct))
-						}
-					}
+					if debugging { where(fmt.Sprintf("/// rowMapOfStruct = %v\n", rowMapOfStruct)) }
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-					// Exactly one row is needed for a struct table.
+					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
 //						err = table.appendRowOfNil()
+where()
 						err = table.AppendRow()
 						if err != nil { return nil, err }
+where()
 					}
 
+where()
 					if new_model {
+where()
 						if debugging {
 							where(fmt.Sprintf("NameSlice = %v\n", colNameSlice))
 							where(fmt.Sprintf("TypeSlice = %v\n", colTypeSlice))
@@ -352,14 +352,17 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 							where(fmt.Sprintf("\n"))
 						}
 
-						var RowCount2 func() int = func() int { return len(table.rows2) }
+where()
+//						var RowCount2 func() int = func() int { return len(table.rows2) }
 
 						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 						// Zero rows or one row is needed for a struct table.
 						if debugging {
 							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						}
-						if RowCount2() == 0 {
+where()
+where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
+						if table.RowCount() == 0 {
 							err := table.AppendRow()
 							if err != nil { return nil, err }
 /* Now done in AppendRow()
@@ -389,13 +392,14 @@ where()
 where()
 						where(fmt.Sprintf("val = %v\n", val))
 where()
-						var rowIndexAlwaysZero int = 0
-						table.rows2[rowIndexAlwaysZero][colIndex] = val
+						const rowIndexAlwaysZero int = 0
+//						table.rows2[rowIndexAlwaysZero][colIndex] = val
 						/* NOTE: Reinstate function call when old model is removed.
 						         This (if called now) double-sets the value.
-						err = table.SetValByColIndex(colIndex, 0, val)
-						if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 						*/
+where(colIndex)
+						err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
+						if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 
 						// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
 						var colName2 string
