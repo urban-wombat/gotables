@@ -8,7 +8,9 @@ Sometimes data and configurations are intrinsically tabular. Trying to represent
 merely obscures tables, makes them less readable, and invites inconsistencies and lack of discipline, risking
 missing cells or superfluous leaf nodes that introduce potential bugs in host code.
 
-See also: https://urban-wombat.github.io
+See also:
+* [https://urban-wombat.github.io](https://urban-wombat.github.io)
+* [The gotables implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
 
 For Go (golang) programmers:
 
@@ -75,7 +77,7 @@ https://github.com/urban-wombat/gotablesutils
 
 https://urban-wombat.github.io
 
-## What Is A gotables.Table?
+## What is a gotables.Table?
 
 A gotables.Table is a table of data with the following sections:
 1. A table name in square brackets:   **[planets]**
