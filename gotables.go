@@ -438,8 +438,8 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-	rows           tableRows
-	rows2          tableRows2
+	rows           tableRows	// old_model
+	rows2          tableRows2	// new_model
 	sortKeys       []sortKey
 	structShape    bool
 }
@@ -449,8 +449,8 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows           tableRows
-	Rows2          tableRows2
+	Rows           tableRows	// old_model
+	Rows2          tableRows2	// new_model
 	SortKeys       []SortKeyExported
 	StructShape    bool
 }
@@ -545,23 +545,10 @@ Note: This is used by the parser. Not for use by end-users.
 func (table *Table) appendRowOfNil() error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	newRow := make(tableRow, 0)
-	table.rows = append(table.rows, newRow)
-
-/*
-// We don't know here how many cols to append.
-	if new_model {
-		newRow2 := make(tableRow2, 0)
-		table.rows2 = append(table.rows2, newRow2)
-
-		if debugging {
-			fmt.Printf(">>> newRow          = %v\n", newRow)
-			fmt.Printf(">>> len(table.rows) = %v\n", len(table.rows))
-			fmt.Printf(">>> newRow2          = %v\n", newRow2)
-			fmt.Printf(">>> len(table.rows2) = %v\n", len(table.rows2))
-		}
+	if old_model {
+		newRow := make(tableRow, 0)
+		table.rows = append(table.rows, newRow)
 	}
-*/
 
 	return nil
 }
@@ -594,7 +581,6 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
-where(funcName())
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) } 
 
 	var err error
@@ -610,29 +596,20 @@ where(funcName())
 	}
 */
 
-where(funcName())
 	if new_model {
-where(funcName())
-		if debugging { where(fmt.Sprintf("[%s].AppendRow()\n", table.Name())) }
-where(fmt.Sprintf("1 len(table.rows2) = %d\n", len(table.rows2)))
 		var newRow2 tableRow2 = make(tableRow2, table.ColCount())
 		table.rows2 = append(table.rows2, newRow2)
-where(fmt.Sprintf("1 len(table.rows2) = %d\n", len(table.rows2)))
 	}
 
-where(funcName())
-	err = table.appendRowOfNil()
-	if err != nil { return err }
+	if old_model {
+		err = table.appendRowOfNil()
+		if err != nil { return err }
+	}
 
-where(funcName())
 	var rowIndex int
-where(funcName())
 	rowIndex, _ = table.lastRowIndex()
-where(fmt.Sprintf("table.lastRowIndex() = %d\n", rowIndex))
-where(funcName())
 	err = table.SetRowCellsToZeroValue(rowIndex)
 	if err != nil {
-where(err)
 		return err
 	}
 
@@ -686,15 +663,11 @@ func (table *Table) SetAllFloatCellsToNaN() error {
 func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 	var err error
 
-where()
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-where()
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-where()
 		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
 		if err != nil {
-where()
 			return err
 		}
 	}
@@ -1097,7 +1070,9 @@ if err != nil { debug.PrintStack() }
 	}
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
+	if old_model {
+		table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
+	}
 	if new_model {
 		table.rows2 = append(table.rows2[:firstRowIndex], table.rows2[lastRowIndex+1:]...)
 	}
@@ -1447,6 +1422,8 @@ func (table *Table) StringPadded() string {
 		return ""
 	}
 
+	var err error
+
 	//	var horizontalSeparator byte = ' '	// Remove this later?
 	var gapBetweenCols string = " "
 	var horizontalSep string
@@ -1506,13 +1483,19 @@ func (table *Table) StringPadded() string {
 	}
 
 	// Rows of data
+	var rowMap tableRow
+	var row2 tableRow2
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		var rowMap tableRow
-		rowMap, err := table.rowMap(rowIndex)
-		if err != nil {
-			// Admittedly, a rowIndex error can't happen here. This is paranoid.
-			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s", funcSource(), funcName(), err.Error()))
-			return ""
+		if old_model {
+			rowMap, err = table.rowMap(rowIndex)
+			if err != nil {
+				// Admittedly, a rowIndex error can't happen here. This is paranoid.
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s", funcSource(), funcName(), err.Error()))
+				return ""
+			}
+		}
+		if new_model {
+			row2 = table.rows2[rowIndex]
 		}
 		horizontalSep = "" // No gap on left of first column.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {	// String()
@@ -1536,105 +1519,191 @@ func (table *Table) StringPadded() string {
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
-				sVal, exists = rowMap[table.colNames[colIndex]].(string)
-				if !exists {
-					sVal = ""
+				if old_model {
+					rowMap, err = table.rowMap(rowIndex)
+					sVal, exists = rowMap[table.colNames[colIndex]].(string)
+					if !exists {
+						sVal = ""
+					}
+				}
+				if new_model {
+					sVal = row2[colIndex].(string)
 				}
 				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 				var replicatedPercentChars string
 				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
 				s = fmt.Sprintf("%q", replicatedPercentChars)
 			case "bool":
-				tVal, exists = rowMap[table.colNames[colIndex]].(bool)
-				if !exists {
-					tVal = false
+				if old_model {
+					tVal, exists = rowMap[table.colNames[colIndex]].(bool)
+					if !exists {
+						tVal = false
+					}
+				}
+				if new_model {
+					tVal = row2[colIndex].(bool)
 				}
 				s = fmt.Sprintf("%t", tVal)
 			case "uint8", "byte":
-				ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
-				if !exists {
-					ui8Val = 0
+				if old_model {
+					ui8Val, exists = rowMap[table.colNames[colIndex]].(uint8)
+					if !exists {
+						ui8Val = 0
+					}
+				}
+				if new_model {
+					ui8Val = row2[colIndex].(uint8)
 				}
 				s = fmt.Sprintf("%d", ui8Val)
 			case "[]uint8":
-				ui8SliceVal, exists = rowMap[table.colNames[colIndex]].([]uint8)
-				if !exists {
-					ui8SliceVal = []uint8{}
+				if old_model {
+					ui8SliceVal, exists = rowMap[table.colNames[colIndex]].([]uint8)
+					if !exists {
+						ui8SliceVal = []uint8{}
+					}
+				}
+				if new_model {
+/*
+					ui8SliceVal, err = table.GetUint8SliceByColIndex(colIndex, rowIndex)
+fmt.Printf("ui8SliceVal = %v\n", ui8SliceVal)
+fmt.Printf("err = %v\n", err)
+*/
+					ui8SliceVal = row2[colIndex].([]uint8)
 				}
 				s = fmt.Sprintf("%v", ui8SliceVal)
 			case "[]byte":
-				byteSliceVal, exists = rowMap[table.colNames[colIndex]].([]byte)
-				if !exists {
-					byteSliceVal = []byte{}
+				if old_model {
+					byteSliceVal, exists = rowMap[table.colNames[colIndex]].([]byte)
+					if !exists {
+						byteSliceVal = []byte{}
+					}
+				}
+				if new_model {
+					byteSliceVal = row2[colIndex].([]byte)
 				}
 				s = fmt.Sprintf("%v", byteSliceVal)
 			case "uint16":
-				ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
-				if !exists {
-					ui16Val = 0
+				if old_model {
+					ui16Val, exists = rowMap[table.colNames[colIndex]].(uint16)
+					if !exists {
+						ui16Val = 0
+					}
+				}
+				if new_model {
+					ui16Val = row2[colIndex].(uint16)
 				}
 				s = fmt.Sprintf("%d", ui16Val)
 			case "uint32":
-				ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
-				if !exists {
-					ui32Val = 0
+				if old_model {
+					ui32Val, exists = rowMap[table.colNames[colIndex]].(uint32)
+					if !exists {
+						ui32Val = 0
+					}
+				}
+				if new_model {
+					ui32Val = row2[colIndex].(uint32)
 				}
 				s = fmt.Sprintf("%d", ui32Val)
 			case "uint64":
-				ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
-				if !exists {
-					ui64Val = 0
+				if old_model {
+					ui64Val, exists = rowMap[table.colNames[colIndex]].(uint64)
+					if !exists {
+						ui64Val = 0
+					}
+				}
+				if new_model {
+					ui64Val = row2[colIndex].(uint64)
 				}
 				s = fmt.Sprintf("%d", ui64Val)
 			case "uint":
-				uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
-				if !exists {
-					uiVal = 0
+				if old_model {
+					uiVal, exists = rowMap[table.colNames[colIndex]].(uint)
+					if !exists {
+						uiVal = 0
+					}
+				}
+				if new_model {
+					uiVal = row2[colIndex].(uint)
 				}
 				s = fmt.Sprintf("%d", uiVal)
 			case "int":
-				iVal, exists = rowMap[table.colNames[colIndex]].(int)
-				if !exists {
-					iVal = 0
+				if old_model {
+					iVal, exists = rowMap[table.colNames[colIndex]].(int)
+					if !exists {
+						iVal = 0
+					}
+				}
+				if new_model {
+					iVal = row2[colIndex].(int)
 				}
 				s = fmt.Sprintf("%d", iVal)
 			case "int8":
-				i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
-				if !exists {
-					i8Val = 0
+				if old_model {
+					i8Val, exists = rowMap[table.colNames[colIndex]].(int8)
+					if !exists {
+						i8Val = 0
+					}
+				}
+				if new_model {
+					i8Val = row2[colIndex].(int8)
 				}
 				s = fmt.Sprintf("%d", i8Val)
 			case "int16":
-				i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
-				if !exists {
-					i16Val = 0
+				if old_model {
+					i16Val, exists = rowMap[table.colNames[colIndex]].(int16)
+					if !exists {
+						i16Val = 0
+					}
+				}
+				if new_model {
+					i16Val = row2[colIndex].(int16)
 				}
 				s = fmt.Sprintf("%d", i16Val)
 			case "int32":
-				i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
-				if !exists {
-					i32Val = 0
+				if old_model {
+					i32Val, exists = rowMap[table.colNames[colIndex]].(int32)
+					if !exists {
+						i32Val = 0
+					}
+				}
+				if new_model {
+					i32Val = row2[colIndex].(int32)
 				}
 				s = fmt.Sprintf("%d", i32Val)
 			case "int64":
-				i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
-				if !exists {
-					i64Val = 0
+				if old_model {
+					i64Val, exists = rowMap[table.colNames[colIndex]].(int64)
+					if !exists {
+						i64Val = 0
+					}
+				}
+				if new_model {
+					i64Val = row2[colIndex].(int64)
 				}
 				s = fmt.Sprintf("%d", i64Val)
 			case "float32":
-				f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
-				if !exists {
-					f32Val = 0.0
+				if old_model {
+					f32Val, exists = rowMap[table.colNames[colIndex]].(float32)
+					if !exists {
+						f32Val = 0.0
+					}
+				}
+				if new_model {
+					f32Val = row2[colIndex].(float32)
 				}
 				var f64ValForFormatFloat float64 = float64(f32Val)
 				s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			case "float64":
-				f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
-				if !exists {
-					f64Val = 0.0
+				if old_model {
+					f64Val, exists = rowMap[table.colNames[colIndex]].(float64)
+					if !exists {
+						f64Val = 0.0
+					}
+				}
+				if new_model {
+					f64Val = row2[colIndex].(float64)
 				}
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
@@ -1934,8 +2003,10 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]
-	rowMap[colName] = val
+	if old_model {
+		rowMap := table.rows[rowIndex]
+		rowMap[colName] = val
+	}
 
 	if new_model {
 		colIndex, err := table.ColIndex(colName)
@@ -1971,8 +2042,10 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 
 	// Set the val
-	rowMap := table.rows[rowIndex]
-	rowMap[colName] = val
+	if old_model {
+		rowMap := table.rows[rowIndex]
+		rowMap[colName] = val
+	}
 
 	if new_model {
 		table.rows2[rowIndex][colIndex] = val
@@ -2282,11 +2355,6 @@ func (table *Table) RowCount() int {
 	if table == nil { return -1 }
 
 	if new_model {
-where(fmt.Sprintf("len(table.rows)  = %d\n", len(table.rows)))
-where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
-if len(table.rows) != len(table.rows2) {
-	debug.PrintStack()
-}
 		return len(table.rows2)
 	} else {
 		return len(table.rows)
@@ -2317,18 +2385,25 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return nil, err
-	}
-	rowMap := table.rows[rowIndex]
+	if !hasRow { return nil, err }
 
-	val, exists := rowMap[colName]
-	if !exists {
-		// This is purely to get a nicely formatted error message.
-		// Only AFTER attempt to retrieve, for optimistic efficiency.
-		// This call to HasCol() will always return false and return an error.
-		_, err := table.HasCol(colName)
-		return nil, err
+	hasCol, err := table.HasCol(colName)
+	if !hasCol { return nil, err }
+
+	if old_model {
+		rowMap := table.rows[rowIndex]
+
+		var exists bool
+		val, exists = rowMap[colName]
+		if !exists {
+			// This is purely to get a nicely formatted error message.
+			// Only AFTER attempt to retrieve, for optimistic efficiency.
+			// This call to HasCol() will always return false and return an error.
+			_, err := table.HasCol(colName)
+			return nil, err
+		}
+
+		return val, nil
 	}
 
 	if new_model {
@@ -2354,25 +2429,36 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return nil, err }
 
-	rowMap := table.rows[rowIndex]
+	hasCol, err := table.HasColByColIndex(colIndex)
+	if !hasCol { return nil, err }
 
-	hasColIndex, err := table.HasColByColIndex(colIndex)
-	if !hasColIndex { return nil, err }
+	var val interface{}
 
-	colName := table.colNames[colIndex]
+	if old_model {
+		rowMap := table.rows[rowIndex]
+	
+		hasColIndex, err := table.HasColByColIndex(colIndex)
+		if !hasColIndex { return nil, err }
+	
+		colName := table.colNames[colIndex]
+	
+		var exists bool
+		val, exists = rowMap[colName]
+		if !exists {
+			// This is purely to get a nicely formatted error message.
+			// Only AFTER attempt to retrieve, for optimistic efficiency.
+			// This call to HasCol() will always return false and return an error.
+			_, err := table.HasCol(colName)
+			return nil, err
+		}
 
-	val, exists := rowMap[colName]
-	if !exists {
-		// This is purely to get a nicely formatted error message.
-		// Only AFTER attempt to retrieve, for optimistic efficiency.
-		// This call to HasCol() will always return false and return an error.
-		_, err := table.HasCol(colName)
-		return nil, err
+		return val, nil
 	}
 
 	if new_model {
 		row2 := table.rows2[rowIndex]
 		val = row2[colIndex]
+
 		return val, nil
 	}
 
@@ -2693,20 +2779,37 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	var err error
 	var rowMap tableRow
 
-	rowMap, err = table.rowMap(rowIndex)
-	if err != nil {
-		return false, err
+	if old_model {
+		rowMap, err = table.rowMap(rowIndex)
+		if err != nil {
+			return false, err
+		}
 	}
 
-	var colNames []string = table.getColNames()
-	for colIndex := 0; colIndex < len(colNames); colIndex++ {
-		var ok bool
-		var colName string = colNames[colIndex]
-		_, ok = rowMap[colName]
-		if !ok {
-			msg := fmt.Sprintf("table.%s: table [%s] col %q row %d cell value is missing",
-				funcName(), table.Name(), colName, rowIndex)
-			err := errors.New(msg)
+	if old_model {
+		var colNames []string = table.getColNames()
+		for colIndex := 0; colIndex < len(colNames); colIndex++ {
+			var ok bool
+			var colName string = colNames[colIndex]
+			_, ok = rowMap[colName]
+			if !ok {
+				msg := fmt.Sprintf("table.%s: table [%s] col %q row %d cell value is missing",
+					funcName(), table.Name(), colName, rowIndex)
+				err = errors.New(msg)
+				return false, err
+			}
+		}
+	}
+
+	if new_model {
+		if rowIndex < 0 || rowIndex > table.RowCount()-1 {
+			return false, fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
+				funcName(), table.tableName, table.RowCount(), rowIndex)
+		}
+
+		if len(table.rows2[rowIndex]) != table.ColCount() {
+			err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+				funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows2[rowIndex]))
 			return false, err
 		}
 	}
@@ -2792,26 +2895,20 @@ func (table *Table) IsValidTable() (bool, error) {
 	}
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		if isValid, err = table.IsValidRow(rowIndex); !isValid {
-			return false, err
-		}
-		var rowMap tableRow
-		rowMap, err = table.rowMap(rowIndex)
-		if err != nil {
-			return false, err
-		}
-		if len(rowMap) != colNamesCount {
-			err = fmt.Errorf("table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-				tableName, colNamesCount, colNamesCount, rowIndex, len(rowMap))
+		var isValidRow bool
+		if isValidRow, err = table.IsValidRow(rowIndex); !isValidRow {
 			return false, err
 		}
 
-		if new_model {
-			if len(table.rows2[rowIndex]) != colNamesCount {
-				err = fmt.Errorf("table [%s] row length %d != colName count %d",
-					table.Name(), len(table.rows2[rowIndex]), len(table.colNames))
-				err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-					funcSource(), funcName(), tableName, colNamesCount, colNamesCount, rowIndex, len(table.rows2[rowIndex]))
+		if old_model {
+			var rowMap tableRow
+			rowMap, err = table.rowMap(rowIndex)
+			if err != nil {
+				return false, err
+			}
+			if len(rowMap) != colNamesCount {
+				err = fmt.Errorf("table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+					tableName, colNamesCount, colNamesCount, rowIndex, len(rowMap))
 				return false, err
 			}
 		}
