@@ -3661,6 +3661,7 @@ func mu(all ...interface{}) []interface{} {
 	return all
 }
 
+/*
 // This is for testing only, and will be removed.
 func PrintRowsAndRows2_deprecated(table *Table) {
 	fmt.Println("---------------------------------")
@@ -3687,12 +3688,5 @@ func PrintRowsAndRows2_deprecated(table *Table) {
 		}
 		fmt.Println()
 	}
-
-/*
-	fmt.Println(table.rows[0])
-	fmt.Printf("len(table.rows) = %d\n", len(table.rows))
-	fmt.Printf("%s:\n", table.Name())
-	fmt.Println(table.rows2[0])
-	fmt.Printf("len(table.rows2) = %d\n", len(table.rows2))
-*/
 }
+*/
