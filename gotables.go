@@ -4,7 +4,7 @@
 package gotables
 
 import (
-	"bufio"
+//	"bufio"
 	"bytes"
 	"encoding/csv"
 	"errors"
@@ -19,7 +19,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"text/tabwriter"
+//	"text/tabwriter"
 	"unicode"
 )
 
@@ -1102,35 +1102,37 @@ func missingValueForType(typeName string) (missingValue interface{}, hasMissing 
 /*
 Returns a parsable elastic tabbed table as a string.
 */
-func (table *Table) stringTabWriter() (string, error) {
-	if table == nil {
-		return "", fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	var buf bytes.Buffer
-	bufWriter := bufio.NewWriter(&buf) // Implements Writer interface. Instead of using os.Stdout.
-	const minwidth = 0                 // No effect?
-	const tabwidth = 0                 // No effect?
-	const padding = 1                  // Space beween cells. This works.
-	const padchar = ' '
-	const flags = uint(0) // ?
-	//	const flags    = uint(tabwriter.AlignRight)	// Right aligns ALL columns!
-	//	const flags    = uint(tabwriter.Debug)		// Prints vertical bar between columns.
-	//	tabWriter := new(tabwriter.Writer).Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)
-	//	tabWriter := new(tabwriter.Writer)	// 18.01.2017 temporarily commented out
-	tabWriter := tabwriter.NewWriter(bufWriter, minwidth, tabwidth, padding, padchar, flags) // 18.01.2017 trying this
-	//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
-	//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
-	fmt.Fprintf(tabWriter, table._String('\t')) // Write this table to tabWriter.
-	err := tabWriter.Flush()
-	if err != nil {
-		return "", err
-	}
-	err = bufWriter.Flush() // Necessary!
-	if err != nil {
-		return "", err
-	}
-	return buf.String(), nil
-}
+/*
+//func (table *Table) stringTabWriter() (string, error) {
+//	if table == nil {
+//		return "", fmt.Errorf("table.%s: table is <nil>", funcName())
+//	}
+//	var buf bytes.Buffer
+//	bufWriter := bufio.NewWriter(&buf) // Implements Writer interface. Instead of using os.Stdout.
+//	const minwidth = 0                 // No effect?
+//	const tabwidth = 0                 // No effect?
+//	const padding = 1                  // Space beween cells. This works.
+//	const padchar = ' '
+//	const flags = uint(0) // ?
+//	//	const flags    = uint(tabwriter.AlignRight)	// Right aligns ALL columns!
+//	//	const flags    = uint(tabwriter.Debug)		// Prints vertical bar between columns.
+//	//	tabWriter := new(tabwriter.Writer).Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)
+//	//	tabWriter := new(tabwriter.Writer)	// 18.01.2017 temporarily commented out
+//	tabWriter := tabwriter.NewWriter(bufWriter, minwidth, tabwidth, padding, padchar, flags) // 18.01.2017 trying this
+//	//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
+//	//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
+//	fmt.Fprintf(tabWriter, table._String('\t')) // Write this table to tabWriter.
+//	err := tabWriter.Flush()
+//	if err != nil {
+//		return "", err
+//	}
+//	err = bufWriter.Flush() // Necessary!
+//	if err != nil {
+//		return "", err
+//	}
+//	return buf.String(), nil
+//}
+*/
 
 func (table *Table) StringUnpadded() string {
 
@@ -2060,37 +2062,39 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *Table) appendColNames(colNames []string) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	var lenNames int = len(colNames)
-	var lenTypes int = len(table.colTypes)
-	if lenTypes != 0 && lenNames != lenTypes {
-		return fmt.Errorf("table [%s] col names %d != col types %d", table.tableName, lenNames, lenTypes)
-	}
-
-	for _, colName := range colNames {
-		if isValid, err := IsValidColName(colName); !isValid {
-			return err
-		}
-	}
-
-	for index, colName := range colNames {
-		// Make sure this col name doesn't already exist.
-		_, exists := table.colNamesLookup[colName]
-		if exists {
-			err := fmt.Errorf("table [%s] col already exists: %s", table.Name(), colName)
-			return err
-		}
-
-		table.colNamesLookup[colName] = index
-	}
-
-	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
-
-	return nil
-}
+/*
+//func (table *Table) appendColNames(colNames []string) error {
+//	if table == nil {
+//		return fmt.Errorf("table.%s: table is <nil>", funcName())
+//	}
+//	var lenNames int = len(colNames)
+//	var lenTypes int = len(table.colTypes)
+//	if lenTypes != 0 && lenNames != lenTypes {
+//		return fmt.Errorf("table [%s] col names %d != col types %d", table.tableName, lenNames, lenTypes)
+//	}
+//
+//	for _, colName := range colNames {
+//		if isValid, err := IsValidColName(colName); !isValid {
+//			return err
+//		}
+//	}
+//
+//	for index, colName := range colNames {
+//		// Make sure this col name doesn't already exist.
+//		_, exists := table.colNamesLookup[colName]
+//		if exists {
+//			err := fmt.Errorf("table [%s] col already exists: %s", table.Name(), colName)
+//			return err
+//		}
+//
+//		table.colNamesLookup[colName] = index
+//	}
+//
+//	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
+//
+//	return nil
+//}
+*/
 
 /*
 Initialise a freshly created *Table (see NewTable()) with a list of column types.
@@ -2098,26 +2102,28 @@ The column sequence is maintained.
 
 The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
 */
-func (table *Table) appendColTypes(colTypes []string) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	var lenNames int = len(table.colNames)
-	var lenTypes int = len(colTypes)
-	if lenNames != 0 && lenTypes != lenNames {
-		return fmt.Errorf("table [%s] col types %d != col names %d", table.tableName, lenTypes, lenNames)
-	}
-
-	for _, colType := range colTypes {
-		if isValid, err := IsValidColType(colType); !isValid {
-			return err
-		}
-	}
-
-	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
-
-	return nil
-}
+/*
+//func (table *Table) appendColTypes(colTypes []string) error {
+//	if table == nil {
+//		return fmt.Errorf("table.%s: table is <nil>", funcName())
+//	}
+//	var lenNames int = len(table.colNames)
+//	var lenTypes int = len(colTypes)
+//	if lenNames != 0 && lenTypes != lenNames {
+//		return fmt.Errorf("table [%s] col types %d != col names %d", table.tableName, lenTypes, lenNames)
+//	}
+//
+//	for _, colType := range colTypes {
+//		if isValid, err := IsValidColType(colType); !isValid {
+//			return err
+//		}
+//	}
+//
+//	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
+//
+//	return nil
+//}
+*/
 
 /*
 	This is to avoid use of appendColNames() and appendColTypes() in parseString().
@@ -2617,9 +2623,6 @@ type _RowAsInterface []interface{}
 func (table *Table) SetName(tableName string) error {
 	if table == nil {
 		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	if len(tableName) < 1 {
-		return errors.New("invalid table name has zero length")
 	}
 
 	_, err := IsValidTableName(tableName)

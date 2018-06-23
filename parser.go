@@ -690,7 +690,12 @@ func IsValidColName(colName string) (bool, error) {
 }
 
 // Note: The same validity rules apply to both table names and col names.
+// This tests table name WITHOUT surrounding square brackets. Text part only.
 func IsValidTableName(tableName string) (bool, error) {
+	if len(tableName) < 1 {
+		return false, errors.New("invalid table name has zero length")
+	}
+
 	// Same regular expression as table name without square brackets.
 	result := colNameRegexp.MatchString(tableName)
 	if !result {

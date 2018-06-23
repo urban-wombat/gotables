@@ -5841,3 +5841,29 @@ func TestByteSliceEquals(t *testing.T) {
 		}
 	}
 }
+
+func TestIsValidTableName(t *testing.T) {
+	var tests = []struct {
+		name string
+		validity bool
+	}{
+		{ "Fred",	true  },
+		{ "fred",	true  },
+		{ "_",		true  },
+		{ "_1",		true  },
+		{ "1",		false },
+	}
+
+	for i, test := range tests {
+		validity, err := IsValidTableName(test.name)
+		if validity != test.validity {
+			if validity {
+				t.Errorf("test[%d]: IsValidTable(%q): validity == %t but expecting validity == %t",
+					i, test.name, validity, test.validity)
+			} else {
+				t.Errorf("test[%d]: IsValidTable(%q): validity == %t but expecting validity == %t (%v)",
+					i, test.name, validity, test.validity, err)
+			}
+		}
+	}
+}
