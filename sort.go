@@ -495,8 +495,6 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 	}
 }
 
-//var compareCount int
-
 type tableSortable struct {
 	table *Table
 	rows  tableRows
@@ -530,6 +528,10 @@ func (table *Table) Sort() error {
 
 	table.sortByKeys(table.sortKeys)
 
+	if new_model {
+		table.sortByKeys2(table.sortKeys)
+	}
+
 	return nil
 }
 
@@ -544,6 +546,78 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 			var sortFunc compareFunc = sortKey.sortFunc
 			var iVal interface{} = iRow[colName]
 			var jVal interface{} = jRow[colName]
+			var compared int = sortFunc(iVal, jVal)
+			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
+			//where(fmt.Sprintf("compared = %d ...\n", compared))
+			if sortKey.reverse {
+				// Reverse the sign to reverse the sort.
+				// Reverse is intended to be descending, not a toggle between ascending and descending.
+				compared *= -1
+			}
+			//where(fmt.Sprintf("... compared = %d\n", compared))
+			if compared != 0 {
+				//	where(fmt.Sprintf("not equal"))
+				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
+				return compared < 0		// Less is true if compared < 0
+			}
+			//	where(fmt.Sprintf("*** return false\n"))
+		}
+		return false
+	}})
+}
+
+type tableSortable2 struct {
+	table *Table
+	rows2 tableRows2
+	less  func(i tableRow2, j tableRow2) bool
+}
+
+func (table tableSortable2) Len() int { return len(table.rows2) }
+
+func (table tableSortable2) Swap(i int, j int) {
+	table.rows2[i], table.rows2[j] = table.rows2[j], table.rows2[i]
+}
+
+func (table tableSortable2) Less(i int, j int) bool {
+	return table.less(table.rows2[i], table.rows2[j])
+}
+
+/*
+	Sort this table by this table's currently-set sort keys.
+
+	To see the currently-set sort keys use GetSortKeysAsTable()
+*/
+func (table *Table) Sort2() error {
+
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	if len(table.sortKeys) == 0 {
+		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
+	}
+
+	table.sortByKeys2(table.sortKeys)
+
+	return nil
+}
+
+func (table *Table) sortByKeys2(sortKeys SortKeys) {
+	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
+	sort.Sort(tableSortable2{table, table.rows2, func(iRow, jRow tableRow2) bool {
+//		compareCount++
+		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
+		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
+		for _, sortKey := range table.sortKeys {
+			var colName string = sortKey.colName
+			colIndex, _ := table.ColIndex(colName)
+			var sortFunc compareFunc = sortKey.sortFunc
+/*
+			var iVal interface{} = iRow[colName]
+			var jVal interface{} = jRow[colName]
+*/
+			var iVal interface{} = iRow[colIndex]
+			var jVal interface{} = jRow[colIndex]
 			var compared int = sortFunc(iVal, jVal)
 			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
 			//where(fmt.Sprintf("compared = %d ...\n", compared))
@@ -658,6 +732,7 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 			var searchVal interface{} = searchValues[keyIndex]
 			var cellVal interface{}
 			cellVal, err := table.GetVal(colName, rowIndex)
+where(fmt.Sprintf("ZZZ table.GetVal(colName=%s, rowIndex=%d) = (%v, %v)\n", colName, rowIndex, cellVal, err))
 			if err != nil {
 				// Should never happen. Hasn't been tested.
 				break	// Out to searchByKeys() enclosing function.

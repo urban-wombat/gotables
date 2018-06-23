@@ -45,7 +45,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const new_model bool = false
+const old_model bool = false
+const new_model bool = true
 const debugging bool = false
 const printstack bool = false
 const todo bool = false
@@ -596,8 +597,18 @@ func (table *Table) AppendRow() error {
 where(funcName())
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) } 
 
-	_, err := table.IsValidTable()
+	var err error
+
+	_, err = table.IsValidTable()
 	if err != nil { return err }
+
+/*
+	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
+	if table.ColCount() == 0 {
+		err = fmt.Errorf("in table [%s]: cannot add rows to a table that has no columns", table.Name())
+		return err
+	}
+*/
 
 where(funcName())
 	if new_model {
@@ -633,9 +644,8 @@ where(err)
 
 // Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
 func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	var err error
 	var colType string
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
@@ -1088,6 +1098,9 @@ if err != nil { debug.PrintStack() }
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
+	if new_model {
+		table.rows2 = append(table.rows2[:firstRowIndex], table.rows2[lastRowIndex+1:]...)
+	}
 
 	_, err = table.IsValidTable()
 	if err != nil {
@@ -1910,9 +1923,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	}
 
 	colType, err := table.ColType(colName)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
@@ -1925,6 +1936,14 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	// Set the val
 	rowMap := table.rows[rowIndex]
 	rowMap[colName] = val
+
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return err }
+
+		err = table.SetValByColIndex(colIndex, rowIndex, val)
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -1956,8 +1975,6 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	rowMap[colName] = val
 
 	if new_model {
-		/* NOTE: reinstate this when old model is removed.
-		*/
 		table.rows2[rowIndex][colIndex] = val
 	}
 
@@ -2265,7 +2282,11 @@ func (table *Table) RowCount() int {
 	if table == nil { return -1 }
 
 	if new_model {
+where(fmt.Sprintf("len(table.rows)  = %d\n", len(table.rows)))
 where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
+if len(table.rows) != len(table.rows2) {
+	debug.PrintStack()
+}
 		return len(table.rows2)
 	} else {
 		return len(table.rows)
@@ -2274,13 +2295,13 @@ where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 
 // This bulk data method that returns a RowMap which is the data for a given table row.
 func (table *Table) rowMap(rowIndex int) (tableRow, error) {
-	if table == nil {
-		return nil, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return nil, fmt.Errorf("#1 table [%s] has %d row%s. Row index out of range (0..%d): %d",
 			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
 	}
+
 	return table.rows[rowIndex], nil	// rowMap()
 }
 
@@ -2289,16 +2310,17 @@ func (table *Table) rowMap(rowIndex int) (tableRow, error) {
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
 	// Because old memory model makes it faster to look up colName than to lookup colIndex.
-	if table == nil {
-		return nil, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+
+	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	var val interface{}
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow {
 		return nil, err
 	}
-	rowMap := table.rows[rowIndex]	// GetVal()
+	rowMap := table.rows[rowIndex]
 
 	val, exists := rowMap[colName]
 	if !exists {
@@ -2307,6 +2329,17 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 		// This call to HasCol() will always return false and return an error.
 		_, err := table.HasCol(colName)
 		return nil, err
+	}
+
+	if new_model {
+		colIndex, err := table.ColIndex(colName)
+		if err != nil { return nil, err }
+
+		val, err = table.GetValByColIndex(colIndex, rowIndex)
+		if err != nil { return nil, err }
+where(fmt.Sprintf("XXX = %v\n", val))
+
+		return val, nil
 	}
 
 	return val, nil
@@ -2321,7 +2354,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return nil, err }
 
-	rowMap := table.rows[rowIndex]	// GetValByColIndex()
+	rowMap := table.rows[rowIndex]
 
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex { return nil, err }
@@ -2335,6 +2368,12 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 		// This call to HasCol() will always return false and return an error.
 		_, err := table.HasCol(colName)
 		return nil, err
+	}
+
+	if new_model {
+		row2 := table.rows2[rowIndex]
+		val = row2[colIndex]
+		return val, nil
 	}
 
 	return val, nil
@@ -2649,9 +2688,7 @@ func (table *Table) ColNameByColIndex(colIndex int) (string, error) {
 	That means completely missing values, not just empty strings or NaN floats.
 */
 func (table *Table) IsValidRow(rowIndex int) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	var err error
 	var rowMap tableRow
@@ -2771,7 +2808,7 @@ func (table *Table) IsValidTable() (bool, error) {
 
 		if new_model {
 			if len(table.rows2[rowIndex]) != colNamesCount {
-				err := fmt.Errorf("table [%s] row length %d != colName count %d",
+				err = fmt.Errorf("table [%s] row length %d != colName count %d",
 					table.Name(), len(table.rows2[rowIndex]), len(table.colNames))
 				err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
 					funcSource(), funcName(), tableName, colNamesCount, colNamesCount, rowIndex, len(table.rows2[rowIndex]))

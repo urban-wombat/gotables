@@ -672,21 +672,25 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if table.RowCount() == 0 {
 			err = table.AppendRow()
 			if err != nil { t.Error(err) }
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+_, err = table.IsValidTable()
+if err != nil { log.Println(err) }
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
 		if err != nil { t.Error(err) }
+_, err = table.IsValidTable()
+if err != nil { log.Println(err) }
 
 		bVal, err = table.GetBool("bVal", rowIndex)
 		if err != nil { t.Error(err) }
+_, err = table.IsValidTable()
+if err != nil { log.Println(err) }
 
 		if bVal != expected {
-			t.Errorf("expecting GetBool() value %t, not %t\n", expected, bVal)
+			t.Errorf("expecting GetBool(bVal) value %t, not %t\n", expected, bVal)
 		}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+_, err = table.IsValidTable()
+if err != nil { log.Println(err) }
 
 		expected = false
 		err = table.SetBoolByColIndex(colIndex, rowIndex, expected)
@@ -1905,6 +1909,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
 
@@ -1917,6 +1922,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
 

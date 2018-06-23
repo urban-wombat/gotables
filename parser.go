@@ -363,7 +363,7 @@ where()
 where()
 where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						if table.RowCount() == 0 {
-							err := table.AppendRow()
+							err = table.AppendRow()
 							if err != nil { return nil, err }
 /* Now done in AppendRow()
 							var newRow2 tableRow2 = make(tableRow2, 0)
