@@ -5852,16 +5852,17 @@ func TestIsValidTableName(t *testing.T) {
 		{ "_",		true  },
 		{ "_1",		true  },
 		{ "1",		false },
+		{ "",		false },
 	}
 
 	for i, test := range tests {
 		validity, err := IsValidTableName(test.name)
 		if validity != test.validity {
 			if validity {
-				t.Errorf("test[%d]: IsValidTable(%q): validity == %t but expecting validity == %t",
+				t.Errorf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t",
 					i, test.name, validity, test.validity)
 			} else {
-				t.Errorf("test[%d]: IsValidTable(%q): validity == %t but expecting validity == %t (%v)",
+				t.Errorf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t (%v)",
 					i, test.name, validity, test.validity, err)
 			}
 		}
