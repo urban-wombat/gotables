@@ -5524,7 +5524,7 @@ func TestTable_Copy (t *testing.T) {
 
 	var tests = []struct {
 		tableString string
-		rows int
+		rowCount int
 		copyRows bool
 	}{
 		{tableStringRows0, 0, false},
@@ -5544,21 +5544,21 @@ func TestTable_Copy (t *testing.T) {
 	
 		tableCopy, err := table.Copy(test.copyRows)
 		if err != nil {
-			t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+			t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 		}
 	
 		if test.copyRows {
-			// Expecting same rows in each.
+			// Expecting same rowCount in each.
 			_, err = tableCopy.Equals(table)
 			if err != nil {
-				t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+				t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 			}
 		} else {
-			// Expecting zero rows in tableCopy.
-			// Need to delete rows in source table for Equals to compare empty with empty.
+			// Expecting zero rowCount in tableCopy.
+			// Need to delete rowCount in source table for Equals to compare empty with empty.
 			err = table.DeleteRowsAll()
 			if err != nil {
-				t.Errorf("table.Copy(%t) with rows=%d: %s", test.copyRows, test.rows, err)
+				t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 			}
 		}
 	}

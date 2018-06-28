@@ -517,8 +517,10 @@ where(colIndex)
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
 
-			err = table.appendRowMap(rowMap)
-			if err != nil { return tables, err }
+			if old_model {
+				err = table.appendRowMap(rowMap)
+				if err != nil { return tables, err }
+			}
 
 		}
 
