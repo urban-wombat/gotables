@@ -1,1 +1,1 @@
-go vet -all -shadow=true
+go vet -all -shadow=true -unusedresult -unusedfuncs

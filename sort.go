@@ -501,6 +501,7 @@ type tableSortable struct {
 	less  func(i tableRow, j tableRow) bool
 }
 
+/* old_model
 func (table tableSortable) Len() int { return len(table.rows) }
 
 func (table tableSortable) Swap(i int, j int) {
@@ -510,6 +511,7 @@ func (table tableSortable) Swap(i int, j int) {
 func (table tableSortable) Less(i int, j int) bool {
 	return table.less(table.rows[i], table.rows[j])
 }
+*/
 
 /*
 	Sort this table by this table's currently-set sort keys.
@@ -526,7 +528,10 @@ func (table *Table) Sort() error {
 		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
-	table.sortByKeys(table.sortKeys)
+	/* if old_model {
+		table.sortByKeys(table.sortKeys)
+	}
+	*/
 
 	if new_model {
 		table.sortByKeys2(table.sortKeys)
@@ -535,6 +540,7 @@ func (table *Table) Sort() error {
 	return nil
 }
 
+/* old_model
 func (table *Table) sortByKeys(sortKeys SortKeys) {
 	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
@@ -565,6 +571,7 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 		return false
 	}})
 }
+*/
 
 type tableSortable2 struct {
 	table *Table
