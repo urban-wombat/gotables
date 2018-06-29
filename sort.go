@@ -501,18 +501,6 @@ type tableSortable struct {
 	less  func(i tableRow, j tableRow) bool
 }
 
-/* old_model
-func (table tableSortable) Len() int { return len(table.rows) }
-
-func (table tableSortable) Swap(i int, j int) {
-	table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
-}
-
-func (table tableSortable) Less(i int, j int) bool {
-	return table.less(table.rows[i], table.rows[j])
-}
-*/
-
 /*
 	Sort this table by this table's currently-set sort keys.
 
@@ -528,50 +516,12 @@ func (table *Table) Sort() error {
 		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
-	/* if old_model {
-		table.sortByKeys(table.sortKeys)
-	}
-	*/
-
 	if new_model {
 		table.sortByKeys2(table.sortKeys)
 	}
 
 	return nil
 }
-
-/* old_model
-func (table *Table) sortByKeys(sortKeys SortKeys) {
-	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
-	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
-//		compareCount++
-		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
-		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
-		for _, sortKey := range table.sortKeys {
-			var colName string = sortKey.colName
-			var sortFunc compareFunc = sortKey.sortFunc
-			var iVal interface{} = iRow[colName]
-			var jVal interface{} = jRow[colName]
-			var compared int = sortFunc(iVal, jVal)
-			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
-			//where(fmt.Sprintf("compared = %d ...\n", compared))
-			if sortKey.reverse {
-				// Reverse the sign to reverse the sort.
-				// Reverse is intended to be descending, not a toggle between ascending and descending.
-				compared *= -1
-			}
-			//where(fmt.Sprintf("... compared = %d\n", compared))
-			if compared != 0 {
-				//	where(fmt.Sprintf("not equal"))
-				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
-				return compared < 0		// Less is true if compared < 0
-			}
-			//	where(fmt.Sprintf("*** return false\n"))
-		}
-		return false
-	}})
-}
-*/
 
 type tableSortable2 struct {
 	table *Table

@@ -516,12 +516,6 @@ where(colIndex)
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
 			}
-
-			if old_model {
-				err = table.appendRowMap(rowMap)
-				if err != nil { return tables, err }
-			}
-
 		}
 
 		if readError == io.EOF {
