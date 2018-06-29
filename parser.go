@@ -336,88 +336,66 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
 //						err = table.appendRowOfNil()
-where()
 						err = table.AppendRow()
 						if err != nil { return nil, err }
-where()
 					}
 
-where()
-					if new_model {
-where()
-						if debugging {
-							where(fmt.Sprintf("NameSlice = %v\n", colNameSlice))
-							where(fmt.Sprintf("TypeSlice = %v\n", colTypeSlice))
-							where(fmt.Sprintf("valueData = %v\n", valueData))
-							where(fmt.Sprintf("\n"))
-						}
 
-where()
-//						var RowCount2 func() int = func() int { return len(table.rows2) }
-
-						// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-						// Zero rows or one row is needed for a struct table.
-						if debugging {
-							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-						}
-where()
-where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-						if table.RowCount() == 0 {
-							err = table.AppendRow()
-							if err != nil { return nil, err }
-/* Now done in AppendRow()
-							var newRow2 tableRow2 = make(tableRow2, 0)
-							table.rows2 = append(table.rows2, newRow2)
-							if debugging { where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2))) }
-*/
-						}
-						if debugging {
-							where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-							where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
-						}
-/* Now done in AppendCol()
-						// Note: We don't know how many col elements to append, so we append one at a time.
-						//       Unlike the old model which uses a map as row storage.
-						table.rows2[0] = append(table.rows2[0], nil)
-*/
-
-						rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
+					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
+					// Zero rows or one row is needed for a struct table.
+					if debugging {
+						where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
+					}
+					if table.RowCount() == 0 {
+						err = table.AppendRow()
 						if err != nil { return nil, err }
-						if debugging { where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)) }
+/* Now done in AppendRow()
+						var newRow2 tableRow2 = make(tableRow2, 0)
+						table.rows2 = append(table.rows2, newRow2)
+						if debugging { where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2))) }
+*/
+					}
+					if debugging {
+						where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
+						where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
+					}
+/* Now done in AppendCol()
+					// Note: We don't know how many col elements to append, so we append one at a time.
+					//       Unlike the old model which uses a map as row storage.
+					table.rows2[0] = append(table.rows2[0], nil)
+*/
 
-where()
-						var val interface{} = rowSliceOfStruct[0]
-where()
-						var colIndex int = len(table.rows2[0]) - 1
-where()
-						where(fmt.Sprintf("val = %v\n", val))
-where()
-						const rowIndexAlwaysZero int = 0
-//						table.rows2[rowIndexAlwaysZero][colIndex] = val
-						/* NOTE: Reinstate function call when old model is removed.
-						         This (if called now) double-sets the value.
-						*/
-where(colIndex)
-						err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
-						if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
+					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
+					if err != nil { return nil, err }
+					if debugging { where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)) }
 
-						// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
-						var colName2 string
-						var val1 interface{}
-						var sval1 string
-						var val2 interface{}
-						var sval2 string
-						for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
-							colName2 = colNameSlice[colIndex]
-							val1 = rowMapOfStruct[colName2]
-							sval1 = fmt.Sprintf("%v", val1)
-							val2 = rowSliceOfStruct[colIndex]
-							sval2 = fmt.Sprintf("%v", val2)
-//							fmt.Printf("sval1: %s  sval2: %s\n", sval1, sval2)
-							if sval2 != sval1 {
-								err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
-								return nil, err
-							}
+					var val interface{} = rowSliceOfStruct[0]
+					var colIndex int = len(table.rows2[0]) - 1
+					where(fmt.Sprintf("val = %v\n", val))
+					const rowIndexAlwaysZero int = 0
+//					table.rows2[rowIndexAlwaysZero][colIndex] = val
+					/* NOTE: Reinstate function call when old model is removed.
+					         This (if called now) double-sets the value.
+					*/
+					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
+					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
+
+					// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
+					var colName2 string
+					var val1 interface{}
+					var sval1 string
+					var val2 interface{}
+					var sval2 string
+					for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
+						colName2 = colNameSlice[colIndex]
+						val1 = rowMapOfStruct[colName2]
+						sval1 = fmt.Sprintf("%v", val1)
+						val2 = rowSliceOfStruct[colIndex]
+						sval2 = fmt.Sprintf("%v", val2)
+//						fmt.Printf("sval1: %s  sval2: %s\n", sval1, sval2)
+						if sval2 != sval1 {
+							err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
+							return nil, err
 						}
 					}
 
@@ -425,7 +403,7 @@ where(colIndex)
 
 					// rowMapOfStruct is a variable of type tableRow which is a map: map[string]interface{}
 					// Look up the value by reference to the colName.
-					var val interface{} = rowMapOfStruct[colName]
+//					var val interface{} = rowMapOfStruct[colName]
 					err = table.SetVal(colName, 0, val)
 					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 				}
@@ -478,36 +456,34 @@ where(colIndex)
 
 			lenColTypes := len(parserColTypes)
 
-			if new_model {
-				var rowSlice tableRow2
-				rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
-				if err != nil { return nil, err }
+			var rowSlice tableRow2
+			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
+			if err != nil { return nil, err }
 
-				err = table.appendRowSlice(rowSlice)
-				if err != nil { return tables, err }
+			err = table.appendRowSlice(rowSlice)
+			if err != nil { return tables, err }
 
-				lenRowSlice := len(rowSlice)
-				if lenColTypes != lenRowSlice {
-					return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
-						p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
-				}
+			lenRowSlice := len(rowSlice)
+			if lenColTypes != lenRowSlice {
+				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
+					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
+			}
 
-				// Compare rowSlice with rowMap. This is temporary code.
-				var colName2 string
-				var val1 interface{}
-				var sval1 string
-				var val2 interface{}
-				var sval2 string
-				for colIndex := 0; colIndex < len(rowSlice); colIndex++ {
-					colName2 = parserColNames[colIndex]
-					val1 = rowMap[colName2]
-					sval1 = fmt.Sprintf("%v", val1)
-					val2 = rowSlice[colIndex]
-					sval2 = fmt.Sprintf("%v", val2)
-					if sval2 != sval1 {
-						err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
-						return nil, err
-					}
+			// Compare rowSlice with rowMap. This is temporary code.
+			var colName2 string
+			var val1 interface{}
+			var sval1 string
+			var val2 interface{}
+			var sval2 string
+			for colIndex := 0; colIndex < len(rowSlice); colIndex++ {
+				colName2 = parserColNames[colIndex]
+				val1 = rowMap[colName2]
+				sval1 = fmt.Sprintf("%v", val1)
+				val2 = rowSlice[colIndex]
+				sval2 = fmt.Sprintf("%v", val2)
+				if sval2 != sval1 {
+					err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
+					return nil, err
 				}
 			}
 
@@ -999,7 +975,6 @@ func (p *parser) getRowData(line string, colNames []string, colTypes []string) (
 	return rowMap, nil
 }
 
-// new_model
 func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow2, error) {
 	var err error
 	rowSlice := make(tableRow2, len(colNames))

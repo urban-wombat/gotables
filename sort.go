@@ -516,9 +516,7 @@ func (table *Table) Sort() error {
 		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
-	if new_model {
-		table.sortByKeys2(table.sortKeys)
-	}
+	table.sortByKeys2(table.sortKeys)
 
 	return nil
 }
