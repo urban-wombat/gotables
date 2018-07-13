@@ -460,7 +460,7 @@ func (table *Table) getColTypes() []string {
 }
 
 type tableRow map[string]interface{}
-type tableRows []tableRow
+// type tableRows []tableRow
 type tableRow2 []interface{}
 type tableRows2 []tableRow2
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
@@ -830,125 +830,10 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	return nil
 }
 
-///*
-//This is for adding an entire new row of data to a table in bulk, so to speak.
-//
-//	var row2 gotables.tableRow2 = make(gotables.tableRow2)
-//	row2 = append(row2, "JC")
-//	row2 = append(row2, 12)
-//	err = table.appendRowSlice(row2)
-//	if err != nil { panic(err) }
-//*/
-//func (table *Table) appendRowSlice(rowSlice tableRow2) error {
-//	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
-//
-//	// Check types match what the table is expecting.
-//	var err error
-//	var colName string
-//	var colType string
-//	var valuePossiblyUpdated interface{}
-//	var exists bool
-//	var valType string
-//	var missingValue interface{}
-//
-//	// Loop through all the cols defined in the table.
-//	for _, colName = range table.colNames {
-//		colType, err = table.ColType(colName)
-//		if err != nil {
-//			return err
-//		}
-//
-//		// (We don't [yet] check to see if excess cols have been provided.)
-//		// Now we do ...
-//		if len(rowSlice) != len(table.colNames) {
-//			return fmt.Errorf("%s(rowSlice): table [%s] len(rowSlice) %d != table.ColCount() %d",
-//				funcName(), table.tableName, len(rowSlice), table.ColCount())
-//		}
-//
-//		// Check that a col has been provided for each corresponding col in the table.
-//		_, exists = rowMap[colName]
-//		if !exists {
-//			// For some types (float32 and float64) there is a missing value: NaN
-//			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
-//			if !exists {
-//				// Don't permit a misleading missing value to be present for ints, bools, strings.
-//				return fmt.Errorf("%s: Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
-//					funcName(), table.tableName, colName, colType)
-//			}
-//			rowMap[colName] = missingValue
-//		}
-//
-//		// Check that the new value col type is the same as the table col type.
-//		valuePossiblyUpdated = rowMap[colName]
-//		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
-//		if valType != colType {
-//			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
-//			if !isAlias(colType, valType) {
-//				return fmt.Errorf("%s: table [%s] col %s expecting type %s but found type %s",
-//					funcName(), table.tableName, colName, colType, valType)
-//			}
-//		}
-//	}
-//
-//	// Append the thoroughly checked and complete row to existing rows.
-//	table.rows = append(table.rows, rowMap)
-//
-//	return nil
-//}
-
 func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	// We're going to assume that all error checking was done in getRowSlice()
-
-/*
-	// Check types match what the table is expecting.
-	var err error
-	var colName string
-	var colType string
-	var valuePossiblyUpdated interface{}
-	var exists bool
-	var valType string
-	var missingValue interface{}
-
-	// Loop through all the cols defined in the table.
-	for _, colName := range table.colNames {
-		colType, err := table.ColType(colName)
-		if err != nil {
-			return err
-		}
-
-		// Check to see if too many or too few cols have been provided.
-		if len(rowSlice) != len(table.colNames) {
-			return fmt.Errorf("%s(rowSlice): table [%s] len(rowSlice) %d != table.ColCount() %d",
-				funcName(), table.tableName, len(rowSlice), table.ColCount())
-		}
-
-		// Check that a col has been provided for each corresponding col in the table.
-		_, exists = rowMap[colName]
-		if !exists {
-			// For some types (float32 and float64) there is a missing value: NaN
-			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
-			if !exists {
-				// Don't permit a misleading missing value to be present for ints, bools, strings.
-				return fmt.Errorf("%s: Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
-					funcName(), table.tableName, colName, colType)
-			}
-			rowMap[colName] = missingValue
-		}
-
-		// Check that the new value col type is the same as the table col type.
-		valuePossiblyUpdated = rowMap[colName]
-		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
-		if valType != colType {
-			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
-			if !isAlias(colType, valType) {
-				return fmt.Errorf("%s: table [%s] col %s expecting type %s but found type %s",
-					funcName(), table.tableName, colName, colType, valType)
-			}
-		}
-	}
-*/
 
 	// Append row2 to existing rows2.
 	if debugging {
@@ -1063,41 +948,6 @@ func missingValueForType(typeName string) (missingValue interface{}, hasMissing 
 	return missingValue, true
 }
 
-/*
-Returns a parsable elastic tabbed table as a string.
-*/
-/*
-//func (table *Table) stringTabWriter() (string, error) {
-//	if table == nil {
-//		return "", fmt.Errorf("table.%s: table is <nil>", funcName())
-//	}
-//	var buf bytes.Buffer
-//	bufWriter := bufio.NewWriter(&buf) // Implements Writer interface. Instead of using os.Stdout.
-//	const minwidth = 0                 // No effect?
-//	const tabwidth = 0                 // No effect?
-//	const padding = 1                  // Space beween cells. This works.
-//	const padchar = ' '
-//	const flags = uint(0) // ?
-//	//	const flags    = uint(tabwriter.AlignRight)	// Right aligns ALL columns!
-//	//	const flags    = uint(tabwriter.Debug)		// Prints vertical bar between columns.
-//	//	tabWriter := new(tabwriter.Writer).Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)
-//	//	tabWriter := new(tabwriter.Writer)	// 18.01.2017 temporarily commented out
-//	tabWriter := tabwriter.NewWriter(bufWriter, minwidth, tabwidth, padding, padchar, flags) // 18.01.2017 trying this
-//	//	tabWriter.Init(bufWriter, minwidth, tabwidth, padding, padchar, flags)	// 18.01.2017 temporarily commented out
-//	//	fmt.Fprintf(tabWriter, table._String())	// Write this table to tabWriter.
-//	fmt.Fprintf(tabWriter, table._String('\t')) // Write this table to tabWriter.
-//	err := tabWriter.Flush()
-//	if err != nil {
-//		return "", err
-//	}
-//	err = bufWriter.Flush() // Necessary!
-//	if err != nil {
-//		return "", err
-//	}
-//	return buf.String(), nil
-//}
-*/
-
 func (table *Table) StringUnpadded() string {
 
 	if table == nil {
@@ -1124,7 +974,6 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	const verticalSep byte = '\n'
 	var s string
 	var buf bytes.Buffer
-//	var err error
 
 	// Print as struct shape or table shape.
 	if table.structShape && table.RowCount() <= 1 {
@@ -1809,75 +1658,6 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 }
 
 /*
-Initialise a freshly created *Table (see NewTable()) with a list of column names.
-The column sequence is maintained.
-
-The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
-*/
-/*
-//func (table *Table) appendColNames(colNames []string) error {
-//	if table == nil {
-//		return fmt.Errorf("table.%s: table is <nil>", funcName())
-//	}
-//	var lenNames int = len(colNames)
-//	var lenTypes int = len(table.colTypes)
-//	if lenTypes != 0 && lenNames != lenTypes {
-//		return fmt.Errorf("table [%s] col names %d != col types %d", table.tableName, lenNames, lenTypes)
-//	}
-//
-//	for _, colName := range colNames {
-//		if isValid, err := IsValidColName(colName); !isValid {
-//			return err
-//		}
-//	}
-//
-//	for index, colName := range colNames {
-//		// Make sure this col name doesn't already exist.
-//		_, exists := table.colNamesLookup[colName]
-//		if exists {
-//			err := fmt.Errorf("table [%s] col already exists: %s", table.Name(), colName)
-//			return err
-//		}
-//
-//		table.colNamesLookup[colName] = index
-//	}
-//
-//	table.colNames = append(table.colNames, colNames...) // Explode slice with ... notation.
-//
-//	return nil
-//}
-*/
-
-/*
-Initialise a freshly created *Table (see NewTable()) with a list of column types.
-The column sequence is maintained.
-
-The list of colNames and colTypes are parallel and the lists must be of equal length to each other.
-*/
-/*
-//func (table *Table) appendColTypes(colTypes []string) error {
-//	if table == nil {
-//		return fmt.Errorf("table.%s: table is <nil>", funcName())
-//	}
-//	var lenNames int = len(table.colNames)
-//	var lenTypes int = len(colTypes)
-//	if lenNames != 0 && lenTypes != lenNames {
-//		return fmt.Errorf("table [%s] col types %d != col names %d", table.tableName, lenTypes, lenNames)
-//	}
-//
-//	for _, colType := range colTypes {
-//		if isValid, err := IsValidColType(colType); !isValid {
-//			return err
-//		}
-//	}
-//
-//	table.colTypes = append(table.colTypes, colTypes...) // Explode slice with ... notation.
-//
-//	return nil
-//}
-*/
-
-/*
 	This is to avoid use of appendColNames() and appendColTypes() in parseString().
 */
 func (table *Table) appendCols(colNames []string, colTypes []string) error {
@@ -2114,20 +1894,6 @@ func (table *Table) RowCount() int {
 
 	return len(table.rows2)
 }
-
-/*
-// This bulk data method that returns a RowMap which is the data for a given table row.
-func (table *Table) rowMap(rowIndex int) (tableRow, error) {
-	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
-
-	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return nil, fmt.Errorf("#1 table [%s] has %d row%s. Row index out of range (0..%d): %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), table.RowCount()-1, rowIndex)
-	}
-
-	return table.rows[rowIndex], nil	// rowMap()
-}
-*/
 
 // This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.

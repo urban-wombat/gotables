@@ -313,7 +313,6 @@ func (tableRows tableRows) Swap(i, j int) {
 */
 
 var compare_Alphabetic_string compareFunc = func(i, j interface{}) int {
-// where(fmt.Sprintf("*string* comparing %v AND %v", i, j))
 	var si_string string = i.(string)
 	var sj_string string = j.(string)
 	var si_lower string = strings.ToLower(si_string)
@@ -495,11 +494,13 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 	}
 }
 
+/*
 type tableSortable struct {
 	table *Table
 	rows  tableRows
 	less  func(i tableRow, j tableRow) bool
 }
+*/
 
 /*
 	Sort this table by this table's currently-set sort keys.
