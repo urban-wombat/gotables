@@ -460,7 +460,6 @@ func (table *Table) getColTypes() []string {
 }
 
 type tableRow map[string]interface{}
-// type tableRows []tableRow
 type tableRow2 []interface{}
 type tableRows2 []tableRow2
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.

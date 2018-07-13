@@ -78,7 +78,6 @@ func (keys SortKeys) String() string {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(SortKeys) SortKeys is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
-	// where(fmt.Sprintf("len(keys) = %d\n", len(keys)))
 	var s string = "SortKeys["
 	keySep := ""
 	for _, key := range keys {
@@ -169,11 +168,9 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 		if err != nil {
 //			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
 			errSortKey := fmt.Errorf("SetSortKeys(%v): %v\n", sortColNames, err)
-			// where(fmt.Sprintf("ERROR IN SetSortKeys(): %v", errSortKey))
 			return errSortKey
 		}
 	}
-	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
 
 	return nil
 }
@@ -197,7 +194,6 @@ func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 			return errSortKey
 		}
 	}
-	//where(fmt.Sprintf("table.sortKeys === %v\n", table.sortKeys))
 	return nil
 }
 
@@ -210,14 +206,12 @@ func (table *Table) setSortKeyReverse(colName string) error {
 		return err
 	}
 	var found bool = false
-	// where(fmt.Sprintf("******** sortKeys = %v ...\n", table.sortKeys))
 	for i, sortKey := range table.sortKeys {
 		if sortKey.colName == colName {
 			table.sortKeys[i].reverse = true
 			found = true
 		}
 	}
-	// where(fmt.Sprintf("******** ... sortKeys = %v\n", table.sortKeys))
 	if !found {
 		err := fmt.Errorf("sortKey not found: %q", colName)
 		return err
@@ -230,7 +224,6 @@ func (table *Table) AppendSortKey(colName string) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
-	//	where(fmt.Sprintf("AppendSortKey(%q)\n", colName))
 	colInfo, err := table.getColInfo(colName)
 	if err != nil {
 		// Col doesn't exist.
@@ -263,7 +256,6 @@ func (table *Table) DeleteSortKey(keyName string) error {
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
-//	where(fmt.Sprintf("[%s].%s(%q)\n", table.Name(), funcName(), keyName))
 	_, err := table.getColInfo(keyName)
 	if err != nil {
 		// Col doesn't exist.
@@ -318,20 +310,15 @@ var compare_Alphabetic_string compareFunc = func(i, j interface{}) int {
 	var si_lower string = strings.ToLower(si_string)
 	var sj_lower string = strings.ToLower(sj_string)
 	if si_lower < sj_lower {
-		// where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 		return -1
 	} else if si_lower > sj_lower {
-		// where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 		return +1
 	} else { // si_lower == sj_lower
 		if si_string < sj_string {
-			// where(fmt.Sprintf("%q < %q\n", si_string, sj_string))
 			return -1
 		} else if si_string > sj_string {
-			// where(fmt.Sprintf("%q > %q\n", si_string, sj_string))
 			return +1
 		} else {
-			// where(fmt.Sprintf("%q == %q\n", si_string, sj_string))
 			return 0
 		}
 	}
@@ -350,7 +337,6 @@ var compare_uint compareFunc = func(i, j interface{}) int {
 }
 
 var compare_int compareFunc = func(i, j interface{}) int {
-// where(fmt.Sprintf("*int* comparing %v AND %v", i, j))
 	var inti int = i.(int)
 	var intj int = j.(int)
 	if inti < intj {
@@ -495,14 +481,6 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 }
 
 /*
-type tableSortable struct {
-	table *Table
-	rows  tableRows
-	less  func(i tableRow, j tableRow) bool
-}
-*/
-
-/*
 	Sort this table by this table's currently-set sort keys.
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
@@ -559,48 +537,33 @@ func (table *Table) Sort2() error {
 }
 
 func (table *Table) sortByKeys2(sortKeys SortKeys) {
-	//	where(fmt.Sprintf("Calling SortByKeys(%v)\n", sortKeys))
 	sort.Sort(tableSortable2{table, table.rows2, func(iRow, jRow tableRow2) bool {
 //		compareCount++
-		//where(fmt.Sprintf("len(sortKeys) = %d\n", len(sortKeys)))
-		//where(fmt.Sprintf("table.sortKeys ... %v\n", table.sortKeys))
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			colIndex, _ := table.ColIndex(colName)
 			var sortFunc compareFunc = sortKey.sortFunc
-/*
-			var iVal interface{} = iRow[colName]
-			var jVal interface{} = jRow[colName]
-*/
 			var iVal interface{} = iRow[colIndex]
 			var jVal interface{} = jRow[colIndex]
 			var compared int = sortFunc(iVal, jVal)
-			//where(fmt.Sprintf("sortKey.reverse = %t\n", sortKey.reverse))
-			//where(fmt.Sprintf("compared = %d ...\n", compared))
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
 				// Reverse is intended to be descending, not a toggle between ascending and descending.
 				compared *= -1
 			}
-			//where(fmt.Sprintf("... compared = %d\n", compared))
 			if compared != 0 {
-				//	where(fmt.Sprintf("not equal"))
-				//	where(fmt.Sprintf("Less = %v\n", compared < 0))
 				return compared < 0		// Less is true if compared < 0
 			}
-			//	where(fmt.Sprintf("*** return false\n"))
 		}
 		return false
 	}})
 }
 
 func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
-// where("A")
 	if table == nil {
 		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
-// where(fmt.Sprintf("B len(searchValues) = %d", len(searchValues)))
 	if len(searchValues) == 0 {
 		return fmt.Errorf("[%s].Search(...) expecting 1 or more search values, but found none", table.Name())
 	}
@@ -611,25 +574,21 @@ func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
 
 	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
 	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
-// where(fmt.Sprintf("C searchValues type %T", searchValues))
 		return fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
 	if len(searchValues) != len(table.sortKeys) {
-// where(fmt.Sprintf("D searchValues type %T", searchValues))
 		return fmt.Errorf("%s() searchValues count %d != sort keys count %d",
 			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
-// where("E")
 	// Check that searchValues are the right type.
 	for sortIndex, sortKey := range table.sortKeys {
 		colName := sortKey.colName
 		value := searchValues[sortIndex]
 		isValid, err := table.IsValidColValue(colName, value)
 		if !isValid {
-// where("F")
 			// Append key name and type information to end of err.
 			var keyInfo string
 			sep := ""
@@ -688,7 +647,6 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 			var searchVal interface{} = searchValues[keyIndex]
 			var cellVal interface{}
 			cellVal, err := table.GetVal(colName, rowIndex)
-where(fmt.Sprintf("ZZZ table.GetVal(colName=%s, rowIndex=%d) = (%v, %v)\n", colName, rowIndex, cellVal, err))
 			if err != nil {
 				// Should never happen. Hasn't been tested.
 				break	// Out to searchByKeys() enclosing function.
@@ -802,11 +760,8 @@ func (tableRows tableRows) Less(i, j int) bool {
 	var jInterface interface{} = tableRows[j][colName]
 	var compared int = sortFunc(iInterface, jInterface)
 	if compared != 0 {
-		//	where(fmt.Sprintf("not equal"))
-		//	where(fmt.Sprintf("Less = %v\n", compared < 0))
 		return compared < 0
 	}
-	//	where(fmt.Sprintf("*** return false\n"))
 	return false
 }
 */
@@ -893,7 +848,6 @@ func (table *Table) OrderColsBySortKeys() error {
 	// First slots with key col names.
 	for key = 0; key < table.SortKeyCount(); key++ {
 		keyName := table.sortKeys[key].colName
-		// where(fmt.Sprintf("[%d] keyName: %s", key, keyName))
 		newOrder[key] = keyName
 	}
 
@@ -907,7 +861,6 @@ func (table *Table) OrderColsBySortKeys() error {
 			return err
 		}
 		if !isSortKey {
-			// where(fmt.Sprintf("[%d] colName: %s", row, colName))
 			newOrder[row] = colName
 			row++
 		}
@@ -1035,12 +988,10 @@ func (table *Table) ReorderCols(newColNamesOrder ...string) error {
 	if err != nil {
 		return err
 	}
-//where(oldColsTable)
 	err = oldColsTable.Sort()
 	if err != nil {
 		return err
 	}
-//where(oldColsTable)
 
 	for col := 0; col < len(newColNamesOrder); col++ {
 		table.colNames[col] = newColNamesOrder[col]
@@ -1056,8 +1007,6 @@ func (table *Table) ReorderCols(newColNamesOrder ...string) error {
 		table.colNamesLookup[newColNamesOrder[col]] = col
 	}
 
-//where(table.colTypes)
-//where(table.colNamesLookup)
 
 	return nil
 }
