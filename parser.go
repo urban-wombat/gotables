@@ -335,7 +335,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
-//						err = table.appendRowOfNil()
 						err = table.AppendRow()
 						if err != nil { return nil, err }
 					}
@@ -343,27 +342,15 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Zero rows or one row is needed for a struct table.
-					if debugging {
-						where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-					}
+					if debugging { where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount())) }
 					if table.RowCount() == 0 {
 						err = table.AppendRow()
 						if err != nil { return nil, err }
-/* Now done in AppendRow()
-						var newRow2 tableRow2 = make(tableRow2, 0)
-						table.rows2 = append(table.rows2, newRow2)
-						if debugging { where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2))) }
-*/
 					}
 					if debugging {
 						where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 					}
-/* Now done in AppendCol()
-					// Note: We don't know how many col elements to append, so we append one at a time.
-					//       Unlike the old model which uses a map as row storage.
-					table.rows2[0] = append(table.rows2[0], nil)
-*/
 
 					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
@@ -371,9 +358,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					var val interface{} = rowSliceOfStruct[0]
 					var colIndex int = len(table.rows2[0]) - 1
-					where(fmt.Sprintf("val = %v\n", val))
 					const rowIndexAlwaysZero int = 0
-//					table.rows2[rowIndexAlwaysZero][colIndex] = val
 					/* NOTE: Reinstate function call when old model is removed.
 					         This (if called now) double-sets the value.
 					*/
@@ -392,7 +377,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						sval1 = fmt.Sprintf("%v", val1)
 						val2 = rowSliceOfStruct[colIndex]
 						sval2 = fmt.Sprintf("%v", val2)
-//						fmt.Printf("sval1: %s  sval2: %s\n", sval1, sval2)
 						if sval2 != sval1 {
 							err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
 							return nil, err
@@ -403,7 +387,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// rowMapOfStruct is a variable of type tableRow which is a map: map[string]interface{}
 					// Look up the value by reference to the colName.
-//					var val interface{} = rowMapOfStruct[colName]
 					err = table.SetVal(colName, 0, val)
 					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 				}
@@ -429,7 +412,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			parserColTypes, err = p.getColTypes(line)
 			if err != nil {
-//				return nil, err
 				return nil, fmt.Errorf("table [%s] %s", table.Name(), err)
 			}
 			lenColNames := len(parserColNames)
@@ -557,7 +539,8 @@ func (p *parser) getTableName(line string) (string, error) {
 
 	result := tableNameRegexp.MatchString(tableName)
 	if !result {
-		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name in square brackets, eg [_Foo2Bar3] but found: %s", p.gotFilePos(), tableName)
+		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name in square brackets, eg [_Foo2Bar3] but found: %s",
+			p.gotFilePos(), tableName)
 	}
 
 	// Strip off surrounding []
@@ -1235,7 +1218,6 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
 			if math.IsNaN(float64Val) && textFound != "NaN" {
-				//					return nil, fmt.Errorf("%s expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
 				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
@@ -1287,21 +1269,6 @@ type parser struct {
 func (p *parser) SetFileName(fileName string) {
 	p.fileName = fileName
 }
-
-/*
-func (p parser) String() string {
-	var buffer bytes.Buffer
-	buffer.WriteString("table.parser: ")
-	buffer.WriteString(fmt.Sprintf("fileName='%s' ", p.fileName))
-	return buffer.String()
-}
-*/
-
-/*
-func (p *parser) Parse() (*TableSet, error) {
-	return p.parseFile(p.fileName)
-}
-*/
 
 func plural(items int) string {
 	if items == 1 || items == -1 {
