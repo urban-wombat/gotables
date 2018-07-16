@@ -3801,7 +3801,8 @@ func TestSearch(t *testing.T) {
 
 }
 
-func TestIsValidColValue (t *testing.T) {
+// Note: IsValidColValue() is an alias to IsValidCellValue()
+func TestIsValidCellValue (t *testing.T) {
 	tableString :=
 	`[Types]
 	i int
@@ -3830,13 +3831,16 @@ func TestIsValidColValue (t *testing.T) {
 		{"s", 8, false},
 		{"f32", 23.4, false},			// Floating point constant is float64
 		{"f32", float32(23.4), true},	// It's now a float32
+		{"s", nil, false},
+		{"i", nil, false},
+		{"f32", nil, false},
 	}
 
 	for _, test := range tests {
 
-		result, err := table.IsValidColValue(test.col, test.val)
+		result, err := table.IsValidCellValue(test.col, test.val)
 		if (result != test.expecting) {
-			t.Errorf("Expecting IsValidColValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
+			t.Errorf("Expecting IsValidCellValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
 		}
 	}
 }

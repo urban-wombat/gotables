@@ -584,9 +584,11 @@ func (table *Table) AppendRow() error {
 	}
 */
 
+	// Note: make sets slice values to <nil> and NOT to their zero value.
 	var newRow2 tableRow2 = make(tableRow2, table.ColCount())
 	table.rows2 = append(table.rows2, newRow2)
 
+	// table.SetRowCellsToZeroValue() sets cells to their zero value. Otherwise cells would be left set to <nil>.
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
 	err = table.SetRowCellsToZeroValue(rowIndex)
@@ -707,8 +709,6 @@ func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 
 func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
 	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
-
-	// NOTE: This initialisation of newly created cells may be unnecessary with the new data model.
 
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
@@ -2551,15 +2551,32 @@ func (table *Table) GetColValsAsStrings(colName string) ([]string, error) {
 	return sVals, nil
 }
 
-// Test that this value is a valid type for this column.
-func (table *Table) IsValidColValue(colName string, value interface{}) (bool, error) {
-	valueType := reflect.TypeOf(value)
-	valueTypeName := valueType.Name()
+/*
+	Test that this value is a valid type for this column.
 
+	Alias of IsValidCellValue()
+*/
+func (table *Table) IsValidColValue(colName string, value interface{}) (bool, error) {
+	return table.IsValidCellValue(colName, value)
+}
+
+/*
+	Test that this value is a valid type for this column.
+
+	Alias of IsValidColValue()
+*/
+func (table *Table) IsValidCellValue(colName string, value interface{}) (bool, error) {
 	colType, err := table.ColType(colName)
 	if err != nil {
 		return false, err
 	}
+
+	if value == nil {
+		return false, fmt.Errorf("table[%s] col=%s type=%s invalid value: <nil>", table.Name(), colName, colType)
+	}
+
+	valueType := reflect.TypeOf(value)
+	valueTypeName := valueType.Name()
 
 	if valueTypeName == colType {
 		return true, nil
