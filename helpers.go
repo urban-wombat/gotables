@@ -6,7 +6,9 @@ package gotables
 
 import (
 //	"bytes"
+	"errors"
 	"fmt"
+//	"reflect"
 //	"os"
 //	"runtime/debug"
 )
@@ -49,9 +51,6 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetStringByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -69,9 +68,6 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetBoolByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -91,9 +87,6 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetIntByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -111,9 +104,6 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetInt8ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -133,9 +123,6 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetInt16ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -153,9 +140,6 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetInt32ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -175,9 +159,6 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetInt64ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -195,9 +176,6 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetUintByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -217,9 +195,6 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetByteByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -237,9 +212,6 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetUint8ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -259,9 +231,6 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetUint16ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -279,9 +248,6 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetUint32ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -301,9 +267,6 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetUint64ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -321,9 +284,6 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetFloat32ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -343,9 +303,6 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetFloat64ByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -364,9 +321,6 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
-where(fmt.Sprintf("YYY SetByteSliceByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
-
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
 
@@ -384,9 +338,6 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
-
-where(fmt.Sprintf("YYY SetUint8SliceByColIndex()\n"))
-where(fmt.Sprintf("SetVal(colName=%s, rowIndex=%d, newValue=%v)\n", colName, rowIndex, newValue))
 
 	err = table.SetVal(colName, rowIndex, newValue)
 	if err != nil { return err }
@@ -1392,3 +1343,85 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value [
 	return
 }
 
+func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
+	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
+
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	var err error
+	var colType string
+
+	colType, err = table.ColTypeByColIndex(colIndex)
+	if err != nil {
+		return err
+	}
+
+	switch colType {
+
+		case "string":
+			err = table.SetStringByColIndex(colIndex, rowIndex, "")
+
+		case "bool":
+			err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+
+		case "int":
+			err = table.SetIntByColIndex(colIndex, rowIndex, 0)
+
+		case "int8":
+			err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
+
+		case "int16":
+			err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
+
+		case "int32":
+			err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
+
+		case "int64":
+			err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
+
+		case "uint":
+			err = table.SetUintByColIndex(colIndex, rowIndex, 0)
+
+		case "byte":
+			err = table.SetByteByColIndex(colIndex, rowIndex, 0)
+
+		case "uint8":
+			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
+
+		case "uint16":
+			err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
+
+		case "uint32":
+			err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
+
+		case "uint64":
+			err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
+
+		case "float32":
+			err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
+
+		case "float64":
+			err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
+
+		case "[]byte":
+			err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
+
+		case "[]uint8":
+			err = table.SetUint8SliceByColIndex(colIndex, rowIndex, []uint8{})
+
+		default:
+			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
+			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+			for typeName, _ := range globalColTypesMap {
+				msg += fmt.Sprintf(" %s", typeName)
+			}
+			msg += ")"
+			err := errors.New(msg)
+			return err
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

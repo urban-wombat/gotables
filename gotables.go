@@ -707,62 +707,6 @@ func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 	return nil
 }
 
-func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
-	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
-
-	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
-
-	var err error
-	var colType string
-
-	colType, err = table.ColTypeByColIndex(colIndex)
-	if err != nil {
-		return err
-	}
-
-	switch colType {
-	case "bool":
-		err = table.SetBoolByColIndex(colIndex, rowIndex, false)
-	case "float32":
-		err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
-	case "float64":
-		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
-	case "uint":
-		err = table.SetUintByColIndex(colIndex, rowIndex, 0)
-	case "[]uint8":
-		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []uint8{})
-	case "[]byte":
-		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
-	case "int":
-		err = table.SetIntByColIndex(colIndex, rowIndex, 0)
-	case "int16":
-		err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
-	case "int32":
-		err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
-	case "int64":
-		err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
-	case "int8":
-		err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
-	case "string":
-		err = table.SetStringByColIndex(colIndex, rowIndex, "")
-	case "uint16":
-		err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
-	case "uint32":
-		err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
-	case "uint64":
-		err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
-	case "uint8":
-		err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
-	case "byte":
-		err = table.SetByteByColIndex(colIndex, rowIndex, 0)
-	}
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 /*
 This is for adding an entire new row of data to a table in bulk, so to speak.
 
@@ -2578,11 +2522,11 @@ func (table *Table) IsValidCellValue(colName string, value interface{}) (bool, e
 	valueType := reflect.TypeOf(value)
 	valueTypeName := valueType.Name()
 
-	if valueTypeName == colType {
-		return true, nil
-	} else {
+	if valueTypeName != colType {
 		return false, fmt.Errorf("table[%s] col=%s type=%s invalid value: %v", table.Name(), colName, colType, value)
 	}
+
+	return true, nil
 }
 
 /*
@@ -3066,32 +3010,50 @@ func mu(all ...interface{}) []interface{} {
 	return all
 }
 
-/*
-// This is for testing only, and will be removed.
-func PrintRowsAndRows2_deprecated(table *Table) {
-	fmt.Println("---------------------------------")
-	fmt.Printf("table = [%s]\n", table.Name())
-	fmt.Println("MAP")
-	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		row := table.rows[rowIndex]
-		len := len(row)
-		fmt.Printf("[rowIndex=%d] len(row)=%d: ", rowIndex, len)
-		for k, v := range row {
-			fmt.Printf("%s:%v ", k, v)
-		}
-		fmt.Println()
-	}
-
-	fmt.Println("SLICE")
-	for rowIndex := 0; rowIndex < len(table.rows2); rowIndex++ {
-		row := table.rows2[rowIndex]
-		len := len(row)
-		fmt.Printf("[rowIndex=%d] len(row)=%d: ", rowIndex, len)
-		for i := 0; i < len; i++ {
-			v := row[i]
-			fmt.Printf("%v ", v)
-		}
-		fmt.Println()
+func ZeroValue(typeName string) (interface{}, error) {
+	switch typeName {
+		case "bool":
+			return false, nil
+		case "float32":
+			return 0.0, nil
+		case "float64":
+			return 0.0, nil
+		case "uint":
+			return 0, nil
+		case "[]uint8":
+			return []uint8{}, nil
+		case "[]byte":
+			return []byte{}, nil
+		case "int":
+			return 0, nil
+		case "int16":
+			return 0, nil
+		case "int32":
+			return 0, nil
+		case "int64":
+			return 0, nil
+		case "int8":
+			return 0, nil
+		case "string":
+			return "", nil
+		case "uint16":
+			return 0, nil
+		case "uint32":
+			return 0, nil
+		case "uint64":
+			return 0, nil
+		case "uint8":
+			return 0, nil
+		case "byte":
+			return 0, nil
+		default:
+			msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
+			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+			for typeName, _ := range globalColTypesMap {
+				msg += fmt.Sprintf(" %s", typeName)
+			}
+			msg += ")"
+			err := errors.New(msg)
+			return nil, err
 	}
 }
-*/
