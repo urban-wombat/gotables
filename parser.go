@@ -48,10 +48,10 @@ SOFTWARE.
 
 func init() {
 	typeAliasMap = map[string]string {
-		"[]uint8" : "[]byte",
 		  "uint8" :   "byte",
-//		"[]int32" : "[]rune",
+		"[]uint8" : "[]byte",
 //		  "int32" :   "rune",
+//		"[]int32" : "[]rune",
 	}
 }
 
