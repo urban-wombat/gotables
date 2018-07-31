@@ -18,8 +18,10 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+//	"runtime/debug"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 	//	"unsafe"
 	"math"
 )
@@ -50,7 +52,7 @@ func init() {
 	typeAliasMap = map[string]string {
 		  "uint8" :   "byte",
 		"[]uint8" : "[]byte",
-//		  "int32" :   "rune",
+		  "int32" :   "rune",
 //		"[]int32" : "[]rune",
 	}
 }
@@ -62,6 +64,8 @@ const _ALL_SUBSTRINGS = -1
 // Constants for strconv parse functions.
 const (
 	_DECIMAL = 10
+	_OCT = 8
+	_HEX = 16
 	_BITS_8  = 8  // Bit width.
 	_BITS_16 = 16 // Bit width.
 	_BITS_32 = 32 // Bit width.
@@ -70,9 +74,29 @@ const (
 
 // Compiled regular expressions.
 // From http://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes:  /"(?:[^"\\]|\\.)*"/
+// 25/07/2018: See also: [^"\\\r\n]*(?:\\.[^"\\\r\n]*)* from https://www.regular-expressions.info/examplesprogrammer.html
 // var stringRegexp *regexp.Regexp = regexp.MustCompile("/"(?:[^"\\]|\\.)*"/")
 var stringRegexp *regexp.Regexp = regexp.MustCompile(`^"(?:[^"\\]*(?:\\.)?)*"`)
+
 var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
+
+// var runeRegexpString string = `^('(?:[^']*(?:\\.)?)*')|([-+]?\d+)`		// delimited '.' or int
+// var runeRegexpString string = `^'(?:[^']*(?:\\.)?)*'`	// delimited '.' or ''
+// var runeRegexpString string = `^'([\\].*[^'])|([^'])|([\\]n)'`
+// var runeRegexpString string = `^'(?>\P{M}\p{M}*)|([\\]n)'`
+// var runeRegexpString string = `'(.*)|([\\]n)'`
+// var runeRegexpString string = `^'(.*)|([\\]n)'`
+// var runeRegexpString string = `^'(?:[^'\\]*(?:\\.)?)*'`
+// var runeRegexpString string = `'([^"\\\r\n]*(?:\\.[^"\\\r\n]*)*)|(\\n)|(\\[xXuU].*)'`
+// var runeRegexpString string = `'(([^'\r\n]*)|(\\n)|(\\[xXuU].*))'`
+// var runeRegexpString string = `'(([^']*)|(\\n)|(\\[xXuU].*))'`
+// var runeRegexpString string = `'(([^']*)|(\\[xXuU].*)|(\\n)|(\\''''))'`
+// var runeRegexpString string = `'((\\.)|([^']*)|(\\[xXuU].*)|(\\n))'`
+// var runeRegexpString string = `'((\\[xXuU].*)|(\\n)|(\\.)|([^']*))'`
+// Note: (\\') successfully parses '\'' It needs to go before ([^']*)
+//             This may not be terribly efficient, awaiting a more specific regular expresssion.
+var runeRegexpString string = `'((\\[xXuU].*)|(\\n)|(\\')|([^']*))'`
+var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
 // var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
@@ -122,6 +146,8 @@ const (
 
 var typeAliasMap map[string]string
 
+// GO_TYPES
+
 var globalColTypesMap = map[string]int{
 	"[]byte":  0,
 	"[]uint8": 0,
@@ -132,6 +158,7 @@ var globalColTypesMap = map[string]int{
 	"int":     0,
 	"int16":   0,
 	"int32":   0,
+	"rune":    0,
 	"int64":   0,
 	"int8":    0,
 	"string":  0,
@@ -328,10 +355,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
 
-					rowMapOfStruct, err = p.getRowData(valueData, colNameSlice, colTypeSlice)
-					if err != nil { return nil, err }
-					if debugging { where(fmt.Sprintf("/// rowMapOfStruct = %v\n", rowMapOfStruct)) }
-
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
@@ -342,19 +365,17 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Zero rows or one row is needed for a struct table.
-					if debugging { where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount())) }
 					if table.RowCount() == 0 {
 						err = table.AppendRow()
 						if err != nil { return nil, err }
 					}
 					if debugging {
-						where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-						where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
+						// where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
+						// where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
 					}
 
 					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
-					if debugging { where(fmt.Sprintf("||| rowSliceOfStruct = %v\n", rowSliceOfStruct)) }
 
 					var val interface{} = rowSliceOfStruct[0]
 					var colIndex int = len(table.rows2[0]) - 1
@@ -432,9 +453,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		case _COL_ROWS:
 
 			// Found data.
-			var rowMap tableRow
-			rowMap, err = p.getRowData(line, parserColNames, parserColTypes)
-			if err != nil { return nil, err }
 
 			lenColTypes := len(parserColTypes)
 
@@ -451,6 +469,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
 			}
 
+/*
 			// Compare rowSlice with rowMap. This is temporary code.
 			var colName2 string
 			var val1 interface{}
@@ -468,11 +487,11 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					return nil, err
 				}
 			}
+*/
 
-			lenRowMap := len(rowMap)
-			if lenColTypes != lenRowMap {
+			if lenColTypes != lenRowSlice {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
-					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowMap)
+					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
 			}
 		}
 
@@ -515,7 +534,7 @@ func (p *parser) parseFile(fileName string) (*TableSet, error) {
 }
 
 func (p *parser) gotFilePos() string {
-	return fmt.Sprintf("%s[%d]", p.fileName, globalLineNum)
+	return fmt.Sprintf("%s:%d:", p.fileName, globalLineNum)
 }
 
 func file_line() string {
@@ -591,7 +610,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 /*
 Returns true for those Go types that Table supports.
 
-Go types NOT (yet) supported: complex64 complex128 rune
+Go types NOT (yet) supported: complex64 complex128
 */
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
@@ -659,305 +678,6 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowData(line string, colNames []string, colTypes []string) (tableRow, error) {
-	var err error
-	rowMap := make(tableRow)
-
-	remaining := line // Remainder of line left to parse.
-	var rangeFound []int
-	var textFound string
-	var colCount = 0
-	var lenColTypes = len(colTypes)
-	var i int
-
-	var stringVal string
-	var boolVal bool
-	var uint8Val uint8
-	var uint8SliceVal []uint8
-	var byteSliceVal []byte
-	var uint16Val uint16
-	var uint32Val uint32
-	var uint64Val uint64
-	var uintVal uint
-	var intVal int
-	var int8Val int8
-	var int16Val int16
-	var int32Val int32
-	var int64Val int64
-	var float32Val float32
-	var float64Val float64
-
-	for i = 0; i < lenColTypes; i++ {
-		if len(remaining) == 0 { // End of line
-			return nil, fmt.Errorf("%s expecting %d value%s but found only %d", p.gotFilePos(), lenColTypes, plural(lenColTypes), colCount)
-		}
-		switch colTypes[i] {
-		case "string":
-			rangeFound = stringRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
-			rowMap[colNames[i]] = stringVal
-		case "bool":
-			rangeFound = boolRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			boolVal, err = strconv.ParseBool(textFound)
-			if err != nil { // This error check probably redundant.
-				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
-			}
-			rowMap[colNames[i]] = boolVal
-		case "uint8", "byte":
-			rangeFound = uintRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			uint8Val = uint8(uint64Val)
-			rowMap[colNames[i]] = uint8Val
-		case "[]uint8":
-			// Go stores byte as uint8, so there's no need to process byte differently. ???
-			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
-			var sliceStringSplit []string = splitSliceString(sliceString)
-			uint8SliceVal = make([]uint8, len(sliceStringSplit))
-			for el := 0; el < len(sliceStringSplit); el++ {
-				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
-				if err != nil {
-					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				uint8SliceVal[el] = uint8(uint64Val)
-			}
-			rowMap[colNames[i]] = uint8SliceVal
-		case "[]byte":
-			// Go stores byte as uint8, so there's no need to process byte differently. ???
-			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
-			var sliceStringSplit []string = splitSliceString(sliceString)
-			byteSliceVal = make([]uint8, len(sliceStringSplit))
-			for el := 0; el < len(sliceStringSplit); el++ {
-				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
-				if err != nil {
-					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-				}
-				byteSliceVal[el] = byte(uint64Val)
-			}
-			rowMap[colNames[i]] = byteSliceVal
-		case "uint16":
-			rangeFound = uintRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
-				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			uint16Val = uint16(uint64Val)
-			rowMap[colNames[i]] = uint16Val
-		case "uint32":
-			rangeFound = uintRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
-				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			uint32Val = uint32(uint64Val)
-			rowMap[colNames[i]] = uint32Val
-		case "uint64":
-			rangeFound = uintRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
-				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			rowMap[colNames[i]] = uint64Val
-		case "uint":
-			rangeFound = uintRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			intBits := strconv.IntSize // uint and int are the same size.
-			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, intBits)
-			if err != nil {
-				var minVal int64
-				var maxVal uint64
-				switch intBits {
-				case 32:
-					minVal = 0
-					maxVal = math.MaxUint32
-				case 64:
-					minVal = 0
-					maxVal = math.MaxUint64
-				default:
-					msg := fmt.Sprintf("#6 %s(): CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", funcName(), intBits)
-					log.Printf("%s", msg)
-					return nil, fmt.Errorf("%s", msg)
-				}
-				rangeMsg := rangeForIntegerType(minVal, maxVal)
-				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			uintVal = uint(uint64Val) // May be unnecessary.
-			rowMap[colNames[i]] = uintVal
-		case "int":
-			rangeFound = intRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			intBits := strconv.IntSize
-			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, intBits)
-			if err != nil {
-				var minVal int64
-				var maxVal uint64
-				switch intBits {
-				case 32:
-					minVal = math.MinInt32
-					maxVal = math.MaxInt32
-				case 64:
-					minVal = math.MinInt64
-					maxVal = math.MaxInt64
-				default:
-					msg := fmt.Sprintf("CHECK int ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-					log.Printf("%s", msg)
-					return nil, fmt.Errorf("%s", msg)
-				}
-				rangeMsg := rangeForIntegerType(minVal, maxVal)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			intVal = int(int64Val) // May be unnecessary.
-			rowMap[colNames[i]] = intVal
-		case "int8":
-			rangeFound = intRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_8)
-			if err != nil {
-				// Example: data.got[55] strconv.ParseInt: parsing "-129": value out of range for type int8
-				rangeMsg := rangeForIntegerType(math.MinInt8, math.MaxInt8)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			int8Val = int8(int64Val)
-			rowMap[colNames[i]] = int8Val
-		case "int16":
-			rangeFound = intRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_16)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(math.MinInt16, math.MaxInt16)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			int16Val = int16(int64Val)
-			rowMap[colNames[i]] = int16Val
-		case "int32":
-			rangeFound = intRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_32)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(math.MinInt32, math.MaxInt32)
-				return nil, fmt.Errorf("%s %s for type %s%s ", p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			int32Val = int32(int64Val)
-			rowMap[colNames[i]] = int32Val
-		case "int64":
-			rangeFound = intRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DECIMAL, _BITS_64)
-			if err != nil {
-				rangeMsg := rangeForIntegerType(math.MinInt64, math.MaxInt64)
-				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
-			}
-			rowMap[colNames[i]] = int64Val
-		case "float32":
-			rangeFound = floatRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			float64Val, err = strconv.ParseFloat(textFound, _BITS_32)
-			if err != nil {
-				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
-			}
-			if math.IsNaN(float64Val) && textFound != "NaN" {
-				//					return nil, fmt.Errorf("%s expecting NaN as Not-a-Number for type %s but found: %s ", p.gotFilePos(), colTypes[i], textFound)
-				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
-					p.gotFilePos(), colNames[i], colTypes[i], textFound)
-			}
-			float32Val = float32(float64Val)
-			rowMap[colNames[i]] = float32Val
-		case "float64":
-			rangeFound = floatRegexp.FindStringIndex(remaining)
-			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			float64Val, err = strconv.ParseFloat(textFound, _BITS_64)
-			if err != nil {
-				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
-			}
-			if math.IsNaN(float64Val) && textFound != "NaN" {
-				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
-					p.gotFilePos(), colNames[i], colTypes[i], textFound)
-			}
-			rowMap[colNames[i]] = float64Val
-		default:
-			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
-			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
-		}
-		remaining = remaining[rangeFound[1]:]
-		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
-		colCount++
-	}
-
-	if len(remaining) > 0 { // Still one or more columns to parse.
-		// This handles both table shape and struct shape columns.
-		return nil, fmt.Errorf("%s expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
-
-	}
-
-	return rowMap, nil
-}
-
 func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow2, error) {
 	var err error
 	rowSlice := make(tableRow2, len(colNames))
@@ -982,6 +702,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 	var int8Val int8
 	var int16Val int16
 	var int32Val int32
+	var runeVal rune
 	var int64Val int64
 	var float32Val float32
 	var float64Val float64
@@ -997,7 +718,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			stringVal = textFound[1 : len(textFound)-1] // Strip off leading and trailing "" quotes.
+			stringVal = textFound[1:len(textFound)-1] // Strip off leading and trailing "" quotes.
 			rowSlice[i] = stringVal
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
@@ -1195,6 +916,25 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			int32Val = int32(int64Val)
 			rowSlice[i] = int32Val
+		case "rune":
+			rangeFound = runeRegexp.FindStringIndex(remaining)
+			// where(fmt.Sprintf("remaining = %q", remaining))
+			// where(fmt.Sprintf("rangeFound = %v", rangeFound))
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			if rangeFound[1] - rangeFound[0]+1 < 3 {	// Expecting 2 delimeters plus at least 1 char.
+				return nil, fmt.Errorf("%s invalid rune with zero length", p.gotFilePos())
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			// where(fmt.Sprintf("textFound = %q", textFound))
+			var runeText string = textFound[1:len(textFound)-1] // Strip off leading and trailing '' quotes.
+			runeVal, err = parseRune2(runeText)
+			if err != nil {
+				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+			}
+			// where(fmt.Sprintf("runeVal = %c", runeVal))
+			rowSlice[i] = runeVal
 		case "int64":
 			rangeFound = intRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -1291,4 +1031,259 @@ func splitSliceString(sliceString string) (sliceStringSplit []string) {
 		sliceStringSplit = whiteRegexp.Split(sliceString, _ALL_SUBSTRINGS)
 	}
 	return
+}
+
+func hasDelims(s string, delim string) bool {
+	var lens int = len(s)
+
+	if lens < 1 { return false }
+
+/*
+	if lens >= 2 {
+		if s[0] == delim[0] && s[lens-1] == delim[0] {
+where()
+			return true
+		}
+	}
+*/
+
+	if strings.HasSuffix(string(s[0]), delim) && strings.HasSuffix(string(s[len(s)-1]), delim) {
+		return true
+	}
+
+	return false
+}
+
+func trimDelims(s string, delim string) string {
+	if len(s) < 2 { return s }
+	s = strings.TrimPrefix(s, delim)
+	s = strings.TrimSuffix(s, delim)
+	return s
+}
+
+//// parseRune1() accepts either a unicode character or a unicode code.
+//// A valid rune is either 0 or a single-quote-delimited unicode character.
+//// The unicode code range is from 0 to a maximum value, with an excluded inner range.
+//// Codes are treated here as uint64 even though rune is aliased to int32.
+//// Use utf8.RuneLen() to get rune length. Don't bother returning it here.
+//func parseRune1(s string) (rune, error) {
+//	if printstack { debug.PrintStack() }
+//where(s)
+//
+//	if len(s) < 1 {
+//		return 0, fmt.Errorf("parseRune1(%q): cannot parse rune from string with length 0", s)
+//	}
+//
+//	var uint64Val uint64
+//	var err error
+//	var runeVal rune
+//
+//	if hasDelims(s, "'") {
+//where(fmt.Sprintf("hasDelims(%s)", s))
+//		s = trimDelims(s, "'")
+//where(s)
+//
+//		switch {
+//			case s == "\\'":				// DecodeRuneInString() cannot decode this rune literal.
+//where()
+//				runeVal = '\''
+//			case s == "\377":			// DecodeRuneInString() cannot decode this rune literal.
+//where()
+//				runeVal = '\377'	// The octal unicode replacement character. It handles the hex equivalent as well.
+//			case s[0] == '\\':
+//where()
+//				if s[1] == 'x' || s[1] == 'X' {
+//where()
+//					uint64Val, err = strconv.ParseUint(s, _HEX, _BITS_64)
+//where()
+//					if err != nil {
+//						return 0, fmt.Errorf("invalid hex %v: %s", err, s)
+//					}
+//where()
+//					runeVal = rune(uint64Val)
+//					return runeVal, nil
+//				}
+//			default:
+//where(s)
+//				if !utf8.ValidString(s) {
+//					return 0, fmt.Errorf("invalid utf8 string: %s", s)
+//				}
+//
+//where(s)
+//				// See if it's a number.
+//				uint64Val, err = strconv.ParseUint(s, _HEX, _BITS_64)
+//where(err)
+//				if err == nil {
+//					runeVal = rune(uint64Val)
+//				} else {
+//					var size int
+//					runeVal, size = utf8.DecodeRuneInString(s)
+//where(s)
+//where(fmt.Sprintf("runeVal = %q size = %d s = %s", runeVal, size, s))
+//					if size < 1 {
+//						return 0, fmt.Errorf("invalid rune with size 0")
+//					}
+//					if size < len(s) {
+//						return 0, fmt.Errorf("rune %q has unexpected trailing chars: %s", runeVal, s[size:])
+//					}
+//				}
+//		}
+//	} else {
+//
+//		// Probably a numeric value.
+//
+////		var uint64Val uint64
+////		var err error
+//		uint64Val, err = strconv.ParseUint(s, _DECIMAL, _BITS_64)
+//		if err != nil {
+//			// Basic numerical format error OR range error. We can't tell.
+//			// This rejects negative numbers and numbers greater than math.MaxUint64
+//where(s)
+//			return 0, fmt.Errorf("invalid numeric unicode for rune: %s", s)
+//		}
+//
+//		if _, err := isValidUnicode(uint64Val); err != nil {
+//where(s)
+//			return 0, err
+//		}
+//
+//		runeVal = int32(uint64Val)
+//		// where(fmt.Sprintf("uint64Val = %d  err = %v\n", uint64Val, err))
+//where(fmt.Sprintf("numeric value of %s parsed = %d = %X", s, runeVal, runeVal))
+//		return runeVal, nil
+//	}
+//
+//	validRune := utf8.ValidRune(runeVal)
+//	if !validRune {
+//where(s)
+//		return 0, fmt.Errorf("invalid rune: '%c'", runeVal)
+//	}
+//
+//	return runeVal, nil
+//}
+
+// Convert rune or int32 to uint64 to call this function.
+func isValidUnicode(code uint64) (bool, error) {
+	// See: https://en.wikipedia.org/wiki/Unicode
+	const maxUnicode = 0x10FFFF
+	const minReservedUnicode = 0xD800
+	const maxReservedUnicode = 0xDFFF
+fmt.Printf("maxUnicode    =    %d\n", maxUnicode)
+fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
+
+	if code > maxUnicode {
+		return false, fmt.Errorf("invalid unicode number > %X (%d) for rune: %X (%d)", code, code, code, code)
+	}
+
+	return true, nil
+}
+
+// parseRune2() accepts either a unicode character or a unicode code.
+// A valid rune is either 0 or a single-quote-delimited unicode character.
+// The unicode code range is from 0 to a maximum value, with an excluded inner range.
+// Codes are treated here as uint64 even though rune is aliased to int32.
+// Use utf8.RuneLen() to get rune length. Don't bother returning it here.
+func parseRune2(s string) (rune, error) {
+	// fmt.Println()
+	if len(s) < 1 {
+		return 0, fmt.Errorf("parseRune2(%q): cannot parse rune from string with length 0", s)
+	}
+
+	var runeVal rune
+
+/*
+	if !hasDelims(s, "'") {
+		return 0, fmt.Errorf("invalid undelimited rune: %s", s)
+	}
+
+	s = trimDelims(s, "'")
+*/
+	// where(fmt.Sprintf("bare string: %q", s))
+
+	if len(s) == 0 {	// Empty (zero value) rune: ''
+where("Zero value")
+		// Zero value. See: https://tour.golang.org/basics/12
+		runeVal = 0
+		return runeVal, nil
+	}
+
+	switch s {
+		case "\\'":	// DecodeRuneInString() cannot decode this rune literal.
+			runeVal = '\''	// Apostrophe/single-quote: U+0027 decimal 39
+			// where("case single quote")
+			return runeVal, nil
+		case "\\":	// DecodeRuneInString() cannot decode this rune literal.
+			// where("case backslash")
+			runeVal = '\\'	// Backslash: U+005C decimal 92
+			return runeVal, nil
+		default:
+			// where("outer default")
+			var lens int = len(s)
+			if lens > 2 {	// See what's there.
+				// where("len > 2")
+				var prefix string
+				var bytes []byte = make([]byte, 2)
+				bytes[0] = s[0]
+				bytes[1] = s[1]
+				prefix = string(bytes)
+
+/*
+where(fmt.Sprintf("string: %s", s))
+where(fmt.Sprintf("prefix: %s", prefix))
+where(fmt.Sprintf("len(prefix): len(%s) = %d", prefix, len(prefix)))
+for j := 0; j < len(s); j++ {
+	fmt.Printf("s[%d] = %c\n", j, s[j])
+}
+for j := 0; j < len(prefix); j++ {
+	fmt.Printf("prefix[%d] = %c\n", j, prefix[j])
+}
+*/
+				switch prefix {
+					case "\\u", "\\U", "\\x", "\\X", "\\", "u+", "U+":	// Looks like hex.
+						// where("case looks like hex")
+						var uint64Val uint64
+						var err error
+						uint64Val, err = strconv.ParseUint(s[2:], _HEX, _BITS_64)
+						if err != nil {
+							return 0, fmt.Errorf("invalid rune cannot parse hex value: %s", s)
+						}
+						runeVal = rune(uint64Val)
+						// where(fmt.Sprintf("is hex: %q", runeVal))
+						return runeVal, nil
+					default:	// Probably an ordinary rune.
+						var size int
+						runeVal, size = utf8.DecodeRuneInString(s)
+						// where(fmt.Sprintf("utf8.ValidString = %t runeVal = %q size = %d s = %s", utf8.ValidString(s), runeVal, size, s))
+						if size < lens {
+							return 0, fmt.Errorf("#1 invalid rune %q size=%d in string %q len=%d has unexpected trailing chars: %s",
+								runeVal, size, s, len(s), s[size:])
+						}
+						if size < 1 {
+							return 0, fmt.Errorf("#1 invalid rune with size 0")
+						}
+						// where(fmt.Sprintf("Probably a glyph: %s (code = %d)", s, runeVal))
+				}
+				// where("outside inner switch")
+			} else {
+				var size int
+				runeVal, size = utf8.DecodeRuneInString(s)
+				// where(fmt.Sprintf("utf8.ValidString = %t runeVal = %q size = %d s = %s", utf8.ValidString(s), runeVal, size, s))
+				if size < lens {
+					return 0, fmt.Errorf("#2 invalid rune %q has unexpected trailing chars: %s", runeVal, s[size:])
+				}
+				if size < 1 {
+					return 0, fmt.Errorf("#2 invalid rune with size 0")
+				}
+				// where(fmt.Sprintf("else glyph = %q (code = %d)", runeVal, runeVal))
+			}
+	}
+	// where("outside outer switch")
+
+	validRune := utf8.ValidRune(runeVal)
+	if !validRune {
+		return 0, fmt.Errorf("invalid rune: %q", runeVal)
+	}
+	// where(fmt.Sprintf("runeVal = %d", runeVal))
+
+	return runeVal, nil
 }
