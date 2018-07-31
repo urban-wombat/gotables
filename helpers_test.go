@@ -35,7 +35,7 @@ SOFTWARE.
 */
 
 //	-----------------------------------------------------------
-//	TestSet<type>() functions for each of 17 types.
+//	TestSet<type>() functions for each of 18 types.
 //	-----------------------------------------------------------
 
 //	Test Set and Get table cell in colName at rowIndex to newValue string
@@ -274,6 +274,46 @@ func TestSetAndGetInt32(t *testing.T) {
 		if value != test.expected {
 
 			t.Errorf("expecting GetInt32() value %v, not %v", test.expected, value)
+		}
+	}
+}
+
+//	Test Set and Get table cell in colName at rowIndex to newValue rune
+func TestSetAndGetRune(t *testing.T) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "RuneValue"
+
+    table, err := NewTable("SetAndGet")
+    if err != nil { t.Error(err) }
+
+	err = table.AppendCol(colName, "rune")
+    if err != nil { t.Error(err) }
+
+	err = table.AppendRow()
+    if err != nil { t.Error(err) }
+
+	var tests = []struct {
+		expected rune
+	}{
+
+		{ 'A' },
+		{ 'Z' },
+	}
+
+	const rowIndex = 0
+
+	for _, test := range tests {
+
+		err = table.SetRune(colName, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
+
+		value, _ := table.GetRune(colName, rowIndex)
+
+		if value != test.expected {
+
+			t.Errorf("expecting GetRune() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -719,7 +759,7 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 }
 
 //	--------------------------------------------------------------------
-//	TestSet<type>ByColIndex() functions for each of 17 types.
+//	TestSet<type>ByColIndex() functions for each of 18 types.
 //	--------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue string
@@ -958,6 +998,46 @@ func TestSetAndGetInt32ByColIndex(t *testing.T) {
 		if value != test.expected {
 
 			t.Errorf("expecting GetInt32ByColIndex() value %v, not %v", test.expected, value)
+		}
+	}
+}
+
+//	Test Set and Get table cell in colIndex at rowIndex to newValue rune
+func TestSetAndGetRuneByColIndex(t *testing.T) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "RuneValue"
+
+    table, err := NewTable("SetAndGet")
+    if err != nil { t.Error(err) }
+
+	err = table.AppendCol(colName, "rune")
+    if err != nil { t.Error(err) }
+
+	err = table.AppendRow()
+    if err != nil { t.Error(err) }
+
+	var tests = []struct {
+		expected rune
+	}{
+
+		{ 'A' },
+		{ 'Z' },
+	}
+
+	const colIndex = 0
+	const rowIndex = 0
+
+	for _, test := range tests {
+		err = table.SetRuneByColIndex(colIndex, rowIndex, test.expected)
+	    if err != nil { t.Error(err) }
+
+		value, _ := table.GetRuneByColIndex(colIndex, rowIndex)
+
+		if value != test.expected {
+
+			t.Errorf("expecting GetRuneByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }

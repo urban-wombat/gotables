@@ -45,7 +45,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -780,14 +780,14 @@ func (table *Table) appendRowSlice(rowSlice tableRow2) error {
 
 	// Append row2 to existing rows2.
 	if debugging {
-		where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
-		where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
-		where(fmt.Sprintf("append(%v, %v)\n", table.rows2, rowSlice))
+		// where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
+		// where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
+		// where(fmt.Sprintf("append(%v, %v)\n", table.rows2, rowSlice))
 	}
 	table.rows2 = append(table.rows2, rowSlice)
 	if debugging {
-		where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
-		where(fmt.Sprintf("\n"))
+		// where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
+		// where(fmt.Sprintf("\n"))
 	}
 
 	return nil
@@ -1210,6 +1210,7 @@ func (table *Table) StringPadded() string {
 			var i8Val int8
 			var i16Val int16
 			var i32Val int32
+			var runeVal rune
 			var i64Val int64
 			var f32Val float32
 			var f64Val float64
@@ -1257,6 +1258,9 @@ func (table *Table) StringPadded() string {
 			case "int32":
 				i32Val = row2[colIndex].(int32)
 				s = fmt.Sprintf("%d", i32Val)
+			case "rune":
+				runeVal = row2[colIndex].(rune)
+				s = fmt.Sprintf("'%c'", runeVal)
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)
@@ -1330,12 +1334,19 @@ func printStruct(table *Table) string {
 			if err != nil {
 				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s\n", funcSource(), funcName(), err))
 			}
-			if table.colTypes[colIndex] == "string" {
-				// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
-				s += " = " + fmt.Sprintf("%q", asString)
-			} else {
-				s += " = " + asString
+
+			switch table.colTypes[colIndex] {
+				case "string":
+					// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
+					s += " = " + fmt.Sprintf("%q", asString)
+				case "rune":
+					// Note: GetValAsStringByColIndex() doesn't include delimiters around runes.
+					s += " = " + fmt.Sprintf("'%s'", asString)
+				default:
+					// All other types don't have delimiters.
+					s += " = " + asString
 			}
+
 		}
 		s += "\n"
 	}
@@ -2340,6 +2351,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var i8Val int8
 	var i16Val int16
 	var i32Val int32
+	var runeVal rune
 	var i64Val int64
 	var f32Val float32
 	var f64Val float64
@@ -2392,6 +2404,10 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "int16":
 		i16Val = interfaceType.(int16)
 		buf.WriteString(fmt.Sprintf("%d", i16Val))
+	case "rune":
+		// DON'T include rune delimiters in rune.
+		runeVal = interfaceType.(rune)
+		buf.WriteString(fmt.Sprintf("%c", runeVal))
 	case "int32":
 		i32Val = interfaceType.(int32)
 		buf.WriteString(fmt.Sprintf("%d", i32Val))
@@ -3029,6 +3045,8 @@ func ZeroValue(typeName string) (interface{}, error) {
 		case "int16":
 			return 0, nil
 		case "int32":
+			return 0, nil
+		case "rune":
 			return 0, nil
 		case "int64":
 			return 0, nil

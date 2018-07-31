@@ -8,12 +8,14 @@ import (
 	"math"
 	"math/rand"
 //	"os"
+	"regexp"
 //	"runtime/debug"
 	"sort"
 	"strconv"
 	"strings"
 	"testing"
 //	"time"
+	"unicode/utf8"
 )
 
 /*
@@ -1671,7 +1673,7 @@ string    float64  float64   int   int string
 "Venus"     0.815      0.7     0     1 "very"
 "Earth"     1.0        1.0     1     2 "elegant"
 "Mars"      0.107      1.5     2     3 "mother"
-"Jupiter" 318.0        5.2    67     4 "just"
+"Jupiter" 318.0        5.2    79     4 "just"
 "Saturn"   95.0       29.4    62     5 "sat"
 "Uranus"   15.0       84.0    27     6 "upon"
 "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
@@ -1684,7 +1686,7 @@ string float64 float64 int int string
 "Venus" 0.815 0.7 0 1 "very"
 "Earth" 1 1 1 2 "elegant"
 "Mars" 0.107 1.5 2 3 "mother"
-"Jupiter" 318 5.2 67 4 "just"
+"Jupiter" 318 5.2 79 4 "just"
 "Saturn" 95 29.4 62 5 "sat"
 "Uranus" 15 84 27 6 "upon"
 "Neptune" 17 164 13 7 "nine ... porcupines"
@@ -3859,7 +3861,7 @@ func ExampleTable_Search_keys1() {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
 	"Saturn"   95.000     29.4    62     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
@@ -3908,7 +3910,7 @@ func ExampleTable_Search_keys1() {
 	// "Venus"        0.815      0.7     0     1 "very"
 	// "Earth"        1.0        1.0     1     2 "elegant"
 	// "Mars"         0.107      1.5     2     3 "mother"
-	// "Jupiter"    318.0        5.2    67     4 "just"
+	// "Jupiter"    318.0        5.2    79     4 "just"
 	// "Saturn"      95.0       29.4    62     5 "sat"
 	// "Uranus"      15.0       84.0    27     6 "upon"
 	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
@@ -3918,7 +3920,7 @@ func ExampleTable_Search_keys1() {
 	// name            mass distance moons index mnemonic
 	// string       float64  float64   int   int string
 	// "Earth"        1.0        1.0     1     2 "elegant"
-	// "Jupiter"    318.0        5.2    67     4 "just"
+	// "Jupiter"    318.0        5.2    79     4 "just"
 	// "Mars"         0.107      1.5     2     3 "mother"
 	// "Mercury"      0.055      0.4     0     0 "my"
 	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
@@ -3946,7 +3948,7 @@ func ExampleTable_Search_keys1Reverse() {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
 	"Saturn"   95.000     29.4    62     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
@@ -3997,7 +3999,7 @@ func ExampleTable_Search_keys1Reverse() {
 	// "Venus"     0.815      0.7     0     1 "very"
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Jupiter" 318.0        5.2    79     4 "just"
 	// "Saturn"   95.0       29.4    62     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
@@ -4012,7 +4014,7 @@ func ExampleTable_Search_keys1Reverse() {
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Jupiter" 318.0        5.2    79     4 "just"
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// 
 	// (3) Search for name: Mars
@@ -4033,7 +4035,7 @@ func TestTable_Search_1key(t *testing.T) {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
 	"Saturn"   95.000     29.4    62     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
@@ -4104,7 +4106,7 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
 	"Saturn"   95.000     29.4    62     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
@@ -4406,7 +4408,7 @@ func ExampleNewTableFromString_planets() {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
 	"Saturn"   95.000     29.4    62     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
@@ -4443,7 +4445,7 @@ func ExampleNewTableFromString_planets() {
 	// "Venus"     0.815      0.7     0     1 "very"
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Jupiter" 318.0        5.2    79     4 "just"
 	// "Saturn"   95.0       29.4    62     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
@@ -4455,7 +4457,7 @@ func ExampleNewTableFromString_planets() {
 	// "Venus" 0.815 0.7 0 1 "very"
 	// "Earth" 1 1 1 2 "elegant"
 	// "Mars" 0.107 1.5 2 3 "mother"
-	// "Jupiter" 318 5.2 67 4 "just"
+	// "Jupiter" 318 5.2 79 4 "just"
 	// "Saturn" 95 29.4 62 5 "sat"
 	// "Uranus" 15 84 27 6 "upon"
 	// "Neptune" 17 164 13 7 "nine ... porcupines"
@@ -5871,4 +5873,286 @@ func TestIsValidTableName(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestRune(t *testing.T) {
+
+	const IGNORE_RUNE = 'M'	// For the rune literals that the compiler won't allow.
+
+	// Test using rune literals.
+	// Rune literals (and invalid literals) are from: https://golang.org/ref/spec#Rune_literals
+
+	var tests = []struct {
+		runeVal   rune		// rune literal.
+		stringVal string	// string containing a rune literal surrounded by single quotes.
+		int32Val  int32		// int32 equivalent of a rune. Calculate in loop.
+		validity bool
+		index int
+	}{
+		{ 'a',			"'a'", 			97, true, 0 },	//  0
+		{ '\a',			"'\a'", 		 7, true, 1 },	//  1	\a   U+0007 alert or bell
+		{ '\b',			"'\b'", 		 8, true, 2 },	//  2	\b   U+0008 backspace
+		{ '\f',			"'\f'", 		12, true, 3 },	//  3	\f   U+000C form feed
+		{ '\n',			"'\n'", 		10, true, 4 },	//  4	\n   U+000A line feed or newline
+		{ '\r',			"'\r'", 		13, true, 5 },	//  5	\r   U+000D carriage return
+		{ '\t',			"'\t'", 		 9, true, 6 },	//  6	\t   U+0009 horizontal tab
+		{ '\v',			"'\v'", 		11, true, 7 },	//  7	\v   U+000b vertical tab
+		{ '\\',			"'\\'", 		92, true, 8 },	//  8	\\   U+005c backslash
+		{ '\'',			`'\''`, 		39, true, 9 },	//  9	\'   U+0027 single quote  (valid escape only within rune literals)
+		{ 'a',			"'a'", 			97, true, 10 },	// 10	
+		{ 'ä',			"'ä'",		   228, true, 11 },	// 11
+		{ '本',			"'本'", 	 26412, true, 12 },	// 12
+		{ '\t',			"'\t'", 		 9, true, 13 },	// 13
+		{ '\000',		"'\000'", 		 0, true, 14 },	// 14
+		{ '\007',		"'\007'", 		 7, true, 15 },	// 15
+		{ IGNORE_RUNE,	"'\377'", 	   255, true, 16 },	// 16	// This octal is 65533 (255?) the unicode "replacement character". Doesn't parse.
+		{ '\x07',		"'\x07'", 		 7, true, 17 },	// 17
+		{ IGNORE_RUNE,	"'\xff'", 	   255, true, 18 },	// 18	// This   hex is 65533 (255?) the unicode "replacement character". Doesn't parse.
+		{ '\u12e4',		"'\u12e4'",	  4836, true, 19 },	// 19
+		{ '\U00101234',	"'\U00101234'",1053236, true, 20 }, // 20
+		{ '\u2318',		"'\u2318'",  8984, true, 21 },	// 21
+		{ 'ऎ',			"'ऎ'", 		 2318, true, 22 },	// 22	// Place of Interest Sign apparently interchangable 2318 8984
+		{ 'B',			"'B'", 			66, true, 23 },	// 23
+		{ '\u0000',		"'U+0000'", 	 0, true, 24 },	// 24	// Zero value of a rune.
+/*		These literals are caught by the Go compiler. Not possible to check them here.
+		{ IGNORE_RUNE,	"'aa'", 		-1, false },// 25	// illegal: too many characters
+		{ IGNORE_RUNE,	"'\xa'", 		-1, false },// 26	// illegal: too few hexadecimal digits
+		{ IGNORE_RUNE,	"'\0'", 		-1, false },// 27	// illegal: too few octal digits
+		{ IGNORE_RUNE,	"'\uDFFF'", 	-1, false },// 28	// illegal: surrogate half
+		{ IGNORE_RUNE,	"'\U00110000'",	-1, false },// 29	// illegal: invalid Unicode code point
+*/
+		{ 'D',			"'\x44'", 			68, true, 25 },	// 25
+		{ IGNORE_RUNE,	"'U+00'", 			 0, true, 26 },	// 26
+	}
+
+	// Note: runeRegexpString is defined in parser.go
+	var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
+
+	for i, test := range tests {
+		if tests[i].int32Val == -1 {			// Skip the zero value rune.
+			tests[i].int32Val = test.runeVal	// Initialise field int32Val to the correct rune value.
+		}
+		// fmt.Printf("'%c' = %d\n", test.runeVal, test.runeVal)
+	}
+
+	for i, test := range tests {
+
+		// where(fmt.Sprintf("*** test[%d]", i))
+
+		if test.index != i {
+			t.Errorf("test[%d]: index %d should be %d not %d", i, test.index, i, test.index)
+		}
+
+		// Basic sanity test of literals used in the tests.
+		if test.runeVal != IGNORE_RUNE {
+			validity := utf8.ValidRune(test.runeVal)
+			if validity != test.validity {
+				t.Errorf("test[%d]: invalid rune: '%c'", i, test.runeVal)
+			}
+		}
+
+		// Test the regular expression.
+		// The match is of the full string which includes single quote delimiters. Not trimmed.
+		matched := runeRegexp.MatchString(test.stringVal)
+// where(fmt.Sprintf("test[%d]: matched = %t on %v", i, matched, test.stringVal))
+		if matched != test.validity {
+			if test.validity {
+				// We will not expect runeRegexp to reject invalid rune literals. Leave that to DecodeRuneInString()
+				t.Errorf("test[%d/%d]: runeRegexp match %s failed on string: %s", i, len(tests)-1, runeRegexp, test.stringVal)
+			}
+		} else {
+//			fmt.Printf("test[%d]: runeRegexp SUCCEEDED on string: %s\n", i, test.stringVal)
+		}
+
+		// Now that we have successfully parsed a rune with runeRegexp, see if it's a valid rune.
+
+		// where(fmt.Sprintf("test[%d] parseRune2(%q)", i, test.stringVal))
+		// Trim off first ' quote.
+		// where(fmt.Sprintf("BEFORE trim:%s", test.stringVal))
+		test.stringVal = trimDelims(test.stringVal, "'")
+		// where(fmt.Sprintf("AFTER  trim:%s", test.stringVal))
+		rune2, err := parseRune2(test.stringVal)
+		if err != nil {
+			t.Errorf("test[%d]: %v", i, err)
+		}
+
+		validRune := utf8.ValidRune(rune2)
+		if !validRune {
+			t.Errorf("test[%d]: invalid rune: '%c'", i, test.runeVal)
+		}
+
+		if test.runeVal != IGNORE_RUNE {
+			if rune2 != test.int32Val {
+/*
+				var rs []rune = make([]rune, 4)
+				for j := 0; j < len(test.stringVal); j++ {
+					rs[j] = rune(test.stringVal[j])
+				}
+*/
+				size := utf8.RuneLen(rune2)
+				t.Errorf("test[%d/%d]: expecting rune %q %d but got %c %d size=%d Decode failed on string %q len=%d",
+					i, len(tests)-1, test.int32Val, test.int32Val, rune2, rune2, size, test.stringVal, len(test.stringVal))
+			}
+		}
+		// fmt.Println()
+	}
+}
+
+func runeToString(r rune) string {
+	var s string = fmt.Sprintf("%c", r)
+//	fmt.Printf("%s\n", s)
+	return s
+}
+
+func printBytes(b []byte) (s string) {
+	for i := 0; i < len(b); i++ {
+		s += fmt.Sprintf("%c ", i)
+	}
+	return
+}
+
+func TestRuneTable(t *testing.T) {
+
+var runes string = `
+	[Runes]
+	c			runenum	expect	sval
+	rune		int32	int		string
+	'A'			-1		65		"A"
+	'B'			-1		66		"B"
+	'C'			-1		67		"C"
+	'\u44'		-1		68		"D"
+	'\x006D'	-1		109		"m"
+	'z'			-1		122		"z"
+    `
+
+	table, err := NewTableFromString(runes)
+	if err != nil { t.Error(err) }
+
+	for i := 0; i < table.RowCount(); i++ {
+		var c rune
+		c, err = table.GetRune("c", i)
+		if err != nil { t.Error(err) }
+
+		var expect int
+		expect, err = table.GetInt("expect", i)
+		if err != nil { t.Error(err) }
+
+		err = table.SetInt32("runenum", i, int32(c))
+		if err != nil { t.Error(err) }
+
+		if int(c) != expect {
+			t.Errorf("c %d != expect %d", int32(c), expect)
+		}
+	}
+
+	// fmt.Printf("%v", table)
+}
+
+func TestRuneStruct(t *testing.T) {
+
+var runes string = `
+	[Runes]
+	c1     rune = 'a'
+	numval int  = 97
+	c2     rune = '\x2200'
+    `
+
+	_, err := NewTableFromString(runes)
+	if err != nil { t.Error(err) }
+
+	//	fmt.Printf("%v", table)
+}
+
+// This is a time-consuming test. We may want to skip it normally.
+func TestManyUnicodes(t *testing.T) {
+
+	const skip bool = true
+
+	var table *Table
+	var err error
+
+	if skip  {
+		// where(fmt.Sprintf("skip = %t", skip))
+		// This is a token tiny test with speed the priority.
+		var tableString string = `
+		[Runes]
+		code     glyph decimal
+		rune     rune  int32
+		'U+0000' '0' 0
+		'U+0001' '0' 1
+		'U+0002' '0' 2
+		'U+0003' '0' 3
+		'U+0004' '0' 4
+		'U+0005' '0' 5
+		'U+0006' '0' 6
+		'U+0007' '0' 7
+		'U+0008' '0' 8
+		'U+0009' '0' 9
+		'U+000A' '0' 10
+		'U+000B' '0' 11
+		'U+000C' '0' 12
+		'U+000D' '0' 13
+		'U+000E' '0' 14
+		'U+000F' '0' 15
+		'U+0010' '0' 16
+		`
+		table, err = NewTableFromString(tableString)
+		if err != nil { t.Error(err) }
+	} else {
+		// where(fmt.Sprintf("skip = %t", skip))
+		table, err = NewTableFromFile("rune_test.got")
+		if err != nil { t.Error(err) }
+	}
+
+/*
+	err = table.SetSortKeys("decimal")
+	if err != nil { t.Error(err) }
+
+	err = table.Sort()
+	if err != nil { t.Error(err) }
+*/
+
+	for i := 0; i < table.RowCount(); i++ {
+		var glyph rune
+		glyph, err = table.GetRune("glyph", i)
+		if err != nil { t.Error(err) }
+
+		var code rune
+		code, err = table.GetRune("code", i)
+		if err != nil { t.Error(err) }
+
+		var decimal int32
+		decimal, err = table.GetInt32("decimal", i)
+		if err != nil { t.Error(err) }
+
+		if (code >= 32 && code < 127) || code > 159 {
+			// Printable characters: glyphs are set to themselves (and not '0').
+			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
+			if glyph == '0' && decimal != 48 {
+				t.Errorf("row[%d]: glyph %q int32(glyph) %d == '0'", i, glyph, int32(glyph))
+			}
+
+			if int32(code) != int32(glyph) {
+				t.Errorf("row[%d]: glyph %q int32(glyph) %d != code %d U+0%X", i, glyph, glyph, int32(code), code)
+			}
+
+			// Allows for decimal being 0 where decimal wasn't present in the Wikipedia entry
+			if int32(code) != decimal && decimal != 0 {
+				t.Errorf("row[%d]: int32(code) %d != decimal %d", i, int32(code), decimal)
+			}
+
+			// Allows for decimal being 0 where decimal wasn't present in the Wikipedia entry
+			if int32(glyph) != decimal && decimal != 0 {
+				t.Errorf("row[%d]: glyph %q int32(glyph) %d != decimal %d", i, glyph, int32(glyph), decimal)
+			}
+		} else {
+			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
+			// Non-printing characters. Should be set to '0'.
+			if glyph != '0' {
+				t.Errorf("row[%d]: glyph %q int32(glyph) %d != 0", i, glyph, int32(glyph))
+			}
+		}
+	}
+
+	// fmt.Printf("%v", table)
 }
