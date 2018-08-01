@@ -610,7 +610,7 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 /*
 Returns true for those Go types that Table supports.
 
-Go types NOT (yet) supported: complex64 complex128
+Go types NOT supported: complex64 complex128
 */
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
@@ -630,7 +630,7 @@ func IsValidColType(colType string) (bool, error) {
 /*
 Returns true for those Go types that are numeric.
 
-Go types NOT (yet) supported: complex64 complex128 rune
+Go types NOT supported: complex64 complex128
 */
 func IsNumericColType(colType string) (bool, error) {
 	_, contains := globalNumericColTypesMap[colType]
@@ -929,7 +929,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			// where(fmt.Sprintf("textFound = %q", textFound))
 			var runeText string = textFound[1:len(textFound)-1] // Strip off leading and trailing '' quotes.
-			runeVal, err = parseRune2(runeText)
+			runeVal, err = parseRune(runeText)
 			if err != nil {
 				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 			}
@@ -1178,43 +1178,54 @@ fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
 	return true, nil
 }
 
-// parseRune2() accepts either a unicode character or a unicode code.
+// parseRune() accepts either a unicode character or a unicode code.
 // A valid rune is either 0 or a single-quote-delimited unicode character.
 // The unicode code range is from 0 to a maximum value, with an excluded inner range.
 // Codes are treated here as uint64 even though rune is aliased to int32.
 // Use utf8.RuneLen() to get rune length. Don't bother returning it here.
-func parseRune2(s string) (rune, error) {
-	// fmt.Println()
-	if len(s) < 1 {
-		return 0, fmt.Errorf("parseRune2(%q): cannot parse rune from string with length 0", s)
-	}
+func parseRune(s string) (rune, error) {
 
 	var runeVal rune
 
-/*
-	if !hasDelims(s, "'") {
-		return 0, fmt.Errorf("invalid undelimited rune: %s", s)
+	if hasDelims(s, "'") {
+		return 0, fmt.Errorf("parseRune(): expecting an undelimited rune, not: %s", s)
 	}
 
-	s = trimDelims(s, "'")
-*/
 	// where(fmt.Sprintf("bare string: %q", s))
 
 	if len(s) == 0 {	// Empty (zero value) rune: ''
-where("Zero value")
 		// Zero value. See: https://tour.golang.org/basics/12
 		runeVal = 0
 		return runeVal, nil
 	}
 
 	switch s {
+		case "\\":	// DecodeRuneInString() cannot decode this rune literal.
+			runeVal = '\\'	// Backslash: U+005C decimal 92
+			return runeVal, nil
 		case "\\'":	// DecodeRuneInString() cannot decode this rune literal.
 			runeVal = '\''	// Apostrophe/single-quote: U+0027 decimal 39
-			// where("case single quote")
 			return runeVal, nil
-		case "\\":	// DecodeRuneInString() cannot decode this rune literal.
-			// where("case backslash")
-			runeVal = '\\'	// Backslash: U+005C decimal 92
+		case "\\a":
+			runeVal = '\a'	// 7
+			return runeVal, nil
+		case "\\b":
+			runeVal = '\b'	// 8
+			return runeVal, nil
+		case "\\t":
+			runeVal = '\t'	// 9
+			return runeVal, nil
+		case "\\n":
+			runeVal = '\n'	// 10
+			return runeVal, nil
+		case "\\v":
+			runeVal = '\v'	// 11
+			return runeVal, nil
+		case "\\f":
+			runeVal = '\f'	// 12
+			return runeVal, nil
+		case "\\r":
+			runeVal = '\r'	// 13
 			return runeVal, nil
 		default:
 			// where("outer default")

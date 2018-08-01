@@ -5966,12 +5966,12 @@ func TestRune(t *testing.T) {
 
 		// Now that we have successfully parsed a rune with runeRegexp, see if it's a valid rune.
 
-		// where(fmt.Sprintf("test[%d] parseRune2(%q)", i, test.stringVal))
+		// where(fmt.Sprintf("test[%d] parseRune(%q)", i, test.stringVal))
 		// Trim off first ' quote.
 		// where(fmt.Sprintf("BEFORE trim:%s", test.stringVal))
 		test.stringVal = trimDelims(test.stringVal, "'")
 		// where(fmt.Sprintf("AFTER  trim:%s", test.stringVal))
-		rune2, err := parseRune2(test.stringVal)
+		rune2, err := parseRune(test.stringVal)
 		if err != nil {
 			t.Errorf("test[%d]: %v", i, err)
 		}
@@ -6066,7 +6066,7 @@ var runes string = `
 // This is a time-consuming test. We may want to skip it normally.
 func TestManyUnicodes(t *testing.T) {
 
-	const skip bool = true
+	const skip bool = false
 
 	var table *Table
 	var err error
@@ -6085,13 +6085,13 @@ func TestManyUnicodes(t *testing.T) {
 		'U+0004' '0' 4
 		'U+0005' '0' 5
 		'U+0006' '0' 6
-		'U+0007' '0' 7
-		'U+0008' '0' 8
-		'U+0009' '0' 9
-		'U+000A' '0' 10
-		'U+000B' '0' 11
-		'U+000C' '0' 12
-		'U+000D' '0' 13
+		'U+0007' '\a' 7
+		'U+0008' '\b' 8
+		'U+0009' '\t' 9
+		'U+000A' '\n' 10
+		'U+000B' '\v' 11
+		'U+000C' '\f' 12
+		'U+000D' '\r' 13
 		'U+000E' '0' 14
 		'U+000F' '0' 15
 		'U+0010' '0' 16
@@ -6125,7 +6125,10 @@ func TestManyUnicodes(t *testing.T) {
 		decimal, err = table.GetInt32("decimal", i)
 		if err != nil { t.Error(err) }
 
-		if (code >= 32 && code < 127) || code > 159 {
+		var printableStrings = "\a\b\f\n\r\t\v"
+		var isPrintable bool = strings.Index(printableStrings, string(glyph)) >= 0
+where(fmt.Sprintf("%c isPrintable? = %t", glyph, isPrintable))
+		if (code >= 32 && code < 127) || code > 159 || isPrintable {
 			// Printable characters: glyphs are set to themselves (and not '0').
 			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
 			if glyph == '0' && decimal != 48 {
@@ -6155,4 +6158,94 @@ func TestManyUnicodes(t *testing.T) {
 	}
 
 	// fmt.Printf("%v", table)
+}
+
+// func ExampleUnicodeRuneLiterals() {
+func TestTEMPORARY(t *testing.T) {
+where()
+	tableString := `
+	[Literals]
+	code     glyph dec s
+	rune     rune  int string
+	'U+0000' ''      0 ""
+	'U+0061' 'a'    97 "a"
+	'U+0007' '\a'    7 "\a"
+	'U+0008' '\b'    8 "\b"
+	'U+0009' '\t'    9 "\t"
+	'U+000A' '\n'   10 "\n"
+	'U+000B' '\v'   11 "\v"
+	'U+000C' '\f'   12 "\f"
+	'U+000D' '\r'   13 "\r"
+	`
+where(tableString)
+	table, err := NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Printf("\n%v\n", table)
+
+/*
+	fmt.Println("(1) Unsorted table:")
+	fmt.Println(table)
+
+	// First let's sort the table by name.
+	err = table.SetSortKeys("name")
+	if err != nil {
+		log.Println(err)
+	}
+	err = table.Sort()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("(2) Sorted table by name:")
+	fmt.Println(table)
+
+	searchValue := "Mars" // 2
+	fmt.Printf("(3) Search for name: %s\n", searchValue)
+	rowIndex, err := table.Search(searchValue)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
+	fmt.Println()
+
+	searchValue = "Pluto" // -1
+	fmt.Printf("(4) Search for name: %s\n", searchValue)
+	rowIndex, _ = table.Search(searchValue)
+	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
+
+	// Output:
+	// (1) Unsorted table:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// 
+	// (2) Sorted table by name:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// 
+	// (3) Search for name: Mars
+	// Found Mars at rowIndex = 2
+	// 
+	// (4) Search for name: Pluto
+	// Found Pluto at rowIndex = -1 (missing)
+*/
 }

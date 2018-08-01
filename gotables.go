@@ -45,7 +45,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -1260,7 +1260,27 @@ func (table *Table) StringPadded() string {
 				s = fmt.Sprintf("%d", i32Val)
 			case "rune":
 				runeVal = row2[colIndex].(rune)
-				s = fmt.Sprintf("'%c'", runeVal)
+				switch runeVal {
+					case 0:
+					s = "''"
+					case 7:
+						s = "'\\a'"
+					case 8:
+						s = "'\\b'"
+					case 9:
+						s = "'\\t'"
+					case 10:
+						s = "'\\n'"
+					case 11:
+						s = "'\\v'"
+					case 12:
+						s = "'\\f'"
+					case 13:
+						s = "'\\r'"
+					default:
+						s = fmt.Sprintf("'%s'", string(runeVal))
+				}
+where(fmt.Sprintf("runeVal = %q len(%q) = %d", runeVal, s, len(s)))
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)
