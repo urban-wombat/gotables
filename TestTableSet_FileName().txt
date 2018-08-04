@@ -1,7 +1,0 @@
-
-		[table]
-		s string = "Fred"
-		t bool = true
-		i int = 23
-		f float64 = 55.5
-	

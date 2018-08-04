@@ -21,6 +21,7 @@ import (
 	"strings"
 //	"text/tabwriter"
 	"unicode"
+//	"unicode/utf8"
 )
 
 /*
@@ -45,7 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = true
+const debugging bool = false
 const printstack bool = false
 const todo bool = false
 
@@ -976,7 +977,9 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 					var replicatedPercentChars string
 					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
+//					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
+					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
+					buf.WriteString(fmt.Sprintf("\"%s\"", replicatedPercentChars))
 				case "bool":
 					tVal = row2[colIndex].(bool)
 					buf.WriteString(fmt.Sprintf("%t", tVal))
@@ -1043,6 +1046,7 @@ func max(a int, b int) int {
 }
 
 // 18.01.2017 M Gorman
+// This prints a gotable in tabular format. Called indirectly by table.String()
 func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool, colTypes []string) string {
 	var buf bytes.Buffer
 	var s string
@@ -1061,7 +1065,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 	for row := 0; row < len(matrix[0]); row++ {
 		sep = "" // No separator before first column.
 		for col := 0; col < len(matrix); col++ {
-			if alignRight[col] { // Right-aligned col.
+			if alignRight[col] {
 				// TODO: Move this functionality to where printMatrix is called.
 				var toWrite string
 				if row <= 1 { // It's a colName or typeName
@@ -1069,12 +1073,12 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 				} else { // It's numeric. Note: float conversion handles int conversion.
 					var bits int
 					switch colTypes[col] {
-					case "float32":
-						bits = 32
-					case "float64":
-						bits = 64
-					default:
-						bits = 64 // For int and other non-float integrals.
+						case "float32":
+							bits = 32
+						case "float64":
+							bits = 64
+						default:
+							bits = 64 // For int and other non-float integrals.
 					}
 					// Convert back to float so we can format it again in light of the maximum precision in the column.
 					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
@@ -1221,7 +1225,9 @@ func (table *Table) StringPadded() string {
 				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 				var replicatedPercentChars string
 				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-				s = fmt.Sprintf("%q", replicatedPercentChars)
+//				s = fmt.Sprintf("%q", replicatedPercentChars)
+				// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
+				s = fmt.Sprintf("\"%s\"", replicatedPercentChars)
 			case "bool":
 				tVal = row2[colIndex].(bool)
 				s = fmt.Sprintf("%t", tVal)
@@ -1260,9 +1266,10 @@ func (table *Table) StringPadded() string {
 				s = fmt.Sprintf("%d", i32Val)
 			case "rune":
 				runeVal = row2[colIndex].(rune)
+				// Handle special cases.
 				switch runeVal {
 					case 0:
-					s = "''"
+						s = "''"
 					case 7:
 						s = "'\\a'"
 					case 8:
@@ -1280,7 +1287,8 @@ func (table *Table) StringPadded() string {
 					default:
 						s = fmt.Sprintf("'%s'", string(runeVal))
 				}
-where(fmt.Sprintf("runeVal = %q len(%q) = %d", runeVal, s, len(s)))
+				// where(fmt.Sprintf("runeVal = %q len(%q) = %d", runeVal, s, len(s)))
+					setWidths(s, colIndex, prenum, points, precis, width)
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)
@@ -1358,7 +1366,9 @@ func printStruct(table *Table) string {
 			switch table.colTypes[colIndex] {
 				case "string":
 					// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
-					s += " = " + fmt.Sprintf("%q", asString)
+//					s += " = " + fmt.Sprintf("%q", asString)
+					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
+					s += " = " + fmt.Sprintf("\"%s\"", asString)
 				case "rune":
 					// Note: GetValAsStringByColIndex() doesn't include delimiters around runes.
 					s += " = " + fmt.Sprintf("'%s'", asString)
@@ -1370,6 +1380,8 @@ func printStruct(table *Table) string {
 		}
 		s += "\n"
 	}
+
+	// where(s)
 
 	return s
 }
@@ -2335,6 +2347,14 @@ func funcName() string {
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo
 	return name + "()"
+}
+
+func funcNameSansParentheses() string {
+	pc, _, _, _ := runtime.Caller(1)
+	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	nameEnd := filepath.Ext(nameFull)        // .foo
+	name := strings.TrimPrefix(nameEnd, ".") // foo
+	return name
 }
 
 func funcNameFull() string {

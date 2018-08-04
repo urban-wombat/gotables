@@ -2602,7 +2602,7 @@ func TestTableSet_FileName(t *testing.T) {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	actualFileName := funcName() + ".txt"
+	actualFileName := funcNameSansParentheses() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
 		t.Error(err)
@@ -5487,9 +5487,9 @@ func ExampleTable_GetTableAsCSV() {
 	// [ForCSV]
 	// first_name last_name   username   i     f64 b        f32 commas quotes
 	// string     string      string   int float64 bool float32 string string
-	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN ",end" "\\\"xyz\\\""
+	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN ",end" "\"xyz\""
 	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3 "beg," "'abc'"
-	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN "md,l" " \\\"\\\" "
+	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN "md,l" " \"\" "
 	// 
 	// After table.GetTableAsCSV() ...
 	// first_name,last_name,username,i,f64,b,f32,commas,quotes
@@ -6015,33 +6015,55 @@ func TestRuneTable(t *testing.T) {
 
 var runes string = `
 	[Runes]
-	c			runenum	expect	sval
-	rune		int32	int		string
-	'A'			-1		65		"A"
-	'B'			-1		66		"B"
-	'C'			-1		67		"C"
-	'\u44'		-1		68		"D"
-	'\x006D'	-1		109		"m"
-	'z'			-1		122		"z"
-    `
+	code     glyph  dec str
+	rune     rune   int string
+	'U+0000' ''       0 ""
+	'U+61'   'a'     97 "a"
+	'U+0061' 'a'     97 "a"
+	'\x61'   'a'     97 "a"
+	'\x0061' 'a'     97 "a"
+	'\u61'   'a'     97 "a"
+	'\u0061' 'a'     97 "a"
+	'U+0007' '\a'     7 "\a"
+	'U+0008' '\b'     8 "\b"
+	'U+0009' '\t'     9 "\t"
+	'U+000A' '\n'    10 "\n"
+	'U+000B' '\v'    11 "\v"
+	'U+000C' '\f'    12 "\f"
+	'U+000D' '\r'    13 "\r"
+	'U+005C' '\\'    92 "\\"
+	'U+4E16' '世' 19990 "世"
+	'U+754C' '界' 30028 "界"
+	'U+0041' 'A'     65 "A"
+	'U+0042' 'B'     66 "A"
+	'U+0043' 'C'     67 "A"
+	'\u44'   'D'     68 "D"
+	'\x006D' 'm'    109 "m"
+	'z'      'z'    122 "z"
+	`
 
 	table, err := NewTableFromString(runes)
 	if err != nil { t.Error(err) }
 
 	for i := 0; i < table.RowCount(); i++ {
-		var c rune
-		c, err = table.GetRune("c", i)
+		var code rune
+		code, err = table.GetRune("code", i)
 		if err != nil { t.Error(err) }
 
-		var expect int
-		expect, err = table.GetInt("expect", i)
+		var glyph rune
+		glyph, err = table.GetRune("glyph", i)
 		if err != nil { t.Error(err) }
 
-		err = table.SetInt32("runenum", i, int32(c))
+		if glyph != code {
+			t.Errorf("table [%s] row %d: code %d != glyph %c (U+%04X) %d", table.Name(), i, code, glyph, glyph, glyph)
+		}
+
+		var dec int
+		dec, err = table.GetInt("dec", i)
 		if err != nil { t.Error(err) }
 
-		if int(c) != expect {
-			t.Errorf("c %d != expect %d", int32(c), expect)
+		if int(code) != dec {
+			t.Errorf("code %d != dec %d", int32(code), dec)
 		}
 	}
 
@@ -6125,10 +6147,10 @@ func TestManyUnicodes(t *testing.T) {
 		decimal, err = table.GetInt32("decimal", i)
 		if err != nil { t.Error(err) }
 
-		var printableStrings = "\a\b\f\n\r\t\v"
-		var isPrintable bool = strings.Index(printableStrings, string(glyph)) >= 0
-where(fmt.Sprintf("%c isPrintable? = %t", glyph, isPrintable))
-		if (code >= 32 && code < 127) || code > 159 || isPrintable {
+		var specialChars = "\a\b\f\n\r\t\v"
+		var isSpecialChar bool = strings.Index(specialChars, string(glyph)) >= 0
+		// where(fmt.Sprintf("%c isSpecialChar? = %t", glyph, isSpecialChar))
+		if (code >= 32 && code < 127) || code > 159 || isSpecialChar {
 			// Printable characters: glyphs are set to themselves (and not '0').
 			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
 			if glyph == '0' && decimal != 48 {
@@ -6160,11 +6182,9 @@ where(fmt.Sprintf("%c isPrintable? = %t", glyph, isPrintable))
 	// fmt.Printf("%v", table)
 }
 
-// func ExampleUnicodeRuneLiterals() {
-func TestTEMPORARY(t *testing.T) {
-where()
+func TestSomeUnicodes(t *testing.T) {
 	tableString := `
-	[Literals]
+	[Literals1]
 	code     glyph dec s
 	rune     rune  int string
 	'U+0000' ''      0 ""
@@ -6176,76 +6196,146 @@ where()
 	'U+000B' '\v'   11 "\v"
 	'U+000C' '\f'   12 "\f"
 	'U+000D' '\r'   13 "\r"
+	'U+000D' '\\'   13 "\\"
+	'U+000D' '世'   13 "世"
+	'U+000D' '界'   13 "界"
 	`
-where(tableString)
-	table, err := NewTableFromString(tableString)
+
+	// where(tableString)
+	_, err := NewTableFromString(tableString)
 	if err != nil { log.Println(err) }
 
-	fmt.Printf("\n%v\n", table)
+	// if err == nil { fmt.Printf("\n%v\n", table) }
+}
 
-/*
-	fmt.Println("(1) Unsorted table:")
-	fmt.Println(table)
+func ExampleUnicodeRuneLiterals() {
 
-	// First let's sort the table by name.
-	err = table.SetSortKeys("name")
-	if err != nil {
-		log.Println(err)
-	}
-	err = table.Sort()
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println("(2) Sorted table by name:")
-	fmt.Println(table)
+var runesEqual string =
+`
+[RunesEqual]
+code     glyph  dec str
+rune     rune   int string
+'U+0000' ''       0 ""
+'U+61'   'a'     97 "a"
+'U+0061' 'a'     97 "a"
+'\x61'   'a'     97 "a"
+'\x0061' 'a'     97 "a"
+'\u61'   'a'     97 "a"
+'\u0061' 'a'     97 "a"
+'U+0007' '\a'     7 "\a"
+'U+0008' '\b'     8 "\b"
+'U+0009' '\t'     9 "\t"
+'U+000A' '\n'    10 "\n"
+'U+000B' '\v'    11 "\v"
+'U+000C' '\f'    12 "\f"
+'U+000D' '\r'    13 "\r"
+'U+005C' '\\'    92 "\\"
+'U+4E16' '世' 19990 "世"
+'U+754C' '界' 30028 "界"
+'U+0041' 'A'     65 "A"
+'U+0042' 'B'     66 "A"
+'U+0043' 'C'     67 "A"
+'\u44'   'D'     68 "D"
+'\x006D' 'm'    109 "m"
+'z'      'z'    122 "z"
+`
 
-	searchValue := "Mars" // 2
-	fmt.Printf("(3) Search for name: %s\n", searchValue)
-	rowIndex, err := table.Search(searchValue)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
-	fmt.Println()
+	table, err := NewTableFromString(runesEqual)
+	if err != nil { log.Println(err) }
 
-	searchValue = "Pluto" // -1
-	fmt.Printf("(4) Search for name: %s\n", searchValue)
-	rowIndex, _ = table.Search(searchValue)
-	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
+	fmt.Print("(1) Runes source table:")
+	fmt.Printf("%s\n", runesEqual)
+
+	fmt.Println("(2) Runes output table:")
+	fmt.Printf("%s", table)
 
 	// Output:
-	// (1) Unsorted table:
-	// [planets]
-	// name            mass distance moons index mnemonic
-	// string       float64  float64   int   int string
-	// "Sun"     333333.0        0.0     0    -1 ""
-	// "Mercury"      0.055      0.4     0     0 "my"
-	// "Venus"        0.815      0.7     0     1 "very"
-	// "Earth"        1.0        1.0     1     2 "elegant"
-	// "Mars"         0.107      1.5     2     3 "mother"
-	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Saturn"      95.0       29.4    62     5 "sat"
-	// "Uranus"      15.0       84.0    27     6 "upon"
-	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
-	// 
-	// (2) Sorted table by name:
-	// [planets]
-	// name            mass distance moons index mnemonic
-	// string       float64  float64   int   int string
-	// "Earth"        1.0        1.0     1     2 "elegant"
-	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Mars"         0.107      1.5     2     3 "mother"
-	// "Mercury"      0.055      0.4     0     0 "my"
-	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
-	// "Saturn"      95.0       29.4    62     5 "sat"
-	// "Sun"     333333.0        0.0     0    -1 ""
-	// "Uranus"      15.0       84.0    27     6 "upon"
-	// "Venus"        0.815      0.7     0     1 "very"
-	// 
-	// (3) Search for name: Mars
-	// Found Mars at rowIndex = 2
-	// 
-	// (4) Search for name: Pluto
-	// Found Pluto at rowIndex = -1 (missing)
-*/
+	//(1) Runes source table:
+	//[RunesEqual]
+	//code     glyph  dec str
+	//rune     rune   int string
+	//'U+0000' ''       0 ""
+	//'U+61'   'a'     97 "a"
+	//'U+0061' 'a'     97 "a"
+	//'\x61'   'a'     97 "a"
+	//'\x0061' 'a'     97 "a"
+	//'\u61'   'a'     97 "a"
+	//'\u0061' 'a'     97 "a"
+	//'U+0007' '\a'     7 "\a"
+	//'U+0008' '\b'     8 "\b"
+	//'U+0009' '\t'     9 "\t"
+	//'U+000A' '\n'    10 "\n"
+	//'U+000B' '\v'    11 "\v"
+	//'U+000C' '\f'    12 "\f"
+	//'U+000D' '\r'    13 "\r"
+	//'U+005C' '\\'    92 "\\"
+	//'U+4E16' '世' 19990 "世"
+	//'U+754C' '界' 30028 "界"
+	//'U+0041' 'A'     65 "A"
+	//'U+0042' 'B'     66 "A"
+	//'U+0043' 'C'     67 "A"
+	//'\u44'   'D'     68 "D"
+	//'\x006D' 'm'    109 "m"
+	//'z'      'z'    122 "z"
+	//
+	//(2) Runes output table:
+	//[RunesEqual]
+	//code  glyph   dec str
+	//rune  rune    int string
+	//''    ''        0 ""
+	//'a'   'a'      97 "a"
+	//'a'   'a'      97 "a"
+	//'a'   'a'      97 "a"
+	//'a'   'a'      97 "a"
+	//'a'   'a'      97 "a"
+	//'a'   'a'      97 "a"
+	//'\a'  '\a'      7 "\a"
+	//'\b'  '\b'      8 "\b"
+	//'\t'  '\t'      9 "\t"
+	//'\n'  '\n'     10 "\n"
+	//'\v'  '\v'     11 "\v"
+	//'\f'  '\f'     12 "\f"
+	//'\r'  '\r'     13 "\r"
+	//'\'   '\'      92 "\\"
+	//'世'   '世'   19990 "世"
+	//'界'   '界'   30028 "界"
+	//'A'   'A'      65 "A"
+	//'B'   'B'      66 "A"
+	//'C'   'C'      67 "A"
+	//'D'   'D'      68 "D"
+	//'m'   'm'     109 "m"
+	//'z'   'z'     122 "z"
 }
+
+func printStringBytes(s string) {
+	fmt.Printf("s = %s\n", s)
+	bytes := []byte(s)
+	for i := 0; i < len(bytes); i++ {
+		fmt.Printf("s bytes[%d] = %v\n", i, bytes[i])
+	}
+}
+
+func printRuneBytes(r rune) {
+	var s string = string(r)
+	fmt.Printf("r = %c", r)
+	bytes := []byte(s)
+	for i := 0; i < len(bytes); i++ {
+		fmt.Printf("r bytes[%d] = %v\n", i, bytes[i])
+	}
+}
+
+/* test String() and StringUnpadded()
+	structureString := `
+		[Literals2]
+		s0 string = ""
+		aa string = "a"
+		a  string = "\a"
+		b  string = "\b"
+		t  string = "\t"
+		n  string = "\n"
+		v  string = "\v"
+		f  string = "\f"
+		r  string = "\r"
+		bs string = "\\"
+	`
+*/

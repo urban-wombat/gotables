@@ -93,9 +93,10 @@ var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
 // var runeRegexpString string = `'(([^']*)|(\\[xXuU].*)|(\\n)|(\\''''))'`
 // var runeRegexpString string = `'((\\.)|([^']*)|(\\[xXuU].*)|(\\n))'`
 // var runeRegexpString string = `'((\\[xXuU].*)|(\\n)|(\\.)|([^']*))'`
+// var runeRegexpString string = `'((\\n)|(\\')|(\\[xXuU].*)|([^']*))'`
 // Note: (\\') successfully parses '\'' It needs to go before ([^']*)
 //             This may not be terribly efficient, awaiting a more specific regular expresssion.
-var runeRegexpString string = `'((\\[xXuU].*)|(\\n)|(\\')|([^']*))'`
+var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xXuU].*)|([^']*))'`
 var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
@@ -929,10 +930,14 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			// where(fmt.Sprintf("textFound = %q", textFound))
 			var runeText string = textFound[1:len(textFound)-1] // Strip off leading and trailing '' quotes.
+			// where(fmt.Sprintf(" runeText =   %s", runeText))
+			// where()
+			// printStringBytes(runeText)
 			runeVal, err = parseRune(runeText)
 			if err != nil {
 				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 			}
+			// printRuneBytes(runeVal)
 			// where(fmt.Sprintf("runeVal = %c", runeVal))
 			rowSlice[i] = runeVal
 		case "int64":
@@ -1191,7 +1196,7 @@ func parseRune(s string) (rune, error) {
 		return 0, fmt.Errorf("parseRune(): expecting an undelimited rune, not: %s", s)
 	}
 
-	// where(fmt.Sprintf("bare string: %q", s))
+	// where(fmt.Sprintf("bare string: %s", s))
 
 	if len(s) == 0 {	// Empty (zero value) rune: ''
 		// Zero value. See: https://tour.golang.org/basics/12
@@ -1201,6 +1206,9 @@ func parseRune(s string) (rune, error) {
 
 	switch s {
 		case "\\":	// DecodeRuneInString() cannot decode this rune literal.
+			runeVal = '\\'	// Backslash: U+005C decimal 92
+			return runeVal, nil
+		case "\\\\":	// String with escaped slashes.
 			runeVal = '\\'	// Backslash: U+005C decimal 92
 			return runeVal, nil
 		case "\\'":	// DecodeRuneInString() cannot decode this rune literal.
