@@ -6224,6 +6224,7 @@ func TestSomeUnicodes(t *testing.T) {
 }
 
 // Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
+// Note: Glyph width is (in my experience) difficult to manage. Hence the uneven columns. May revisit.
 func ExampleNewTableFromString_unicodeRuneLiterals() {
 
 var runesEqual string =
@@ -6450,15 +6451,15 @@ func ExampleTable_SimpleSort() {
 	`[planets]
 	name         mass distance moons index mnemonic
 	string    float64   float64   int   int string
-	"Sun"      333333        0     0    -1 ""
-	"Mercury"   0.055      0.4     0     0 "my"
-	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
-	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Mercury"   0.055      0.4     0     0 "my"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000     29.4    62     5 "sat"
+	"Sun"      333333        0     0    -1 ""
+	"Uranus"   15.000     84.0    27     6 "upon"
+	"Venus"     0.815      0.7     0     1 "very"
 	`
 
 	table, err = NewTableFromString(tableString)
