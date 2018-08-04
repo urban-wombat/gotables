@@ -4872,7 +4872,7 @@ func TestSearchLast(t *testing.T) {
 	}
 }
 
-func ExampleSearchLast() {
+func ExampleTable_SearchLast() {
 
 	var data []int = []int { 4, 8, 10, 10, 10, 20, 23, 29 }
 	fmt.Printf("data: %v\n", data)
