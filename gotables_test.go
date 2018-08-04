@@ -6208,7 +6208,7 @@ func TestSomeUnicodes(t *testing.T) {
 	// if err == nil { fmt.Printf("\n%v\n", table) }
 }
 
-func ExampleTable_NewTableFromString_UnicodeRuneLiterals() {
+func ExampleNewTableFromString_UnicodeRuneLiterals() {
 
 var runesEqual string =
 `
