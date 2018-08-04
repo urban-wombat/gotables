@@ -2267,6 +2267,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 }
 
+// Note: Leading lowercase in struct is required for it to be recognised as an Example!
 func ExampleNewTableFromString_struct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
@@ -4396,6 +4397,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	}
 }
 
+// Note: Leading lowercase in planets is required for it to be recognised as an Example!
 func ExampleNewTableFromString_planets() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -6208,6 +6210,7 @@ func TestSomeUnicodes(t *testing.T) {
 	// if err == nil { fmt.Printf("\n%v\n", table) }
 }
 
+// Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
 func ExampleNewTableFromString_unicodeRuneLiterals() {
 
 var runesEqual string =
