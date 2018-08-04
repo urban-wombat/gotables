@@ -500,6 +500,32 @@ func (table *Table) Sort() error {
 	return nil
 }
 
+/*
+	Sort table by setting its internal sort keys to the function arguments and then calling table.Sort()
+
+	1. All column keys are set to ascending order.
+	2. One or more column keys must be provided.
+	3. SimpleSort() sets the table's sort keys, so subsequent calls to table.Sort() will have the same effect.
+	4. To sort one or more columns in reverse, use table.SetSortKeysReverse()
+*/
+func (table *Table) SimpleSort(sortCols ...string) error {
+
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
+	}
+
+	if len(sortCols) == 0 {
+		return fmt.Errorf("%s() cannot sort table using 0 sortCols", funcName())
+	}
+
+	err := table.SetSortKeys(sortCols...)
+	if err != nil { return err }
+
+	table.sortByKeys(table.sortKeys)
+
+	return nil
+}
+
 type tableSortable struct {
 	table *Table
 	rows2 tableRows2

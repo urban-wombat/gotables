@@ -3736,7 +3736,20 @@ func TestPlural(t *testing.T) {
 	}
 }
 
-func TestSort(t *testing.T) {
+func TestTable_Sort(t *testing.T) {
+
+	table, err := NewTable("HasZeroSortKeys")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.Sort()
+	if err == nil {
+		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
+	}
+}
+
+func TestTable_SimpleSort(t *testing.T) {
 
 	table, err := NewTable("HasZeroSortKeys")
 	if err != nil {
@@ -6425,4 +6438,87 @@ rune     rune   int string
 	// 'D' 'D' 68 "D"
 	// 'm' 'm' 109 "m"
 	// 'z' 'z' 122 "z"
+}
+
+func ExampleTable_SimpleSort() {
+
+	var tableString string
+	var table *Table
+	var err error
+
+	tableString =
+	`[planets]
+	name         mass distance moons index mnemonic
+	string    float64   float64   int   int string
+	"Sun"      333333        0     0    -1 ""
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.000      5.2    79     4 "just"
+	"Saturn"   95.000     29.4    62     5 "sat"
+	"Uranus"   15.000     84.0    27     6 "upon"
+	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	// Single column sort. Sort the planets in order from the Sun.
+	err = table.SimpleSort("distance")
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+
+	tableString =
+	`[changes]
+	user     language    lines
+	string   string        int
+	"gri"    "Go"          100
+	"ken"    "C"           150
+	"glenda" "Go"          200
+	"rsc"    "Go"          200
+	"r"      "Go"          100
+	"ken"    "Go"          200
+	"dmr"    "C"           100
+	"r"      "C"           150
+	"gri"    "Smalltalk"    80
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	// Multiple column sort. Sort users by lines, language and user name.
+	err = table.SimpleSort("lines", "language", "user")
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Output:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// 
+	// [changes]
+	// user     language    lines
+	// string   string        int
+	// "gri"    "Smalltalk"    80
+	// "dmr"    "C"           100
+	// "gri"    "Go"          100
+	// "r"      "Go"          100
+	// "ken"    "C"           150
+	// "r"      "C"           150
+	// "glenda" "Go"          200
+	// "ken"    "Go"          200
+	// "rsc"    "Go"          200
 }
