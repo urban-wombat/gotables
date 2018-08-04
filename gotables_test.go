@@ -6328,7 +6328,7 @@ func printRuneBytes(r rune) {
 }
 
 // Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
-func ExampleNewTableFromString_unicodeRuneLiterals_unpadded() {
+func ExampleNewTableFromString_unicodeRuneLiteralsUnpadded() {
 
 var runesEqual string =
 `
