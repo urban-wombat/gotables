@@ -3749,7 +3749,7 @@ func TestTable_Sort(t *testing.T) {
 	}
 }
 
-func TestTable_SimpleSort(t *testing.T) {
+func TestTable_SortSimple(t *testing.T) {
 
 	table, err := NewTable("HasZeroSortKeys")
 	if err != nil {
@@ -6441,7 +6441,7 @@ rune     rune   int string
 	// 'z' 'z' 122 "z"
 }
 
-func ExampleTable_SimpleSort() {
+func ExampleTable_SortSimple() {
 
 	var tableString string
 	var table *Table
@@ -6466,7 +6466,7 @@ func ExampleTable_SimpleSort() {
 	if err != nil { log.Println(err) }
 
 	// Single column sort. Sort the planets in order from the Sun.
-	err = table.SimpleSort("distance")
+	err = table.SortSimple("distance")
 	if err != nil { log.Println(err) }
 
 	fmt.Println(table)
@@ -6491,7 +6491,7 @@ func ExampleTable_SimpleSort() {
 	if err != nil { log.Println(err) }
 
 	// Multiple column sort. Sort users by lines, language and user name.
-	err = table.SimpleSort("lines", "language", "user")
+	err = table.SortSimple("lines", "language", "user")
 	if err != nil { log.Println(err) }
 
 	fmt.Println(table)
