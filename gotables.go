@@ -46,7 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -906,6 +906,7 @@ func (table *Table) StringUnpadded() string {
 Return a parsable table as a string. Intended for internal library use.
 */
 func (table *Table) _String(horizontalSeparator byte) string {
+
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", funcSource(), funcName()))
 		return ""
@@ -927,7 +928,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 		buf.WriteByte('[')
 		buf.WriteString(table.tableName)
 		buf.WriteString("]\n")
-	
+
 		// Col names
 		if len(table.colNames) > 0 {
 			horizontalSep = ""
@@ -957,6 +958,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 			horizontalSep = ""
 			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 				var sVal string
+				var runeVal rune
 				var tVal bool
 				var ui8Val uint8
 				var ui16Val uint16
@@ -980,6 +982,30 @@ func (table *Table) _String(horizontalSeparator byte) string {
 //					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
 					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
 					buf.WriteString(fmt.Sprintf("\"%s\"", replicatedPercentChars))
+				case "rune":
+					runeVal = row2[colIndex].(rune)
+					// Handle special cases.
+					switch runeVal {
+						case 0:
+							s = "''"
+						case 7:
+							s = "'\\a'"
+						case 8:
+							s = "'\\b'"
+						case 9:
+							s = "'\\t'"
+						case 10:
+							s = "'\\n'"
+						case 11:
+							s = "'\\v'"
+						case 12:
+							s = "'\\f'"
+						case 13:
+							s = "'\\r'"
+						default:
+							s = fmt.Sprintf("'%s'", string(runeVal))
+					}
+					buf.WriteString(fmt.Sprintf("%s", s))
 				case "bool":
 					tVal = row2[colIndex].(bool)
 					buf.WriteString(fmt.Sprintf("%t", tVal))
@@ -1287,8 +1313,7 @@ func (table *Table) StringPadded() string {
 					default:
 						s = fmt.Sprintf("'%s'", string(runeVal))
 				}
-				// where(fmt.Sprintf("runeVal = %q len(%q) = %d", runeVal, s, len(s)))
-					setWidths(s, colIndex, prenum, points, precis, width)
+				setWidths(s, colIndex, prenum, points, precis, width)
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)

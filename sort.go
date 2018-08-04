@@ -495,49 +495,49 @@ func (table *Table) Sort() error {
 		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
-	table.sortByKeys2(table.sortKeys)
+	table.sortByKeys(table.sortKeys)
 
 	return nil
 }
 
-type tableSortable2 struct {
+type tableSortable struct {
 	table *Table
 	rows2 tableRows2
 	less  func(i tableRow2, j tableRow2) bool
 }
 
-func (table tableSortable2) Len() int { return len(table.rows2) }
+func (table tableSortable) Len() int { return len(table.rows2) }
 
-func (table tableSortable2) Swap(i int, j int) {
+func (table tableSortable) Swap(i int, j int) {
 	table.rows2[i], table.rows2[j] = table.rows2[j], table.rows2[i]
 }
 
-func (table tableSortable2) Less(i int, j int) bool {
+func (table tableSortable) Less(i int, j int) bool {
 	return table.less(table.rows2[i], table.rows2[j])
 }
 
-/*
-	Sort this table by this table's currently-set sort keys.
+///*
+//	Sort this table by this table's currently-set sort keys.
+//
+//	To see the currently-set sort keys use GetSortKeysAsTable()
+//*/
+//func (table *Table) Sort2() error {
+//
+//	if table == nil {
+//		return fmt.Errorf("table.%s() table is <nil>", funcName())
+//	}
+//
+//	if len(table.sortKeys) == 0 {
+//		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
+//	}
+//
+//	table.sortByKeys(table.sortKeys)
+//
+//	return nil
+//}
 
-	To see the currently-set sort keys use GetSortKeysAsTable()
-*/
-func (table *Table) Sort2() error {
-
-	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", funcName())
-	}
-
-	if len(table.sortKeys) == 0 {
-		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
-	}
-
-	table.sortByKeys2(table.sortKeys)
-
-	return nil
-}
-
-func (table *Table) sortByKeys2(sortKeys SortKeys) {
-	sort.Sort(tableSortable2{table, table.rows2, func(iRow, jRow tableRow2) bool {
+func (table *Table) sortByKeys(sortKeys SortKeys) {
+	sort.Sort(tableSortable{table, table.rows2, func(iRow, jRow tableRow2) bool {
 //		compareCount++
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
@@ -548,7 +548,7 @@ func (table *Table) sortByKeys2(sortKeys SortKeys) {
 			var compared int = sortFunc(iVal, jVal)
 			if sortKey.reverse {
 				// Reverse the sign to reverse the sort.
-				// Reverse is intended to be descending, not a toggle between ascending and descending.
+				// Reverse is intended to be descending, and not a toggle between ascending and descending.
 				compared *= -1
 			}
 			if compared != 0 {

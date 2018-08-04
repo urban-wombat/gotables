@@ -6327,18 +6327,102 @@ func printRuneBytes(r rune) {
 	}
 }
 
-/* test String() and StringUnpadded()
-	structureString := `
-		[Literals2]
-		s0 string = ""
-		aa string = "a"
-		a  string = "\a"
-		b  string = "\b"
-		t  string = "\t"
-		n  string = "\n"
-		v  string = "\v"
-		f  string = "\f"
-		r  string = "\r"
-		bs string = "\\"
-	`
-*/
+// Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
+func ExampleNewTableFromString_unicodeRuneLiterals_unpadded() {
+
+var runesEqual string =
+`
+[RunesEqual]
+code     glyph  dec str
+rune     rune   int string
+'U+0000' ''       0 ""
+'U+61'   'a'     97 "a"
+'U+0061' 'a'     97 "a"
+'\x61'   'a'     97 "a"
+'\x0061' 'a'     97 "a"
+'\u61'   'a'     97 "a"
+'\u0061' 'a'     97 "a"
+'U+0007' '\a'     7 "\a"
+'U+0008' '\b'     8 "\b"
+'U+0009' '\t'     9 "\t"
+'U+000A' '\n'    10 "\n"
+'U+000B' '\v'    11 "\v"
+'U+000C' '\f'    12 "\f"
+'U+000D' '\r'    13 "\r"
+'U+005C' '\\'    92 "\\"
+'U+4E16' '世' 19990 "世"
+'U+754C' '界' 30028 "界"
+'U+0041' 'A'     65 "A"
+'U+0042' 'B'     66 "A"
+'U+0043' 'C'     67 "A"
+'\u44'   'D'     68 "D"
+'\x006D' 'm'    109 "m"
+'z'      'z'    122 "z"
+`
+
+	table, err := NewTableFromString(runesEqual)
+	if err != nil { log.Println(err) }
+
+	fmt.Print("(1) Runes source table:")
+	fmt.Printf("%s\n", runesEqual)
+
+	fmt.Println("(2) Runes output table:")
+	fmt.Printf("%s", table.StringUnpadded())
+
+	// Output:
+	// (1) Runes source table:
+	// [RunesEqual]
+	// code     glyph  dec str
+	// rune     rune   int string
+	// 'U+0000' ''       0 ""
+	// 'U+61'   'a'     97 "a"
+	// 'U+0061' 'a'     97 "a"
+	// '\x61'   'a'     97 "a"
+	// '\x0061' 'a'     97 "a"
+	// '\u61'   'a'     97 "a"
+	// '\u0061' 'a'     97 "a"
+	// 'U+0007' '\a'     7 "\a"
+	// 'U+0008' '\b'     8 "\b"
+	// 'U+0009' '\t'     9 "\t"
+	// 'U+000A' '\n'    10 "\n"
+	// 'U+000B' '\v'    11 "\v"
+	// 'U+000C' '\f'    12 "\f"
+	// 'U+000D' '\r'    13 "\r"
+	// 'U+005C' '\\'    92 "\\"
+	// 'U+4E16' '世' 19990 "世"
+	// 'U+754C' '界' 30028 "界"
+	// 'U+0041' 'A'     65 "A"
+	// 'U+0042' 'B'     66 "A"
+	// 'U+0043' 'C'     67 "A"
+	// '\u44'   'D'     68 "D"
+	// '\x006D' 'm'    109 "m"
+	// 'z'      'z'    122 "z"
+	// 
+	// (2) Runes output table:
+	// [RunesEqual]
+	// code glyph dec str
+	// rune rune int string
+	// '' '' 0 ""
+	// 'a' 'a' 97 "a"
+	// 'a' 'a' 97 "a"
+	// 'a' 'a' 97 "a"
+	// 'a' 'a' 97 "a"
+	// 'a' 'a' 97 "a"
+	// 'a' 'a' 97 "a"
+	// '\a' '\a' 7 "\a"
+	// '\b' '\b' 8 "\b"
+	// '\t' '\t' 9 "\t"
+	// '\n' '\n' 10 "\n"
+	// '\v' '\v' 11 "\v"
+	// '\f' '\f' 12 "\f"
+	// '\r' '\r' 13 "\r"
+	// '\' '\' 92 "\\"
+	// '世' '世' 19990 "世"
+	// '界' '界' 30028 "界"
+	// 'A' 'A' 65 "A"
+	// 'B' 'B' 66 "A"
+	// 'C' 'C' 67 "A"
+	// 'D' 'D' 68 "D"
+	// 'm' 'm' 109 "m"
+	// 'z' 'z' 122 "z"
+}
