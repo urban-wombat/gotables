@@ -504,8 +504,11 @@ func (table *Table) Sort() error {
 	Sort table by setting its internal sort keys to the function arguments and then calling table.Sort()
 
 	1. All column keys are set to ascending order.
+
 	2. One or more column keys must be provided.
+
 	3. SortSimple() sets the table's sort keys, so subsequent calls to table.Sort() will have the same effect.
+
 	4. To sort one or more columns in reverse, use table.SetSortKeysReverse()
 */
 func (table *Table) SortSimple(sortCols ...string) error {

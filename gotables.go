@@ -46,7 +46,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool = true
 const printstack bool = false
 const todo bool = false
 
@@ -1226,7 +1226,7 @@ func (table *Table) StringPadded() string {
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		row2 = table.rows2[rowIndex]
 		horizontalSep = "" // No gap on left of first column.
-		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {	// String()
+		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal string
 			var tVal bool
 			var ui8Val uint8
@@ -1313,7 +1313,14 @@ func (table *Table) StringPadded() string {
 					default:
 						s = fmt.Sprintf("'%s'", string(runeVal))
 				}
-				setWidths(s, colIndex, prenum, points, precis, width)
+				const extraWidth = 0
+/*
+				if len(s) >= 5 {
+where(fmt.Sprintf("len(s) = %d s = %s", len(s), s))
+					extraWidth = 1
+				}
+*/
+				setWidths(s, extraWidth, colIndex, prenum, points, precis, width)
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)
@@ -1322,12 +1329,12 @@ func (table *Table) StringPadded() string {
 				var f64ValForFormatFloat float64 = float64(f32Val)
 				s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-				setWidths(s, colIndex, prenum, points, precis, width)
+				setWidths(s, 0, colIndex, prenum, points, precis, width)
 			case "float64":
 				f64Val = row2[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-				setWidths(s, colIndex, prenum, points, precis, width)
+				setWidths(s, 0, colIndex, prenum, points, precis, width)
 			default:
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", funcSource(), funcName(), table.colTypes[colIndex])
 				return ""
@@ -1445,12 +1452,16 @@ func precisionOf(s string) (precision int) {
 	return precision
 }
 
-func setWidths(s string, colIndex int, prenum []int, points []int, precis []int, width []int) {
+// Note: extraWidth is to cope with wide runes.
+func setWidths(s string, extraWidth int, colIndex int, prenum []int, points []int, precis []int, width []int) {
+// where(fmt.Sprintf("extraWidth = %d", extraWidth))
 	prenum[colIndex] = max(prenum[colIndex], preNumberOf(s))
 	points[colIndex] = max(points[colIndex], pointsOf(s))
 	precis[colIndex] = max(precis[colIndex], precisionOf(s))
 	thisWidth := prenum[colIndex] + points[colIndex] + precis[colIndex]
-	width[colIndex] = max(width[colIndex], thisWidth)
+// if extraWidth > 0 { where(fmt.Sprintf("BEFORE: width[%d] = %d", colIndex, width[colIndex])) }
+	width[colIndex] = max(width[colIndex], thisWidth + extraWidth)
+// if extraWidth > 0 { where(fmt.Sprintf("BEFORE: width[%d] = %d", colIndex, width[colIndex])) }
 }
 
 /*
