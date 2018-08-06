@@ -510,7 +510,9 @@ func (table *Table) Sort() error {
 	3. To sort one or more columns in reverse (with "key2" reversed):
 
 	table.SetSortKeys("key1", "key2", "key3")
+
 	table.SetSortKeysReverse("key2")
+
 	table.Sort()
 
 	4. SortSimple() sets the table's sort keys, so subsequent calls to table.Sort() will have the same effect.
