@@ -24,6 +24,10 @@ import (
 //	"unicode/utf8"
 )
 
+//	"golang.org/x/text/width"	// Would like to be able to call width.Narrow() on wide glyphs.
+//	Seems unavailable: http://docs.activestate.com/activego/1.8/pkg/golang.org/x/text/width
+//	                   https://godoc.org/golang.org/x/text/width#example-Transformer--Narrow
+
 /*
 Copyright (c) 2017 Malcolm Gorman
 
@@ -1313,14 +1317,12 @@ func (table *Table) StringPadded() string {
 					default:
 						s = fmt.Sprintf("'%s'", string(runeVal))
 				}
-				const extraWidth = 0
 /*
 				if len(s) >= 5 {
-where(fmt.Sprintf("len(s) = %d s = %s", len(s), s))
-					extraWidth = 1
+					s = width.Narrow(s)	// This package seems to be unavailable.
 				}
 */
-				setWidths(s, extraWidth, colIndex, prenum, points, precis, width)
+				setWidths(s, colIndex, prenum, points, precis, width)
 			case "int64":
 				i64Val = row2[colIndex].(int64)
 				s = fmt.Sprintf("%d", i64Val)
@@ -1329,12 +1331,12 @@ where(fmt.Sprintf("len(s) = %d s = %s", len(s), s))
 				var f64ValForFormatFloat float64 = float64(f32Val)
 				s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-				setWidths(s, 0, colIndex, prenum, points, precis, width)
+				setWidths(s, colIndex, prenum, points, precis, width)
 			case "float64":
 				f64Val = row2[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
-				setWidths(s, 0, colIndex, prenum, points, precis, width)
+				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", funcSource(), funcName(), table.colTypes[colIndex])
 				return ""
@@ -1452,16 +1454,12 @@ func precisionOf(s string) (precision int) {
 	return precision
 }
 
-// Note: extraWidth is to cope with wide runes.
-func setWidths(s string, extraWidth int, colIndex int, prenum []int, points []int, precis []int, width []int) {
-// where(fmt.Sprintf("extraWidth = %d", extraWidth))
+func setWidths(s string, colIndex int, prenum []int, points []int, precis []int, width []int) {
 	prenum[colIndex] = max(prenum[colIndex], preNumberOf(s))
 	points[colIndex] = max(points[colIndex], pointsOf(s))
 	precis[colIndex] = max(precis[colIndex], precisionOf(s))
 	thisWidth := prenum[colIndex] + points[colIndex] + precis[colIndex]
-// if extraWidth > 0 { where(fmt.Sprintf("BEFORE: width[%d] = %d", colIndex, width[colIndex])) }
-	width[colIndex] = max(width[colIndex], thisWidth + extraWidth)
-// if extraWidth > 0 { where(fmt.Sprintf("BEFORE: width[%d] = %d", colIndex, width[colIndex])) }
+	width[colIndex] = max(width[colIndex], thisWidth)
 }
 
 /*
