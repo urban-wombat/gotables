@@ -516,7 +516,7 @@ func (table *Table) Sort() error {
 	table.Sort()
 
 	4. SortSimple() sets the table's sort keys, so subsequent calls to table.Sort() will have the same effect
-	of calling table.SetSortKeys() and then table.Sort()
+	as calling table.SetSortKeys() and then table.Sort()
 */
 func (table *Table) SortSimple(sortCols ...string) error {
 
