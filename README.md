@@ -30,7 +30,7 @@ It contains all the installation instructions and how to get started generating 
 In a nutshell, `gotables.FlatTables` achieves the following:
 * Makes it VERY easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
 * Makes it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
-* Gives you easy methods (generated specifically for your table data types) to read from your FlatBuffes []by arrays.
+* Gives you easy methods (generated specifically for your table data types) to read from your FlatBuffes []byte arrays.
 * Provides a worked example specific to your schema that is a tutorial you can use directly in your code.
 * [The tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
 
