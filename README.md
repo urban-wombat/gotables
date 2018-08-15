@@ -8,7 +8,7 @@ Often data and configurations can be best expressed as tables, or can be flatten
 
 And events which are simple structs (or records) can be batched into tables for transmission.
 
-`gotables` reinvents the rectangular tabular wheel.
+`gotables` reinvents the wheel -- as rectangular and tabular.
 
 The focus of recent work is on support for Google `FlatBuffers`.
 
