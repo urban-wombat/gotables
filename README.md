@@ -33,6 +33,8 @@ In a nutshell, `gotables.FlatTables` achieves the following:
 * Gives you easy methods (generated specifically for your table data types) to read from a FlatBuffers []byte array.
 * Provides a worked example specific to your schema that is a tutorial you can use directly in your code.
 * [The tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
+  This tutorial is the `flattables_sample_main.go` generated for the flattables_sample package I created from my gotables
+  file of tables. Your own generated code will produce a tutorial file specific to your own gotables file of tables.
 
 * [https://urban-wombat.github.io](https://urban-wombat.github.io)
 
