@@ -32,6 +32,7 @@ In a nutshell, the `gotables` and `FlatTables` achieve the following:
 * Make it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
 * Give you easy methods (generated specifically for your table data types) to read from your FlatBuffes []by arrays.
 * Provide a worked example specific to your schema that is a tutorial you can use directly in your code.
+* [The tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
 
 * [https://urban-wombat.github.io](https://urban-wombat.github.io)
 
