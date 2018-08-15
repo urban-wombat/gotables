@@ -1674,9 +1674,10 @@ string    float64  float64   int   int string
 "Earth"     1.0        1.0     1     2 "elegant"
 "Mars"      0.107      1.5     2     3 "mother"
 "Jupiter" 318.0        5.2    79     4 "just"
-"Saturn"   95.0       29.4    62     5 "sat"
-"Uranus"   15.0       84.0    27     6 "upon"
-"Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+"Saturn"   95.0        9.5    62     5 "sat"
+"Uranus"   15.0       19.2    27     6 "upon"
+"Neptune"  17.0       30.6    13     7 "nine"
+"Pluto"     0.002     39.4     5     8 "porcupines"
 `
 
 var planets_unpadded = `[planets_unpadded]
@@ -1687,9 +1688,9 @@ string float64 float64 int int string
 "Earth" 1 1 1 2 "elegant"
 "Mars" 0.107 1.5 2 3 "mother"
 "Jupiter" 318 5.2 79 4 "just"
-"Saturn" 95 29.4 62 5 "sat"
-"Uranus" 15 84 27 6 "upon"
-"Neptune" 17 164 13 7 "nine ... porcupines"
+"Saturn" 95 9.5 62 5 "sat"
+"Uranus" 15 19.2 27 6 "upon"
+"Neptune" 17 30.6 13 7 "nine"
 `
 
 func BenchmarkNewTableSetFromString_padded(b *testing.B) {
@@ -3876,9 +3877,10 @@ func ExampleTable_Search_keys1() {
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
 	`
 
 	table, err := NewTableFromString(tableString)
@@ -3909,7 +3911,7 @@ func ExampleTable_Search_keys1() {
 	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
 	fmt.Println()
 
-	searchValue = "Pluto" // -1
+	searchValue = "Ceres" // -1
 	fmt.Printf("(4) Search for name: %s\n", searchValue)
 	rowIndex, _ = table.Search(searchValue)
 	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
@@ -3925,9 +3927,10 @@ func ExampleTable_Search_keys1() {
 	// "Earth"        1.0        1.0     1     2 "elegant"
 	// "Mars"         0.107      1.5     2     3 "mother"
 	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Saturn"      95.0       29.4    62     5 "sat"
-	// "Uranus"      15.0       84.0    27     6 "upon"
-	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"      95.0        9.5    62     5 "sat"
+	// "Uranus"      15.0       19.2    27     6 "upon"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
 	// 
 	// (2) Sorted table by name:
 	// [planets]
@@ -3937,17 +3940,18 @@ func ExampleTable_Search_keys1() {
 	// "Jupiter"    318.0        5.2    79     4 "just"
 	// "Mars"         0.107      1.5     2     3 "mother"
 	// "Mercury"      0.055      0.4     0     0 "my"
-	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
-	// "Saturn"      95.0       29.4    62     5 "sat"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
+	// "Saturn"      95.0        9.5    62     5 "sat"
 	// "Sun"     333333.0        0.0     0    -1 ""
-	// "Uranus"      15.0       84.0    27     6 "upon"
+	// "Uranus"      15.0       19.2    27     6 "upon"
 	// "Venus"        0.815      0.7     0     1 "very"
 	// 
 	// (3) Search for name: Mars
 	// Found Mars at rowIndex = 2
 	// 
-	// (4) Search for name: Pluto
-	// Found Pluto at rowIndex = -1 (missing)
+	// (4) Search for name: Ceres
+	// Found Ceres at rowIndex = -1 (missing)
 }
 
 func ExampleTable_Search_keys1Reverse() {
@@ -3963,9 +3967,10 @@ func ExampleTable_Search_keys1Reverse() {
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
 	`
 
 	table, err := NewTableFromString(tableString)
@@ -3999,7 +4004,7 @@ func ExampleTable_Search_keys1Reverse() {
 	}
 	fmt.Printf("Found %s at rowIndex = %d\n", searchValue, rowIndex)
 
-	searchValue = "Pluto" // -1
+	searchValue = "Ceres" // -1
 	fmt.Printf("(4) Search for name: %s\n", searchValue)
 	rowIndex, _ = table.Search(searchValue)
 	fmt.Printf("Found %s at rowIndex = %d (missing)\n", searchValue, rowIndex)
@@ -4014,27 +4019,29 @@ func ExampleTable_Search_keys1Reverse() {
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Jupiter" 318.0        5.2    79     4 "just"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"   95.0        9.5    62     5 "sat"
+	// "Uranus"   15.0       19.2    27     6 "upon"
+	// "Neptune"  17.0       30.6    13     7 "nine"
+	// "Pluto"     0.002     39.4     5     8 "porcupines"
 	// 
 	// (2) Sorted table by name in reverse order:
 	// [planets]
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
 	// "Venus"     0.815      0.7     0     1 "very"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	// "Uranus"   15.0       19.2    27     6 "upon"
+	// "Saturn"   95.0        9.5    62     5 "sat"
+	// "Pluto"     0.002     39.4     5     8 "porcupines"
+	// "Neptune"  17.0       30.6    13     7 "nine"
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Jupiter" 318.0        5.2    79     4 "just"
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// 
 	// (3) Search for name: Mars
-	// Found Mars at rowIndex = 5
-	// (4) Search for name: Pluto
-	// Found Pluto at rowIndex = -1 (missing)
+	// Found Mars at rowIndex = 6
+	// (4) Search for name: Ceres
+	// Found Ceres at rowIndex = -1 (missing)
 }
 
 func TestTable_Search_1key(t *testing.T) {
@@ -4050,9 +4057,10 @@ func TestTable_Search_1key(t *testing.T) {
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
@@ -4093,7 +4101,7 @@ func TestTable_Search_1key(t *testing.T) {
 	dontExist := []string{
 		"Sun",
 		"Moon",
-		"Pluto",
+		"Ceres",
 	}
 	for _, item := range dontExist {
 		searchValue = item
@@ -4121,9 +4129,10 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
@@ -4171,7 +4180,7 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 	dontExist := []string{
 		"Sun",
 		"Moon",
-		"Pluto",
+		"Ceres",
 	}
 	for _, item := range dontExist {
 		searchValue = item
@@ -4424,9 +4433,10 @@ func ExampleNewTableFromString_planets() {
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
-	"Uranus"   15.000     84.0    27     6 "upon"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
 	`
 
 	table, err := NewTableFromString(tableString)
@@ -4461,9 +4471,10 @@ func ExampleNewTableFromString_planets() {
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Jupiter" 318.0        5.2    79     4 "just"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"   95.0        9.5    62     5 "sat"
+	// "Uranus"   15.0       19.2    27     6 "upon"
+	// "Neptune"  17.0       30.6    13     7 "nine"
+	// "Pluto"     0.002     39.4     5     8 "porcupines"
 	//
 	// [planets]
 	// name mass distance moons index mnemonic
@@ -4473,9 +4484,10 @@ func ExampleNewTableFromString_planets() {
 	// "Earth" 1 1 1 2 "elegant"
 	// "Mars" 0.107 1.5 2 3 "mother"
 	// "Jupiter" 318 5.2 79 4 "just"
-	// "Saturn" 95 29.4 62 5 "sat"
-	// "Uranus" 15 84 27 6 "upon"
-	// "Neptune" 17 164 13 7 "nine ... porcupines"
+	// "Saturn" 95 9.5 62 5 "sat"
+	// "Uranus" 15 19.2 27 6 "upon"
+	// "Neptune" 17 30.6 13 7 "nine"
+	// "Pluto" 0.002 39.4 5 8 "porcupines"
 }
 
 // This is not a comprehensive test.
@@ -6455,10 +6467,11 @@ func ExampleTable_SortSimple() {
 	"Jupiter" 318.000      5.2    79     4 "just"
 	"Mars"      0.107      1.5     2     3 "mother"
 	"Mercury"   0.055      0.4     0     0 "my"
-	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
-	"Saturn"   95.000     29.4    62     5 "sat"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	"Saturn"   95.000      9.5    62     5 "sat"
 	"Sun"      333333        0     0    -1 ""
-	"Uranus"   15.000     84.0    27     6 "upon"
+	"Uranus"   15.000     19.2    27     6 "upon"
 	"Venus"     0.815      0.7     0     1 "very"
 	`
 
@@ -6506,9 +6519,10 @@ func ExampleTable_SortSimple() {
 	// "Earth"        1.0        1.0     1     2 "elegant"
 	// "Mars"         0.107      1.5     2     3 "mother"
 	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Saturn"      95.0       29.4    62     5 "sat"
-	// "Uranus"      15.0       84.0    27     6 "upon"
-	// "Neptune"     17.0      164.0    13     7 "nine ... porcupines"
+	// "Saturn"      95.0        9.5    62     5 "sat"
+	// "Uranus"      15.0       19.2    27     6 "upon"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
 	// 
 	// [changes]
 	// user     language    lines
