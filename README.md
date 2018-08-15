@@ -4,9 +4,11 @@
 
 Go (golang) Table data format - simple and self-describing.
 
-Sometimes data and configurations are intrinsically tabular. Trying to represent tables in XML, JSON and YAML
-merely obscures tables, makes them less readable, and invites inconsistencies and lack of discipline, risking
-missing cells or superfluous leaf nodes that introduce potential bugs in host code.
+Often data and configurations can be best expressed as tables, or can be flattened or normalised into tables.
+
+And events which are simple structs (or records) can be batched into tables for transmission.
+
+`gotables` reinvents the rectangular tabular wheel.
 
 See also:
 * [https://urban-wombat.github.io](https://urban-wombat.github.io)
