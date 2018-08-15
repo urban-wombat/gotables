@@ -17,7 +17,7 @@ But a warning up front: this implementation doesn't support Monsters. Only recta
 I make no apology for this. Many's the time I've looked at a XML, JSON or YAML file and seen tables represented as trees.
 It's harder to humanly read, and requires more discipline to avoid breaking code with a missing leaf node or wrong type.
 
-The amount of programmer effort saved is immense, if you don't want to get into the weeds of the Go FlatBuffers API
+The amount of programmer effort saved by gotables is immense, if you don't want to get into the weeds of the Go FlatBuffers API
 -- there be Dragons.
 
 * See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) Monster documentation.
@@ -25,6 +25,7 @@ The amount of programmer effort saved is immense, if you don't want to get into 
 To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
 
 * See [The gotables implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
+It contains all the installation instructions and how to get started generating FlatBuffers code and data.
 
 In a nutshell, the `gotables` and `FlatTables` achieve the following:
 * Make it VERY easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
