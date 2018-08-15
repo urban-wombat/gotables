@@ -10,9 +10,29 @@ And events which are simple structs (or records) can be batched into tables for 
 
 `gotables` reinvents the rectangular tabular wheel.
 
-See also:
+The focus of recent work is on support for Google `FlatBuffers`.
+
+But a warning up front: this implementation doesn't support Monsters. Only rectangular tables.
+
+I make no apology for this. Many's the time I've looked at a XML, JSON or YAML file and seen tables represented as trees.
+It's harder to humanly read, and requires more discipline to avoid breaking code with a missing leaf node or wrong type.
+
+The amount of programmer effort saved is immense, if you don't want to get into the weeds of the Go FlatBuffers API
+-- there be Dragons.
+
+* See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) Monster documentation.
+
+To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
+
+* See [The gotables implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
+
+In a nutshell, the `gotables` and `FlatTables` achieve the following:
+* Make it VERY easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
+* Make it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
+* Give you easy methods (generated specifically for your table data types) to read from your FlatBuffes []by arrays.
+* Provide a worked example specific to your schema that is a tutorial you can use directly in your code.
+
 * [https://urban-wombat.github.io](https://urban-wombat.github.io)
-* [The gotables implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
 
 For Go (golang) programmers:
 
