@@ -24,7 +24,7 @@ The amount of programmer effort saved by gotables is immense, if you don't want 
 
 To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
 
-* See [The gotables implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
+* See [The gotables `FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
 It contains all the installation instructions and how to get started generating FlatBuffers code and data.
 
 In a nutshell, the `gotables` and `FlatTables` achieve the following:
