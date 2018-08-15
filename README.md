@@ -24,10 +24,10 @@ The amount of programmer effort saved by gotables is immense, if you don't want 
 
 To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
 
-* See [The gotables `FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
+* See [The `gotables.FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
 It contains all the installation instructions and how to get started generating FlatBuffers code, and reading and writing FlatTables data.
 
-In a nutshell, the `gotables FlatTables` achieves the following:
+In a nutshell, `gotables.FlatTables` achieves the following:
 * Makes it VERY easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
 * Makes it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
 * Gives you easy methods (generated specifically for your table data types) to read from your FlatBuffes []by arrays.
