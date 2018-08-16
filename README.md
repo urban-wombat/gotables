@@ -22,10 +22,13 @@ In a nutshell, `gotables.FlatTables` does the following:
 * [This particular tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
   is the `flattables_sample_main.go` generated for the `flattables_sample` package I created from
   [my gotables file of tables](https://github.com/urban-wombat/flattables_sample/blob/master/tables.got).
-  Your own generated code will produce a tutorial file _specific to **your** own gotables file of tables_.
+  Your own generated code will produce a tutorial main program _specific to **your** own gotables file of tables_.
   Can you believe it?
 
-* [https://urban-wombat.github.io](https://urban-wombat.github.io) is an introduction to `gotables`.
+* See [https://github.com/urban-wombat/flattables](https://github.com/urban-wombat/flattables) for instructions on how to
+  install `FlatTables` and run the flattables_sample package, or create and run your own.
+
+* [https://urban-wombat.github.io](https://urban-wombat.github.io) has an introduction to `gotables`.
 
 
 # gotables
