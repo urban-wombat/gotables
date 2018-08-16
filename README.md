@@ -129,7 +129,7 @@ Here's an example:
     "Neptune"  17.0       30.6    13     7 "nine"
     "Pluto"     0.002     39.4     5     8 "porcupines"
 
-Most of the Go builtin data types can be used. (But not yet: complex64, complex128.)
+Most of the Go builtin data types can be used (except complex64 and complex128).
 
 Here is a simple program that parses the table into a gotables.Table and echoes it back out:
 
