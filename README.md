@@ -2,27 +2,14 @@
 
 # gotables
 
-`gotables` reinvents the wheel as a table.
-
 The focus of recent work is on support for Google `FlatBuffers`.
-
-The amount of programmer effort saved by gotables is immense, if you don't want to get into the weeds of the Go FlatBuffers API
--- there be Dragons.
-
-Go (golang) Table data format - simple and self-describing.
-
-Often data and configurations can be expressed best as tables, or can be flattened or normalised into tables.
-
-And events which are simple structs (or records) can be batched into tables for transmission.
-
+If you don't want to get into the weeds of the FlatBuffers API, `gotables` will save you a lot of time.
 But a warning up front: this implementation doesn't support Monsters. Only rectangular tables.
 
-I make no apology for this. Many's the time I've looked at a XML, JSON or YAML file and seen tables represented as trees.
-It's harder to humanly read, and requires more discipline to avoid breaking code with a missing leaf node or wrong type.
+To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
+
 
 * See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) Monster documentation.
-
-To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
 
 * See [The `gotables.FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
 It contains all the installation instructions and how to get started generating FlatBuffers code, and reading and writing FlatTables data.
@@ -38,9 +25,14 @@ In a nutshell, `gotables.FlatTables` achieves the following:
 
 * [https://urban-wombat.github.io](https://urban-wombat.github.io) is an introduction to `gotables`.
 
-For Go (golang) programmers:
+`gotables` reinvents the wheel as a table.
+Go (golang) Table data format is simple and self-describing.
+Often data and configurations can be expressed best as tables, or can be flattened or normalised into tables.
+And events which are simple structs (or records) can be batched into tables for transmission.
+I make no apology for this. Many's the time I've looked at a XML, JSON or YAML file and seen tables represented as trees.
+It's harder to humanly read, and requires more discipline to avoid breaking code with a missing leaf node or wrong type.
 
-	go get github.com/urban-wombat/gotables
+	`go get github.com/urban-wombat/gotables`
 
 ## Here's the API ...
 
