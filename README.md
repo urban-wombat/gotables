@@ -6,22 +6,23 @@ The focus of recent work is on support for Google `FlatBuffers`.
 If you don't want to get into the weeds of the FlatBuffers API, `gotables` will save you a lot of time.
 But a warning up front: this implementation doesn't support Monsters. Only rectangular tables.
 
-To distinguish the `gotables` FlatBuffers support from something that would support Monsters, it is called it `FlatTables`.
+To distinguish the `gotables` FlatBuffers support from something that would support Monsters, I have called it `FlatTables`.
 
+* See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) for FlatBuffers Monster documentation
+to see what you may be missing out on.
 
-* See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) Monster documentation.
-
-* See [The `gotables.FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables)
+* See [The `gotables.FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables).
 It contains all the installation instructions and how to get started generating FlatBuffers code, and reading and writing FlatTables data.
 
 In a nutshell, `gotables.FlatTables` achieves the following:
-* Makes it VERY easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
+* Makes it very easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
 * Makes it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
 * Gives you easy methods (generated specifically for your table data types) to read from a FlatBuffers []byte array.
-* Provides a worked example specific to your schema that is a tutorial you can use directly in your code.
-* [The Tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
-  This tutorial is the `flattables_sample_main.go` generated for the `flattables_sample` package I created from my gotables
+* Provides a worked example (in the form of a main program) specific to your schema that is a tutorial you can use directly in your code.
+* [This particular tutorial](https://github.com/urban-wombat/flattables_sample_main/blob/master/flattables_sample_main.go)
+  is the `flattables_sample_main.go` generated for the `flattables_sample` package I created from my gotables
   file of tables. Your own generated code will produce a tutorial file _specific to **your** own gotables file of tables_.
+  Can you believe it?
 
 * [https://urban-wombat.github.io](https://urban-wombat.github.io) is an introduction to `gotables`.
 
@@ -34,7 +35,7 @@ It's harder to humanly read, and requires more discipline to avoid breaking code
 
 	`go get github.com/urban-wombat/gotables`
 
-## Here's the API ...
+## Here's the `gotables` API ...
 
 [gotables API](https://godoc.org/github.com/urban-wombat/gotables) - a rich set of helper functions and methods
 
