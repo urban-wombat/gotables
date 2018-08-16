@@ -141,14 +141,14 @@ package main
 import (
     "github.com/urban-wombat/gotables"
     "fmt"
-	"log"
+    "log"
 )
 
 func main() {
-	tableString :=
-	`[planets]
-	name         mass distance moons index mnemonic
-	string    float64  float64   int   int string
+    tableString :=
+    `[planets]
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
     "Mercury"   0.055      0.4     0     0 "my"
     "Venus"     0.815      0.7     0     1 "very"
     "Earth"     1.0        1.0     1     2 "elegant"
@@ -158,15 +158,15 @@ func main() {
     "Uranus"   15.0       19.2    27     6 "upon"
     "Neptune"  17.0       30.6    13     7 "nine"
     "Pluto"     0.002     39.4     5     8 "porcupines"
-	`
-	
-	table, err := gotables.NewTableFromString(tableString)
-	if err != nil {
-	    log.Println(err)
-	}
-	
-	fmt.Println("Default String() padded output\n")
-	fmt.Println(table)
+    `
+    
+    table, err := gotables.NewTableFromString(tableString)
+    if err != nil {
+        log.Println(err)
+    }
+    
+    fmt.Println("Default String() padded output\n")
+    fmt.Println(table)
 
     // Notice that the columns of data are padded with spaces, and numeric types are right-aligned.
     // This reflects the opinion that human readability is important.
@@ -222,18 +222,18 @@ and prefix function and method calls with gotables.
 package main
 
 import (
-	"fmt"
-	"log"
-	"github.com/urban-wombat/gotables"
+    "fmt"
+    "log"
+    "github.com/urban-wombat/gotables"
 )
 
 // Copyright (c) 2017 Malcolm Gorman
 
 func main() {
-	tableString :=
-	`[planets]
-	name         mass distance moons index mnemonic
-	string    float64  float64   int   int string
+    tableString :=
+    `[planets]
+    name         mass distance moons index mnemonic
+    string    float64  float64   int   int string
     "Mercury"   0.055      0.4     0     0 "my"
     "Venus"     0.815      0.7     0     1 "very"
     "Earth"     1.0        1.0     1     2 "elegant"
@@ -243,162 +243,162 @@ func main() {
     "Uranus"   15.0       19.2    27     6 "upon"
     "Neptune"  17.0       30.6    13     7 "nine"
     "Pluto"     0.002     39.4     5     8 "porcupines"
-	`
+    `
 
-	var err error
+    var err error
 
-	table, err := gotables.NewTableFromString(tableString)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println("Table [planets] already in distance order.")
-	fmt.Println("Distance is in AU: Earth units from the Sun")
-	fmt.Println(table)
+    table, err := gotables.NewTableFromString(tableString)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Println("Table [planets] already in distance order.")
+    fmt.Println("Distance is in AU: Earth units from the Sun")
+    fmt.Println(table)
 
-	var rowIndex int
+    var rowIndex int
 
-	fmt.Println("Get the name and mass of the first planet.")
-	rowIndex = 0
-	fmt.Printf("rowIndex = %d\n", rowIndex)
-	name, err := table.GetString("name", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("name = %s\n", name)
+    fmt.Println("Get the name and mass of the first planet.")
+    rowIndex = 0
+    fmt.Printf("rowIndex = %d\n", rowIndex)
+    name, err := table.GetString("name", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("name = %s\n", name)
 
-	mass, err := table.GetFloat64("mass", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("mass = %f\n", mass)
-	fmt.Println()
+    mass, err := table.GetFloat64("mass", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("mass = %f\n", mass)
+    fmt.Println()
 
-	fmt.Println("Get and Set the mnemonic of the second planet: index 1")
-	rowIndex = 1
-	fmt.Printf("rowIndex = %d\n", rowIndex)
-	name, err = table.GetString("name", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("name = %s\n", name)
+    fmt.Println("Get and Set the mnemonic of the second planet: index 1")
+    rowIndex = 1
+    fmt.Printf("rowIndex = %d\n", rowIndex)
+    name, err = table.GetString("name", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("name = %s\n", name)
 
-	mnemonic, err := table.GetString("mnemonic", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("mnemonic = %q\n", mnemonic)
+    mnemonic, err := table.GetString("mnemonic", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("mnemonic = %q\n", mnemonic)
 
-	err = table.SetString("mnemonic", rowIndex, "*VERY*")
-	if err != nil {
-		log.Println(err)
-	}
+    err = table.SetString("mnemonic", rowIndex, "*VERY*")
+    if err != nil {
+    	log.Println(err)
+    }
 
-	mnemonic, err = table.GetString("mnemonic", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("mnemonic = %q\n", mnemonic)
-	fmt.Println()
+    mnemonic, err = table.GetString("mnemonic", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("mnemonic = %q\n", mnemonic)
+    fmt.Println()
 
-	fmt.Println("Sort and Search.")
-	sortKey := "name"
-	fmt.Printf("sortKey = %q\n", sortKey)
-	err = table.SetSortKeys(sortKey)
-	if err != nil {
-		log.Println(err)
-	}
-	err = table.Sort()
-	if err != nil {
-		log.Println(err)
-	}
+    fmt.Println("Sort and Search.")
+    sortKey := "name"
+    fmt.Printf("sortKey = %q\n", sortKey)
+    err = table.SetSortKeys(sortKey)
+    if err != nil {
+    	log.Println(err)
+    }
+    err = table.Sort()
+    if err != nil {
+    	log.Println(err)
+    }
 
-	planet := "Saturn"
-	fmt.Printf("search value: planet = %q\n", planet)
-	rowIndex, err = table.Search(planet)
-	if err != nil {
-		log.Println(err)
-	}
+    planet := "Saturn"
+    fmt.Printf("search value: planet = %q\n", planet)
+    rowIndex, err = table.Search(planet)
+    if err != nil {
+    	log.Println(err)
+    }
 
-	moons, err := table.GetInt("moons", rowIndex)
-	if err != nil {
-		log.Println(err)
-	}
+    moons, err := table.GetInt("moons", rowIndex)
+    if err != nil {
+    	log.Println(err)
+    }
 
-	fmt.Println(table)
-	fmt.Printf("%s has %d moons.\n", planet, moons)
-	fmt.Println()
+    fmt.Println(table)
+    fmt.Printf("%s has %d moons.\n", planet, moons)
+    fmt.Println()
 
-	fmt.Println("Sort and Search Range.")
-	err = table.SetSortKeys("moons")
-	if err != nil {
-		log.Println(err)
-	}
+    fmt.Println("Sort and Search Range.")
+    err = table.SetSortKeys("moons")
+    if err != nil {
+    	log.Println(err)
+    }
 
-	err = table.Sort()
-	if err != nil {
-		log.Println(err)
-	}
+    err = table.Sort()
+    if err != nil {
+    	log.Println(err)
+    }
 
-	moons = 2
-	firstRowIndex, lastRowIndex, err := table.SearchRange(moons)
-	if err != nil {
-		log.Println(err)
-	}
-	var planets int
-	if err == nil {
-		fmt.Println("Found at least 1 row with 2 moons.")
-		planets = lastRowIndex - firstRowIndex + 1
-	} else {
-		// moons = 3: [planets].Search([3]) search values not in table: [3]
-		fmt.Println(err)
-		planets = 0
-	}
-	fmt.Println(table)
-	fmt.Printf("%d planets have %d moons.\n", planets, moons)
-	fmt.Println()
+    moons = 2
+    firstRowIndex, lastRowIndex, err := table.SearchRange(moons)
+    if err != nil {
+    	log.Println(err)
+    }
+    var planets int
+    if err == nil {
+    	fmt.Println("Found at least 1 row with 2 moons.")
+    	planets = lastRowIndex - firstRowIndex + 1
+    } else {
+    	// moons = 3: [planets].Search([3]) search values not in table: [3]
+    	fmt.Println(err)
+    	planets = 0
+    }
+    fmt.Println(table)
+    fmt.Printf("%d planets have %d moons.\n", planets, moons)
+    fmt.Println()
 
 
-	// Sort Unique.
+    // Sort Unique.
 
-	tableString =
-	`[Unique]
-	key n       s
-	int float32 string
-	2   0       "two point two"
-	2   2.2     ""
-	1   1.1     "one point one"
-	3   3.3     "three point three"
-	3   3.3     ""
-	3   NaN     "three point three"
-	4   0.0     "neither zero nor same XX"
-	4   NaN     "neither zero nor same YY"
-	4   4.4     "neither zero nor same ZZ"
-	4   NaN     "neither zero nor same AA"
-	5   NaN     "minus 5"
-	5   -0      "minus 5"
-	5   -5      "minus 5"
-	`
-	table, err = gotables.NewTableFromString(tableString)
-	if err != nil {
-		log.Println(err)
-	}
+    tableString =
+    `[Unique]
+    key n       s
+    int float32 string
+    2   0       "two point two"
+    2   2.2     ""
+    1   1.1     "one point one"
+    3   3.3     "three point three"
+    3   3.3     ""
+    3   NaN     "three point three"
+    4   0.0     "neither zero nor same XX"
+    4   NaN     "neither zero nor same YY"
+    4   4.4     "neither zero nor same ZZ"
+    4   NaN     "neither zero nor same AA"
+    5   NaN     "minus 5"
+    5   -0      "minus 5"
+    5   -5      "minus 5"
+    `
+    table, err = gotables.NewTableFromString(tableString)
+    if err != nil {
+    	log.Println(err)
+    }
 
-	fmt.Println("Table [Unique] in no particular order, contains duplicate key values and zero and NaN values.")
-	fmt.Println(table)
+    fmt.Println("Table [Unique] in no particular order, contains duplicate key values and zero and NaN values.")
+    fmt.Println(table)
 
-	sortKey = "key"
-	fmt.Printf("sortKey = %q\n", sortKey)
-	err = table.SetSortKeys(sortKey)
-	if err != nil {
-		log.Println(err)
-	}
+    sortKey = "key"
+    fmt.Printf("sortKey = %q\n", sortKey)
+    err = table.SetSortKeys(sortKey)
+    if err != nil {
+    	log.Println(err)
+    }
 
-	tableUnique, err := table.SortUnique()
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Printf("table [%s] sorted unique by key %q\n", tableUnique.Name(), sortKey)
-	fmt.Println(tableUnique)
+    tableUnique, err := table.SortUnique()
+    if err != nil {
+    	log.Println(err)
+    }
+    fmt.Printf("table [%s] sorted unique by key %q\n", tableUnique.Name(), sortKey)
+    fmt.Println(tableUnique)
 }
 ```
 
