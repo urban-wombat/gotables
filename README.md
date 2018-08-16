@@ -1,20 +1,20 @@
 [![Build Status](https://travis-ci.org/urban-wombat/gotables.svg?branch=master)](https://travis-ci.org/urban-wombat/gotables)
 
-# gotables
+# FlatBuffers
 
 The focus of recent work is on support for Google `FlatBuffers`.
 If you don't want to get into the weeds of the FlatBuffers API, `gotables` will save you a lot of time.
-But a warning up front: this implementation doesn't support Monsters. Only rectangular tables.
+But a warning up front: this implementation doesn't support complex data structures such as Monsters. Only rectangular tables.
 
 To distinguish the `gotables` FlatBuffers support from something that would support Monsters, I have called it `FlatTables`.
 
 * See [FlatBuffers Monster](https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html) for FlatBuffers Monster documentation
-to see what you may be missing out on.
+to see what you may be missing out on. It's suitable for gaming.
 
 * See [The `gotables.FlatTables` implementation of Google FlatBuffers](https://github.com/urban-wombat/flattables).
 It contains all the installation instructions and how to get started generating FlatBuffers code, and reading and writing FlatTables data.
 
-In a nutshell, `gotables.FlatTables` achieves the following:
+In a nutshell, `gotables.FlatTables` does the following:
 * Makes it very easy to create a FlatBuffers schema and associated table-type-specific Go code to access FlatBuffers data.
 * Makes it a piece of cake (rectangular cake) to populate a set of one or more FlatBuffers tables as a []byte array.
 * Gives you easy methods (generated specifically for your table data types) to read from a FlatBuffers []byte array.
@@ -25,6 +25,9 @@ In a nutshell, `gotables.FlatTables` achieves the following:
   Can you believe it?
 
 * [https://urban-wombat.github.io](https://urban-wombat.github.io) is an introduction to `gotables`.
+
+
+# gotables
 
 `gotables` reinvents the wheel as a table.
 Go (golang) Table data format is simple and self-describing.
