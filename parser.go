@@ -552,11 +552,11 @@ func file_line() string {
 func (p *parser) getTableName(line string) (string, error) {
 
 	fields := strings.Fields(line)
-	if len(fields) != 1 {
-		return "", fmt.Errorf("%s expecting a table name in square brackets but found: %s", p.gotFilePos(), line)
+	if len(fields) != 1 {	// Note: len(fields) cannot be 0, because len(line) > 0
+		return "", fmt.Errorf("%s expecting a table name in square brackets but found: %s", p.gotFilePos(), fields[0])
 	}
-	tableName := fields[0]
 
+	tableName := fields[0]
 	result := tableNameRegexp.MatchString(tableName)
 	if !result {
 		return "", fmt.Errorf("%s expecting a valid alpha-numeric table name in square brackets, eg [_Foo2Bar3] but found: %s",
