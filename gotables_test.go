@@ -1329,12 +1329,12 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 
 		// uint8
 		{`
-			[uint8]
+			[uint8_]
 			i uint8 = 0`,
 			true,
 		},
 		{`
-			[uint8]
+			[uint8_]
 			i uint8 = 255`,
 			true,
 		},
@@ -1351,83 +1351,83 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 
 		// uint16
 		{`
-			[uint16]
+			[uint16_]
 			i uint16 = 0`,
 			true,
 		},
 		{`
-			[uint16]
+			[uint16_]
 			i uint16 = 65535`,
 			true,
 		},
 		{`
-			[uint16]
+			[uint16_]
 			i uint16 = -1`,
 			false,
 		},
 		{`
-			[uint16]
+			[uint16_]
 			i uint16 = 65536`,
 			false,
 		},
 
 		// uint32
 		{`
-			[uint32]
+			[uint32_]
 			i uint32 = 0`,
 			true,
 		},
 		{`
-			[uint32]
+			[uint32_]
 			i uint32 = 4294967295`,
 			true,
 		},
 		{`
-			[uint32]
+			[uint32_]
 			i uint32 = -1`,
 			false,
 		},
 		{`
-			[uint32]
+			[uint32_]
 			i uint32 = 4294967296`,
 			false,
 		},
 
 		// uint64
 		{`
-			[uint64]
+			[uint64_]
 			i uint64 = 0`,
 			true,
 		},
 		{`
-			[uint64]
+			[uint64_]
 			i uint64 = 18446744073709551615`,
 			true,
 		},
 		{`
-			[uint64]
+			[uint64_]
 			i uint64 = -1`,
 			false,
 		},
 		{`
-			[uint64]
+			[uint64_]
 			i uint64 = 18446744073709551616`,
 			false,
 		},
 
 		// uint
 		{`
-			[uint]
+			[uint_]
 			i uint = 0`,
 			true,
 		},
 		{fmt.Sprintf(`
-			[uint]
+			[uint_]
 			i uint = %d`, uintMaxVal),
 			true,
 		},
 		{`
-			[uint]
+			[uint_]
 			i uint = -1`,
 			false,
 		},
@@ -1435,100 +1435,100 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 
 		// int8
 		{`
-			[int8]
+			[int8_]
 			i int8 = -128`,
 			true,
 		},
 		{`
-			[int8]
+			[int8_]
 			i int8 = 127`,
 			true,
 		},
 		{`
-			[int8]
+			[int8_]
 			i int8 = -129`,
 			false,
 		},
 		{`
-			[int8]
+			[int8_]
 			i int8 = 128`,
 			false,
 		},
 
 		// int16
 		{`
-			[int16]
+			[int16_]
 			i int16 = -32768`,
 			true,
 		},
 		{`
-			[int16]
+			[int16_]
 			i int16 = 32767`,
 			true,
 		},
 		{`
-			[int16]
+			[int16_]
 			i int16 = -32769`,
 			false,
 		},
 		{`
-			[int16]
+			[int16_]
 			i int16 = 32768`,
 			false,
 		},
 
 		// int32
 		{`
-			[int32]
+			[int32_]
 			i int32 = -2147483648`,
 			true,
 		},
 		{`
-			[int32]
+			[int32_]
 			i int32 = 2147483647`,
 			true,
 		},
 		{`
-			[int32]
+			[int32_]
 			i int32 = -2147483649`,
 			false,
 		},
 		{`
-			[int32]
+			[int32_]
 			i int32 = 2147483648`,
 			false,
 		},
 
 		// int64
 		{`
-			[int64]
+			[int64_]
 			i int64 = -9223372036854775808`,
 			true,
 		},
 		{`
-			[int64]
+			[int64_]
 			i int64 = 9223372036854775807`,
 			true,
 		},
 		{`
-			[int64]
+			[int64_]
 			i int64 = -9223372036854775809`,
 			false,
 		},
 		{`
-			[int64]
+			[int64_]
 			i int64 = 9223372036854775808`,
 			false,
 		},
 
 		// int
 		{fmt.Sprintf(`
-			[int]
+			[int_]
 			i int = %d`, intMinVal),
 			true,
 		},
 		{fmt.Sprintf(`
-			[int]
+			[int_]
 			i int = %d`, intMaxVal),
 			true,
 		},
