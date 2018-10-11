@@ -676,6 +676,12 @@ func IsValidTableName(tableName string) (bool, error) {
 	if !result {
 		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
 	}
+
+	_, contains := globalColTypesMap[tableName]
+	if contains {
+		return false, fmt.Errorf("invalid table name: %s (cannot use Go types as table names)", tableName)
+	}
+
 	return true, nil
 }
 
