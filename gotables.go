@@ -2974,6 +2974,31 @@ func (table *Table) Copy(copyRows bool) (*Table, error) {
 }
 
 /*
+	Create a copy of TableSet, with or without copying table rows of data.
+*/
+func (tableSet *TableSet) Copy(copyRows bool) (*TableSet, error) {
+	var err error
+	var tableSetCopy *TableSet
+
+	tableSetCopy, err = NewTableSet(tableSet.Name())
+	if err != nil { return nil, err }
+	tableSetCopy.SetFileName(tableSet.FileName())
+
+	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
+		table, err := tableSet.TableByTableIndex(tableIndex)
+		if err != nil { return nil, err }
+
+		tableCopy, err := table.Copy(copyRows)
+		if err != nil { return nil, err }
+
+		err = tableSetCopy.AppendTable(tableCopy)
+		if err != nil { return nil, err }
+	}
+
+	return tableSetCopy, nil
+}
+
+/*
 	Create a new table from a range of rows in this table searched by keys.
 */
 func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValues ...interface{}) (*Table, error) {
