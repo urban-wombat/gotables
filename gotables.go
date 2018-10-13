@@ -1832,9 +1832,8 @@ func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 }
 
 func (table *Table) ColType(colName string) (string, error) {
-	if table == nil {
-		return "", fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	index, exists := table.colNamesLookup[colName]
 	if !exists {
 		err := fmt.Errorf("table [%s] col does not exist: %s", table.tableName, colName)
@@ -1845,9 +1844,8 @@ func (table *Table) ColType(colName string) (string, error) {
 }
 
 func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
-	if table == nil {
-		return "", fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	if colIndex < 0 || colIndex > len(table.colTypes)-1 {
 		err := fmt.Errorf("table [%s] col index does not exist: %d", table.tableName, colIndex)
 		return "", err
@@ -2041,22 +2039,21 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 }
 
 func (table *Table) IsColType(colName string, typeNameQuestioning string) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	colType, _ := table.ColType(colName)
+	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	colType, err := table.ColType(colName)
+	if err != nil { return false, err }
+
 	if colType != typeNameQuestioning {
-		err := fmt.Errorf("table [%s] col name %q type is %q, not %q",
-			table.tableName, colName, colType, typeNameQuestioning)
-		return false, err
+		return false, nil
 	}
+
 	return true, nil
 }
 
 func (table *Table) IsColTypeByColIndex(colIndex int, typeNameQuestioning string) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	hasColIndex, err := table.HasColByColIndex(colIndex)
 	if !hasColIndex {
 		return false, err
@@ -2065,14 +2062,9 @@ func (table *Table) IsColTypeByColIndex(colIndex int, typeNameQuestioning string
 	colName := table.colNames[colIndex]
 
 	isColType, err := table.IsColType(colName, typeNameQuestioning)
-	if !isColType {
-		colType, _ := table.ColType(colName)
-		err := fmt.Errorf("table [%s] col %q col index %d type is %q, not %q",
-			table.tableName, colName, colIndex, colType, typeNameQuestioning)
-		return false, err
-	}
+	if err != nil { return false, err }
 
-	return true, nil
+	return isColType, nil
 }
 
 // ###
