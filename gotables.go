@@ -2030,9 +2030,13 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index %d is out of range (0..%d): %d",
-			table.Name(), table.RowCount(), plural(table.RowCount()), rowIndex, table.RowCount()-1, rowIndex)
+	rowCount := table.RowCount()
+	if rowCount == 0 {
+		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range: %d",
+			table.Name(), rowCount, plural(rowCount), rowIndex)
+	} else if rowIndex < 0 || rowIndex > rowCount-1 {
+		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range (0..%d): %d",
+			table.Name(), rowCount, plural(rowCount), rowCount-1, rowIndex)
 	}
 
 	return true, nil
