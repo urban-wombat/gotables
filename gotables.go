@@ -242,28 +242,6 @@ func NewTableFromFileByTableName(fileName string, tableName string) (*Table, err
 }
 
 /*
-Returns a set of parsable elastic tabbed tables as a string.
-*/
-//func (tableSet *TableSet) String() string {
-//	var verticalSep string = ""
-//	var s string
-//
-//	var tableSetName string = tableSet.Name()
-//	if tableSetName != "" {
-//		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
-//	}
-//
-//	var table *Table
-//	for i := 0; i < len(tableSet.tables); i++ {
-//		table = tableSet.tables[i]
-//		s += verticalSep
-//		s += table.String()
-//		verticalSep = "\n"
-//	}
-//	return s
-// }
-
-/*
 Returns a set of parsable tables with format right-aligned (numbers) as a string.
 */
 func (tableSet *TableSet) String() string {
@@ -441,7 +419,6 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-//	rows3          tableRows3	// new_model
 	rows           tableRows	// new_model
 	sortKeys       []sortKey
 	structShape    bool
@@ -452,7 +429,6 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-//	Rows2          tableRows3	// new_model
 	Rows           tableRows	// new_model
 	SortKeys       []SortKeyExported
 	StructShape    bool
@@ -466,9 +442,6 @@ func (table *Table) getColTypes() []string {
 	return table.colTypes
 }
 
-// type tableRow map[string]interface{}
-// type tableRow3 []interface{}
-// type tableRows3 []tableRow3
 type tableRow []interface{}
 type tableRows []tableRow
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
@@ -491,7 +464,6 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
-//	newTable.rows3 = make([]tableRow3, 0)
 	newTable.rows  = make([]tableRow, 0)
 
 	return newTable, nil
@@ -507,7 +479,6 @@ func newTableExported(tableName string) (*TableExported, error) {
 	NewTableExported.ColNames = make([]string, 0)
 	NewTableExported.ColTypes = make([]string, 0)
 	NewTableExported.ColNamesLookup = map[string]int{}
-//	NewTableExported.Rows2 = make([]tableRow3, 0)
 	NewTableExported.Rows = make([]tableRow, 0)
 	return NewTableExported, nil
 }
@@ -558,7 +529,7 @@ func (table *Table) AppendRows(howMany int) error {
 
 	var err error
 
-/*
+/*	PERFORMANCE HIT
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 */
@@ -573,7 +544,7 @@ func (table *Table) AppendRows(howMany int) error {
 		}
 	}
 
-/*
+/*	PERFORMANCE HIT
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 */
@@ -588,7 +559,7 @@ func (table *Table) AppendRow() error {
 
 	var err error
 
-/*
+/*	PERFORMANCE HIT
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 */
@@ -601,9 +572,7 @@ func (table *Table) AppendRow() error {
 	}
 */
 
-	// Note: make sets slice values to <nil> and NOT to their zero value.
-//	var newRow2 tableRow3 = make(tableRow3, table.ColCount())
-//	table.rows3 = append(table.rows3, newRow2)
+	// Note: function make() sets slice values to <nil> and NOT to their zero value.
 	var newRow tableRow = make(tableRow, table.ColCount())
 	table.rows = append(table.rows, newRow)
 
@@ -611,11 +580,9 @@ func (table *Table) AppendRow() error {
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
 	err = table.SetRowCellsToZeroValue(rowIndex)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
-/*
+/*	PERFORMANCE HIT
 	_, err = table.IsValidTable()
 	if err != nil { return err }
 */
@@ -728,75 +695,6 @@ func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 	return nil
 }
 
-/*
-This is for adding an entire new row of data to a table in bulk, so to speak.
-
-	var row gotables.tableRow = make(gotables.tableRow)
-	row["Manager"] = "JC"
-	row["Apostles"] = 12
-	err = table.appendRowMap(row)
-	if err != nil {
-	    panic(err)
-	}
-*/
-/*
-func (table *Table) appendRowMap(rowMap tableRow) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
-	// Check types match what the table is expecting.
-	var err error
-	var colName string
-	var colType string
-	var valuePossiblyUpdated interface{}
-	var exists bool
-	var valType string
-	var missingValue interface{}
-
-	// Loop through all the cols defined in the table.
-	for _, colName = range table.colNames {
-		colType, err = table.ColType(colName)
-		if err != nil {
-			return err
-		}
-
-		// (We don't [yet] check to see if excess cols have been provided.)
-		// Now we do ...
-		if len(rowMap) != len(table.colNames) {
-			return fmt.Errorf("%s(rowMap): table [%s] len(rowMap) %d != table.ColCount() %d",
-				funcName(), table.tableName, len(rowMap), table.ColCount())
-		}
-
-		// Check that a col has been provided for each corresponding col in the table.
-		_, exists = rowMap[colName]
-		if !exists {
-			// For some types (float32 and float64) there is a missing value: NaN
-			missingValue, exists = missingValueForType(colType) // Only for float32 and float64
-			if !exists {
-				// Don't permit a misleading missing value to be present for ints, bools, strings.
-				return fmt.Errorf("%s: Table [%s] col %s type %s is missing. Only types float32 and float64 NaN missing are allowed.",
-					funcName(), table.tableName, colName, colType)
-			}
-			rowMap[colName] = missingValue
-		}
-
-		// Check that the new value col type is the same as the table col type.
-		valuePossiblyUpdated = rowMap[colName]
-		valType = fmt.Sprintf("%T", valuePossiblyUpdated)
-		if valType != colType {
-			// Go stores byte as uint8, meaning byte is merely an alias, not a separate type.
-			if !isAlias(colType, valType) {
-				return fmt.Errorf("%s: table [%s] col %s expecting type %s but found type %s",
-					funcName(), table.tableName, colName, colType, valType)
-			}
-		}
-	}
-
-	return nil
-}
-*/
-
-//func (table *Table) appendRowSlice(rowSlice tableRow3) error {
 func (table *Table) appendRowSlice(rowSlice tableRow) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
@@ -808,7 +706,6 @@ func (table *Table) appendRowSlice(rowSlice tableRow) error {
 		// where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
 		// where(fmt.Sprintf("append(%v, %v)\n", table.rows, rowSlice))
 	}
-//	table.rows = append(table.rows3, rowSlice)
 	table.rows = append(table.rows, rowSlice)
 	if debugging {
 		// where(fmt.Sprintf("AFTER: table.rows = %v\n", table.rows))
@@ -892,7 +789,6 @@ if err != nil { debug.PrintStack() }
 	}
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-//	table.rows3 = append(table.rows3[:firstRowIndex], table.rows3[lastRowIndex+1:]...)
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
 	_, err = table.IsValidTable()
@@ -978,8 +874,6 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	
 		// Rows of data
 		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-//			var row2 tableRow3
-//			row2 = table.rows3[rowIndex]
 			var row tableRow
 			row = table.rows[rowIndex]
 			horizontalSep = ""
@@ -1002,7 +896,6 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				buf.WriteString(horizontalSep)
 				switch table.colTypes[colIndex] {
 				case "string":
-//					sVal = row2[colIndex].(string)
 					sVal = row[colIndex].(string)
 					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 					var replicatedPercentChars string
@@ -1011,7 +904,6 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
 					buf.WriteString(fmt.Sprintf("\"%s\"", replicatedPercentChars))
 				case "rune":
-//					runeVal = row2[colIndex].(rune)
 					runeVal = row[colIndex].(rune)
 					// Handle special cases.
 					switch runeVal {
@@ -1036,23 +928,18 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					}
 					buf.WriteString(fmt.Sprintf("%s", s))
 				case "bool":
-//					tVal = row2[colIndex].(bool)
 					tVal = row[colIndex].(bool)
 					buf.WriteString(fmt.Sprintf("%t", tVal))
 				case "uint8":
-//					ui8Val = row2[colIndex].(uint8)
 					ui8Val = row[colIndex].(uint8)
 					buf.WriteString(fmt.Sprintf("%d", ui8Val))
 				case "uint16":
-//					ui16Val = row2[colIndex].(uint16)
 					ui16Val = row[colIndex].(uint16)
 					buf.WriteString(fmt.Sprintf("%d", ui16Val))
 				case "uint32":
-//					ui32Val = row2[colIndex].(uint32)
 					ui32Val = row[colIndex].(uint32)
 					buf.WriteString(fmt.Sprintf("%d", ui32Val))
 				case "uint64":
-//					ui64Val = row2[colIndex].(uint64)
 					ui64Val = row[colIndex].(uint64)
 					buf.WriteString(fmt.Sprintf("%d", ui64Val))
 				case "uint":
@@ -1256,10 +1143,8 @@ func (table *Table) StringPadded() string {
 	}
 
 	// Rows of data
-//	var row2 tableRow3
 	var row tableRow
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-//		row2 = table.rows3[rowIndex]
 		row = table.rows[rowIndex]
 		horizontalSep = "" // No gap on left of first column.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -1431,9 +1316,8 @@ func printStruct(table *Table) string {
 
 			switch table.colTypes[colIndex] {
 				case "string":
-					// Note: GetValAsStringByColIndex() doesn't include delimiters around strings.
-//					s += " = " + fmt.Sprintf("%q", asString)
-					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
+					// Note 1: GetValAsStringByColIndex() doesn't include delimiters around strings.
+					// Note 2: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
 					s += " = " + fmt.Sprintf("\"%s\"", asString)
 				case "rune":
 					// Note: GetValAsStringByColIndex() doesn't include delimiters around runes.
@@ -1602,7 +1486,6 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 	// Extend each row by 1 element. The new element will default to a zero value.
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-//		table.rows3[rowIndex] = append(table.rows3[rowIndex], nil)
 		table.rows[rowIndex] = append(table.rows[rowIndex], nil)
 	}
 
@@ -1705,7 +1588,6 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 
 	// Set the val
-//	table.rows3[rowIndex][colIndex] = val
 	table.rows[rowIndex][colIndex] = val
 
 	return nil
@@ -1944,7 +1826,6 @@ func (table *Table) ColCount() int {
 func (table *Table) RowCount() int {
 	if table == nil { return -1 }
 
-//	return len(table.rows3)
 	return len(table.rows)
 }
 
@@ -1988,9 +1869,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 
 	var val interface{}
 
-//	row2 := table.rows3[rowIndex]
 	row := table.rows[rowIndex]
-//	val = row2[colIndex]
 	val = row[colIndex]
 
 	return val, nil
@@ -2031,7 +1910,6 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 		return false, err
 	}
 
-//	hasRow = len(table.rows3) >= rowIndex + 1
 	hasRow = len(table.rows) >= rowIndex + 1
 	if !hasRow {
 		err = fmt.Errorf("%s: in table [%s] row %d does not exist",
@@ -2042,12 +1920,10 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 	}
 
 	// Does the cell in the row actually exist? Is the row long enough to contain cell colIndex?
-//	rowElementCount := len(table.rows3[rowIndex])
 	rowElementCount := len(table.rows[rowIndex])
 
 	if rowElementCount != table.ColCount() {
 		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-//			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows3[rowIndex]))
 			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows[rowIndex]))
 		return false, err
 	}
@@ -2272,11 +2148,6 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 			funcName(), table.tableName, table.RowCount(), rowIndex)
 	}
 
-//	if len(table.rows3[rowIndex]) != table.ColCount() {
-//		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-//			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows3[rowIndex]))
-//		return false, err
-//	}
 	if len(table.rows[rowIndex]) != table.ColCount() {
 		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
 			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows[rowIndex]))
@@ -2318,10 +2189,6 @@ func (table *Table) IsValidTable() (bool, error) {
 		err = fmt.Errorf("%s ERROR %s: table [%s] colNamesLookup == nil", funcSource(), funcName(), table.tableName)
 		return false, err
 	}
-//	if table.rows3 == nil {
-//		err = fmt.Errorf("%s ERROR %s: table [%s] rows3 == nil", funcSource(), funcName(), table.tableName)
-//		return false, err
-//	}
 	if table.rows == nil {
 		err = fmt.Errorf("%s ERROR %s: table [%s] rows == nil", funcSource(), funcName(), table.tableName)
 		return false, err

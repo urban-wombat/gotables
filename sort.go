@@ -273,15 +273,6 @@ func (table *Table) DeleteSortKey(keyName string) error {
 	return fmt.Errorf("[%s].%s(%q) sort key not found: %q", table.Name(), funcName(), keyName, keyName)
 }
 
-/*
-func (table *Table) getSortKeys() (SortKeys, error) {
-	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", funcName())
-	}
-	return table.sortKeys, nil
-}
-*/
-
 func (table *Table) getColNames() []string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
@@ -291,18 +282,6 @@ func (table *Table) getColNames() []string {
 }
 
 // Sorting functions:
-
-/*
-func (tableRows tableRows) Len() int {
-	return len(tableRows)
-}
-*/
-
-/*
-func (tableRows tableRows) Swap(i, j int) {
-	tableRows[i], tableRows[j] = tableRows[j], tableRows[i]
-}
-*/
 
 var compare_Alphabetic_string compareFunc = func(i, j interface{}) int {
 	var si_string string = i.(string)
@@ -538,51 +517,21 @@ func (table *Table) SortSimple(sortCols ...string) error {
 
 type tableSortable struct {
 	table *Table
-//	rows3 tableRows3
 	rows  tableRows
-//	less  func(i tableRow3, j tableRow3) bool
 	less  func(i tableRow, j tableRow) bool
 }
 
-// func (table tableSortable) Len() int { return len(table.rows3) }
 func (table tableSortable) Len() int { return len(table.rows) }
 
-//func (table tableSortable) Swap(i int, j int) {
-//	table.rows3[i], table.rows3[j] = table.rows3[j], table.rows3[i]
-//}
 func (table tableSortable) Swap(i int, j int) {
 	table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 }
 
-//func (table tableSortable) Less(i int, j int) bool {
-//	return table.less(table.rows3[i], table.rows3[j])
-//}
 func (table tableSortable) Less(i int, j int) bool {
 	return table.less(table.rows[i], table.rows[j])
 }
 
-///*
-//	Sort this table by this table's currently-set sort keys.
-//
-//	To see the currently-set sort keys use GetSortKeysAsTable()
-//*/
-//func (table *Table) Sort2() error {
-//
-//	if table == nil {
-//		return fmt.Errorf("table.%s() table is <nil>", funcName())
-//	}
-//
-//	if len(table.sortKeys) == 0 {
-//		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
-//	}
-//
-//	table.sortByKeys(table.sortKeys)
-//
-//	return nil
-//}
-
 func (table *Table) sortByKeys(sortKeys SortKeys) {
-//	sort.Sort(tableSortable{table, table.rows3, func(iRow, jRow tableRow3) bool {
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
 //		compareCount++
 		for _, sortKey := range table.sortKeys {
@@ -796,21 +745,6 @@ func (table *Table) CompareRows(rowIndex1 int, rowIndex2 int) (int, error) {
 	// They all match. Means they're equal.
 	return 0, nil	// Equal.
 }
-
-/*
-func (tableRows tableRows) Less(i, j int) bool {
-//	compareCount++
-	sortFunc := compare_int
-	colName := "SortOrder"
-	var iInterface interface{} = tableRows[i][colName]
-	var jInterface interface{} = tableRows[j][colName]
-	var compared int = sortFunc(iInterface, jInterface)
-	if compared != 0 {
-		return compared < 0
-	}
-	return false
-}
-*/
 
 // Factory function to generate a slice of SortKeys.
 func newSortKeys() SortKeys {

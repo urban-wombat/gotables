@@ -211,8 +211,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-//	var rowMapOfStruct tableRow		// Needs to persist over multiple lines.
-//	var rowSliceOfStruct tableRow3	// Needs to persist over multiple lines.
 	var rowSliceOfStruct tableRow	// Needs to persist over multiple lines.
 
 	unnamed := ""
@@ -373,14 +371,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					}
 					if debugging {
 						// where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-						// where(fmt.Sprintf("len(table.rows3) = %d\n", len(table.rows3)))
+						// where(fmt.Sprintf("len(table.rows) = %d\n", len(table.rows)))
 					}
 
 					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
 
 					var val interface{} = rowSliceOfStruct[0]
-//					var colIndex int = len(table.rows3[0]) - 1
 					var colIndex int = len(table.rows[0]) - 1
 					const rowIndexAlwaysZero int = 0
 					/* NOTE: Reinstate function call when old model is removed.
@@ -389,25 +386,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
 					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 
-/*	OBSOLETE?
-//					// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
-//					var colName2 string
-//					var val1 interface{}
-//					var sval1 string
-//					var val2 interface{}
-//					var sval2 string
-//					for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
-//						colName2 = colNameSlice[colIndex]
-//						val1 = rowMapOfStruct[colName2]
-//						sval1 = fmt.Sprintf("%v", val1)
-//						val2 = rowSliceOfStruct[colIndex]
-//						sval2 = fmt.Sprintf("%v", val2)
-//						if sval2 != sval1 {
-//							err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
-//							return nil, err
-//						}
-//					}
-*/
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
@@ -461,7 +439,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			lenColTypes := len(parserColTypes)
 
-//			var rowSlice tableRow3
 			var rowSlice tableRow
 			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
 			if err != nil { return nil, err }
@@ -474,26 +451,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
 			}
-
-/*
-			// Compare rowSlice with rowMap. This is temporary code.
-			var colName2 string
-			var val1 interface{}
-			var sval1 string
-			var val2 interface{}
-			var sval2 string
-			for colIndex := 0; colIndex < len(rowSlice); colIndex++ {
-				colName2 = parserColNames[colIndex]
-				val1 = rowMap[colName2]
-				sval1 = fmt.Sprintf("%v", val1)
-				val2 = rowSlice[colIndex]
-				sval2 = fmt.Sprintf("%v", val2)
-				if sval2 != sval1 {
-					err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
-					return nil, err
-				}
-			}
-*/
 
 			if lenColTypes != lenRowSlice {
 				return nil, fmt.Errorf("%s expecting: %d value%s but found: %d",
@@ -690,10 +647,8 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-// func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow3, error) {
 func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow, error) {
 	var err error
-//	rowSlice := make(tableRow3, len(colNames))
 	rowSlice := make(tableRow, len(colNames))
 
 	remaining := line // Remainder of line left to parse.
@@ -1078,107 +1033,6 @@ func trimDelims(s string, delim string) string {
 	s = strings.TrimSuffix(s, delim)
 	return s
 }
-
-//// parseRune1() accepts either a unicode character or a unicode code.
-//// A valid rune is either 0 or a single-quote-delimited unicode character.
-//// The unicode code range is from 0 to a maximum value, with an excluded inner range.
-//// Codes are treated here as uint64 even though rune is aliased to int32.
-//// Use utf8.RuneLen() to get rune length. Don't bother returning it here.
-//func parseRune1(s string) (rune, error) {
-//	if printstack { debug.PrintStack() }
-//where(s)
-//
-//	if len(s) < 1 {
-//		return 0, fmt.Errorf("parseRune1(%q): cannot parse rune from string with length 0", s)
-//	}
-//
-//	var uint64Val uint64
-//	var err error
-//	var runeVal rune
-//
-//	if hasDelims(s, "'") {
-//where(fmt.Sprintf("hasDelims(%s)", s))
-//		s = trimDelims(s, "'")
-//where(s)
-//
-//		switch {
-//			case s == "\\'":				// DecodeRuneInString() cannot decode this rune literal.
-//where()
-//				runeVal = '\''
-//			case s == "\377":			// DecodeRuneInString() cannot decode this rune literal.
-//where()
-//				runeVal = '\377'	// The octal unicode replacement character. It handles the hex equivalent as well.
-//			case s[0] == '\\':
-//where()
-//				if s[1] == 'x' || s[1] == 'X' {
-//where()
-//					uint64Val, err = strconv.ParseUint(s, _HEX, _BITS_64)
-//where()
-//					if err != nil {
-//						return 0, fmt.Errorf("invalid hex %v: %s", err, s)
-//					}
-//where()
-//					runeVal = rune(uint64Val)
-//					return runeVal, nil
-//				}
-//			default:
-//where(s)
-//				if !utf8.ValidString(s) {
-//					return 0, fmt.Errorf("invalid utf8 string: %s", s)
-//				}
-//
-//where(s)
-//				// See if it's a number.
-//				uint64Val, err = strconv.ParseUint(s, _HEX, _BITS_64)
-//where(err)
-//				if err == nil {
-//					runeVal = rune(uint64Val)
-//				} else {
-//					var size int
-//					runeVal, size = utf8.DecodeRuneInString(s)
-//where(s)
-//where(fmt.Sprintf("runeVal = %q size = %d s = %s", runeVal, size, s))
-//					if size < 1 {
-//						return 0, fmt.Errorf("invalid rune with size 0")
-//					}
-//					if size < len(s) {
-//						return 0, fmt.Errorf("rune %q has unexpected trailing chars: %s", runeVal, s[size:])
-//					}
-//				}
-//		}
-//	} else {
-//
-//		// Probably a numeric value.
-//
-////		var uint64Val uint64
-////		var err error
-//		uint64Val, err = strconv.ParseUint(s, _DECIMAL, _BITS_64)
-//		if err != nil {
-//			// Basic numerical format error OR range error. We can't tell.
-//			// This rejects negative numbers and numbers greater than math.MaxUint64
-//where(s)
-//			return 0, fmt.Errorf("invalid numeric unicode for rune: %s", s)
-//		}
-//
-//		if _, err := isValidUnicode(uint64Val); err != nil {
-//where(s)
-//			return 0, err
-//		}
-//
-//		runeVal = int32(uint64Val)
-//		// where(fmt.Sprintf("uint64Val = %d  err = %v\n", uint64Val, err))
-//where(fmt.Sprintf("numeric value of %s parsed = %d = %X", s, runeVal, runeVal))
-//		return runeVal, nil
-//	}
-//
-//	validRune := utf8.ValidRune(runeVal)
-//	if !validRune {
-//where(s)
-//		return 0, fmt.Errorf("invalid rune: '%c'", runeVal)
-//	}
-//
-//	return runeVal, nil
-//}
 
 // Convert rune or int32 to uint64 to call this function.
 func isValidUnicode(code uint64) (bool, error) {
