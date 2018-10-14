@@ -1858,11 +1858,15 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	var val interface{}
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
-	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return nil, err }
+/*	CHECKED IN table.GetValByColIndex()
+//	hasRow, err := table.HasRow(rowIndex)
+//	if !hasRow { return nil, err }
+*/
 
-	hasCol, err := table.HasCol(colName)
-	if !hasCol { return nil, err }
+/*	CHECKED IN table.GetValByColIndex()
+//	hasCol, err := table.HasCol(colName)
+//	if !hasCol { return nil, err }
+*/
 
 	colIndex, err := table.ColIndex(colName)
 	if err != nil { return nil, err }
