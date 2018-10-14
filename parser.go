@@ -211,8 +211,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowMapOfStruct tableRow		// Needs to persist over multiple lines.
-	var rowSliceOfStruct tableRow2	// Needs to persist over multiple lines.
+//	var rowMapOfStruct tableRow		// Needs to persist over multiple lines.
+	var rowSliceOfStruct tableRow3	// Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -372,14 +372,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					}
 					if debugging {
 						// where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
-						// where(fmt.Sprintf("len(table.rows2) = %d\n", len(table.rows2)))
+						// where(fmt.Sprintf("len(table.rows3) = %d\n", len(table.rows3)))
 					}
 
 					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 					if err != nil { return nil, err }
 
 					var val interface{} = rowSliceOfStruct[0]
-					var colIndex int = len(table.rows2[0]) - 1
+					var colIndex int = len(table.rows3[0]) - 1
 					const rowIndexAlwaysZero int = 0
 					/* NOTE: Reinstate function call when old model is removed.
 					         This (if called now) double-sets the value.
@@ -387,23 +387,25 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
 					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
 
-					// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
-					var colName2 string
-					var val1 interface{}
-					var sval1 string
-					var val2 interface{}
-					var sval2 string
-					for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
-						colName2 = colNameSlice[colIndex]
-						val1 = rowMapOfStruct[colName2]
-						sval1 = fmt.Sprintf("%v", val1)
-						val2 = rowSliceOfStruct[colIndex]
-						sval2 = fmt.Sprintf("%v", val2)
-						if sval2 != sval1 {
-							err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
-							return nil, err
-						}
-					}
+/*	OBSOLETE?
+//					// Compare rowSliceOfStruct with rowMapOfStruct. This is temporary code.
+//					var colName2 string
+//					var val1 interface{}
+//					var sval1 string
+//					var val2 interface{}
+//					var sval2 string
+//					for colIndex := 0; colIndex < len(rowMapOfStruct); colIndex++ {
+//						colName2 = colNameSlice[colIndex]
+//						val1 = rowMapOfStruct[colName2]
+//						sval1 = fmt.Sprintf("%v", val1)
+//						val2 = rowSliceOfStruct[colIndex]
+//						sval2 = fmt.Sprintf("%v", val2)
+//						if sval2 != sval1 {
+//							err = fmt.Errorf("sval1 %s != sval2 %s", sval1, sval2)
+//							return nil, err
+//						}
+//					}
+*/
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
@@ -457,7 +459,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			lenColTypes := len(parserColTypes)
 
-			var rowSlice tableRow2
+			var rowSlice tableRow3
 			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
 			if err != nil { return nil, err }
 
@@ -685,9 +687,9 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow2, error) {
+func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow3, error) {
 	var err error
-	rowSlice := make(tableRow2, len(colNames))
+	rowSlice := make(tableRow3, len(colNames))
 
 	remaining := line // Remainder of line left to parse.
 	var rangeFound []int

@@ -441,7 +441,7 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-	rows2          tableRows2	// new_model
+	rows3          tableRows3	// new_model
 	sortKeys       []sortKey
 	structShape    bool
 }
@@ -451,7 +451,7 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows2          tableRows2	// new_model
+	Rows2          tableRows3	// new_model
 	SortKeys       []SortKeyExported
 	StructShape    bool
 }
@@ -465,8 +465,8 @@ func (table *Table) getColTypes() []string {
 }
 
 type tableRow map[string]interface{}
-type tableRow2 []interface{}
-type tableRows2 []tableRow2
+type tableRow3 []interface{}
+type tableRows3 []tableRow3
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 // Factory function to generate a *Table pointer.
@@ -487,7 +487,7 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
 	newTable.colNamesLookup = map[string]int{}
-	newTable.rows2 = make([]tableRow2, 0)
+	newTable.rows3 = make([]tableRow3, 0)
 
 	return newTable, nil
 }
@@ -502,7 +502,7 @@ func newTableExported(tableName string) (*TableExported, error) {
 	NewTableExported.ColNames = make([]string, 0)
 	NewTableExported.ColTypes = make([]string, 0)
 	NewTableExported.ColNamesLookup = map[string]int{}
-	NewTableExported.Rows2 = make([]tableRow2, 0)
+	NewTableExported.Rows2 = make([]tableRow3, 0)
 	return NewTableExported, nil
 }
 
@@ -552,8 +552,10 @@ func (table *Table) AppendRows(howMany int) error {
 
 	var err error
 
+/*
 	_, err = table.IsValidTable()
 	if err != nil { return err }
+*/
 
 	if howMany < 1 {
 		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
@@ -565,8 +567,10 @@ func (table *Table) AppendRows(howMany int) error {
 		}
 	}
 
+/*
 	_, err = table.IsValidTable()
 	if err != nil { return err }
+*/
 
 	return nil
 }
@@ -578,8 +582,10 @@ func (table *Table) AppendRow() error {
 
 	var err error
 
+/*
 	_, err = table.IsValidTable()
 	if err != nil { return err }
+*/
 
 /*
 	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -590,8 +596,8 @@ func (table *Table) AppendRow() error {
 */
 
 	// Note: make sets slice values to <nil> and NOT to their zero value.
-	var newRow2 tableRow2 = make(tableRow2, table.ColCount())
-	table.rows2 = append(table.rows2, newRow2)
+	var newRow2 tableRow3 = make(tableRow3, table.ColCount())
+	table.rows3 = append(table.rows3, newRow2)
 
 	// table.SetRowCellsToZeroValue() sets cells to their zero value. Otherwise cells would be left set to <nil>.
 	var rowIndex int
@@ -601,8 +607,10 @@ func (table *Table) AppendRow() error {
 		return err
 	}
 
+/*
 	_, err = table.IsValidTable()
 	if err != nil { return err }
+*/
 
 	return nil
 }
@@ -778,20 +786,20 @@ func (table *Table) appendRowMap(rowMap tableRow) error {
 	return nil
 }
 
-func (table *Table) appendRowSlice(rowSlice tableRow2) error {
+func (table *Table) appendRowSlice(rowSlice tableRow3) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	// We're going to assume that all error checking was done in getRowSlice()
 
-	// Append row2 to existing rows2.
+	// Append row2 to existing rows3.
 	if debugging {
-		// where(fmt.Sprintf("BEFORE: table.rows2 = %v\n", table.rows2))
+		// where(fmt.Sprintf("BEFORE: table.rows3 = %v\n", table.rows3))
 		// where(fmt.Sprintf("DURING: rowSlice = %v\n", rowSlice))
-		// where(fmt.Sprintf("append(%v, %v)\n", table.rows2, rowSlice))
+		// where(fmt.Sprintf("append(%v, %v)\n", table.rows3, rowSlice))
 	}
-	table.rows2 = append(table.rows2, rowSlice)
+	table.rows3 = append(table.rows3, rowSlice)
 	if debugging {
-		// where(fmt.Sprintf("AFTER: table.rows2 = %v\n", table.rows2))
+		// where(fmt.Sprintf("AFTER: table.rows3 = %v\n", table.rows3))
 		// where(fmt.Sprintf("\n"))
 	}
 
@@ -872,7 +880,7 @@ if err != nil { debug.PrintStack() }
 	}
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
-	table.rows2 = append(table.rows2[:firstRowIndex], table.rows2[lastRowIndex+1:]...)
+	table.rows3 = append(table.rows3[:firstRowIndex], table.rows3[lastRowIndex+1:]...)
 
 	_, err = table.IsValidTable()
 	if err != nil {
@@ -957,8 +965,8 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	
 		// Rows of data
 		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-			var row2 tableRow2
-			row2 = table.rows2[rowIndex]
+			var row2 tableRow3
+			row2 = table.rows3[rowIndex]
 			horizontalSep = ""
 			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 				var sVal string
@@ -1226,9 +1234,9 @@ func (table *Table) StringPadded() string {
 	}
 
 	// Rows of data
-	var row2 tableRow2
+	var row2 tableRow3
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		row2 = table.rows2[rowIndex]
+		row2 = table.rows3[rowIndex]
 		horizontalSep = "" // No gap on left of first column.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			var sVal string
@@ -1570,7 +1578,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 	// Extend each row by 1 element. The new element will default to a zero value.
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		table.rows2[rowIndex] = append(table.rows2[rowIndex], nil)
+		table.rows3[rowIndex] = append(table.rows3[rowIndex], nil)
 	}
 
 	err := table.SetColCellsToZeroValue(colName)
@@ -1672,7 +1680,7 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	}
 
 	// Set the val
-	table.rows2[rowIndex][colIndex] = val
+	table.rows3[rowIndex][colIndex] = val
 
 	return nil
 }
@@ -1910,7 +1918,7 @@ func (table *Table) ColCount() int {
 func (table *Table) RowCount() int {
 	if table == nil { return -1 }
 
-	return len(table.rows2)
+	return len(table.rows3)
 }
 
 // This is a fundamental method called by all type-specific methods.
@@ -1953,7 +1961,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 
 	var val interface{}
 
-	row2 := table.rows2[rowIndex]
+	row2 := table.rows3[rowIndex]
 	val = row2[colIndex]
 
 	return val, nil
@@ -1994,7 +2002,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 		return false, err
 	}
 
-	hasRow = len(table.rows2) >= rowIndex + 1
+	hasRow = len(table.rows3) >= rowIndex + 1
 	if !hasRow {
 		err = fmt.Errorf("%s: in table [%s] row %d does not exist",
 			funcName(),
@@ -2004,11 +2012,11 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 	}
 
 	// Does the cell in the row actually exist? Is the row long enough to contain cell colIndex?
-	rowElementCount := len(table.rows2[rowIndex])
+	rowElementCount := len(table.rows3[rowIndex])
 
 	if rowElementCount != table.ColCount() {
 		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows2[rowIndex]))
+			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows3[rowIndex]))
 		return false, err
 	}
 
@@ -2232,9 +2240,9 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 			funcName(), table.tableName, table.RowCount(), rowIndex)
 	}
 
-	if len(table.rows2[rowIndex]) != table.ColCount() {
+	if len(table.rows3[rowIndex]) != table.ColCount() {
 		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
-			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows2[rowIndex]))
+			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows3[rowIndex]))
 		return false, err
 	}
 
@@ -2273,8 +2281,8 @@ func (table *Table) IsValidTable() (bool, error) {
 		err = fmt.Errorf("%s ERROR %s: table [%s] colNamesLookup == nil", funcSource(), funcName(), table.tableName)
 		return false, err
 	}
-	if table.rows2 == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] rows2 == nil", funcSource(), funcName(), table.tableName)
+	if table.rows3 == nil {
+		err = fmt.Errorf("%s ERROR %s: table [%s] rows3 == nil", funcSource(), funcName(), table.tableName)
 		return false, err
 	}
 
