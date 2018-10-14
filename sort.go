@@ -538,18 +538,27 @@ func (table *Table) SortSimple(sortCols ...string) error {
 
 type tableSortable struct {
 	table *Table
-	rows3 tableRows3
-	less  func(i tableRow3, j tableRow3) bool
+//	rows3 tableRows3
+	rows  tableRows
+//	less  func(i tableRow3, j tableRow3) bool
+	less  func(i tableRow, j tableRow) bool
 }
 
-func (table tableSortable) Len() int { return len(table.rows3) }
+// func (table tableSortable) Len() int { return len(table.rows3) }
+func (table tableSortable) Len() int { return len(table.rows) }
 
+//func (table tableSortable) Swap(i int, j int) {
+//	table.rows3[i], table.rows3[j] = table.rows3[j], table.rows3[i]
+//}
 func (table tableSortable) Swap(i int, j int) {
-	table.rows3[i], table.rows3[j] = table.rows3[j], table.rows3[i]
+	table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 }
 
+//func (table tableSortable) Less(i int, j int) bool {
+//	return table.less(table.rows3[i], table.rows3[j])
+//}
 func (table tableSortable) Less(i int, j int) bool {
-	return table.less(table.rows3[i], table.rows3[j])
+	return table.less(table.rows[i], table.rows[j])
 }
 
 ///*
@@ -573,7 +582,8 @@ func (table tableSortable) Less(i int, j int) bool {
 //}
 
 func (table *Table) sortByKeys(sortKeys SortKeys) {
-	sort.Sort(tableSortable{table, table.rows3, func(iRow, jRow tableRow3) bool {
+//	sort.Sort(tableSortable{table, table.rows3, func(iRow, jRow tableRow3) bool {
+	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
 //		compareCount++
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName

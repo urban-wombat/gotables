@@ -212,7 +212,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 	var parserColNames []string
 	var parserColTypes []string
 //	var rowMapOfStruct tableRow		// Needs to persist over multiple lines.
-	var rowSliceOfStruct tableRow3	// Needs to persist over multiple lines.
+//	var rowSliceOfStruct tableRow3	// Needs to persist over multiple lines.
+	var rowSliceOfStruct tableRow	// Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -379,7 +380,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					if err != nil { return nil, err }
 
 					var val interface{} = rowSliceOfStruct[0]
-					var colIndex int = len(table.rows3[0]) - 1
+//					var colIndex int = len(table.rows3[0]) - 1
+					var colIndex int = len(table.rows[0]) - 1
 					const rowIndexAlwaysZero int = 0
 					/* NOTE: Reinstate function call when old model is removed.
 					         This (if called now) double-sets the value.
@@ -459,7 +461,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			lenColTypes := len(parserColTypes)
 
-			var rowSlice tableRow3
+//			var rowSlice tableRow3
+			var rowSlice tableRow
 			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
 			if err != nil { return nil, err }
 
@@ -687,9 +690,11 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow3, error) {
+// func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow3, error) {
+func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow, error) {
 	var err error
-	rowSlice := make(tableRow3, len(colNames))
+//	rowSlice := make(tableRow3, len(colNames))
+	rowSlice := make(tableRow, len(colNames))
 
 	remaining := line // Remainder of line left to parse.
 	var rangeFound []int
