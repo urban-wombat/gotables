@@ -50,7 +50,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = true
+const debugging bool = false
 const printstack bool = false
 const todo bool = false
 
@@ -504,9 +504,9 @@ func NewTableFromMetadata(tableName string, colNames []string, colTypes []string
 	err = newTable.appendCols(colNames, colTypes)
 	if err != nil { return nil, err }
 
-	_, err = newTable.IsValidTable()
-	if err != nil {
-		return nil, err
+	if debugging {
+		_, err = newTable.IsValidTable()
+		if err != nil { return nil, err }
 	}
 
 	return newTable, nil
@@ -529,10 +529,10 @@ func (table *Table) AppendRows(howMany int) error {
 
 	var err error
 
-/*	PERFORMANCE HIT
-	_, err = table.IsValidTable()
-	if err != nil { return err }
-*/
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	if howMany < 1 {
 		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
@@ -544,10 +544,10 @@ func (table *Table) AppendRows(howMany int) error {
 		}
 	}
 
-/*	PERFORMANCE HIT
-	_, err = table.IsValidTable()
-	if err != nil { return err }
-*/
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -559,10 +559,10 @@ func (table *Table) AppendRow() error {
 
 	var err error
 
-/*	PERFORMANCE HIT
-	_, err = table.IsValidTable()
-	if err != nil { return err }
-*/
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 /*
 	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -582,10 +582,10 @@ func (table *Table) AppendRow() error {
 	err = table.SetRowCellsToZeroValue(rowIndex)
 	if err != nil { return err }
 
-/*	PERFORMANCE HIT
-	_, err = table.IsValidTable()
-	if err != nil { return err }
-*/
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -718,8 +718,12 @@ func (table *Table) appendRowSlice(rowSlice tableRow) error {
 func (table *Table) DeleteRow(rowIndex int) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	_, err := table.IsValidTable()
-	if err != nil { return err }
+	var err error
+
+	if debugging {
+		_, err := table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
 		return fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
@@ -729,8 +733,10 @@ func (table *Table) DeleteRow(rowIndex int) error {
 	err = table.DeleteRows(rowIndex, rowIndex)
 	if err != nil { return nil }
 
-	_, err = table.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -741,8 +747,10 @@ func (table *Table) DeleteRowsAll() error {
 
 	var err error
 
-	_, err = table.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	if table.RowCount() > 0 {
 		err = table.DeleteRows(0, table.RowCount()-1)
@@ -751,8 +759,10 @@ func (table *Table) DeleteRowsAll() error {
 		}
 	}
 
-	_, err = table.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil { return err }
+	}
 
 	return nil
 }
@@ -761,9 +771,13 @@ func (table *Table) DeleteRowsAll() error {
 func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	_, err := table.IsValidTable()
-if err != nil { debug.PrintStack() }
-	if err != nil { return err }
+	var err error
+
+	if debugging {
+		_, err := table.IsValidTable()
+		if err != nil { debug.PrintStack() }
+		if err != nil { return err }
+	}
 
 	if firstRowIndex < 0 || firstRowIndex > table.RowCount()-1 {
 if err != nil { debug.PrintStack() }
@@ -782,19 +796,23 @@ if err != nil { debug.PrintStack() }
 		return fmt.Errorf("%s: invalid row index range: firstRowIndex %d > lastRowIndex %d", funcName(), firstRowIndex, lastRowIndex)
 	}
 
-	_, err = table.IsValidTable()
-	if err != nil {
-		debug.PrintStack()
-		return err
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil {
+			debug.PrintStack()
+			return err
+		}
 	}
 
 	// From Ivo Balbaert p182 for deleting a range of elements from a slice.
 	table.rows = append(table.rows[:firstRowIndex], table.rows[lastRowIndex+1:]...)
 
-	_, err = table.IsValidTable()
-	if err != nil {
-		debug.PrintStack()
-		return err
+	if debugging {
+		_, err = table.IsValidTable()
+		if err != nil {
+			debug.PrintStack()
+			return err
+		}
 	}
 
 	return nil
@@ -2782,11 +2800,15 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 
 	if fromTable == nil { return fmt.Errorf("fromTable.table.%s: table is <nil>", funcName()) }
 
-	_, err = toTable.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = toTable.IsValidTable()
+		if err != nil { return err }
+	}
 
-	_, err = fromTable.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = fromTable.IsValidTable()
+		if err != nil { return err }
+	}
 
 	// Note: multiple assignment syntax in for loop.
 	for fromRow, toRow := firstRow, toTable.RowCount(); fromRow <= lastRow; fromRow, toRow = fromRow+1, toRow+1 {
@@ -2816,10 +2838,15 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 		}
 	}
 
-	_, err = toTable.IsValidTable()
-	if err != nil { return err }
+	if debugging {
+		_, err = toTable.IsValidTable()
+		if err != nil { return err }
+	}
 
-	_, err = fromTable.IsValidTable()
+	if debugging {
+		_, err = fromTable.IsValidTable()
+		if err != nil { return err }
+	}
 
 	return nil
 }
