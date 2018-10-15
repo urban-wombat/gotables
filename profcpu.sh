@@ -1,7 +1,7 @@
 rm -f junk
 
 # CPU profile
-  go test -cpuprofile=cpu.out						# generate profile results into cpu.out
+  go test -bench=. -cpuprofile=cpu.out				# generate profile results into cpu.out
   go tool pprof cpu.out								# view output. Use command: top
 
   # After quit from pprof, will open junk
