@@ -50,9 +50,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const debugging bool = false
+const debugging bool  = false
+const printcallers    = false
 const printstack bool = false
-const todo bool = false
+const todo bool       = false
 
 var where = log.Print
 
@@ -563,6 +564,8 @@ func (table *Table) AppendRow() error {
 		_, err = table.IsValidTable()
 		if err != nil { return err }
 	}
+
+	if printcallers { printCaller() }
 
 /*
 	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -1553,9 +1556,9 @@ func (table *Table) DeleteCol(colName string) error {
 // This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell {
@@ -1587,6 +1590,8 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
@@ -1855,6 +1860,8 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
+	if printcallers { printCaller() }
+
 	var val interface{}
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
@@ -1881,6 +1888,8 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
 	hasRow, err := table.HasRow(rowIndex)
@@ -1967,6 +1976,8 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	rowCount := table.RowCount()
 	if rowCount == 0 {
@@ -2194,6 +2205,8 @@ func (table *Table) IsValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
+	if printcallers { printCaller() }
+
 	// These are serious errors. Hence calls to debug.PrintStack()
 	if table.tableName == "" {
 		err = fmt.Errorf("%s ERROR %s: table has no name", funcSource(), funcName())
@@ -2343,8 +2356,78 @@ func funcSource() string {
 	return fmt.Sprintf("%s[%d]", sourceBase, lineNumber)
 }
 
+/*
+	See 1: https://stackoverflow.com/questions/35212985/is-it-possible-get-information-about-caller-function-in-golang
+	See 2: http://moazzam-khan.com/blog/golang-get-the-function-callers-name/
+	This is a blend of both (above URLs) examples. Provides: 
+	(1) The name of the function called.
+	(2) The file name and line number of the call.
+	(3) The function name of the caller.
+	This is intentionally a print-only function because calling it from another function (other than the one being
+	tracked) will change the calling information by nesting to an additional level.
+*/
+func printCaller() {
+	var calledName string
+	var callerFile string
+	var callerName string
+	var n int	// number of callers
+	var lastIndex int
+
+	// Remove package name from function name and append ().
+	var funcBaseName = func(longName string) (baseName string) {
+		lastIndex = strings.LastIndex(longName, ".")
+		if lastIndex >= 0 {
+			baseName = longName[lastIndex+1:] + "()"
+		}
+		return baseName
+	}
+
+	fpcs := make([]uintptr, 1)
+
+	// Skip 1 level to get the called: the name of the function calling printCaller()
+	n = runtime.Callers(2, fpcs)
+	if n == 0 {
+		fmt.Fprintf(os.Stderr, "%s ERROR: no called\n", funcName())
+		return
+	}
+	called := runtime.FuncForPC(fpcs[0]-1)
+	if called == nil {
+		fmt.Fprintf(os.Stderr, "%s ERROR: called was nil\n", funcName())
+		return
+	}
+	calledName = called.Name()
+	calledName = funcBaseName(calledName)
+
+	// Skip 2 levels to get the caller
+	n = runtime.Callers(3, fpcs)
+	if n == 0 {
+		fmt.Fprintf(os.Stderr, "%s ERROR: no caller\n", funcName())
+		return
+	}
+	caller := runtime.FuncForPC(fpcs[0]-1)
+	if caller == nil {
+		fmt.Fprintf(os.Stderr, "%s ERROR: caller was nil\n", funcName())
+		return
+	}
+	callerName = caller.Name()
+	callerName = funcBaseName(callerName)
+
+	// Get the file name and line number
+	fileName, lineNum := caller.FileLine(fpcs[0]-1)
+	fileName = filepath.Base(fileName)
+	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+
+	fmt.Fprintf(os.Stderr, "%s called at %s by %s\n", calledName, callerFile, callerName)
+}
+
+func PrintStderr(s string) {
+	fmt.Fprintf(os.Stderr, "%s", s)
+}
+
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	var sVal string
 	var tVal bool
@@ -2444,6 +2527,8 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 	var err error
 
 	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
 
 	colIndex, err = table.ColIndex(colName)
 	if err != nil { return "", err }
@@ -2670,13 +2755,8 @@ func isExportableName(name string) bool {
 	Useful for testing.
 */
 func (table1 *Table) Equals(table2 *Table) (bool, error) {
-	if table1 == nil {
-		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil\n")
-	}
-
-	if table2 == nil {
-		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil\n")
-	}
+	if table1 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil\n") }
+	if table2 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil\n") }
 
 	// Compare table names.
 	if table1.Name() != table2.Name() {
@@ -3116,4 +3196,27 @@ func ZeroValue(typeName string) (interface{}, error) {
 			err := errors.New(msg)
 			return nil, err
 	}
+}
+
+func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
+	if tableSet1 == nil { return false, fmt.Errorf("tableSet.%s tableSet1 is <nil>", funcName()) }
+	if tableSet2 == nil { return false, fmt.Errorf("tableSet.%s tableSet2 is <nil>", funcName()) }
+
+    if tableSet2.TableCount() != tableSet1.TableCount() {
+        return false, fmt.Errorf("tableSet2.TableCount() %d != tableSet1.TableCount() %d",
+			tableSet2.TableCount(), tableSet1.TableCount())
+    }
+
+    for tableIndex := 0; tableIndex < tableSet1.TableCount(); tableIndex++ {
+        table1, err := tableSet1.TableByTableIndex(tableIndex)
+        if err != nil { return false, err }
+
+        table2, err := tableSet2.TableByTableIndex(tableIndex)
+        if err != nil { return false, err }
+
+        _, err = table1.Equals(table2)
+        if err != nil { return false, err }
+	}
+
+	return true, nil
 }
