@@ -35,12 +35,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//	-------------------------------------------------------
-//	Set<type>() functions for each of 18 types.
-//	-------------------------------------------------------
+//	------------------------------------------------------------------
+//	next group: Set<type>() functions for each of 18 types.
+//	------------------------------------------------------------------
 
-//	Set table cell in colName at rowIndex to newValue string
-func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
+//	Set table cell in colName at rowIndex to newValue []byte
+func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colName at rowIndex to newValue []uint8
+func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error {
 
 	// See: Set<type>() functions
 
@@ -75,8 +93,8 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int
-func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
+//	Set table cell in colName at rowIndex to newValue byte
+func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 
 	// See: Set<type>() functions
 
@@ -93,8 +111,44 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int8
-func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
+//	Set table cell in colName at rowIndex to newValue float32
+func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colName at rowIndex to newValue float64
+func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colName at rowIndex to newValue int
+func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 
 	// See: Set<type>() functions
 
@@ -147,24 +201,6 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue rune
-func (table *Table) SetRune(colName string, rowIndex int, newValue rune) error {
-
-	// See: Set<type>() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetVal(colName, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
 //	Set table cell in colName at rowIndex to newValue int64
 func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error {
 
@@ -183,44 +219,62 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	return nil
 }
 
+//	Set table cell in colName at rowIndex to newValue int8
+func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colName at rowIndex to newValue rune
+func (table *Table) SetRune(colName string, rowIndex int, newValue rune) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colName at rowIndex to newValue string
+func (table *Table) SetString(colName string, rowIndex int, newValue string) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCell(colName, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetVal(colName, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
 //	Set table cell in colName at rowIndex to newValue uint
 func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
-
-	// See: Set<type>() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetVal(colName, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colName at rowIndex to newValue byte
-func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
-
-	// See: Set<type>() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetVal(colName, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colName at rowIndex to newValue uint8
-func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 
 	// See: Set<type>() functions
 
@@ -291,8 +345,8 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue float32
-func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) error {
+//	Set table cell in colName at rowIndex to newValue uint8
+func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error {
 
 	// See: Set<type>() functions
 
@@ -309,66 +363,30 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue float64
-func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) error {
+//	----------------------------------------------------------------------------
+//	next group: Set<type>ByColIndex() functions for each of 18 types.
+//	----------------------------------------------------------------------------
 
-	// See: Set<type>() functions
+//	Set table cell in colIndex at rowIndex to newValue []byte
+func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
 
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetVal(colName, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colName at rowIndex to newValue []byte
-func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) error {
-
-	// See: Set<type>() functions
+	// See: Set<type>ByColIndex() functions
 
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
-	hasCell, err := table.HasCell(colName, rowIndex)
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	err = table.SetVal(colName, rowIndex, newValue)
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
 
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue []uint8
-func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8) error {
-
-	// See: Set<type>() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetVal(colName, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	-----------------------------------------------------------------
-//	Set<type>ByColIndex() functions for each of 18 types.
-//	-----------------------------------------------------------------
-
-//	Set table cell in colIndex at rowIndex to newValue string
-func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+//	Set table cell in colIndex at rowIndex to newValue []uint8
+func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -403,8 +421,8 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int
-func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
+//	Set table cell in colIndex at rowIndex to newValue byte
+func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -421,8 +439,44 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int8
-func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+//	Set table cell in colIndex at rowIndex to newValue float32
+func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float64
+func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue int
+func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -475,24 +529,6 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int3
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue rune
-func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newValue rune) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
 //	Set table cell in colIndex at rowIndex to newValue int64
 func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
 
@@ -511,44 +547,62 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 	return nil
 }
 
+//	Set table cell in colIndex at rowIndex to newValue int8
+func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue rune
+func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newValue rune) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
+//	Set table cell in colIndex at rowIndex to newValue string
+func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return err }
+
+	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
+	if err != nil { return err }
+
+	return nil
+}
+
 //	Set table cell in colIndex at rowIndex to newValue uint
 func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colIndex at rowIndex to newValue byte
-func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colIndex at rowIndex to newValue uint8
-func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -619,8 +673,8 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uin
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float32
-func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+//	Set table cell in colIndex at rowIndex to newValue uint8
+func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -637,66 +691,12 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float64
-func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+//	------------------------------------------------------------------
+//	next group: Get<type>() functions for each of 18 types.
+//	------------------------------------------------------------------
 
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colIndex at rowIndex to newValue []byte
-func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	Set table cell in colIndex at rowIndex to newValue []uint8
-func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
-
-	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
-	if err != nil { return err }
-
-	return nil
-}
-
-//	-------------------------------------------------------
-//	Get<type>() functions for each of 18 types.
-//	-------------------------------------------------------
-
-//	Get string table cell from colName at rowIndex
-func (table *Table) GetString(colName string, rowIndex int) (value string, err error) {
+//	Get []byte table cell from colName at rowIndex
+func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, err error) {
 
 	// See: Get<type>() functions
 
@@ -706,7 +706,27 @@ func (table *Table) GetString(colName string, rowIndex int) (value string, err e
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	value, valid := interfaceType.(string)
+	value, valid := interfaceType.([]byte)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
+//	Get []uint8 table cell from colName at rowIndex
+func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.([]uint8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
@@ -735,6 +755,66 @@ func (table *Table) GetBool(colName string, rowIndex int) (value bool, err error
 	return
 }
 
+//	Get byte table cell from colName at rowIndex
+func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(byte)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
+//	Get float32 table cell from colName at rowIndex
+func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(float32)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
+//	Get float64 table cell from colName at rowIndex
+func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(float64)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
 //	Get int table cell from colName at rowIndex
 func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) {
 
@@ -747,26 +827,6 @@ func (table *Table) GetInt(colName string, rowIndex int) (value int, err error) 
 	if err != nil { return value, err }
 
 	value, valid := interfaceType.(int)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	Get int8 table cell from colName at rowIndex
-func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.(int8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
@@ -815,26 +875,6 @@ func (table *Table) GetInt32(colName string, rowIndex int) (value int32, err err
 	return
 }
 
-//	Get rune table cell from colName at rowIndex
-func (table *Table) GetRune(colName string, rowIndex int) (value rune, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.(rune)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
 //	Get int64 table cell from colName at rowIndex
 func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err error) {
 
@@ -855,6 +895,66 @@ func (table *Table) GetInt64(colName string, rowIndex int) (value int64, err err
 	return
 }
 
+//	Get int8 table cell from colName at rowIndex
+func (table *Table) GetInt8(colName string, rowIndex int) (value int8, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(int8)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
+//	Get rune table cell from colName at rowIndex
+func (table *Table) GetRune(colName string, rowIndex int) (value rune, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(rune)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
+//	Get string table cell from colName at rowIndex
+func (table *Table) GetString(colName string, rowIndex int) (value string, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	var interfaceType interface{}
+	interfaceType, err = table.GetVal(colName, rowIndex)
+	if err != nil { return value, err }
+
+	value, valid := interfaceType.(string)
+	if !valid {
+		_, err = table.IsColType(colName, "string") // Get an error message.
+		return value, err
+	}
+
+	return
+}
+
 //	Get uint table cell from colName at rowIndex
 func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error) {
 
@@ -867,46 +967,6 @@ func (table *Table) GetUint(colName string, rowIndex int) (value uint, err error
 	if err != nil { return value, err }
 
 	value, valid := interfaceType.(uint)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	Get byte table cell from colName at rowIndex
-func (table *Table) GetByte(colName string, rowIndex int) (value byte, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.(byte)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	Get uint8 table cell from colName at rowIndex
-func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.(uint8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
@@ -975,8 +1035,8 @@ func (table *Table) GetUint64(colName string, rowIndex int) (value uint64, err e
 	return
 }
 
-//	Get float32 table cell from colName at rowIndex
-func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err error) {
+//	Get uint8 table cell from colName at rowIndex
+func (table *Table) GetUint8(colName string, rowIndex int) (value uint8, err error) {
 
 	// See: Get<type>() functions
 
@@ -986,7 +1046,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 	interfaceType, err = table.GetVal(colName, rowIndex)
 	if err != nil { return value, err }
 
-	value, valid := interfaceType.(float32)
+	value, valid := interfaceType.(uint8)
 	if !valid {
 		_, err = table.IsColType(colName, "string") // Get an error message.
 		return value, err
@@ -995,72 +1055,12 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (value float32, err
 	return
 }
 
-//	Get float64 table cell from colName at rowIndex
-func (table *Table) GetFloat64(colName string, rowIndex int) (value float64, err error) {
+//	----------------------------------------------------------------------------
+//	next group: Get<type>ByColIndex() functions for each of 18 types.
+//	----------------------------------------------------------------------------
 
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.(float64)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	Get []byte table cell from colName at rowIndex
-func (table *Table) GetByteSlice(colName string, rowIndex int) (value []byte, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.([]byte)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	Get []uint8 table cell from colName at rowIndex
-func (table *Table) GetUint8Slice(colName string, rowIndex int) (value []uint8, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil { return value, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return value, err }
-
-	value, valid := interfaceType.([]uint8)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return value, err
-	}
-
-	return
-}
-
-//	-----------------------------------------------------------------
-//	Get<type>ByColIndex() functions for each of 18 types.
-//	-----------------------------------------------------------------
-
-//	Set table cell in colIndex at rowIndex to newValue string
-func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value string, err error) {
+//	Set table cell in colIndex at rowIndex to newValue []byte
+func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []byte, err error) {
 
 	// See: Get<type>ByColIndex() functions
 
@@ -1074,7 +1074,27 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value strin
 
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	value = interfaceValue.(string)
+	value = interfaceValue.([]byte)
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue []uint8
+func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value []uint8, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.([]uint8)
 
 	return
 }
@@ -1099,6 +1119,66 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (value bool, e
 	return
 }
 
+//	Set table cell in colIndex at rowIndex to newValue byte
+func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(byte)
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float32
+func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value float32, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(float32)
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue float64
+func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value float64, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(float64)
+
+	return
+}
+
 //	Set table cell in colIndex at rowIndex to newValue int
 func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err error) {
 
@@ -1115,26 +1195,6 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (value int, err
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	value = interfaceValue.(int)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue int8
-func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.(int8)
 
 	return
 }
@@ -1179,26 +1239,6 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (value int32,
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue rune
-func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (value rune, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.(rune)
-
-	return
-}
-
 //	Set table cell in colIndex at rowIndex to newValue int64
 func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64, err error) {
 
@@ -1219,6 +1259,66 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (value int64,
 	return
 }
 
+//	Set table cell in colIndex at rowIndex to newValue int8
+func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (value int8, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(int8)
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue rune
+func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (value rune, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(rune)
+
+	return
+}
+
+//	Set table cell in colIndex at rowIndex to newValue string
+func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (value string, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
+		return
+	}
+
+	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
+	if !hasCell { return }
+
+	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil { return }
+	value = interfaceValue.(string)
+
+	return
+}
+
 //	Set table cell in colIndex at rowIndex to newValue uint
 func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, err error) {
 
@@ -1235,46 +1335,6 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (value uint, e
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
 	value = interfaceValue.(uint)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue byte
-func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (value byte, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.(byte)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue uint8
-func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.(uint8)
 
 	return
 }
@@ -1339,8 +1399,8 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (value uint6
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float32
-func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value float32, err error) {
+//	Set table cell in colIndex at rowIndex to newValue uint8
+func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (value uint8, err error) {
 
 	// See: Get<type>ByColIndex() functions
 
@@ -1354,67 +1414,7 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (value floa
 
 	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil { return }
-	value = interfaceValue.(float32)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue float64
-func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (value float64, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.(float64)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue []byte
-func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (value []byte, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.([]byte)
-
-	return
-}
-
-//	Set table cell in colIndex at rowIndex to newValue []uint8
-func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (value []uint8, err error) {
-
-	// See: Get<type>ByColIndex() functions
-
-	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", funcName())
-		return
-	}
-
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return }
-
-	interfaceValue, err := table.GetValByColIndex(colIndex, rowIndex)
-	if err != nil { return }
-	value = interfaceValue.([]uint8)
+	value = interfaceValue.(uint8)
 
 	return
 }
@@ -1433,42 +1433,42 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 	}
 
 	switch colType {
-		case "string":
-			err = table.SetStringByColIndex(colIndex, rowIndex, "")
+		case "[]byte":
+			err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
+		case "[]uint8":
+			err = table.SetUint8SliceByColIndex(colIndex, rowIndex, []uint8{})
 		case "bool":
 			err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+		case "byte":
+			err = table.SetByteByColIndex(colIndex, rowIndex, 0)
+		case "float32":
+			err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
+		case "float64":
+			err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
 		case "int":
 			err = table.SetIntByColIndex(colIndex, rowIndex, 0)
-		case "int8":
-			err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
 		case "int16":
 			err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
 		case "int32":
 			err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
-		case "rune":
-			err = table.SetRuneByColIndex(colIndex, rowIndex, 0)
 		case "int64":
 			err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
+		case "int8":
+			err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
+		case "rune":
+			err = table.SetRuneByColIndex(colIndex, rowIndex, 0)
+		case "string":
+			err = table.SetStringByColIndex(colIndex, rowIndex, "")
 		case "uint":
 			err = table.SetUintByColIndex(colIndex, rowIndex, 0)
-		case "byte":
-			err = table.SetByteByColIndex(colIndex, rowIndex, 0)
-		case "uint8":
-			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
 		case "uint16":
 			err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
 		case "uint32":
 			err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
 		case "uint64":
 			err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
-		case "float32":
-			err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
-		case "float64":
-			err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
-		case "[]byte":
-			err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
-		case "[]uint8":
-			err = table.SetUint8SliceByColIndex(colIndex, rowIndex, []uint8{})
+		case "uint8":
+			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
 		default:
 			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
