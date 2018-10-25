@@ -1562,10 +1562,10 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 
 	// Removing unnecessary checking let to %40 speedup.
 
-	// Set the val
 	colIndex, err := table.ColIndex(colName)
 	if err != nil { return err }
 
+	// Note: inlining SetValByColIndex() into SetVal() makes no noticeable difference.
 	err = table.SetValByColIndex(colIndex, rowIndex, val)
 	if err != nil { return err }
 

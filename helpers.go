@@ -39,7 +39,7 @@ SOFTWARE.
 //	next group: Set<type>() functions for each of 18 types.
 //	------------------------------------------------------------------
 
-//	Set table cell in colName at rowIndex to newValue []byte
+//	Set table cell in colName at rowIndex to newVal []byte
 func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) error {
 
 	// See: Set<type>() functions
@@ -73,7 +73,7 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue []uint8
+//	Set table cell in colName at rowIndex to newVal []uint8
 func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) error {
 
 	// See: Set<type>() functions
@@ -107,7 +107,7 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue bool
+//	Set table cell in colName at rowIndex to newVal bool
 func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 
 	// See: Set<type>() functions
@@ -141,7 +141,7 @@ func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue byte
+//	Set table cell in colName at rowIndex to newVal byte
 func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 
 	// See: Set<type>() functions
@@ -175,7 +175,7 @@ func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue float32
+//	Set table cell in colName at rowIndex to newVal float32
 func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) error {
 
 	// See: Set<type>() functions
@@ -209,7 +209,7 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) err
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue float64
+//	Set table cell in colName at rowIndex to newVal float64
 func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) error {
 
 	// See: Set<type>() functions
@@ -243,7 +243,7 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) err
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int
+//	Set table cell in colName at rowIndex to newVal int
 func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 
 	// See: Set<type>() functions
@@ -277,7 +277,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int16
+//	Set table cell in colName at rowIndex to newVal int16
 func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 
 	// See: Set<type>() functions
@@ -311,7 +311,7 @@ func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int32
+//	Set table cell in colName at rowIndex to newVal int32
 func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 
 	// See: Set<type>() functions
@@ -345,7 +345,7 @@ func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int64
+//	Set table cell in colName at rowIndex to newVal int64
 func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 
 	// See: Set<type>() functions
@@ -379,7 +379,7 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue int8
+//	Set table cell in colName at rowIndex to newVal int8
 func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 
 	// See: Set<type>() functions
@@ -413,7 +413,7 @@ func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue rune
+//	Set table cell in colName at rowIndex to newVal rune
 func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 
 	// See: Set<type>() functions
@@ -447,7 +447,7 @@ func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue string
+//	Set table cell in colName at rowIndex to newVal string
 func (table *Table) SetString(colName string, rowIndex int, newVal string) error {
 
 	// See: Set<type>() functions
@@ -481,7 +481,7 @@ func (table *Table) SetString(colName string, rowIndex int, newVal string) error
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue uint
+//	Set table cell in colName at rowIndex to newVal uint
 func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 
 	// See: Set<type>() functions
@@ -515,7 +515,7 @@ func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue uint16
+//	Set table cell in colName at rowIndex to newVal uint16
 func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error {
 
 	// See: Set<type>() functions
@@ -549,7 +549,7 @@ func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue uint32
+//	Set table cell in colName at rowIndex to newVal uint32
 func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error {
 
 	// See: Set<type>() functions
@@ -583,7 +583,7 @@ func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue uint64
+//	Set table cell in colName at rowIndex to newVal uint64
 func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error {
 
 	// See: Set<type>() functions
@@ -617,7 +617,7 @@ func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newValue uint8
+//	Set table cell in colName at rowIndex to newVal uint8
 func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 
 	// See: Set<type>() functions
@@ -655,8 +655,8 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 //	next group: Set<type>ByColIndex() functions for each of 18 types.
 //	----------------------------------------------------------------------------
 
-//	Set table cell in colIndex at rowIndex to newValue []byte
-func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue []byte) error {
+//	Set table cell in colIndex at rowIndex to newVal []byte
+func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []byte) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -664,17 +664,39 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newValue 
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "[]byte"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue []uint8
-func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue []uint8) error {
+//	Set table cell in colIndex at rowIndex to newVal []uint8
+func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal []uint8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -682,17 +704,39 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newValue
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "[]uint8"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue bool
-func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool) error {
+//	Set table cell in colIndex at rowIndex to newVal bool
+func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -700,17 +744,39 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newValue bool)
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "bool"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue byte
-func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte) error {
+//	Set table cell in colIndex at rowIndex to newVal byte
+func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -718,17 +784,39 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newValue byte)
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "byte"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float32
-func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue float32) error {
+//	Set table cell in colIndex at rowIndex to newVal float32
+func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal float32) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -736,17 +824,39 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newValue fl
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "float32"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float64
-func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue float64) error {
+//	Set table cell in colIndex at rowIndex to newVal float64
+func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal float64) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -754,17 +864,39 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newValue fl
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "float64"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int
-func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) error {
+//	Set table cell in colIndex at rowIndex to newVal int
+func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -772,17 +904,39 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newValue int) e
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "int"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int16
-func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int16) error {
+//	Set table cell in colIndex at rowIndex to newVal int16
+func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -790,17 +944,39 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newValue int1
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "int16"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int32
-func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int32) error {
+//	Set table cell in colIndex at rowIndex to newVal int32
+func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -808,17 +984,39 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newValue int3
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "int32"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int64
-func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int64) error {
+//	Set table cell in colIndex at rowIndex to newVal int64
+func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -826,17 +1024,39 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newValue int6
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "int64"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int8
-func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8) error {
+//	Set table cell in colIndex at rowIndex to newVal int8
+func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -844,17 +1064,39 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newValue int8)
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "int8"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue rune
-func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newValue rune) error {
+//	Set table cell in colIndex at rowIndex to newVal rune
+func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -862,17 +1104,39 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newValue rune)
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "rune"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue string
-func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue string) error {
+//	Set table cell in colIndex at rowIndex to newVal string
+func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal string) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -880,17 +1144,39 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newValue str
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "string"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint
-func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint) error {
+//	Set table cell in colIndex at rowIndex to newVal uint
+func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -898,17 +1184,39 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newValue uint)
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "uint"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint16
-func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uint16) error {
+//	Set table cell in colIndex at rowIndex to newVal uint16
+func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint16) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -916,17 +1224,39 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newValue uin
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "uint16"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint32
-func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uint32) error {
+//	Set table cell in colIndex at rowIndex to newVal uint32
+func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint32) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -934,17 +1264,39 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newValue uin
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "uint32"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint64
-func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uint64) error {
+//	Set table cell in colIndex at rowIndex to newVal uint64
+func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint64) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -952,17 +1304,39 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newValue uin
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "uint64"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint8
-func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint8) error {
+//	Set table cell in colIndex at rowIndex to newVal uint8
+func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -970,11 +1344,33 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newValue uint
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+/*
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
 	err = table.SetValByColIndex(colIndex, rowIndex, newValue)
 	if err != nil { return err }
+*/
+
+	const valType string = "uint8"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
