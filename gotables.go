@@ -1560,22 +1560,6 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 
 	if printcallers { printCaller() }
 
-	hasCell, err := table.HasCell(colName, rowIndex)
-	if !hasCell {
-		return err
-	}
-
-	colType, err := table.ColType(colName)
-	if err != nil { return err }
-
-	valType := fmt.Sprintf("%T", val)
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
-				funcName(), table.Name(), colName, colType, valType, val)
-		}
-	}
-
 	// Set the val
 	colIndex, err := table.ColIndex(colName)
 	if err != nil { return err }

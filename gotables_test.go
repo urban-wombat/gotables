@@ -6692,3 +6692,55 @@ func BenchmarkSetValByColIndex(b *testing.B) {
 		}
 	}
 }
+
+func TestSetVal(t *testing.T) {
+	// Note: SetVal() calls SetValByColIndex() and so mostly tests it.
+	var err error
+	var table *Table
+	var tableString string = `
+	[sable_fur]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	// Test data type / col type mismatch.
+	err = table.SetVal("i", 0, 23.4)
+	if err == nil { t.Error("SetVal() Expecting type error") }
+
+	// Test data type / col type mismatch.
+	err = table.SetVal("b", 0, []uint8{22})
+	if err == nil { t.Error("SetVal() Expecting type error") }
+
+	// Test byte <> uint8 alias in both directions.
+	err = table.SetVal("b", 0, uint8(2))
+	if err != nil { t.Error("SetVal() Expecting type error") }
+	err = table.SetVal("ui", 0, byte(2))
+	if err != nil { t.Error("SetVal() Expecting type error") }
+
+	// Test []byte <> []uint8 alias in both directions.
+	err = table.SetVal("bb", 0, []uint8{2})
+	if err != nil { t.Error("SetVal() Expecting type error") }
+	err = table.SetVal("uu8", 0, []byte{2})
+	if err != nil { t.Error("SetVal() Expecting type error") }
+
+	// Test col missing.
+	err = table.SetVal("MISSING_COL", 0, 23.4)
+	if err == nil { t.Error("SetVal() Expecting col does not exist error") }
+
+	// Test row missing.
+	err = table.SetVal("t", 3, false)
+	if err == nil { t.Error("SetVal() Expecting row index out of range error") }
+	err = table.SetVal("f", -1, 3.3)
+	if err == nil { t.Error("SetVal() Expecting row index out of range error") }
+
+	// Test col missing.
+	err = table.SetValByColIndex(8, 2, false)
+	if err == nil { t.Error("SetValByColIndex() Expecting col index does not exist error") }
+	err = table.SetValByColIndex(-1, 1, 3.3)
+	if err == nil { t.Error("SetValByColIndex() Expecting col index does not exist error") }
+}
