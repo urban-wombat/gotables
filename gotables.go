@@ -1579,8 +1579,10 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 
 	if printcallers { printCaller() }
 
-	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
-	if !hasCell { return err }
+	// No need to call HasCellByColIndex(). Col checked below.
+	// No measurable speedup.
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow { return err }
 
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil {
