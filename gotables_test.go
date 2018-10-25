@@ -6537,3 +6537,158 @@ func ExampleTable_SortSimple() {
 	// "ken"    "Go"          200
 	// "rsc"    "Go"          200
 }
+
+func BenchmarkSetVal(b *testing.B) {
+	var err error
+
+	var planetsString = `[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.0        5.2    79     4 "just"
+	"Saturn"   95.0        9.5    62     5 "sat"
+	"Uranus"   15.0       19.2    27     6 "upon"
+	"Neptune"  17.0       30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	`
+
+	table, err := NewTableFromString(planetsString)
+	if err != nil { b.Error(err) }
+
+	type planets struct {
+		name     string
+		mass     float64
+		distance float64
+		moons    int
+		index    int
+		mnemonic string
+	}
+
+	var tests []planets = make([]planets, table.RowCount())
+
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+		tests[rowIndex].name, err = table.GetString("name", rowIndex)
+		if err != nil { b.Error(err) }
+
+		tests[rowIndex].mass, err = table.GetFloat64("mass", rowIndex)
+		if err != nil { b.Error(err) }
+
+		tests[rowIndex].distance, err = table.GetFloat64("distance", rowIndex)
+		if err != nil { b.Error(err) }
+
+		tests[rowIndex].moons, err = table.GetInt("moons", rowIndex)
+		if err != nil { b.Error(err) }
+
+		tests[rowIndex].index, err = table.GetInt("index", rowIndex)
+		if err != nil { b.Error(err) }
+
+		tests[rowIndex].mnemonic, err = table.GetString("mnemonic", rowIndex)
+		if err != nil { b.Error(err) }
+	}
+
+	for i := 0; i < b.N; i++ {
+		for rowIndex, test := range tests {
+			err = table.SetVal("name", rowIndex, test.name)
+			if err != nil { b.Error(err) }
+
+			err = table.SetVal("mass", rowIndex, test.mass)
+			if err != nil { b.Error(err) }
+
+			err = table.SetVal("distance", rowIndex, test.distance)
+			if err != nil { b.Error(err) }
+
+			err = table.SetVal("moons", rowIndex, test.moons)
+			if err != nil { b.Error(err) }
+
+			err = table.SetVal("index", rowIndex, test.index)
+			if err != nil { b.Error(err) }
+
+			err = table.SetVal("mnemonic", rowIndex, test.mnemonic)
+			if err != nil { b.Error(err) }
+		}
+	}
+}
+
+func BenchmarkSetValByColIndex(b *testing.B) {
+	var err error
+
+	var planetsString = `[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.0        5.2    79     4 "just"
+	"Saturn"   95.0        9.5    62     5 "sat"
+	"Uranus"   15.0       19.2    27     6 "upon"
+	"Neptune"  17.0       30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	`
+
+	fromTable, err := NewTableFromString(planetsString)
+	if err != nil { b.Error(err) }
+
+	type planet struct {
+		name     string
+		mass     float64
+		distance float64
+		moons    int
+		index    int
+		mnemonic string
+	}
+	var planets []planet = make([]planet, fromTable.RowCount())
+	for rowIndex := 0; rowIndex < fromTable.RowCount(); rowIndex++ {
+		planets[rowIndex].name, err = fromTable.GetString("name", rowIndex)
+		if err != nil { b.Error(err) }
+
+		planets[rowIndex].mass, err = fromTable.GetFloat64("mass", rowIndex)
+		if err != nil { b.Error(err) }
+
+		planets[rowIndex].distance, err = fromTable.GetFloat64("distance", rowIndex)
+		if err != nil { b.Error(err) }
+
+		planets[rowIndex].moons, err = fromTable.GetInt("moons", rowIndex)
+		if err != nil { b.Error(err) }
+
+		planets[rowIndex].index, err = fromTable.GetInt("index", rowIndex)
+		if err != nil { b.Error(err) }
+
+		planets[rowIndex].mnemonic, err = fromTable.GetString("mnemonic", rowIndex)
+		if err != nil { b.Error(err) }
+	}
+
+	var toTable *Table
+	toTable, err = fromTable.Copy(true)
+	if err != nil { b.Error(err) }
+	for rowIndex := 0; rowIndex < toTable.RowCount(); rowIndex++ {
+		err = toTable.SetRowCellsToZeroValue(rowIndex)
+		if err != nil { b.Error(err) }
+	}
+	for i := 0; i < b.N; i++ {
+		for rowIndex, planet := range planets {
+			err = toTable.SetValByColIndex(0, rowIndex, planet.name)
+			if err != nil { b.Error(err) }
+
+			err = toTable.SetValByColIndex(1, rowIndex, planet.mass)
+			if err != nil { b.Error(err) }
+
+/*
+			err = toTable.SetValByColIndex(2, rowIndex, planet.distance)
+			if err != nil { b.Error(err) }
+
+			err = toTable.SetValByColIndex(3, rowIndex, planet.moons)
+			if err != nil { b.Error(err) }
+
+			err = toTable.SetValByColIndex(4, rowIndex, planet.index)
+			if err != nil { b.Error(err) }
+
+			err = toTable.SetValByColIndex(5, rowIndex, planet.mnemonic)
+			if err != nil { b.Error(err) }
+*/
+		}
+	}
+}

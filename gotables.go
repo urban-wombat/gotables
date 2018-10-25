@@ -565,7 +565,7 @@ func (table *Table) AppendRow() error {
 		if err != nil { return err }
 	}
 
-	if printcallers { printCaller() }
+//	if printcallers { printCaller() }
 
 /*
 	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -1643,9 +1643,10 @@ type colInfoStruct struct {
 
 // Checks whether col exists
 func (table *Table) HasCol(colName string) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
+
 	_, err := table.getColInfo(colName)
 	var exists bool = err == nil
 	return exists, err
@@ -1908,18 +1909,15 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 
 // Returns true if this table has colName and has rowIndex.
 func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	if printcallers { printCaller() }
+
 	hasCol, err := table.HasCol(colName)
-	if !hasCol {
-		return false, err
-	}
+	if !hasCol { return false, err }
 
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return false, err
-	}
+	if !hasRow { return false, err }
 
 	return true, nil
 }
@@ -1929,6 +1927,8 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	var err error
+
+	if printcallers { printCaller() }
 
 	// The col exists (based on header info: name and type).
 	hasColIndex, err := table.HasColByColIndex(colIndex)
@@ -2205,7 +2205,7 @@ func (table *Table) IsValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
-	if printcallers { printCaller() }
+//	if printcallers { printCaller() }
 
 	// These are serious errors. Hence calls to debug.PrintStack()
 	if table.tableName == "" {

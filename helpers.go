@@ -48,6 +48,18 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newValue []byte) 
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "[]byte"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -65,6 +77,18 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newValue []uint8
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "[]uint8"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -84,6 +108,18 @@ func (table *Table) SetBool(colName string, rowIndex int, newValue bool) error {
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "bool"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -101,6 +137,18 @@ func (table *Table) SetByte(colName string, rowIndex int, newValue byte) error {
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "byte"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -120,6 +168,18 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newValue float32) e
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "float32"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -137,6 +197,18 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newValue float64) e
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "float64"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -156,6 +228,18 @@ func (table *Table) SetInt(colName string, rowIndex int, newValue int) error {
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "int"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -173,6 +257,18 @@ func (table *Table) SetInt16(colName string, rowIndex int, newValue int16) error
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "int16"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -192,6 +288,18 @@ func (table *Table) SetInt32(colName string, rowIndex int, newValue int32) error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "int32"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -209,6 +317,18 @@ func (table *Table) SetInt64(colName string, rowIndex int, newValue int64) error
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "int64"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -228,6 +348,18 @@ func (table *Table) SetInt8(colName string, rowIndex int, newValue int8) error {
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "int8"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -245,6 +377,18 @@ func (table *Table) SetRune(colName string, rowIndex int, newValue rune) error {
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "rune"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -264,6 +408,18 @@ func (table *Table) SetString(colName string, rowIndex int, newValue string) err
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "string"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -281,6 +437,18 @@ func (table *Table) SetUint(colName string, rowIndex int, newValue uint) error {
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "uint"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -300,6 +468,18 @@ func (table *Table) SetUint16(colName string, rowIndex int, newValue uint16) err
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "uint16"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -317,6 +497,18 @@ func (table *Table) SetUint32(colName string, rowIndex int, newValue uint32) err
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "uint32"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
@@ -336,6 +528,18 @@ func (table *Table) SetUint64(colName string, rowIndex int, newValue uint64) err
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
+	const valType string = "uint64"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
+
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }
 
@@ -353,6 +557,18 @@ func (table *Table) SetUint8(colName string, rowIndex int, newValue uint8) error
 	var err error
 
 	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+
+	const valType string = "uint8"
+
+	colType, err := table.ColType(colName)
+	if err != nil { return err }
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				funcName(), table.Name(), colName, colType, valType, newValue)
+		}
+	}
 
 	hasCell, err := table.HasCell(colName, rowIndex)
 	if !hasCell { return err }

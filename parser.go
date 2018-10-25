@@ -51,8 +51,11 @@ SOFTWARE.
 func init() {
 	typeAliasMap = map[string]string {
 		  "uint8" :   "byte",
+		  "byte"  :   "uint8",
 		"[]uint8" : "[]byte",
+		"[]byte"  : "[]uint8",
 		  "int32" :   "rune",
+		  "rune"  :   "int32",
 //		"[]int32" : "[]rune",
 	}
 }
