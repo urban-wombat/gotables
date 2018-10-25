@@ -6676,7 +6676,6 @@ func BenchmarkSetValByColIndex(b *testing.B) {
 			err = toTable.SetValByColIndex(1, rowIndex, planet.mass)
 			if err != nil { b.Error(err) }
 
-/*
 			err = toTable.SetValByColIndex(2, rowIndex, planet.distance)
 			if err != nil { b.Error(err) }
 
@@ -6688,7 +6687,6 @@ func BenchmarkSetValByColIndex(b *testing.B) {
 
 			err = toTable.SetValByColIndex(5, rowIndex, planet.mnemonic)
 			if err != nil { b.Error(err) }
-*/
 		}
 	}
 }
@@ -6743,4 +6741,129 @@ func TestSetVal(t *testing.T) {
 	if err == nil { t.Error("SetValByColIndex() Expecting col index does not exist error") }
 	err = table.SetValByColIndex(-1, 1, 3.3)
 	if err == nil { t.Error("SetValByColIndex() Expecting col index does not exist error") }
+}
+
+func TestGetVal(t *testing.T) {
+	// Note: GetVal() calls GetValByColIndex() and so mostly tests it.
+	var err error
+	var table *Table
+	var tableString string = `
+	[sable_fur]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	var val interface{}
+
+	// Test get of valid value.
+	val, err = table.GetVal("i", 2)
+	if err != nil { t.Error(err) }
+	if val.(int) != 3 { t.Errorf("GetVal() expecting 3, not %v", val) }
+
+	// Note: data type mismatch is impossible. It gets what it gets.
+
+	// Test col missing.
+	_, err = table.GetVal("MISSING_COL", 0)
+	if err == nil { t.Error("GetVal() Expecting col does not exist error") }
+
+	// Test row missing.
+	_, err = table.GetVal("t", 3)
+	if err == nil { t.Error("GetVal() Expecting row index out of range error") }
+	_, err = table.GetVal("f", -1)
+	if err == nil { t.Error("GetVal() Expecting row index out of range error") }
+
+	// Test col missing.
+	_, err = table.GetValByColIndex(8, 2)
+	if err == nil { t.Error("GetValByColIndex() Expecting col index does not exist error") }
+	_, err = table.GetValByColIndex(-1, 1)
+	if err == nil { t.Error("GetValByColIndex() Expecting col index does not exist error") }
+}
+
+func BenchmarkGetVal(b *testing.B) {
+	var err error
+
+	var planetsString = `[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.0        5.2    79     4 "just"
+	"Saturn"   95.0        9.5    62     5 "sat"
+	"Uranus"   15.0       19.2    27     6 "upon"
+	"Neptune"  17.0       30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	`
+
+	table, err := NewTableFromString(planetsString)
+	if err != nil { b.Error(err) }
+
+	var val interface{}
+
+	for i := 0; i < b.N; i++ {
+		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+			val, err = table.GetVal("name", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+
+			val, err = table.GetVal("mass", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+
+			val, err = table.GetVal("distance", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+
+			val, err = table.GetVal("moons", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+
+			val, err = table.GetVal("index", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+
+			val, err = table.GetVal("mnemonic", rowIndex)
+			_ = val
+			if err != nil { b.Error(err) }
+		}
+	}
+}
+
+func BenchmarkGetValByColIndex(b *testing.B) {
+	var err error
+
+	var planetsString = `[planets]
+	name         mass distance moons index mnemonic
+	string    float64  float64   int   int string
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.0        1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.0        5.2    79     4 "just"
+	"Saturn"   95.0        9.5    62     5 "sat"
+	"Uranus"   15.0       19.2    27     6 "upon"
+	"Neptune"  17.0       30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	`
+
+	table, err := NewTableFromString(planetsString)
+	if err != nil { b.Error(err) }
+
+	var val interface{}
+
+	for i := 0; i < b.N; i++ {
+		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+			for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+				val, err = table.GetValByColIndex(colIndex, rowIndex)
+				_ = val
+				if err != nil { b.Error(err) }
+			}
+		}
+	}
 }
