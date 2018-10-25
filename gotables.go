@@ -1560,6 +1560,8 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 
 	if printcallers { printCaller() }
 
+	// Removing unnecessary checking let to %40 speedup.
+
 	// Set the val
 	colIndex, err := table.ColIndex(colName)
 	if err != nil { return err }
