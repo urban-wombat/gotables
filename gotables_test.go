@@ -6867,3 +6867,32 @@ func BenchmarkGetValByColIndex(b *testing.B) {
 		}
 	}
 }
+
+func TestGetBoolVal(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[sable_fur]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	colNames, _, err := table.GetColInfoAsSlices()
+	if err != nil { t.Error(err) }
+
+	for _, colName := range colNames {
+		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+			_, err := table.GetBool(colName, rowIndex)
+			if colName == "t" {
+				if err != nil { t.Error(err) }
+			} else {
+				if err == nil { t.Errorf("Expecting GetBool(%q, %d) to fail on non-bool col %q", colName, rowIndex, colName) }
+			}
+		}
+	}
+}
