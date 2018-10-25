@@ -1596,8 +1596,6 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	hasCell, err := table.HasCellByColIndex(colIndex, rowIndex)
 	if !hasCell { return err }
 
-	colName := table.colNames[colIndex]
-
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil {
 		return err
@@ -1605,6 +1603,7 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	valType := fmt.Sprintf("%T", val)
 	if valType != colType {
 		if !isAlias(colType, valType) {
+			colName := table.colNames[colIndex]
 			return fmt.Errorf("%s: table [%s] col index %d col name %s expecting type %s not type %s",
 				funcName(), table.Name(), colIndex, colName, colType, valType)
 		}
