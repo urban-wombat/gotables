@@ -1260,18 +1260,6 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
 
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.([]byte)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
-
 	const valType string = "[]byte"
 
 	colType, err := table.ColType(colName)
@@ -1291,10 +1279,9 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].([]byte)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].([]byte)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1305,18 +1292,6 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.([]uint8)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "[]uint8"
 
@@ -1337,10 +1312,9 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].([]uint8)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].([]uint8)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1351,18 +1325,6 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(bool)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "bool"
 
@@ -1383,10 +1345,9 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(bool)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(bool)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1397,18 +1358,6 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(byte)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "byte"
 
@@ -1429,10 +1378,9 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(byte)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(byte)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1443,18 +1391,6 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(float32)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "float32"
 
@@ -1475,10 +1411,9 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(float32)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(float32)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1489,18 +1424,6 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(float64)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "float64"
 
@@ -1521,10 +1444,9 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(float64)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(float64)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1535,18 +1457,6 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(int)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "int"
 
@@ -1567,10 +1477,9 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(int)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(int)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1581,18 +1490,6 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(int16)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "int16"
 
@@ -1613,10 +1510,9 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(int16)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(int16)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1627,18 +1523,6 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(int32)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "int32"
 
@@ -1659,10 +1543,9 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(int32)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(int32)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1673,18 +1556,6 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(int64)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "int64"
 
@@ -1705,10 +1576,9 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(int64)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(int64)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1719,18 +1589,6 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(int8)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "int8"
 
@@ -1751,10 +1609,9 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(int8)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(int8)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1765,18 +1622,6 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(rune)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "rune"
 
@@ -1797,10 +1642,9 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(rune)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(rune)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1811,18 +1655,6 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(string)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "string"
 
@@ -1843,10 +1675,9 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(string)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(string)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1857,18 +1688,6 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(uint)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "uint"
 
@@ -1889,10 +1708,9 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(uint)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(uint)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1903,18 +1721,6 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(uint16)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "uint16"
 
@@ -1935,10 +1741,9 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(uint16)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(uint16)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1949,18 +1754,6 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(uint32)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "uint32"
 
@@ -1981,10 +1774,9 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(uint32)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(uint32)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -1995,18 +1787,6 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(uint64)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "uint64"
 
@@ -2027,10 +1807,9 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(uint64)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(uint64)	// Correct type is guaranteed by above check.
 
 	return
 }
@@ -2041,18 +1820,6 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	// See: Get<type>() functions
 
 	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
-
-/*
-	var interfaceType interface{}
-	interfaceType, err = table.GetVal(colName, rowIndex)
-	if err != nil { return val, err }
-
-	val, valid := interfaceType.(uint8)
-	if !valid {
-		_, err = table.IsColType(colName, "string") // Get an error message.
-		return val, err
-	}
-*/
 
 	const valType string = "uint8"
 
@@ -2073,10 +1840,9 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow { return val, err }
 
-// DOING
 	// Get the val
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
-	val = table.rows[rowIndex][colIndex].(uint8)
+	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	val = table.rows[rowIndex][colIndex].(uint8)	// Correct type is guaranteed by above check.
 
 	return
 }
