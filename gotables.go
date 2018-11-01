@@ -2404,7 +2404,8 @@ func PrintCaller() {
 	fileName = filepath.Base(fileName)
 	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
 
-	fmt.Fprintf(os.Stderr, "%s called at %s by %s\n", calledName, callerFile, callerName)
+//	fmt.Fprintf(os.Stderr, "%s called at %s by %s\n", calledName, callerFile, callerName)
+	fmt.Fprintf(os.Stderr, "%s called by %s at %s\n", calledName, callerName, callerFile)
 }
 
 func PrintStderr(s string) {
