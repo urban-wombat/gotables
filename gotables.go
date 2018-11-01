@@ -565,7 +565,7 @@ func (table *Table) AppendRow() error {
 		if err != nil { return err }
 	}
 
-//	if printcallers { printCaller() }
+//	if printcallers { PrintCaller() }
 
 /*
 	// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -1558,7 +1558,7 @@ func (table *Table) DeleteCol(colName string) error {
 func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	// Removing unnecessary checking let to %40 speedup.
 
@@ -1577,7 +1577,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	// No need to call HasCellByColIndex(). Col checked below.
 	// No measurable speedup.
@@ -1632,7 +1632,7 @@ type colInfoStruct struct {
 func (table *Table) HasCol(colName string) (bool, error) {
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	_, err := table.getColInfo(colName)
 	var exists bool = err == nil
@@ -1848,7 +1848,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	var val interface{}
 
@@ -1877,7 +1877,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
 	hasRow, err := table.HasRow(rowIndex)
@@ -1898,7 +1898,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	hasCol, err := table.HasCol(colName)
 	if !hasCol { return false, err }
@@ -1915,7 +1915,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 	var err error
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	// The col exists (based on header info: name and type).
 	hasColIndex, err := table.HasColByColIndex(colIndex)
@@ -1964,7 +1964,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil { return false, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	rowCount := table.RowCount()
 	if rowCount == 0 {
@@ -2192,7 +2192,7 @@ func (table *Table) IsValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
-//	if printcallers { printCaller() }
+//	if printcallers { PrintCaller() }
 
 	// These are serious errors. Hence calls to debug.PrintStack()
 	if table.tableName == "" {
@@ -2353,7 +2353,7 @@ func funcSource() string {
 	This is intentionally a print-only function because calling it from another function (other than the one being
 	tracked) will change the calling information by nesting to an additional level.
 */
-func printCaller() {
+func PrintCaller() {
 	var calledName string
 	var callerFile string
 	var callerName string
@@ -2371,7 +2371,7 @@ func printCaller() {
 
 	fpcs := make([]uintptr, 1)
 
-	// Skip 1 level to get the called: the name of the function calling printCaller()
+	// Skip 1 level to get the called: the name of the function calling PrintCaller()
 	n = runtime.Callers(2, fpcs)
 	if n == 0 {
 		fmt.Fprintf(os.Stderr, "%s ERROR: no called\n", funcName())
@@ -2414,7 +2414,7 @@ func PrintStderr(s string) {
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	var sVal string
 	var tVal bool
@@ -2515,7 +2515,7 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 
 	if table == nil { return "", fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
-	if printcallers { printCaller() }
+	if printcallers { PrintCaller() }
 
 	colIndex, err = table.ColIndex(colName)
 	if err != nil { return "", err }
