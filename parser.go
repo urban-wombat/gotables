@@ -666,9 +666,17 @@ func IsValidTableName(tableName string) (bool, error) {
 		return false, errors.New("invalid table name has zero length")
 	}
 
+/*
 	// Same regular expression as table name without square brackets.
 	result := colNameRegexp.MatchString(tableName)
 	if !result {
+		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
+	}
+*/
+
+	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
+	isValid, _ := isValidName(tableName)
+	if !isValid {
 		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
 	}
 

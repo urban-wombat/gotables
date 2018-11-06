@@ -576,7 +576,8 @@ func (table *Table) AppendRow() error {
 */
 
 	// Note: function make() sets slice values to <nil> and NOT to their zero value.
-	var newRow tableRow = make(tableRow, table.ColCount())
+//	var newRow tableRow = make(tableRow, table.ColCount())
+	var newRow tableRow = make(tableRow, len(table.colNames))
 	table.rows = append(table.rows, newRow)
 
 	// table.SetRowCellsToZeroValue() sets cells to their zero value. Otherwise cells would be left set to <nil>.
@@ -1782,13 +1783,13 @@ func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 }
 
 func (table *Table) ColIndex(colName string) (int, error) {
-	if table == nil {
-		return -1, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return -1, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	index, exists := table.colNamesLookup[colName]
 	if exists {
 		return index, nil
 	}
+
 	err := fmt.Errorf("table [%s] col does not exist: %s", table.tableName, colName)
 	return -1, err
 }
@@ -1967,11 +1968,17 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if printcallers { PrintCaller() }
 
 	rowCount := len(table.rows)
+/*
 	if rowCount == 0 {
 		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range: %d",
 			table.Name(), rowCount, plural(rowCount), rowIndex)
 	} else if rowIndex < 0 || rowIndex > rowCount-1 {
 		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range (0..%d): %d",
+			table.Name(), rowCount, plural(rowCount), rowCount-1, rowIndex)
+	}
+*/
+	if rowIndex < 0 || rowIndex > rowCount-1 {
+		return false, fmt.Errorf("table [%s] has %d row%s. Row index is out of range (0..%d): %d",
 			table.Name(), rowCount, plural(rowCount), rowCount-1, rowIndex)
 	}
 

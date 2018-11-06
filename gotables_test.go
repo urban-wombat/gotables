@@ -6896,3 +6896,48 @@ func TestGetBoolVal(t *testing.T) {
 		}
 	}
 }
+
+func TestHasRow(t *testing.T) {
+	tableString :=
+	`[changes]
+	user     language    lines index
+	string   string        int   int
+	"rsc"    "Go"          200     0
+	"r"      "Go"          100     0
+	"r"      "C"           150     0
+	"ken"    "C"           150     0
+	"ken"    "Go"          200     0
+	"ken"    "Go"          200     0
+	"gri"    "Smalltalk"    80     0
+	"gri"    "Go"          100     0
+	"gri"    "Go"          100     0
+	"gri"    "Go"          100     0
+	"glenda" "Go"          200     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	"dmr"    "C"           100     0
+	`
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var tests = []struct {
+		row int
+		expecting bool
+	}{
+		{-1, false},
+		{ 0, true},
+		{15, true},
+		{16, false},
+	}
+
+	for _, test := range tests {
+		hasRow, _ := table.HasRow(test.row)
+		if hasRow != test.expecting {
+			t.Errorf("expecting table.HasRow(%d) = %v, not %v", test.row, test.expecting, hasRow)
+		}
+	}
+}

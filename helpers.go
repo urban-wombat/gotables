@@ -684,8 +684,11 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 
 	const valType string = "[]byte"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -716,8 +719,11 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 
 	const valType string = "[]uint8"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -748,8 +754,11 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) e
 
 	const valType string = "bool"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -780,8 +789,11 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) e
 
 	const valType string = "byte"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -812,8 +824,11 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	const valType string = "float32"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -844,8 +859,11 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	const valType string = "float64"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -876,8 +894,11 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) err
 
 	const valType string = "int"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -908,8 +929,11 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16)
 
 	const valType string = "int16"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -940,8 +964,11 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32)
 
 	const valType string = "int32"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -972,8 +999,11 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64)
 
 	const valType string = "int64"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1004,8 +1034,11 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) e
 
 	const valType string = "int8"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1036,8 +1069,11 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) e
 
 	const valType string = "rune"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1068,8 +1104,11 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal strin
 
 	const valType string = "string"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1100,8 +1139,11 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) e
 
 	const valType string = "uint"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1132,8 +1174,11 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint1
 
 	const valType string = "uint16"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1164,8 +1209,11 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint3
 
 	const valType string = "uint32"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1196,8 +1244,11 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint6
 
 	const valType string = "uint64"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1228,8 +1279,11 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 
 	const valType string = "uint8"
 
+/*
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil { return err }
+*/
+	colType := table.colTypes[colIndex]
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
