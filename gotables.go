@@ -1966,7 +1966,7 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 
 	if printcallers { PrintCaller() }
 
-	rowCount := table.RowCount()
+	rowCount := len(table.rows)
 	if rowCount == 0 {
 		return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range: %d",
 			table.Name(), rowCount, plural(rowCount), rowIndex)

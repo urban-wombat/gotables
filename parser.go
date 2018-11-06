@@ -21,6 +21,7 @@ import (
 //	"runtime/debug"
 	"strconv"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 	//	"unsafe"
 	"math"
@@ -115,7 +116,7 @@ var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 // From Regular Expressions Cookbook.
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
-var namePattern = `^[a-zA-Z_][a-zA-Z0-9_]*$`
+var namePattern      =   `^[a-zA-Z_][a-zA-Z0-9_]*$`
 var tableNamePattern = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
@@ -613,17 +614,46 @@ func IsNumericColType(colType string) (bool, error) {
 	return true, nil
 }
 
+/*
+	Following Rob Pike and avoiding a regular expression where a simple loop will do.
+	https://commandcenter.blogspot.com/2011/08/regular-expressions-in-lexing-and.html
+	This function led to a substantial benchmark improvement.
+*/
+func isValidName(name string) (bool, error) {
+	if len(name) == 0 {
+		return false, fmt.Errorf("%s(): len(name) == 0", funcName())
+	}
+	if !unicode.IsLetter(rune(name[0])) && name[0] != '_' {
+		return false, fmt.Errorf("%s(): invalid first char: %c (expecting letter or '_')", funcName(), name[0])
+	}
+	for i := 1; i < len(name); i++ {
+		if !unicode.IsLetter(rune(name[i])) && name[i] != '_' && !unicode.IsNumber(rune(name[i])) {
+			return false, fmt.Errorf("%s(): invalid char: %c (expecting letter or '_' or number)", funcName(), name[0])
+		}
+	}
+
+	return true, nil
+}
+
 // Note: The same validity rules apply to both table names and col names.
 func IsValidColName(colName string) (bool, error) {
 
+/*
 	result := colNameRegexp.MatchString(colName)
 	if !result {
+		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
+	}
+*/
+
+	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
+	isValid, _ := isValidName(colName)
+	if !isValid {
 		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
 	}
 
 	_, contains := globalColTypesMap[colName]
 	if contains {
-		return false, fmt.Errorf("invalid col name: %s (cannot use Go types as col names)", colName)
+		return false, fmt.Errorf("invalid col name: %s (cannot use Go type as col name)", colName)
 	}
 
 	return true, nil
