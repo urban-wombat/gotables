@@ -58,12 +58,16 @@ const todo bool       = false
 var where = log.Print
 
 func init() {
+/*
 	if debugging {
 		log.SetFlags(log.Lshortfile)
 		log.SetOutput(os.Stderr)
 	} else {
 		log.SetOutput(ioutil.Discard)
 	}
+*/
+	log.SetFlags(log.Lshortfile)
+//	log.SetOutput(os.Stderr)
 }
 
 /*
@@ -535,9 +539,10 @@ func (table *Table) AppendRows(howMany int) error {
 		if err != nil { return err }
 	}
 
-	if howMany < 1 {
-		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 1 or more)", table.Name(), howMany, howMany)
+	if howMany < 0 {
+		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be %d or more)", table.Name(), howMany, howMany, howMany)
 	}
+
 	for i := 0; i < howMany; i++ {
 		err = table.AppendRow()
 		if err != nil {

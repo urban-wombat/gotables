@@ -318,12 +318,17 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				table.structShape = true
 				var colName string = lineSplit[structNameIndex]
 				var colType string = lineSplit[structTypeIndex]
+
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
 					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 				var colNameSlice []string = []string{colName}
+				if isValid, err = IsValidColType(colType); !isValid {
+					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				}
 				var colTypeSlice []string = []string{colType}
 
 				err = table.AppendCol(colName, colType)
@@ -641,7 +646,7 @@ func IsValidColName(colName string) (bool, error) {
 /*
 	result := colNameRegexp.MatchString(colName)
 	if !result {
-		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
+		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar2\")", colName)
 	}
 */
 
