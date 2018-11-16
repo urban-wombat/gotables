@@ -1,8 +1,6 @@
 // Copyright (c) 2017 Malcolm Gorman
 
-/*
-Golang tabular data format for configs and channels, with a rich set of helper functions.
-*/
+// Golang tabular data format for configs and channels, with a rich set of helper functions.
 
 package gotables
 
