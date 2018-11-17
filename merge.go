@@ -59,9 +59,6 @@ import (
 */
 func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
-//	var err error
-//	var merged *Table
-
 	// Local function.
 	// Make sort keys of both input tables the same.
 	setSortKeysBetweenTables := func () error {
@@ -244,7 +241,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return nil, err
 	}
 
-	// Add a column to keep track of which columns are duplicates, to be deleted.
+	// Add a column to keep track of which columns are duplicates, to be deleted later.
 	const deleteColName = "_DELETE_"
 	err = merged.AppendCol(deleteColName, "bool")
 	if err != nil {
