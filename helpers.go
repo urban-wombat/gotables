@@ -2684,7 +2684,7 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		var colType = table.colTypes[colIndex]
+		var colType string = table.colTypes[colIndex]
 		switch colType {
 			case "[]byte":
 			// This is a x10 tuning strategy to avoid type conversion []byte([]byte{})

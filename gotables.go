@@ -1616,7 +1616,6 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	This is to avoid use of appendColNames() and appendColTypes() in parseString().
 */
 func (table *Table) appendCols(colNames []string, colTypes []string) error {
-	// old memory model
 
 	// Check for invalid input.
 	if len(colNames) != len(colTypes) {
