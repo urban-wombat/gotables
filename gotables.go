@@ -640,21 +640,23 @@ func (table *Table) SetAllFloatCellsToNaN() error {
 	return nil
 }
 
+/*
 // Set all cells in this row to their zero value, such as 0, "", or false.
-func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
-	var err error
-
-	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
-
-	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+//func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
+//	var err error
+//
+//	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+//
+//	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+//		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}
+*/
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
 func (table *Table) SetColCellsToZeroValue(colName string) error {

@@ -2678,3 +2678,72 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 
 	return nil
 }
+
+func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
+
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		var colType = table.colTypes[colIndex]
+		switch colType {
+			case "[]byte":
+			// This is a x10 tuning strategy to avoid type conversion []byte([]byte{})
+				table.rows[rowIndex][colIndex] = zeroVal.byteSliceVal
+			case "[]uint8":
+			// This is a x10 tuning strategy to avoid type conversion []uint8([]uint8{})
+				table.rows[rowIndex][colIndex] = zeroVal.uint8SliceVal
+			case "bool":
+			// This is a x10 tuning strategy to avoid type conversion bool(false)
+				table.rows[rowIndex][colIndex] = zeroVal.boolVal
+			case "byte":
+			// This is a x10 tuning strategy to avoid type conversion byte(0)
+				table.rows[rowIndex][colIndex] = zeroVal.byteVal
+			case "float32":
+			// This is a x10 tuning strategy to avoid type conversion float32(0.0)
+				table.rows[rowIndex][colIndex] = zeroVal.float32Val
+			case "float64":
+			// This is a x10 tuning strategy to avoid type conversion float64(0.0)
+				table.rows[rowIndex][colIndex] = zeroVal.float64Val
+			case "int":
+			// This is a x10 tuning strategy to avoid type conversion int(0)
+				table.rows[rowIndex][colIndex] = zeroVal.intVal
+			case "int16":
+			// This is a x10 tuning strategy to avoid type conversion int16(0)
+				table.rows[rowIndex][colIndex] = zeroVal.int16Val
+			case "int32":
+			// This is a x10 tuning strategy to avoid type conversion int32(0)
+				table.rows[rowIndex][colIndex] = zeroVal.int32Val
+			case "int64":
+			// This is a x10 tuning strategy to avoid type conversion int64(0)
+				table.rows[rowIndex][colIndex] = zeroVal.int64Val
+			case "int8":
+			// This is a x10 tuning strategy to avoid type conversion int8(0)
+				table.rows[rowIndex][colIndex] = zeroVal.int8Val
+			case "rune":
+			// This is a x10 tuning strategy to avoid type conversion rune(0)
+				table.rows[rowIndex][colIndex] = zeroVal.runeVal
+			case "string":
+			// This is a x10 tuning strategy to avoid type conversion string("")
+				table.rows[rowIndex][colIndex] = zeroVal.stringVal
+			case "uint":
+			// This is a x10 tuning strategy to avoid type conversion uint(0)
+				table.rows[rowIndex][colIndex] = zeroVal.uintVal
+			case "uint16":
+			// This is a x10 tuning strategy to avoid type conversion uint16(0)
+				table.rows[rowIndex][colIndex] = zeroVal.uint16Val
+			case "uint32":
+			// This is a x10 tuning strategy to avoid type conversion uint32(0)
+				table.rows[rowIndex][colIndex] = zeroVal.uint32Val
+			case "uint64":
+			// This is a x10 tuning strategy to avoid type conversion uint64(0)
+				table.rows[rowIndex][colIndex] = zeroVal.uint64Val
+			case "uint8":
+			// This is a x10 tuning strategy to avoid type conversion uint8(0)
+				table.rows[rowIndex][colIndex] = zeroVal.uint8Val
+			default:
+				return fmt.Errorf("invalid type: %s", "uint8")
+		}
+	}
+
+	return nil
+}
