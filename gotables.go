@@ -1562,7 +1562,6 @@ func (table *Table) DeleteCol(colName string) error {
 	return table.DeleteColByColIndex(colIndex)
 }
 
-// This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
@@ -1581,7 +1580,6 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 	return nil
 }
 
-// This is a fundamental method called by all type-specific methods.
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
@@ -1848,7 +1846,6 @@ func (table *Table) RowCount() int {
 	return len(table.rows)
 }
 
-// This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
@@ -1880,7 +1877,6 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	return val, nil
 }
 
-// This is a fundamental method called by all type-specific methods.
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
