@@ -425,7 +425,6 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-//	rows           tableRows	// new_model
 	rows           []tableRow	// new_model
 	sortKeys       []sortKey
 	structShape    bool
@@ -450,7 +449,6 @@ func (table *Table) getColTypes() []string {
 }
 
 type tableRow []interface{}
-// type tableRows []tableRow
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 // Factory function to generate a *Table pointer.
@@ -2319,7 +2317,6 @@ type Table struct {
 	colNames  []string
 	colTypes  []string
 	colNamesLookup map[string]int	// To look up a colNames index from a col name.
-//	rows        tableRows
 	rows      []tableRow
 	sortKeys  []sortKey
 }
