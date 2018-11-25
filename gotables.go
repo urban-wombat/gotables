@@ -1526,9 +1526,8 @@ func (table *Table) AppendCol(colName string, colType string) error {
 }
 
 func (table *Table) DeleteColByColIndex(colIndex int) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		err := fmt.Errorf("%s: in table [%s] with %d cols, col index %d does not exist",
 			funcName(), table.tableName, table.ColCount(), colIndex)
@@ -1536,9 +1535,8 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	}
 
 	colName, err := table.ColName(colIndex)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
+
 	delete(table.colNamesLookup, colName)
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
@@ -1551,14 +1549,11 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 }
 
 func (table *Table) DeleteCol(colName string) error {
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
+
 	return table.DeleteColByColIndex(colIndex)
 }
 
@@ -2265,6 +2260,11 @@ func (table *Table) IsValidTable() (bool, error) {
 		if isValidRow, err = table.IsValidRow(rowIndex); !isValidRow {
 			return false, err
 		}
+
+/*
+		var cellCount int = len(rows[rowIndex])
+		fmt.Fprintf(stdErr, "cellCount = %d\n", cellCount)
+*/
 	}
 
 	for keyIndex, _ := range table.sortKeys {
