@@ -2026,20 +2026,20 @@ func TestColCount(t *testing.T) {
 func TestDeleteCol(t *testing.T) {
 	tableString := `
     [table]
-	F_bool bool
-	F_string string
-	T_float32 float32
-	T_float64 float64
-	T_int int
-	T_int16 int16
-	T_int32 int32
-	T_int64 int64
-	T_int8 int8
-	T_uint uint
-	T_uint16 uint16
-	T_uint32 uint32
-	T_uint64 uint64
-	T_uint8 uint8
+	F_bool bool = true
+	F_string string = "yes"
+	T_float32 float32 = 33.3
+	T_float64 float64 = 64.4
+	T_int int = 1
+	T_int16 int16 = 16
+	T_int32 int32 = 32
+	T_int64 int64 = 64
+	T_int8 int8 = 8
+	T_uint uint = 99
+	T_uint16 uint16 = 111
+	T_uint32 uint32 = 44
+	T_uint64 uint64 = 22
+	T_uint8 uint8 = 33
     `
 
 	tableSet, err := NewTableSetFromString(tableString)
@@ -2047,6 +2047,7 @@ func TestDeleteCol(t *testing.T) {
 
 	table, err := tableSet.Table("table")
 	if err != nil { t.Error(err) }
+
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
 

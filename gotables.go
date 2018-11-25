@@ -425,7 +425,8 @@ type Table struct {
 	colNames       []string
 	colTypes       []string
 	colNamesLookup map[string]int // To look up a colNames index from a col name.
-	rows           tableRows	// new_model
+//	rows           tableRows	// new_model
+	rows           []tableRow	// new_model
 	sortKeys       []sortKey
 	structShape    bool
 }
@@ -435,7 +436,7 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows           tableRows	// new_model
+	Rows           []tableRow	// new_model
 	SortKeys       []SortKeyExported
 	StructShape    bool
 }
@@ -449,7 +450,7 @@ func (table *Table) getColTypes() []string {
 }
 
 type tableRow []interface{}
-type tableRows []tableRow
+// type tableRows []tableRow
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 // Factory function to generate a *Table pointer.
@@ -1545,6 +1546,15 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
 
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+//		if isValidRow, err := table.IsValidRow(rowIndex); !isValidRow { where(fmt.Sprintf("%s\n", err)) }
+		var row []interface{} = table.rows[rowIndex]
+		// From Ivo Balbaert p182 for deleting a single element from a slice.
+		row = append(row[:colIndex], row[colIndex+1:]...)
+		table.rows[rowIndex] = row
+//		if isValidRow, err := table.IsValidRow(rowIndex); !isValidRow { where(fmt.Sprintf("%s\n", err)) }
+	}
+
 	return nil
 }
 
@@ -1940,7 +1950,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 	rowElementCount := len(table.rows[rowIndex])
 
 	if rowElementCount != table.ColCount() {
-		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values (cells) per row but in row %d found: %d",
 			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows[rowIndex]))
 		return false, err
 	}
@@ -2174,7 +2184,7 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	}
 
 	if len(table.rows[rowIndex]) != table.ColCount() {
-		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d values per row but in row %d found: %d",
+		err = fmt.Errorf("%s ERROR %s table [%s] with %d cols expecting %d cell values per row but in row %d found: %d",
 			funcSource(), funcName(), table.Name(), table.ColCount(), table.ColCount(), rowIndex, len(table.rows[rowIndex]))
 		return false, err
 	}
@@ -2260,11 +2270,6 @@ func (table *Table) IsValidTable() (bool, error) {
 		if isValidRow, err = table.IsValidRow(rowIndex); !isValidRow {
 			return false, err
 		}
-
-/*
-		var cellCount int = len(rows[rowIndex])
-		fmt.Fprintf(stdErr, "cellCount = %d\n", cellCount)
-*/
 	}
 
 	for keyIndex, _ := range table.sortKeys {
@@ -2314,7 +2319,8 @@ type Table struct {
 	colNames  []string
 	colTypes  []string
 	colNamesLookup map[string]int	// To look up a colNames index from a col name.
-	rows        tableRows
+//	rows        tableRows
+	rows      []tableRow
 	sortKeys  []sortKey
 }
 */

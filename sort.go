@@ -517,7 +517,8 @@ func (table *Table) SortSimple(sortCols ...string) error {
 
 type tableSortable struct {
 	table *Table
-	rows  tableRows
+//	rows  tableRows
+	rows  []tableRow
 	less  func(i tableRow, j tableRow) bool
 }
 
