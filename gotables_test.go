@@ -2024,6 +2024,8 @@ func TestColCount(t *testing.T) {
 }
 
 func TestDeleteCol(t *testing.T) {
+	// Note: the table must have at least 1 row of data to fully
+	//       test DeleteCol(). Column of row cells must be deleted too.
 	tableString := `
     [table]
 	F_bool bool = true
