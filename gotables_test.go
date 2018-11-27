@@ -6978,3 +6978,146 @@ func TestHasRow(t *testing.T) {
 		}
 	}
 }
+
+func ExampleNewTableReorderColsByColIndex() {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	reorderedTable, err := table.NewTableReorderColsByColIndex(7, 6, 5, 4, 3, 2, 1, 0)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(reorderedTable)
+
+	// Output:
+	// [TypesGalore]
+	//   i s            f t        b    ui bb            uu8
+	// int string float64 bool  byte uint8 []byte        []uint8
+	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
+	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
+	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
+	// 
+	// [TypesGalore]
+	// uu8        bb               ui    b t           f s        i
+	// []uint8    []byte        uint8 byte bool  float64 string int
+	// [15 16 17] [11 12 13 14]     0   11 true      2.3 "abc"    1
+	// [26 27 28] [22 23 24 25]     1   22 false     4.5 "xyz"    2
+	// [37 38 39] [33 34 35 36]     2   33 false     4.9 "ssss"   3
+}
+
+func ExampleNewTableReorderCols() {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Let's reorder the cols in alphabetic order.
+	colsOrder := []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"}
+	sort.Strings(colsOrder)
+	reorderedTable, err := table.NewTableReorderCols(colsOrder...)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(reorderedTable)
+
+	// Output:
+	// [TypesGalore]
+	//   i s            f t        b    ui bb            uu8
+	// int string float64 bool  byte uint8 []byte        []uint8
+	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
+	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
+	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
+	// 
+	// [TypesGalore]
+	//    b bb                  f   i s      t        ui uu8
+	// byte []byte        float64 int string bool  uint8 []uint8
+	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
+	//   22 [22 23 24 25]     4.5   2 "xyz"  false     1 [26 27 28]
+	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
+}
+
+func TestNewTableReorderColsByColIndex(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	var tests = []struct {
+		newIndices []int
+		valid bool
+	}{
+		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	true  },
+		{ []int{0, 1, 2, 3, 4, 5, 7, 7},	false },
+		{ []int{                      },	false },
+		{ []int{                     7},	false },
+		{ []int{0, 1, 2, 3, 4, 5, 6, 8},	false },
+		{ []int{0,-1, 2, 3, 4, 5, 6, 8},	false },
+	}
+
+	for i, test := range tests {
+		_, err := table.NewTableReorderColsByColIndex(test.newIndices...)
+		if err == nil != test.valid {
+			t.Errorf("test[%d]: newIndices: %v (%v)", i, test.newIndices, err)
+		}
+	}
+}
+
+func TestNewTableReorderCols(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	var tests = []struct {
+		newColsOrder []string
+		valid bool
+	}{
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, true  },
+		{ []string{"x", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// no col "x"
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb"            }, false },	// too few
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8", "y"}, false },	// too many
+	}
+
+	for i, test := range tests {
+		_, err := table.NewTableReorderCols(test.newColsOrder...)
+		if err == nil != test.valid {
+			t.Errorf("test[%d]: newColsOrder: %v (%v)", i, test.newColsOrder, err)
+		}
+	}
+}

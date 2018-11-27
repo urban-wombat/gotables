@@ -18,6 +18,7 @@ import (
 	"reflect"
 	"runtime"
 	"runtime/debug"
+	"sort"
 	"strconv"
 	"strings"
 //	"text/tabwriter"
@@ -2588,9 +2589,7 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 
 // Get column values (of any type) as a slice of strings.
 func (table *Table) GetColValsAsStrings(colName string) ([]string, error) {
-	if table == nil {
-		return nil, fmt.Errorf("table.%s: table is <nil>", funcName())
-	}
+	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	rowCount := table.RowCount()
 	sVals := make([]string, rowCount)
@@ -3067,9 +3066,7 @@ func (tableSet *TableSet) DeleteTableByTableIndex(tableIndex int) error {
 }
 
 func (tableSet *TableSet) DeleteTable(tableName string) error {
-	if tableSet == nil {
-		return fmt.Errorf("tableSet.%s tableSet is <nil>", funcName())
-	}
+	if tableSet == nil { return fmt.Errorf("tableSet.%s tableSet is <nil>", funcName()) }
 
 	tableIndex, err := tableSet.TableIndex(tableName)
 	if err != nil {
@@ -3220,4 +3217,72 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (table *Table) NewTableReorderCols(newColsOrder ...string) (reorderedTable *Table, err error) {
+	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	var colCount int = table.ColCount()
+	if len(newColsOrder) != colCount {
+		return nil, fmt.Errorf("[%s].%s(newColsOrder ...string): expecting %d newColsOrder for table with colCount %d, not: %d",
+			table.Name(), funcName(), colCount, colCount, len(newColsOrder))
+	}
+
+	var newIndices []int = make([]int, colCount)
+	for colIndex := 0; colIndex < colCount; colIndex++ {
+		newIndices[colIndex], err = table.ColIndex(newColsOrder[colIndex])
+		if err != nil { return nil, err }
+	}
+
+	reorderedTable, err = table.NewTableReorderColsByColIndex(newIndices...)
+
+	return
+}
+
+func (table *Table) NewTableReorderColsByColIndex(newIndices ...int) (reorderedTable *Table, err error) {
+	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	var colCount int = table.ColCount()
+	var rowCount int = table.RowCount()
+
+	if len(newIndices) != colCount {
+		return nil, fmt.Errorf("[%s].%s(newIndices ...int): expecting %d newIndices for table with colCount %d, not: %d",
+			table.Name(), funcName(), colCount, colCount, len(newIndices))
+	}
+
+	// Check that newIndices are in colIndex range and are consecutive.
+	var s []int = make([]int, colCount)
+	copy(s, newIndices)
+	sort.Ints(s)
+	for i := 0; i < colCount; i++ {
+		if s[i] != i {
+			return nil, fmt.Errorf("[%s].%s(newIndices %v): invalid newIndices %d (valid unique range: 0..%d)",
+				table.Name(), funcName(), newIndices, s[i], colCount-1)
+		}
+	}
+
+	reorderedTable, err = NewTable(table.Name())
+	if err != nil { return nil, err }
+
+	reorderedTable.AppendRows(rowCount)
+	if err != nil { return nil, err }
+
+	for oldIndex := 0; oldIndex < table.ColCount(); oldIndex++ {
+		newIndex := newIndices[oldIndex]
+
+		colName, err := table.ColNameByColIndex(newIndex)
+		if err != nil { return nil, err }
+
+		colType, err := table.ColTypeByColIndex(newIndex)
+		if err != nil { return nil, err }
+
+		reorderedTable.AppendCol(colName, colType)
+		if err != nil { return nil, err }
+
+		for rowIndex := 0; rowIndex < rowCount; rowIndex++ {
+			reorderedTable.rows[rowIndex][oldIndex] = table.rows[rowIndex][newIndex]
+		}
+	}
+
+	return
 }
