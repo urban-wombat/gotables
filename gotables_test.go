@@ -7108,7 +7108,7 @@ func TestNewTableReorderCols(t *testing.T) {
 		newColsOrder []string
 		valid bool
 	}{
-		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, true  },
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, true  },	// just right
 		{ []string{"x", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// no col "x"
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb"            }, false },	// too few
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8", "y"}, false },	// too many

@@ -3228,6 +3228,7 @@ func (table *Table) NewTableReorderCols(newColsOrder ...string) (reorderedTable 
 			table.Name(), funcName(), colCount, colCount, len(newColsOrder))
 	}
 
+	// Translate (reordered) col names into (reordered) col indices.
 	var newIndices []int = make([]int, colCount)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
 		newIndices[colIndex], err = table.ColIndex(newColsOrder[colIndex])
