@@ -7133,18 +7133,18 @@ func ExampleReverse() {
 
 	var tableString string =
 	`[planets]
-	name         mass distance moons index mnemonic
-	string    float64   float64   int   int string
-	"Sun"      333333        0     0    -1 ""
-	"Mercury"   0.055      0.4     0     0 "my"
-	"Venus"     0.815      0.7     0     1 "very"
-	"Earth"     1.000      1.0     1     2 "elegant"
-	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    79     4 "just"
-	"Saturn"   95.000      9.5    62     5 "sat"
-	"Uranus"   15.000     19.2    27     6 "upon"
-	"Neptune"  17.000     30.6    13     7 "nine"
-	"Pluto"     0.002     39.4     5     8 "porcupines"
+	name            mass distance moons index mnemonic
+	string       float64  float64   int   int string
+	"Sun"     333333.0        0.0     0     0 ""
+	"Mercury"      0.055      0.4     0     1 "my"
+	"Venus"        0.815      0.7     0     2 "very"
+	"Earth"        1.0        1.0     1     3 "elegant"
+	"Mars"         0.107      1.5     2     4 "mother"
+	"Jupiter"    318.0        5.2    79     5 "just"
+	"Saturn"      95.0        9.5    62     6 "sat"
+	"Uranus"      15.0       19.2    27     7 "upon"
+	"Neptune"     17.0       30.6    13     8 "nine"
+	"Pluto"        0.002     39.4     5     9 "porcupines"
 	`
 
 	table, err = NewTableFromString(tableString)
@@ -7161,28 +7161,28 @@ func ExampleReverse() {
 	// [planets]
 	// name            mass distance moons index mnemonic
 	// string       float64  float64   int   int string
-	// "Sun"     333333.0        0.0     0    -1 ""
-	// "Mercury"      0.055      0.4     0     0 "my"
-	// "Venus"        0.815      0.7     0     1 "very"
-	// "Earth"        1.0        1.0     1     2 "elegant"
-	// "Mars"         0.107      1.5     2     3 "mother"
-	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Saturn"      95.0        9.5    62     5 "sat"
-	// "Uranus"      15.0       19.2    27     6 "upon"
-	// "Neptune"     17.0       30.6    13     7 "nine"
-	// "Pluto"        0.002     39.4     5     8 "porcupines"
+	// "Sun"     333333.0        0.0     0     0 ""
+	// "Mercury"      0.055      0.4     0     1 "my"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Jupiter"    318.0        5.2    79     5 "just"
+	// "Saturn"      95.0        9.5    62     6 "sat"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Neptune"     17.0       30.6    13     8 "nine"
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
 	// 
 	// [planets]
 	// name            mass distance moons index mnemonic
 	// string       float64  float64   int   int string
-	// "Pluto"        0.002     39.4     5     8 "porcupines"
-	// "Neptune"     17.0       30.6    13     7 "nine"
-	// "Uranus"      15.0       19.2    27     6 "upon"
-	// "Saturn"      95.0        9.5    62     5 "sat"
-	// "Jupiter"    318.0        5.2    79     4 "just"
-	// "Mars"         0.107      1.5     2     3 "mother"
-	// "Earth"        1.0        1.0     1     2 "elegant"
-	// "Venus"        0.815      0.7     0     1 "very"
-	// "Mercury"      0.055      0.4     0     0 "my"
-	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
+	// "Neptune"     17.0       30.6    13     8 "nine"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Saturn"      95.0        9.5    62     6 "sat"
+	// "Jupiter"    318.0        5.2    79     5 "just"
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Mercury"      0.055      0.4     0     1 "my"
+	// "Sun"     333333.0        0.0     0     0 ""
 }
