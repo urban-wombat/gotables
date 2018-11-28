@@ -2641,7 +2641,7 @@ func TestTableSet_FileName(t *testing.T) {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	actualFileName := funcNameSansParentheses() + ".txt"
+	actualFileName := funcNameNoParens() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
 		t.Error(err)
@@ -7056,40 +7056,6 @@ func ExampleNewTableReorderCols() {
 	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
 }
 
-func TestNewTableReorderColsByColIndex(t *testing.T) {
-	var err error
-	var table *Table
-	var tableString string = `
-	[TypesGalore]
-    i   s      f       t     b    ui    bb            uu8
-    int string float64 bool  byte uint8 []byte        []uint8
-    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
-    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
-    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
-    `
-	table, err = NewTableFromString(tableString)
-	if err != nil { t.Error(err) }
-
-	var tests = []struct {
-		newIndices []int
-		valid bool
-	}{
-		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	true  },
-		{ []int{0, 1, 2, 3, 4, 5, 7, 7},	false },
-		{ []int{                      },	false },
-		{ []int{                     7},	false },
-		{ []int{0, 1, 2, 3, 4, 5, 6, 8},	false },
-		{ []int{0,-1, 2, 3, 4, 5, 6, 8},	false },
-	}
-
-	for i, test := range tests {
-		_, err := table.NewTableReorderColsByColIndex(test.newIndices...)
-		if err == nil != test.valid {
-			t.Errorf("test[%d]: newIndices: %v (%v)", i, test.newIndices, err)
-		}
-	}
-}
-
 func TestNewTableReorderCols(t *testing.T) {
 	var err error
 	var table *Table
@@ -7105,19 +7071,118 @@ func TestNewTableReorderCols(t *testing.T) {
 	if err != nil { t.Error(err) }
 
 	var tests = []struct {
-		newColsOrder []string
+		newColsOrderNames []string
 		valid bool
 	}{
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, true  },	// just right
+		{ []string{"t", "s", "f", "i", "b", "ui", "bb", "uu8"     }, true  },	// just right
+		{ []string{"i", "s", "f", "t", "b", "bb", "ui", "uu8"     }, true  },	// just right
 		{ []string{"x", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// no col "x"
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb"            }, false },	// too few
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8", "y"}, false },	// too many
+		{ []string{"i", "s", "f", "t", "b", "ui", "ui", "uu8"     }, false },	// duplicate col name
 	}
 
 	for i, test := range tests {
-		_, err := table.NewTableReorderCols(test.newColsOrder...)
+		_, err := table.NewTableReorderCols(test.newColsOrderNames...)
 		if err == nil != test.valid {
-			t.Errorf("test[%d]: newColsOrder: %v (%v)", i, test.newColsOrder, err)
+			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
 		}
 	}
+}
+
+func TestNewTableReorderColsByColIndex(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	var tests = []struct {
+		newColsOrderIndices []int
+		valid bool
+	}{
+		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	true  },	// Just right
+		{ []int{7, 1, 2, 3, 4, 5, 6, 0},	true  },	// Just right
+		{ []int{0, 1, 5, 3, 4, 2, 6, 7},	true  },	// Just right
+		{ []int{0, 1, 2, 3, 4, 5, 7, 7},	false },	// Duplicate 7
+		{ []int{                      },	false },	// This puts [] into error
+		{ []int{                     7},	false },	// This puts [7] into error
+		{ []int{0, 1, 2, 3, 4, 5, 6, 8},	false },	// Gap in sequence
+		{ []int{0,-1, 2, 3, 4, 5, 6, 8},	false },	// Out of range index
+	}
+
+	for i, test := range tests {
+		_, err := table.NewTableReorderColsByColIndex(test.newColsOrderIndices...)
+		if err == nil != test.valid {
+			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
+		}
+	}
+}
+
+func ExampleReverse() {
+	var err error
+	var table *Table
+
+	var tableString string =
+	`[planets]
+	name         mass distance moons index mnemonic
+	string    float64   float64   int   int string
+	"Sun"      333333        0     0    -1 ""
+	"Mercury"   0.055      0.4     0     0 "my"
+	"Venus"     0.815      0.7     0     1 "very"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"Jupiter" 318.000      5.2    79     4 "just"
+	"Saturn"   95.000      9.5    62     5 "sat"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	err = table.Reverse()
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Output:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "Saturn"      95.0        9.5    62     5 "sat"
+	// "Uranus"      15.0       19.2    27     6 "upon"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
+	// 
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "Uranus"      15.0       19.2    27     6 "upon"
+	// "Saturn"      95.0        9.5    62     5 "sat"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "Sun"     333333.0        0.0     0    -1 ""
 }

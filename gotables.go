@@ -2331,7 +2331,7 @@ func funcName() string {
 	return name + "()"
 }
 
-func funcNameSansParentheses() string {
+func funcNameNoParens() string {
 	pc, _, _, _ := runtime.Caller(1)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
 	nameEnd := filepath.Ext(nameFull)        // .foo
@@ -3219,46 +3219,51 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	return true, nil
 }
 
-func (table *Table) NewTableReorderCols(newColsOrder ...string) (reorderedTable *Table, err error) {
+func (table *Table) NewTableReorderCols(newColsOrderNames ...string) (reorderedTable *Table, err error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	var colCount int = table.ColCount()
-	if len(newColsOrder) != colCount {
-		return nil, fmt.Errorf("[%s].%s(newColsOrder ...string): expecting %d newColsOrder for table with colCount %d, not: %d",
-			table.Name(), funcName(), colCount, colCount, len(newColsOrder))
+	if len(newColsOrderNames) != colCount {
+		return nil, fmt.Errorf("[%s].%s(newColsOrderNames %v): expecting %d newColsOrderNames for table with colCount %d, not: %d",
+			table.Name(), funcNameNoParens(), newColsOrderNames, colCount, colCount, len(newColsOrderNames))
 	}
 
 	// Translate (reordered) col names into (reordered) col indices.
-	var newIndices []int = make([]int, colCount)
+	var newColsOrderIndices []int = make([]int, colCount)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
-		newIndices[colIndex], err = table.ColIndex(newColsOrder[colIndex])
+		newColsOrderIndices[colIndex], err = table.ColIndex(newColsOrderNames[colIndex])
 		if err != nil { return nil, err }
 	}
 
-	reorderedTable, err = table.NewTableReorderColsByColIndex(newIndices...)
+	reorderedTable, err = table.NewTableReorderColsByColIndex(newColsOrderIndices...)
+
+	if err != nil {
+		// Prepend info to returned err to make more sense of the indices.
+		err = fmt.Errorf("[%s].%s(newColsOrderNames %v): %v", table.Name(), funcNameNoParens(), newColsOrderNames, err)
+	}
 
 	return
 }
 
-func (table *Table) NewTableReorderColsByColIndex(newIndices ...int) (reorderedTable *Table, err error) {
+func (table *Table) NewTableReorderColsByColIndex(newColsOrderIndices ...int) (reorderedTable *Table, err error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
 	var colCount int = table.ColCount()
 	var rowCount int = table.RowCount()
 
-	if len(newIndices) != colCount {
-		return nil, fmt.Errorf("[%s].%s(newIndices ...int): expecting %d newIndices for table with colCount %d, not: %d",
-			table.Name(), funcName(), colCount, colCount, len(newIndices))
+	if len(newColsOrderIndices) != colCount {
+		return nil, fmt.Errorf("[%s].%s(newColsOrderIndices %v): expecting %d newColsOrderIndices for table with colCount %d, not: %d",
+			table.Name(), funcNameNoParens(), newColsOrderIndices, colCount, colCount, len(newColsOrderIndices))
 	}
 
-	// Check that newIndices are in colIndex range and are consecutive.
+	// Check that newColsOrderIndices are in colIndex range and are consecutive.
 	var s []int = make([]int, colCount)
-	copy(s, newIndices)
+	copy(s, newColsOrderIndices)
 	sort.Ints(s)
 	for i := 0; i < colCount; i++ {
 		if s[i] != i {
-			return nil, fmt.Errorf("[%s].%s(newIndices %v): invalid newIndices %d (valid unique range: 0..%d)",
-				table.Name(), funcName(), newIndices, s[i], colCount-1)
+			return nil, fmt.Errorf("[%s].%s(newColsOrderIndices %v): invalid new col index: %d (valid unique range: 0..%d)",
+				table.Name(), funcNameNoParens(), newColsOrderIndices, s[i], colCount-1)
 		}
 	}
 
@@ -3269,7 +3274,7 @@ func (table *Table) NewTableReorderColsByColIndex(newIndices ...int) (reorderedT
 	if err != nil { return nil, err }
 
 	for oldIndex := 0; oldIndex < table.ColCount(); oldIndex++ {
-		newIndex := newIndices[oldIndex]
+		newIndex := newColsOrderIndices[oldIndex]
 
 		colName, err := table.ColNameByColIndex(newIndex)
 		if err != nil { return nil, err }
@@ -3286,4 +3291,15 @@ func (table *Table) NewTableReorderColsByColIndex(newIndices ...int) (reorderedT
 	}
 
 	return
+}
+
+func (table *Table) Reverse() error {
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	// Reversing algorithm from https://github.com/golang/go/wiki/SliceTricks
+	for left, right := 0, len(table.rows)-1; left < right; left, right = left+1, right-1 {
+		table.rows[left], table.rows[right] = table.rows[right], table.rows[left]
+	}
+
+	return nil
 }
