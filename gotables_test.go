@@ -1620,7 +1620,7 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 	}
 }
 
-var tableSetString string = `
+var globalTableSetString string = `
 	[sable_fur]
     i   s       f           b
     int string  float64     bool
@@ -1641,21 +1641,20 @@ var tableSetString string = `
     i321 int8 = 127
     i322 int8 = -128
     ui uint16 = 65535
+	r rune = '世'
     `
 
 func BenchmarkNewTableSetFromString(b *testing.B) {
 	var err error
 	for i := 0; i < b.N; i++ {
-		_, err = NewTableSetFromString(tableSetString)
-		if err != nil {
-			b.Error(err)
-		}
+		_, err = NewTableSetFromString(globalTableSetString)
+		if err != nil { b.Error(err) }
 	}
 }
 
 func BenchmarkTableSetToString(b *testing.B) {
 	// Set up for benchmark.
-	tableSet, err := NewTableSetFromString(tableSetString)
+	tableSet, err := NewTableSetFromString(globalTableSetString)
 	if err != nil {
 		b.Error(err)
 	}
@@ -7185,4 +7184,112 @@ func ExampleReverse() {
 	// "Venus"        0.815      0.7     0     2 "very"
 	// "Mercury"      0.055      0.4     0     1 "my"
 	// "Sun"     333333.0        0.0     0     0 ""
+}
+
+func ExampleShuffleDeterministic() {
+	var err error
+	var table *Table
+
+	var tableString string =
+	`[planets]
+	name            mass distance moons index mnemonic
+	string       float64  float64   int   int string
+	"Sun"     333333.0        0.0     0     0 ""
+	"Mercury"      0.055      0.4     0     1 "my"
+	"Venus"        0.815      0.7     0     2 "very"
+	"Earth"        1.0        1.0     1     3 "elegant"
+	"Mars"         0.107      1.5     2     4 "mother"
+	"Jupiter"    318.0        5.2    79     5 "just"
+	"Saturn"      95.0        9.5    62     6 "sat"
+	"Uranus"      15.0       19.2    27     7 "upon"
+	"Neptune"     17.0       30.6    13     8 "nine"
+	"Pluto"        0.002     39.4     5     9 "porcupines"
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	err = table.ShuffleDeterministic()
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Output:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0     0 ""
+	// "Mercury"      0.055      0.4     0     1 "my"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Jupiter"    318.0        5.2    79     5 "just"
+	// "Saturn"      95.0        9.5    62     6 "sat"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Neptune"     17.0       30.6    13     8 "nine"
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
+	// 
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Neptune"     17.0       30.6    13     8 "nine"
+	// "Sun"     333333.0        0.0     0     0 ""
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
+	// "Mercury"      0.055      0.4     0     1 "my"
+	// "Jupiter"    318.0        5.2    79     5 "just"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Saturn"      95.0        9.5    62     6 "sat"
+}
+
+func ExampleShuffleRandom() {
+	var err error
+	var table *Table
+
+	var tableString string =
+	`[planets]
+	name            mass distance moons index mnemonic
+	string       float64  float64   int   int string
+	"Sun"     333333.0        0.0     0     0 ""
+	"Mercury"      0.055      0.4     0     1 "my"
+	"Venus"        0.815      0.7     0     2 "very"
+	"Earth"        1.0        1.0     1     3 "elegant"
+	"Mars"         0.107      1.5     2     4 "mother"
+	"Jupiter"    318.0        5.2    79     5 "just"
+	"Saturn"      95.0        9.5    62     6 "sat"
+	"Uranus"      15.0       19.2    27     7 "upon"
+	"Neptune"     17.0       30.6    13     8 "nine"
+	"Pluto"        0.002     39.4     5     9 "porcupines"
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	err = table.ShuffleRandom()
+	if err != nil { log.Println(err) }
+
+	fmt.Println("ShuffleRandom() is \"truly\" random, so no predictable output.")
+
+	// Output:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Sun"     333333.0        0.0     0     0 ""
+	// "Mercury"      0.055      0.4     0     1 "my"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Jupiter"    318.0        5.2    79     5 "just"
+	// "Saturn"      95.0        9.5    62     6 "sat"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Neptune"     17.0       30.6    13     8 "nine"
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
+	//
+	// ShuffleRandom() is "truly" random, so no predictable output.
 }

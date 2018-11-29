@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -22,6 +23,7 @@ import (
 	"strconv"
 	"strings"
 //	"text/tabwriter"
+	"time"
 	"unicode"
 //	"unicode/utf8"
 )
@@ -3196,6 +3198,9 @@ func ZeroValue(typeName string) (interface{}, error) {
 	}
 }
 
+/*
+	Check whether tableSet1 and tableSet2 are the same.
+*/
 func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	if tableSet1 == nil { return false, fmt.Errorf("tableSet.%s tableSet1 is <nil>", funcName()) }
 	if tableSet2 == nil { return false, fmt.Errorf("tableSet.%s tableSet2 is <nil>", funcName()) }
@@ -3219,6 +3224,11 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	return true, nil
 }
 
+/*
+	Change the order of columns to the order provided by newColsOrderNames slice or arguments of col names.
+
+	A new table is created and returned.
+*/
 func (table *Table) NewTableReorderCols(newColsOrderNames ...string) (reorderedTable *Table, err error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
@@ -3245,6 +3255,11 @@ func (table *Table) NewTableReorderCols(newColsOrderNames ...string) (reorderedT
 	return
 }
 
+/*
+	Change the order of columns to the order provided by newColsOrderIndices slice or arguments of col indices.
+
+	A new table is created and returned.
+*/
 func (table *Table) NewTableReorderColsByColIndex(newColsOrderIndices ...int) (reorderedTable *Table, err error) {
 	if table == nil { return nil, fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
@@ -3293,6 +3308,9 @@ func (table *Table) NewTableReorderColsByColIndex(newColsOrderIndices ...int) (r
 	return
 }
 
+/*
+	Reverse the order of rows in this table.
+*/
 func (table *Table) Reverse() error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
 
@@ -3300,6 +3318,35 @@ func (table *Table) Reverse() error {
 	for left, right := 0, len(table.rows)-1; left < right; left, right = left+1, right-1 {
 		table.rows[left], table.rows[right] = table.rows[right], table.rows[left]
 	}
+
+	return nil
+}
+
+/*
+	Shuffle the rows in this table "deterministically", meaning the same size table
+	will have its rows shuffled into the same shuffled order each time.
+*/
+func (table *Table) ShuffleDeterministic() error {
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	rand.Shuffle(len(table.rows), func(i, j int) {
+		table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
+	})
+
+	return nil
+}
+
+/*
+	Shuffle the rows in this table "randomly", meaning you will be unable
+	to predict the resulting shuffled order.
+*/
+func (table *Table) ShuffleRandom() error {
+	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+
+	random := rand.New(rand.NewSource(time.Now().Unix()))
+	random.Shuffle(len(table.rows), func(i, j int) {
+		table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
+	})
 
 	return nil
 }
