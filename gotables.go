@@ -3324,7 +3324,8 @@ func (table *Table) Reverse() error {
 
 /*
 	Shuffle the rows in this table "deterministically", meaning the same size table
-	will have its rows shuffled into the same shuffled order each time.
+	will have its rows shuffled into the same shuffled order each time. That's why
+	this function has an Example, because it has repeatable output.
 */
 func (table *Table) ShuffleDeterministic() error {
 	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
