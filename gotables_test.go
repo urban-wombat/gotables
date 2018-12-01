@@ -5385,7 +5385,7 @@ func ExampleTable_Merge() {
 
     fmt.Println(table2)
 
-	// These tables share sort keys i and s.
+	// These tables share sort keys i and s
 
 	// Note that there is a duplicate row,
 	// which will be removed during merging.
@@ -6994,10 +6994,18 @@ func ExampleNewTableReorderColsByColIndex() {
 
 	fmt.Println(table)
 
+	// This numeric sequence reverses the column order.
 	reorderedTable, err := table.NewTableReorderColsByColIndex(7, 6, 5, 4, 3, 2, 1, 0)
 	if err != nil { log.Println(err) }
 
 	fmt.Println(reorderedTable)
+
+	// This method reorders the table cols in place, and does not return a new table.
+	// This numeric sequence reorders col names to alphabetic order.
+	err = table.ReorderColsByColIndex(4, 6, 2, 0, 1, 3, 5, 7)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
 
 	// Output:
 	// [TypesGalore]
@@ -7013,6 +7021,13 @@ func ExampleNewTableReorderColsByColIndex() {
 	// [15 16 17] [11 12 13 14]     0   11 true      2.3 "abc"    1
 	// [26 27 28] [22 23 24 25]     1   22 false     4.5 "xyz"    2
 	// [37 38 39] [33 34 35 36]     2   33 false     4.9 "ssss"   3
+	// 
+	// [TypesGalore]
+	//    b bb                  f   i s      t        ui uu8
+	// byte []byte        float64 int string bool  uint8 []uint8
+	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
+	//   22 [22 23 24 25]     4.5   2 "xyz"  false     1 [26 27 28]
+	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
 }
 
 func ExampleNewTableReorderCols() {
@@ -7039,6 +7054,16 @@ func ExampleNewTableReorderCols() {
 
 	fmt.Println(reorderedTable)
 
+	// Let's reorder the cols in reverse order. Which here means reverse alphabetic order.
+	// Reversing algorithm from https://github.com/golang/go/wiki/SliceTricks
+	for left, right := 0, len(colsOrder)-1; left < right; left, right = left+1, right-1 {
+		colsOrder[left], colsOrder[right] = colsOrder[right], colsOrder[left]
+	}
+	err = table.ReorderCols(colsOrder...)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
 	// Output:
 	// [TypesGalore]
 	//   i s            f t        b    ui bb            uu8
@@ -7053,6 +7078,13 @@ func ExampleNewTableReorderCols() {
 	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
 	//   22 [22 23 24 25]     4.5   2 "xyz"  false     1 [26 27 28]
 	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
+	// 
+	// [TypesGalore]
+	// uu8           ui t     s        i       f bb               b
+	// []uint8    uint8 bool  string int float64 []byte        byte
+	// [15 16 17]     0 true  "abc"    1     2.3 [11 12 13 14]   11
+	// [26 27 28]     1 false "xyz"    2     4.5 [22 23 24 25]   22
+	// [37 38 39]     2 false "ssss"   3     4.9 [33 34 35 36]   33
 }
 
 func TestNewTableReorderCols(t *testing.T) {

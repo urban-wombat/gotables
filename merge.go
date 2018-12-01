@@ -81,7 +81,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return nil
 	}
 
-	// where()
 	// Local function.
 	sortMerged := func (localMerged *Table) (*Table, error) {
 		if localMerged.SortKeyCount() == 0 {
@@ -96,23 +95,19 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 			return nil, err
 		}
 
-	// where()
 		return localMerged, nil
 	}
 
-	// where()
 	if table1 == nil {
 		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", funcName())
 		return merged, err
 	}
 
-	// where()
 	if table2 == nil {
 		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", funcName())
 		return merged, err
 	}
 
-	// where()
 	if table1.RowCount() == 0 {
 		merged, err = sortMerged(table2)
 		if err != nil {
@@ -121,7 +116,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return table2, nil
 	}
 
-	// where()
 	if table2.RowCount() == 0 {
 		merged, err = sortMerged(table1)
 		if err != nil {
@@ -130,7 +124,6 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return table1, nil
 	}
 
-	// where()
 	// Check that table1 and table2 have the same sort columns.
 	err = setSortKeysBetweenTables()
 	if err != nil {
@@ -139,13 +132,11 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 	// Okay. They're compatible, now set up for merging.
 
-	// where()
 	merged, err = NewTable("Merged")
 	if err != nil {
 		return nil, err
 	}
 
-	// where()
 	// Add all columns (but not yet rows) from table1 and table2 into merged.
 
 	err = merged.AppendColsFromTable(table1)
@@ -496,9 +487,8 @@ func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 	for srcCol := 0; srcCol < srcTable.ColCount(); srcCol++ {
 		colName, err := srcTable.ColName(srcCol)
 		// where(fmt.Sprintf("srcTable.ColName(%d) = %q\n", srcCol, colName))
-		if err != nil {
-			return err
-		}
+		if err != nil { return err }
+
 		// Note: multiple assignment syntax in for loop.
 		for srcRow, targRow := 0, beginRow; targRow < (beginRow + srcTable.RowCount()); srcRow, targRow = srcRow+1, targRow+1 {
 			cellVal, err := srcTable.GetValByColIndex(srcCol, srcRow)
@@ -507,11 +497,10 @@ func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 				return err
 			}
 			err = targTable.SetVal(colName, targRow, cellVal)
-			// where(fmt.Sprintf("targTable.SetVal(%q, %d, %v)\n", colName, targRow, cellVal))
+			// where(fmt.Sprintf("targTable.SetVal(%q, %d, cellVal=%v)\n", colName, targRow, cellVal))
 			if err != nil {
 				return err
 			}
-			// where(fmt.Sprintln())
 		}
 	}
 
