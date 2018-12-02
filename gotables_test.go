@@ -7049,7 +7049,8 @@ func ExampleTable_ReorderColsByColIndex() {
 	table, err = NewTableFromString(tableString)
 	if err != nil { log.Println(err) }
 
-	// This method reorders the table cols in place, and does not return a new table.
+	// This method reorders the table cols in-place, and does not return a new table.
+
 	// This numeric sequence reorders col names to alphabetic order.
 	err = table.ReorderColsByColIndex(4, 6, 2, 0, 1, 3, 5, 7)
 	if err != nil { log.Println(err) }
@@ -7080,6 +7081,8 @@ func ExampleTable_NewTableReorderCols() {
 	if err != nil { log.Println(err) }
 
 	fmt.Println(table)
+
+	// This method reorders the table cols in-place, and does not return a new table.
 
 	// Let's reorder the cols in alphabetic order.
 	colsOrder := []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"}
