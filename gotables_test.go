@@ -6997,7 +6997,7 @@ func TestHasRow(t *testing.T) {
 	}
 }
 
-func ExampleNewTableReorderColsByColIndex() {
+func ExampleTable_NewTableReorderColsByColIndex() {
 	var err error
 	var table *Table
 	var tableString string = `
@@ -7065,7 +7065,7 @@ func ExampleTable_ReorderColsByColIndex() {
 	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
 }
 
-func ExampleNewTableReorderCols() {
+func ExampleTable_NewTableReorderCols() {
 	var err error
 	var table *Table
 	var tableString string = `
