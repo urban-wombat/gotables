@@ -2417,12 +2417,12 @@ func PrintCaller() {
 	// Skip 1 level to get the called: the name of the function calling PrintCaller()
 	n = runtime.Callers(2, fpcs)
 	if n == 0 {
-		fmt.Fprintf(os.Stderr, "%s ERROR: no called\n", funcName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: no called\n", funcName())
 		return
 	}
 	called := runtime.FuncForPC(fpcs[0]-1)
 	if called == nil {
-		fmt.Fprintf(os.Stderr, "%s ERROR: called was nil\n", funcName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: called was nil\n", funcName())
 		return
 	}
 	calledName = called.Name()
@@ -2431,12 +2431,12 @@ func PrintCaller() {
 	// Skip 2 levels to get the caller
 	n = runtime.Callers(3, fpcs)
 	if n == 0 {
-		fmt.Fprintf(os.Stderr, "%s ERROR: no caller\n", funcName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: no caller\n", funcName())
 		return
 	}
 	caller := runtime.FuncForPC(fpcs[0]-1)
 	if caller == nil {
-		fmt.Fprintf(os.Stderr, "%s ERROR: caller was nil\n", funcName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: caller was nil\n", funcName())
 		return
 	}
 	callerName = caller.Name()
@@ -2447,12 +2447,11 @@ func PrintCaller() {
 	fileName = filepath.Base(fileName)
 	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
 
-//	fmt.Fprintf(os.Stderr, "%s called at %s by %s\n", calledName, callerFile, callerName)
-	fmt.Fprintf(os.Stderr, "%s called by %s at %s\n", calledName, callerName, callerFile)
+	_, _ = fmt.Fprintf(os.Stderr, "%s called by %s at %s\n", calledName, callerName, callerFile)
 }
 
 func PrintStderr(s string) {
-	fmt.Fprintf(os.Stderr, "%s", s)
+	_, _ = fmt.Fprintf(os.Stderr, "%s", s)
 }
 
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
@@ -3312,7 +3311,7 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 	reorderedTable, err = NewTable(table.Name())
 	if err != nil { return nil, err }
 
-	reorderedTable.AppendRows(rowCount)
+	err = reorderedTable.AppendRows(rowCount)
 	if err != nil { return nil, err }
 
 	for oldIndex := 0; oldIndex < table.ColCount(); oldIndex++ {
@@ -3324,7 +3323,7 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 		colType, err := table.ColTypeByColIndex(newIndex)
 		if err != nil { return nil, err }
 
-		reorderedTable.AppendCol(colName, colType)
+		err = reorderedTable.AppendCol(colName, colType)
 		if err != nil { return nil, err }
 
 		for rowIndex := 0; rowIndex < rowCount; rowIndex++ {
