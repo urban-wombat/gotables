@@ -893,8 +893,8 @@ func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	if err != nil {
 		return err
 	}
-	table.colNamesLookup[colName1], table.colNamesLookup[colName2] =
-	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
+	table.colNamesMap[colName1], table.colNamesMap[colName2] =
+	table.colNamesMap[colName2], table.colNamesMap[colName1]
 	return nil
 }
 
@@ -915,8 +915,8 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 
 	table.colTypes[col1], table.colTypes[col2] = table.colTypes[col2], table.colTypes[col1]
 
-	table.colNamesLookup[colName1], table.colNamesLookup[colName2] =
-	table.colNamesLookup[colName2], table.colNamesLookup[colName1]
+	table.colNamesMap[colName1], table.colNamesMap[colName2] =
+	table.colNamesMap[colName2], table.colNamesMap[colName1]
 
 	return nil
 }

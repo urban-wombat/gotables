@@ -424,13 +424,13 @@ Table
 */
 
 type Table struct {
-	tableName      string
-	colNames       []string
-	colTypes       []string
-	colNamesLookup map[string]int // To look up a colNames index from a col name.
-	rows           []tableRow	// new_model
-	sortKeys       []sortKey
-	structShape    bool
+	tableName   string
+	colNames    []string
+	colTypes    []string
+	colNamesMap map[string]int // To look up a colNames index from a col name.
+	rows        []tableRow	// new_model
+	sortKeys    []sortKey
+	structShape bool
 }
 
 type TableExported struct {
@@ -471,7 +471,7 @@ func NewTable(tableName string) (*Table, error) {
 	}
 	newTable.colNames = make([]string, 0)
 	newTable.colTypes = make([]string, 0)
-	newTable.colNamesLookup = map[string]int{}
+	newTable.colNamesMap = map[string]int{}
 	newTable.rows  = make([]tableRow, 0)
 
 	return newTable, nil
@@ -1504,7 +1504,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	if isValid, err := IsValidColType(colType); !isValid { return err }
 
 	// Make sure this col name doesn't already exist.
-	_, exists := table.colNamesLookup[colName]
+	_, exists := table.colNamesMap[colName]
 	if exists {
 		err := fmt.Errorf("table [%s] col already exists: %s", table.Name(), colName)
 		return err
@@ -1514,7 +1514,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	table.colTypes = append(table.colTypes, colType)
 
 	colIndex := len(table.colNames) - 1
-	table.colNamesLookup[colName] = colIndex
+	table.colNamesMap[colName] = colIndex
 
 	// Extend each row by 1 element. The new element will default to a zero value.
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
@@ -1542,10 +1542,10 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colNames = append(table.colNames[:colIndex], table.colNames[colIndex+1:]...)
 
-	// Delete colName from colNamesLookup. This has to come AFTER deleting the colName from colNames.
-	delete(table.colNamesLookup, colName)
+	// Delete colName from colNamesMap. This has to come AFTER deleting the colName from colNames.
+	delete(table.colNamesMap, colName)
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-		table.colNamesLookup[table.colNames[colIndex]] = colIndex
+		table.colNamesMap[table.colNames[colIndex]] = colIndex
 	}
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
@@ -1675,7 +1675,7 @@ func (table *Table) getColInfo(colName string) (colInfoStruct, error) {
 	}
 	var index int
 	var exists bool
-	index, exists = table.colNamesLookup[colName]
+	index, exists = table.colNamesMap[colName]
 	if !exists {
 		err := fmt.Errorf("table [%s] col does not exist: %s", table.tableName, colName)
 		return cInfo, err
@@ -1777,7 +1777,7 @@ func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 func (table *Table) ColType(colName string) (string, error) {
 	if table == nil { return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", funcSource(), funcName()) }
 
-	index, exists := table.colNamesLookup[colName]
+	index, exists := table.colNamesMap[colName]
 	if !exists {
 		err := fmt.Errorf("table [%s] col does not exist: %s", table.tableName, colName)
 		return "", err
@@ -1800,7 +1800,7 @@ func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 func (table *Table) ColIndex(colName string) (int, error) {
 	if table == nil { return -1, fmt.Errorf("%s ERROR: table.%s: table is <nil>", funcSource(), funcName()) }
 
-	index, exists := table.colNamesLookup[colName]
+	index, exists := table.colNamesMap[colName]
 	if exists {
 		return index, nil
 	}
@@ -2144,8 +2144,8 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	table.colNames[colIndex] = newName
 
 	// Rename col in map of col names to col indexes.
-	delete(table.colNamesLookup, oldName)    // Delete the old one.
-	table.colNamesLookup[newName] = colIndex // Add the new one.
+	delete(table.colNamesMap, oldName)    // Delete the old one.
+	table.colNamesMap[newName] = colIndex // Add the new one.
 
 	return nil
 }
@@ -2227,8 +2227,8 @@ func (table *Table) IsValidTable() (bool, error) {
 		err = fmt.Errorf("%s ERROR %s: table [%s] colTypes == nil", funcSource(), funcName(), table.tableName)
 		return false, err
 	}
-	if table.colNamesLookup == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] colNamesLookup == nil", funcSource(), funcName(), table.tableName)
+	if table.colNamesMap == nil {
+		err = fmt.Errorf("%s ERROR %s: table [%s] colNamesMap == nil", funcSource(), funcName(), table.tableName)
 		return false, err
 	}
 	if table.rows == nil {
@@ -2264,18 +2264,22 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 
-	if len(table.colNamesLookup) != colNamesCount {
+	if len(table.colNamesMap) != colNamesCount {
 		err = fmt.Errorf("table [%s] with %d cols names expecting %d col names lookup entries but found: %d",
-			tableName, colNamesCount, colNamesCount, len(table.colNamesLookup))
+			tableName, colNamesCount, colNamesCount, len(table.colNamesMap))
 		return false, err
 	}
 
-	for colIndex := 0; colIndex < len(table.colNamesLookup); colIndex++ {
-		if table.colNamesLookup[colNames[colIndex]] != colIndex {
-			return false, fmt.Errorf("table [%s] inconsistent table.colNamesLookup: colNamesLookup[%q] != colIndex %d",
+/*
+	for colIndex := 0; colIndex < len(table.colNamesMap); colIndex++ {
+		if table.colNamesMap[colNames[colIndex]] != colIndex {
+			return false, fmt.Errorf("table [%s] inconsistent table.colNamesMap: colNamesMap[%q] != colIndex %d",
 				table.Name(), table.colNames[colIndex], colIndex)
 		}
 	}
+*/
+	_, err = table.isValidColNamesMap()
+	if err != nil { return false, nil }
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		var isValidRow bool
@@ -2297,6 +2301,19 @@ func (table *Table) IsValidTable() (bool, error) {
 		if table.sortKeys[keyIndex].sortFunc == nil {
 			err = fmt.Errorf("table [%s].sortKeys[%d].sortFunc == nil", tableName, keyIndex)
 			return false, err
+		}
+	}
+
+	return true, nil
+}
+
+func (table *Table) isValidColNamesMap() (bool, error) {
+	if table == nil { return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", funcSource(), funcName()) }
+
+	for colIndex := 0; colIndex < len(table.colNamesMap); colIndex++ {
+		if table.colNamesMap[table.colNames[colIndex]] != colIndex {
+			return false, fmt.Errorf("table [%s] inconsistent table.colNamesMap: colNamesMap[%q] != colIndex %d",
+				table.Name(), table.colNames[colIndex], colIndex)
 		}
 	}
 
@@ -2346,7 +2363,7 @@ type Table struct {
 	tableName   string
 	colNames  []string
 	colTypes  []string
-	colNamesLookup map[string]int	// To look up a colNames index from a col name.
+	colNamesMap map[string]int	// To look up a colNames index from a col name.
 	rows      []tableRow
 	sortKeys  []sortKey
 }
@@ -3368,11 +3385,11 @@ func (table *Table) ReorderColsByColIndex(orderIndices ...int) (error) {
 	tempInterfaces := make([]interface{}, colCount)
 
 	// Swap col names.
-	// Also update table.colNamesLookup. Remember: we are not creating this table anew.
+	// Also update table.colNamesMap. Remember: we are not creating this table anew.
 	copy(tempStrings, table.colNames)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
 		table.colNames[colIndex] = tempStrings[orderIndices[colIndex]]
-		table.colNamesLookup[table.colNames[colIndex]] = colIndex
+		table.colNamesMap[table.colNames[colIndex]] = colIndex
 	}
 
 	// Swap col types.
