@@ -74,8 +74,7 @@ func TestRenameTable(t *testing.T) {
 
 	}
 
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTableSetRenameTable(t *testing.T) {
@@ -108,6 +107,7 @@ func TestTableSetRenameTable(t *testing.T) {
 		if (err == nil) != test.succeeds {
 			t.Errorf("test[%d]: Error renaming from %q to %q: %v", i, test.renameFrom, test.renameTo, err)
 		}
+		if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 	}
 }
 
@@ -173,9 +173,7 @@ func TestReadString01(t *testing.T) {
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
-
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 	}
 }
 
@@ -258,10 +256,8 @@ func TestReadString05(t *testing.T) {
 		if rowCount != test.rowCount {
 			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
-
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 }
 
 func TestReadString06(t *testing.T) {
@@ -314,6 +310,7 @@ func TestReadString06(t *testing.T) {
 	if err != nil { log.Println(err) }
 
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 }
 
 func TestReadString07(t *testing.T) {
@@ -383,6 +380,7 @@ func TestReadString09(t *testing.T) {
 
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 // 02.05.2017
@@ -422,6 +420,7 @@ func TestReadString10(t *testing.T) {
 
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 // 02.05.2017
@@ -462,6 +461,7 @@ func TestReadString11(t *testing.T) {
 
 	_, err = table.IsValidTable()
 	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 // 02.05.2017
@@ -579,6 +579,7 @@ func TestReadString14(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleNewTableSet() {
@@ -1298,6 +1299,7 @@ if err != nil { log.Println(err) }
 	if shape != expected {
 		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestSetIntegerMinAndMax(t *testing.T) {
@@ -1869,6 +1871,7 @@ func TestIsNumericColType(t *testing.T) {
 			t.Error(err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_AppendRow_DeleteRow(t *testing.T) {
@@ -1894,13 +1897,13 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	table, err := tableSet.Table("my_table")
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	rowCount := table.RowCount()
 	if rowCount != 0 {
@@ -1911,9 +1914,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	rowCount = table.RowCount()
 	if rowCount != 1 {
@@ -1924,9 +1925,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	rowCount = table.RowCount()
 	if rowCount != 0 {
@@ -1976,8 +1975,7 @@ func TestColCount(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
@@ -1989,8 +1987,7 @@ func TestColCount(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
@@ -2001,8 +1998,7 @@ func TestColCount(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
@@ -2013,13 +2009,12 @@ func TestColCount(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
 		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
 }
 
 func TestDeleteCol(t *testing.T) {
@@ -2045,18 +2040,18 @@ func TestDeleteCol(t *testing.T) {
 
 	tableSet, err := NewTableSetFromString(tableString)
 	if err != nil { t.Fatal(err) }
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	table, err := tableSet.Table("table")
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	_, err = table.IsValidTable()
 	if err != nil { t.Error(err) }
 
 	err = table.DeleteCol("T_uint32")
 	if err != nil { t.Error(err) }
-
-	_, err = table.IsValidTable()
-	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestDeleteRow(t *testing.T) {
@@ -2079,8 +2074,7 @@ func TestDeleteRow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	initialRowCount := table.RowCount()
 
@@ -2090,8 +2084,7 @@ func TestDeleteRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	rowCount := table.RowCount()
 	if rowCount != initialRowCount-1 {
@@ -2109,7 +2102,6 @@ func TestDeleteRow(t *testing.T) {
 			t.Errorf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow)
 		}
 	}
-
 }
 
 func TestDeleteRows(t *testing.T) {
@@ -2132,8 +2124,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	initialRowCount := table.RowCount()
 
@@ -2142,24 +2133,21 @@ func TestDeleteRows(t *testing.T) {
 	if err == nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// Test invalid row index range: first below zero
 	err = table.DeleteRows(-1, 4)
 	if err == nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// Test invalid row index range: last above initialRowCount-1
 	err = table.DeleteRows(0, initialRowCount)
 	if err == nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	var first int
 	var last int
@@ -2174,8 +2162,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
@@ -2198,8 +2185,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	first = 4
 	last = 5
@@ -2208,8 +2194,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
@@ -2235,8 +2220,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	first = 6
 	last = 9
@@ -2245,8 +2229,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
@@ -2272,8 +2255,7 @@ func TestDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	first = 0
 	last = 2
@@ -2646,15 +2628,16 @@ func TestTableSet_FileName(t *testing.T) {
 		t.Error(err)
 	}
 
-	tables, err := NewTableSetFromFile(actualFileName)
+	tableSet, err := NewTableSetFromFile(actualFileName)
 	if err != nil {
 		t.Error(err)
 	}
 
-	fileName := tables.FileName()
+	fileName := tableSet.FileName()
 	if fileName != actualFileName {
 		t.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 }
 
 func TestTableSet_SetName(t *testing.T) {
@@ -2676,6 +2659,7 @@ func TestTableSet_SetName(t *testing.T) {
 	if tableSetName != expected {
 		t.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 }
 
 func TestTable_SetName(t *testing.T) {
@@ -2699,6 +2683,7 @@ func TestTable_SetName(t *testing.T) {
 	if tableName != expected {
 		t.Errorf("Expecting tableName = %q but found %q", expected, tableName)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestMissingValueForType(t *testing.T) {
@@ -2712,12 +2697,11 @@ func TestMissingValueForType(t *testing.T) {
 		{"int32", false},
 		{"int64", false},
 		{"uint", false},
-		{"float32", true},
-		{"float64", true},
+		{"float32", true},	// Missing value is math.NaN()
+		{"float64", true},	// Missing value is math.NaN()
 	}
 
 	for _, test := range tests {
-
 		_, hasMissing := missingValueForType(test.typeName)
 		if hasMissing != test.expected {
 			t.Errorf("Expecting missingValueForType(%q) = %t but found %t", test.typeName, test.expected, hasMissing)
@@ -2946,6 +2930,7 @@ func TestIsColTypeByColIndex(t *testing.T) {
 			t.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t", test.colIndex, test.colType, test.expected, isColType)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestIsColType(t *testing.T) {
@@ -2999,6 +2984,7 @@ func TestIsColType(t *testing.T) {
 			t.Errorf("Expecting table.IsColType(%s, %q) = %t but found %t", test.colName, test.colType, test.expected, isColType)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_Sort() {
@@ -3578,6 +3564,7 @@ func TestNewTableFromMetadata(t *testing.T) {
 			t.Error(err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_SetRowFloatCellsToNaN() {
@@ -3741,6 +3728,7 @@ func TestTable_RenameCol(t *testing.T) {
 			t.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
 				test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
 		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 	}
 }
 
@@ -3784,6 +3772,7 @@ func TestTable_Sort(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SortSimple(t *testing.T) {
@@ -3797,6 +3786,7 @@ func TestTable_SortSimple(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestSearch(t *testing.T) {
@@ -3852,6 +3842,7 @@ func TestSearch(t *testing.T) {
 		t.Error(err)
 	}
 
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 // Note: IsValidColValue() is an alias to IsValidCellValue()
@@ -3896,6 +3887,7 @@ func TestIsValidCellValue (t *testing.T) {
 			t.Errorf("Expecting IsValidCellValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_Search_keys1() {
@@ -4150,6 +4142,7 @@ func TestTable_Search_1key(t *testing.T) {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_Search_1key_reverse(t *testing.T) {
@@ -4230,6 +4223,7 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_Search_2keys(t *testing.T) {
@@ -4301,6 +4295,7 @@ func TestTable_Search_2keys(t *testing.T) {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_Search_2keys_reverse2nd(t *testing.T) {
@@ -4377,6 +4372,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_Search_2keys_reverseBoth(t *testing.T) {
@@ -4453,6 +4449,7 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 // Note: Leading lowercase in planets is required for it to be recognised as an Example!
@@ -4574,6 +4571,8 @@ func TestTable_Equals(t *testing.T) {
     if err != nil {
         t.Error(err)
     }
+	if isValid, err := table1.IsValidTable(); !isValid { t.Error(err) }
+	if isValid, err := table2.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_GetSortKeysAsTable() {
@@ -4677,6 +4676,7 @@ func TestTable_SortKeyCount(t *testing.T) {
 	if count != expecting {
 		t.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SetSortKeysFromTable(t *testing.T) {
@@ -4745,6 +4745,8 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	if equals != expecting {
 		t.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
 	}
+	if isValid, err := keysTable1.IsValidTable(); !isValid { t.Error(err) }
+	if isValid, err := keysTable2.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_OrderColsBySortKeys() {
@@ -5098,6 +5100,7 @@ func TestTable_SearchFirst_by_user(t *testing.T) {
 			t.Errorf("Expecting SearchFirst(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SearchLast_by_user(t *testing.T) {
@@ -5148,6 +5151,7 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 			t.Errorf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SearchRange_by_user(t *testing.T) {
@@ -5200,6 +5204,7 @@ func TestTable_SearchRange_by_user(t *testing.T) {
 				test.searchValue, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SearchRange_by_user_lines(t *testing.T) {
@@ -5271,6 +5276,7 @@ func TestTable_SearchRange_by_user_lines(t *testing.T) {
 			fmt.Println(table)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
@@ -5344,6 +5350,7 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 			fmt.Println(table)
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func ExampleTable_Merge() {
@@ -5567,7 +5574,7 @@ func ExampleTable_GetTableAsCSV() {
 	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
 }
 
-func TestTable_Copy (t *testing.T) {
+func TestTable_Copy(t *testing.T) {
 
 	tableStringRows0 :=
 	`[Types]
@@ -5610,11 +5617,13 @@ func TestTable_Copy (t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 	
 		tableCopy, err := table.Copy(test.copyRows)
 		if err != nil {
 			t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 		}
+		if isValid, err := tableCopy.IsValidTable(); !isValid { t.Error(err) }
 	
 		if test.copyRows {
 			// Expecting same rowCount in each.
@@ -5677,6 +5686,7 @@ func TestGetColInfoAsSlices(t *testing.T) {
 			t.Errorf("expecting colType %s at colTypes[%d], not %s", colType, colIndex, colTypes[colIndex])
 		}
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
 
 func TestTableSet_TableIndex(t *testing.T) {
@@ -5705,6 +5715,7 @@ func TestTableSet_TableIndex(t *testing.T) {
 	if tableIndex != expecting {
 		t.Errorf("expecting tableIndex %d from tableSet.TableIndex(%q), not %d", expecting, tableName, tableIndex)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 }
 
 func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
@@ -5721,6 +5732,7 @@ func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	tableCount := tableSet.TableCount()
 	expecting := 4
@@ -5740,6 +5752,7 @@ func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	tableCount = tableSet.TableCount()
 	expecting = 3
@@ -5767,6 +5780,7 @@ func TestTableSet_DeleteTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	tableCount := tableSet.TableCount()
 	expecting := 4
@@ -5785,6 +5799,7 @@ func TestTableSet_DeleteTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := tableSet.IsValidTableSet(); !isValid { t.Error(err) }
 
 	tableCount = tableSet.TableCount()
 	expecting = 3
@@ -5823,6 +5838,7 @@ func TestTable_AppendRow(t *testing.T) {
 
 	table, err := NewTableFromString(allTypesZeroVals)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	rowCount := table.RowCount()
 	expecting := 1
@@ -5833,8 +5849,7 @@ func TestTable_AppendRow(t *testing.T) {
 	// All cells in new row should be zero values.
 	err = table.AppendRow()
 	if err != nil { t.Error(err) }
-	_, err = table.IsValidTable()
-	if err != nil { log.Println(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		var rowIndex int
@@ -6741,6 +6756,7 @@ func TestSetVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	// Test data type / col type mismatch.
 	err = table.SetVal("i", 0, 23.4)
@@ -6793,6 +6809,7 @@ func TestGetVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	var val interface{}
 
@@ -6917,6 +6934,7 @@ func TestGetBoolVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	colNames, _, err := table.GetColInfoAsSlices()
 	if err != nil { t.Error(err) }
@@ -6959,6 +6977,7 @@ func TestHasRow(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	var tests = []struct {
 		row int
@@ -7000,13 +7019,6 @@ func ExampleNewTableReorderColsByColIndex() {
 
 	fmt.Println(reorderedTable)
 
-	// This method reorders the table cols in place, and does not return a new table.
-	// This numeric sequence reorders col names to alphabetic order.
-	err = table.ReorderColsByColIndex(4, 6, 2, 0, 1, 3, 5, 7)
-	if err != nil { log.Println(err) }
-
-	fmt.Println(table)
-
 	// Output:
 	// [TypesGalore]
 	//   i s            f t        b    ui bb            uu8
@@ -7021,7 +7033,30 @@ func ExampleNewTableReorderColsByColIndex() {
 	// [15 16 17] [11 12 13 14]     0   11 true      2.3 "abc"    1
 	// [26 27 28] [22 23 24 25]     1   22 false     4.5 "xyz"    2
 	// [37 38 39] [33 34 35 36]     2   33 false     4.9 "ssss"   3
-	// 
+}
+
+func ExampleTable_ReorderColsByColIndex() {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	// This method reorders the table cols in place, and does not return a new table.
+	// This numeric sequence reorders col names to alphabetic order.
+	err = table.ReorderColsByColIndex(4, 6, 2, 0, 1, 3, 5, 7)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Output:
 	// [TypesGalore]
 	//    b bb                  f   i s      t        ui uu8
 	// byte []byte        float64 int string bool  uint8 []uint8
@@ -7054,6 +7089,41 @@ func ExampleNewTableReorderCols() {
 
 	fmt.Println(reorderedTable)
 
+	// Output:
+	// [TypesGalore]
+	//   i s            f t        b    ui bb            uu8
+	// int string float64 bool  byte uint8 []byte        []uint8
+	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
+	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
+	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
+	// 
+	// [TypesGalore]
+	//    b bb                  f   i s      t        ui uu8
+	// byte []byte        float64 int string bool  uint8 []uint8
+	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
+	//   22 [22 23 24 25]     4.5   2 "xyz"  false     1 [26 27 28]
+	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
+}
+
+func ExampleTable_ReorderCols() {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(table)
+
+	// Let's reorder the cols in alphabetic order.
+	colsOrder := []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"}
+	sort.Strings(colsOrder)
 	// Let's reorder the cols in reverse order. Which here means reverse alphabetic order.
 	// Reversing algorithm from https://github.com/golang/go/wiki/SliceTricks
 	for left, right := 0, len(colsOrder)-1; left < right; left, right = left+1, right-1 {
@@ -7071,13 +7141,6 @@ func ExampleNewTableReorderCols() {
 	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
 	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
-	// 
-	// [TypesGalore]
-	//    b bb                  f   i s      t        ui uu8
-	// byte []byte        float64 int string bool  uint8 []uint8
-	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
-	//   22 [22 23 24 25]     4.5   2 "xyz"  false     1 [26 27 28]
-	//   33 [33 34 35 36]     4.9   3 "ssss" false     2 [37 38 39]
 	// 
 	// [TypesGalore]
 	// uu8           ui t     s        i       f bb               b
@@ -7100,6 +7163,7 @@ func TestNewTableReorderCols(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	var tests = []struct {
 		newColsOrderNames []string
@@ -7119,6 +7183,7 @@ func TestNewTableReorderCols(t *testing.T) {
 		if err == nil != test.valid {
 			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
 		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 	}
 }
 
@@ -7135,6 +7200,7 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	var tests = []struct {
 		newColsOrderIndices []int
@@ -7155,6 +7221,7 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
 		if err == nil != test.valid {
 			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
 		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 	}
 }
 

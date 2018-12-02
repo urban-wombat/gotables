@@ -1539,10 +1539,14 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	colName, err := table.ColName(colIndex)
 	if err != nil { return err }
 
-	delete(table.colNamesLookup, colName)
-
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colNames = append(table.colNames[:colIndex], table.colNames[colIndex+1:]...)
+
+	// Delete colName from colNamesLookup. This has to come AFTER deleting the colName from colNames.
+	delete(table.colNamesLookup, colName)
+	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		table.colNamesLookup[table.colNames[colIndex]] = colIndex
+	}
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
 	table.colTypes = append(table.colTypes[:colIndex], table.colTypes[colIndex+1:]...)
@@ -2266,6 +2270,13 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 
+	for colIndex := 0; colIndex < len(table.colNamesLookup); colIndex++ {
+		if table.colNamesLookup[colNames[colIndex]] != colIndex {
+			return false, fmt.Errorf("table [%s] inconsistent table.colNamesLookup: colNamesLookup[%q] != colIndex %d",
+				table.Name(), table.colNames[colIndex], colIndex)
+		}
+	}
+
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		var isValidRow bool
 		if isValidRow, err = table.IsValidRow(rowIndex); !isValidRow {
@@ -2285,6 +2296,22 @@ func (table *Table) IsValidTable() (bool, error) {
 		// Note: Not fully sure that a nil sortFunc is an invalid state.
 		if table.sortKeys[keyIndex].sortFunc == nil {
 			err = fmt.Errorf("table [%s].sortKeys[%d].sortFunc == nil", tableName, keyIndex)
+			return false, err
+		}
+	}
+
+	return true, nil
+}
+
+func (tableSet *TableSet) IsValidTableSet() (bool, error) {
+	if tableSet == nil {
+		return false, fmt.Errorf(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", funcSource(), funcName()))
+	}
+
+	for i := 0; i < len(tableSet.tables); i++ {
+		table := tableSet.tables[i]
+		valid, err := table.IsValidTable()
+		if !valid {
 			return false, err
 		}
 	}
