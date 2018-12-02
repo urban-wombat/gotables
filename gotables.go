@@ -2270,14 +2270,6 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 
-/*
-	for colIndex := 0; colIndex < len(table.colNamesMap); colIndex++ {
-		if table.colNamesMap[colNames[colIndex]] != colIndex {
-			return false, fmt.Errorf("table [%s] inconsistent table.colNamesMap: colNamesMap[%q] != colIndex %d",
-				table.Name(), table.colNames[colIndex], colIndex)
-		}
-	}
-*/
 	_, err = table.isValidColNamesMap()
 	if err != nil { return false, nil }
 
