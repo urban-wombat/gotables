@@ -7345,3 +7345,109 @@ func ExampleShuffleRandom() {
 	//
 	// ShuffleRandom() is "truly" random, so no predictable output.
 }
+
+func TestTable_swapColsByColIndex(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+	var tests = []struct {
+		swapCols []int
+		colNames []string
+		colTypes []string
+	}{
+		{[]int{0,1},[]string{"s","i","f","t","b","ui","bb","uu8",},[]string{"string","int","float64","bool","byte","uint8","[]byte","[]uint8",}},
+		{[]int{6,7},[]string{"i","s","f","t","b","ui","uu8","bb",},[]string{"int","string","float64","bool","byte","uint8","[]uint8","[]byte",}},
+		{[]int{0,7},[]string{"uu8","s","f","t","b","ui","bb","i",},[]string{"[]uint8","string","float64","bool","byte","uint8","[]byte","int",}},
+	}
+
+	for i, test := range tests {
+		err := table.swapColsByColIndex(test.swapCols[0], test.swapCols[1])
+		if err != nil { t.Error(err) }
+
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+		colNames := table.getColNames()
+		if !stringSliceEquals(colNames, test.colNames) {
+			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+		}
+
+		colTypes := table.getColTypes()
+		if !stringSliceEquals(colTypes, test.colTypes) {
+			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+		}
+
+		// Return table to original data for next iteration.
+		table, err = NewTableFromString(tableString)
+		if err != nil { t.Error(err) }
+	}
+}
+
+func TestTable_swapCols(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+	var tests = []struct {
+		swapCols []string
+		colNames []string
+		colTypes []string
+	}{
+		{[]string{"i","s"},[]string{"s","i","f","t","b","ui","bb","uu8",},[]string{"string","int","float64","bool","byte","uint8","[]byte","[]uint8",}},
+		{[]string{"bb","uu8"},[]string{"i","s","f","t","b","ui","uu8","bb",},[]string{"int","string","float64","bool","byte","uint8","[]uint8","[]byte",}},
+		{[]string{"i","uu8"},[]string{"uu8","s","f","t","b","ui","bb","i",},[]string{"[]uint8","string","float64","bool","byte","uint8","[]byte","int",}},
+	}
+
+	for i, test := range tests {
+		err := table.swapCols(test.swapCols[0], test.swapCols[1])
+		if err != nil { t.Error(err) }
+
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+		colNames := table.getColNames()
+		if !stringSliceEquals(colNames, test.colNames) {
+			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+		}
+
+		colTypes := table.getColTypes()
+		if !stringSliceEquals(colTypes, test.colTypes) {
+			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+		}
+
+		// Return table to original data for next iteration.
+		table, err = NewTableFromString(tableString)
+		if err != nil { t.Error(err) }
+	}
+}
+
+func stringSliceEquals(slice1, slice2 []string) bool {
+	if len(slice1) != len(slice2) { return false }
+
+	for i := 0; i < len(slice1); i++ {
+		if slice1[i] != slice2[i] { return false }
+	}
+
+	return true
+}

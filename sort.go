@@ -6,6 +6,7 @@ package gotables
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -856,9 +857,7 @@ func (table *Table) OrderColsBySortKeys() error {
 
 // True if colName is a sort key in table. False if not. Error if colName not in table.
 func (table *Table) IsSortKey(colName string) (bool, error) {
-	if table == nil {
-		return false, fmt.Errorf("table.%s() table is <nil>", funcName())
-	}
+	if table == nil { return false, fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
 	hasCol, err := table.HasCol(colName)
 	if err != nil {
@@ -875,12 +874,26 @@ func (table *Table) IsSortKey(colName string) (bool, error) {
 }
 
 func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
-	// This sets out the relationship between table.colNames, table.colTypes and table.colnamesLookup.
-	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", funcName())
-	}
+	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
 	var err error
+
+	if colIndex1 < 0 || colIndex1 > table.ColCount()-1 {
+		log.Printf("[%s].%s: in table [%s] with %d cols, colIndex1 %d does not exist",
+			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex1)
+	}
+
+	if colIndex2 < 0 || colIndex2 > table.ColCount()-1 {
+		log.Printf("[%s].%s: in table [%s] with %d cols, colIndex2 %d does not exist",
+			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex2)
+	}
+
+	if colIndex1 == colIndex2 {
+		log.Printf("[%s].%s: [%s] colIndex1 %d == colIndex2 %d",
+			table.tableName, funcName(), table.tableName, colIndex1, colIndex2)
+	}
+
 	table.colNames[colIndex1], table.colNames[colIndex2] = table.colNames[colIndex2], table.colNames[colIndex1]
 
 	table.colTypes[colIndex1], table.colTypes[colIndex2] = table.colTypes[colIndex2], table.colTypes[colIndex1]
@@ -893,13 +906,16 @@ func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	if err != nil {
 		return err
 	}
-	table.colNamesMap[colName1], table.colNamesMap[colName2] =
-	table.colNamesMap[colName2], table.colNamesMap[colName1]
+
+	table.colNamesMap[colName1], table.colNamesMap[colName2] = table.colNamesMap[colName2], table.colNamesMap[colName1]
+
 	return nil
 }
 
 func (table *Table) swapCols(colName1 string, colName2 string) error {
-	// This sets out the relationship between table.colNames, table.colTypes and table.colnamesLookup.
+	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
+
 	var err error
 
 	col1, err := table.ColIndex(colName1)
@@ -915,8 +931,7 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 
 	table.colTypes[col1], table.colTypes[col2] = table.colTypes[col2], table.colTypes[col1]
 
-	table.colNamesMap[colName1], table.colNamesMap[colName2] =
-	table.colNamesMap[colName2], table.colNamesMap[colName1]
+	table.colNamesMap[colName1], table.colNamesMap[colName2] = table.colNamesMap[colName2], table.colNamesMap[colName1]
 
 	return nil
 }

@@ -506,7 +506,3 @@ func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 
 	return nil
 }
-
-func (table *Table) AppendTable(append *Table) error {
-	return nil
-}

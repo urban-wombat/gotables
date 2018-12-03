@@ -5,12 +5,7 @@ package gotables
 */
 
 import (
-//	"bytes"
-	"errors"
 	"fmt"
-//	"reflect"
-//	"os"
-//	"runtime/debug"
 )
 
 /*
@@ -2499,6 +2494,7 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 	return
 }
 
+/*
 func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int) error {
 // This is the MUCH SLOWER previous version. Is there any safety advantage in using it? Perhaps not.
 	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
@@ -2566,6 +2562,7 @@ func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int
 
 	return nil
 }
+*/
 
 type zeroVals struct {
 	byteSliceVal []byte
