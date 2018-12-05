@@ -3273,6 +3273,13 @@ func (table *Table) NewTableReorderCols(orderNames ...string) (reorderedTable *T
 			table.Name(), funcNameNoParens(), orderNames, colCount, colCount, len(orderNames))
 	}
 
+/*
+	if stringSliceEquals(table.colNames, orderNames) {
+		return nil, fmt.Errorf("[%s].%s(orderNames %v): columns already ordered by orderNames",
+			table.Name(), funcNameNoParens(), orderNames)
+	}
+*/
+
 	// Translate (reordered) col names into (reordered) col indices.
 	var orderIndices []int = make([]int, colCount)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
@@ -3306,7 +3313,7 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 			table.Name(), funcNameNoParens(), orderIndices, colCount, colCount, len(orderIndices))
 	}
 
-	// Check that orderIndices are in colIndex range and are consecutive.
+	// Check that sorted copy of orderIndices are in colIndex range and are consecutive.
 	var s []int = make([]int, colCount)
 	copy(s, orderIndices)
 	sort.Ints(s)
@@ -3316,6 +3323,21 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 				table.Name(), funcNameNoParens(), orderIndices, s[i], colCount-1)
 		}
 	}
+
+/*
+	// Error if already in order.
+	var alreadyInOrder = true
+	for i := 0; i < colCount; i++ {
+		if orderIndices[i] != i {
+			alreadyInOrder = false
+			break
+		}
+	}
+	if alreadyInOrder {
+		return nil, fmt.Errorf("[%s].%s(orderIndices %v): columns already ordered by orderIndices",
+			table.Name(), funcNameNoParens(), orderIndices)
+	}
+*/
 
 	reorderedTable, err = NewTable(table.Name())
 	if err != nil { return nil, err }
@@ -3370,6 +3392,21 @@ func (table *Table) ReorderColsByColIndex(orderIndices ...int) (error) {
 		}
 	}
 
+/*
+	// Error if already in order.
+	var alreadyInOrder = true
+	for i := 0; i < colCount; i++ {
+		if orderIndices[i] != i {
+			alreadyInOrder = false
+			break
+		}
+	}
+	if alreadyInOrder {
+		return fmt.Errorf("[%s].%s(orderIndices %v): columns already ordered by orderIndices",
+			table.Name(), funcNameNoParens(), orderIndices)
+	}
+*/
+
 	// Type string (not interface{}) for colNames and colTypes to avoid type coercion.
 	tempStrings := make([]string, colCount)
 
@@ -3414,6 +3451,13 @@ func (table *Table) ReorderCols(orderNames ...string) (err error) {
 		return fmt.Errorf("[%s].%s(orderNames %v): expecting %d orderNames for table with colCount %d, not: %d",
 			table.Name(), funcNameNoParens(), orderNames, colCount, colCount, len(orderNames))
 	}
+
+/*
+	if stringSliceEquals(table.colNames, orderNames) {
+		return fmt.Errorf("[%s].%s(orderNames %v): columns already ordered by orderNames",
+			table.Name(), funcNameNoParens(), orderNames)
+	}
+*/
 
 	// Translate (reordered) col names into (reordered) col indices.
 	var orderIndices []int = make([]int, colCount)

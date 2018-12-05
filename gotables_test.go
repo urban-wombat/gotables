@@ -7122,9 +7122,10 @@ func TestNewTableReorderCols(t *testing.T) {
 		newColsOrderNames []string
 		valid bool
 	}{
-		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, true  },	// just right
 		{ []string{"t", "s", "f", "i", "b", "ui", "bb", "uu8"     }, true  },	// just right
 		{ []string{"i", "s", "f", "t", "b", "bb", "ui", "uu8"     }, true  },	// just right
+// In two minds about making this an error:
+//		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// Already in reorder sequence
 		{ []string{"x", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// no col "x"
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb"            }, false },	// too few
 		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8", "y"}, false },	// too many
@@ -7133,6 +7134,44 @@ func TestNewTableReorderCols(t *testing.T) {
 
 	for i, test := range tests {
 		_, err := table.NewTableReorderCols(test.newColsOrderNames...)
+		if err == nil != test.valid {
+			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
+		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+	}
+}
+
+func TestReorderCols(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+	var tests = []struct {
+		newColsOrderNames []string
+		valid bool
+	}{
+		{ []string{"t", "s", "f", "i", "b", "ui", "bb", "uu8"     }, true  },	// just right
+		{ []string{"i", "s", "f", "t", "b", "bb", "ui", "uu8"     }, true  },	// just right
+// In two minds about making this an error:
+//		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// Already in reorder sequence
+		{ []string{"x", "s", "f", "t", "b", "ui", "bb", "uu8"     }, false },	// no col "x"
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb"            }, false },	// too few
+		{ []string{"i", "s", "f", "t", "b", "ui", "bb", "uu8", "y"}, false },	// too many
+		{ []string{"i", "s", "f", "t", "b", "ui", "ui", "uu8"     }, false },	// duplicate col name
+	}
+
+	for i, test := range tests {
+		err := table.ReorderCols(test.newColsOrderNames...)
 		if err == nil != test.valid {
 			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
 		}
@@ -7159,9 +7198,10 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
 		newColsOrderIndices []int
 		valid bool
 	}{
-		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	true  },	// Just right
 		{ []int{7, 1, 2, 3, 4, 5, 6, 0},	true  },	// Just right
 		{ []int{0, 1, 5, 3, 4, 2, 6, 7},	true  },	// Just right
+// In two minds about making this an error:
+//		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	false },	// Already in reorder sequence
 		{ []int{0, 1, 2, 3, 4, 5, 7, 7},	false },	// Duplicate 7
 		{ []int{                      },	false },	// This puts [] into error
 		{ []int{                     7},	false },	// This puts [7] into error
@@ -7171,6 +7211,45 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
 
 	for i, test := range tests {
 		_, err := table.NewTableReorderColsByColIndex(test.newColsOrderIndices...)
+		if err == nil != test.valid {
+			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
+		}
+		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+	}
+}
+
+func TestReorderColsByColIndex(t *testing.T) {
+	var err error
+	var table *Table
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       t     b    ui    bb            uu8
+    int string float64 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     false 33   2     [33 34 35 36] [37 38 39]
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil { t.Error(err) }
+	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+
+	var tests = []struct {
+		newColsOrderIndices []int
+		valid bool
+	}{
+		{ []int{7, 1, 2, 3, 4, 5, 6, 0},	true  },	// Just right
+		{ []int{0, 1, 5, 3, 4, 2, 6, 7},	true  },	// Just right
+// In two minds about making this an error:
+//		{ []int{0, 1, 2, 3, 4, 5, 6, 7},	false },	// Already in reorder sequence
+		{ []int{0, 1, 2, 3, 4, 5, 7, 7},	false },	// Duplicate 7
+		{ []int{                      },	false },	// This puts [] into error
+		{ []int{                     7},	false },	// This puts [7] into error
+		{ []int{0, 1, 2, 3, 4, 5, 6, 8},	false },	// Gap in sequence
+		{ []int{0,-1, 2, 3, 4, 5, 6, 8},	false },	// Out of range index
+	}
+
+	for i, test := range tests {
+		err := table.ReorderColsByColIndex(test.newColsOrderIndices...)
 		if err == nil != test.valid {
 			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
 		}
