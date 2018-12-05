@@ -6,7 +6,6 @@ package gotables
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -883,17 +882,17 @@ func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	var err error
 
 	if colIndex1 < 0 || colIndex1 > table.ColCount()-1 {
-		log.Printf("[%s].%s: in table [%s] with %d cols, colIndex1 %d does not exist",
+		return fmt.Errorf("[%s].%s: in table [%s] with %d cols, colIndex1 %d does not exist",
 			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex1)
 	}
 
 	if colIndex2 < 0 || colIndex2 > table.ColCount()-1 {
-		log.Printf("[%s].%s: in table [%s] with %d cols, colIndex2 %d does not exist",
+		return fmt.Errorf("[%s].%s: in table [%s] with %d cols, colIndex2 %d does not exist",
 			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex2)
 	}
 
 	if colIndex1 == colIndex2 {
-		log.Printf("[%s].%s: [%s] colIndex1 %d == colIndex2 %d",
+		return fmt.Errorf("[%s].%s: [%s] colIndex1 %d == colIndex2 %d",
 			table.tableName, funcName(), table.tableName, colIndex1, colIndex2)
 	}
 
@@ -902,13 +901,10 @@ func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	table.colTypes[colIndex1], table.colTypes[colIndex2] = table.colTypes[colIndex2], table.colTypes[colIndex1]
 
 	colName1, err := table.ColName(colIndex1)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
+
 	colName2, err := table.ColName(colIndex2)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
 	table.colNamesMap[colName1], table.colNamesMap[colName2] = table.colNamesMap[colName2], table.colNamesMap[colName1]
 
@@ -925,16 +921,13 @@ func (table *Table) SwapCols(colName1 string, colName2 string) error {
 	var err error
 
 	col1, err := table.ColIndex(colName1)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
+
 	col2, err := table.ColIndex(colName2)
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 
 	if colName1 == colName2 {
-		log.Printf("[%s].%s: [%s] colName1 %q == colName2 %q",
+		fmt.Errorf("[%s].%s: [%s] colName1 %q == colName2 %q",
 			table.tableName, funcName(), table.tableName, colName1, colName2)
 	}
 
