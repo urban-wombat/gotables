@@ -7346,7 +7346,7 @@ func ExampleShuffleRandom() {
 	// ShuffleRandom() is "truly" random, so no predictable output.
 }
 
-func TestTable_swapColsByColIndex(t *testing.T) {
+func TestTable_SwapColsByColIndex(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
@@ -7373,19 +7373,19 @@ func TestTable_swapColsByColIndex(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := table.swapColsByColIndex(test.swapCols[0], test.swapCols[1])
+		err := table.SwapColsByColIndex(test.swapCols[0], test.swapCols[1])
 		if err != nil { t.Error(err) }
 
 		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 		colNames := table.getColNames()
 		if !stringSliceEquals(colNames, test.colNames) {
-			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
 		}
 
 		colTypes := table.getColTypes()
 		if !stringSliceEquals(colTypes, test.colTypes) {
-			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
 		}
 
 		// Return table to original data for next iteration.
@@ -7394,7 +7394,7 @@ func TestTable_swapColsByColIndex(t *testing.T) {
 	}
 }
 
-func TestTable_swapCols(t *testing.T) {
+func TestTable_SwapCols(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
@@ -7421,19 +7421,19 @@ func TestTable_swapCols(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := table.swapCols(test.swapCols[0], test.swapCols[1])
+		err := table.SwapCols(test.swapCols[0], test.swapCols[1])
 		if err != nil { t.Error(err) }
 
 		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 		colNames := table.getColNames()
 		if !stringSliceEquals(colNames, test.colNames) {
-			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
 		}
 
 		colTypes := table.getColTypes()
 		if !stringSliceEquals(colTypes, test.colTypes) {
-			t.Errorf("test[%d]: table.swapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
 		}
 
 		// Return table to original data for next iteration.

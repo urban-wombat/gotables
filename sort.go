@@ -873,7 +873,10 @@ func (table *Table) IsSortKey(colName string) (bool, error) {
 	return false, nil
 }
 
-func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
+/*
+	Swap these two columns with each other.
+*/
+func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
 	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
@@ -912,7 +915,10 @@ func (table *Table) swapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	return nil
 }
 
-func (table *Table) swapCols(colName1 string, colName2 string) error {
+/*
+	Swap these two columns with each other.
+*/
+func (table *Table) SwapCols(colName1 string, colName2 string) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
 	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
@@ -925,6 +931,11 @@ func (table *Table) swapCols(colName1 string, colName2 string) error {
 	col2, err := table.ColIndex(colName2)
 	if err != nil {
 		return err
+	}
+
+	if colName1 == colName2 {
+		log.Printf("[%s].%s: [%s] colName1 %q == colName2 %q",
+			table.tableName, funcName(), table.tableName, colName1, colName2)
 	}
 
 	table.colNames[col1], table.colNames[col2] = table.colNames[col2], table.colNames[col1]
