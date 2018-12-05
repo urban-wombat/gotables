@@ -3273,7 +3273,7 @@ func (table *Table) NewTableReorderCols(orderNames ...string) (reorderedTable *T
 			table.Name(), funcNameNoParens(), orderNames, colCount, colCount, len(orderNames))
 	}
 
-/*
+/*	In two minds about making this an error.
 	if stringSliceEquals(table.colNames, orderNames) {
 		return nil, fmt.Errorf("[%s].%s(orderNames %v): columns already ordered by orderNames",
 			table.Name(), funcNameNoParens(), orderNames)
@@ -3324,7 +3324,7 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 		}
 	}
 
-/*
+/*	In two minds about making this an error.
 	// Error if already in order.
 	var alreadyInOrder = true
 	for i := 0; i < colCount; i++ {
@@ -3392,7 +3392,7 @@ func (table *Table) ReorderColsByColIndex(orderIndices ...int) (error) {
 		}
 	}
 
-/*
+/*	In two minds about making this an error.
 	// Error if already in order.
 	var alreadyInOrder = true
 	for i := 0; i < colCount; i++ {
@@ -3452,7 +3452,7 @@ func (table *Table) ReorderCols(orderNames ...string) (err error) {
 			table.Name(), funcNameNoParens(), orderNames, colCount, colCount, len(orderNames))
 	}
 
-/*
+/*	In two minds about making this an error.
 	if stringSliceEquals(table.colNames, orderNames) {
 		return fmt.Errorf("[%s].%s(orderNames %v): columns already ordered by orderNames",
 			table.Name(), funcNameNoParens(), orderNames)
