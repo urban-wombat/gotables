@@ -105,7 +105,7 @@ type TableSetExported struct {
 func NewTableSet(tableSetName string) (*TableSet, error) {
 	var newTables *TableSet = new(TableSet)
 	newTables.tableSetName = tableSetName
-	newTables.tables = make([]*Table, 0) // An empty slice of tables.
+	newTables.tables = []*Table{} // An empty slice of tables.
 	return newTables, nil
 }
 
@@ -469,10 +469,10 @@ func NewTable(tableName string) (*Table, error) {
 	if err != nil {
 		return nil, err
 	}
-	newTable.colNames = make([]string, 0)
-	newTable.colTypes = make([]string, 0)
+	newTable.colNames = []string{}
+	newTable.colTypes = []string{}
 	newTable.colNamesMap = map[string]int{}
-	newTable.rows  = make([]tableRow, 0)
+	newTable.rows  = []tableRow{}
 
 	return newTable, nil
 }
@@ -484,10 +484,10 @@ func newTableExported(tableName string) (*TableExported, error) {
 	if err != nil {
 		return nil, err
 	}
-	NewTableExported.ColNames = make([]string, 0)
-	NewTableExported.ColTypes = make([]string, 0)
+	NewTableExported.ColNames = []string{}
+	NewTableExported.ColTypes = []string{}
 	NewTableExported.ColNamesLookup = map[string]int{}
-	NewTableExported.Rows = make([]tableRow, 0)
+	NewTableExported.Rows = []tableRow{}
 	return NewTableExported, nil
 }
 
@@ -584,7 +584,6 @@ func (table *Table) AppendRow() error {
 */
 
 	// Note: function make() sets slice values to <nil> and NOT to their zero value.
-//	var newRow tableRow = make(tableRow, table.ColCount())
 	var newRow tableRow = make(tableRow, len(table.colNames))
 	table.rows = append(table.rows, newRow)
 

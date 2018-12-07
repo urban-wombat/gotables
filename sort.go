@@ -748,7 +748,7 @@ func (table *Table) CompareRows(rowIndex1 int, rowIndex2 int) (int, error) {
 
 // Factory function to generate a slice of SortKeys.
 func newSortKeys() SortKeys {
-	return make([]sortKey, 0)
+	return []sortKey{}
 }
 
 func (table *Table) SortKeyCount() int {
