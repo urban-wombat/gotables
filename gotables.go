@@ -15,6 +15,7 @@ import (
 	"math"
 	"math/rand"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"runtime"
@@ -3518,4 +3519,34 @@ func (table *Table) ShuffleRandom() error {
 	})
 
 	return nil
+}
+
+/*
+	Pipe a Go program file (as a string) through gofmt and return its output.
+
+	This is used to tidy up generated Go source code.
+
+	It is unusual to return an input string on error but we do that here
+	to not crunch it in the calling function.
+*/
+func GoFmtFileString(fileString string) (formattedFileString string, err error) {
+	// We return the input string even if error, so as to not crunch it in the calling function.
+	formattedFileString = fileString
+
+	var cmd *exec.Cmd
+	cmd = exec.Command("gofmt")
+
+	var fileBytes []byte
+	fileBytes = []byte(fileString)
+	cmd.Stdin = bytes.NewBuffer(fileBytes)
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+
+	err = cmd.Run()
+	if err != nil { return }
+
+	formattedFileString = out.String()
+
+	return
 }

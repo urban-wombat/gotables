@@ -41,12 +41,16 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]byte"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -56,11 +60,15 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -76,12 +84,16 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]uint8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -91,11 +103,15 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -111,12 +127,16 @@ func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "bool"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -126,11 +146,15 @@ func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -146,12 +170,16 @@ func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "byte"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -161,11 +189,15 @@ func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -181,12 +213,16 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) err
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -196,11 +232,15 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -216,12 +256,16 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) err
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -231,11 +275,15 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -251,12 +299,16 @@ func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -266,11 +318,15 @@ func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -286,12 +342,16 @@ func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int16"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -301,11 +361,15 @@ func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -321,12 +385,16 @@ func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -336,11 +404,15 @@ func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -356,12 +428,16 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -371,11 +447,15 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -391,12 +471,16 @@ func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -406,11 +490,15 @@ func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -426,12 +514,16 @@ func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "rune"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -441,11 +533,15 @@ func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -461,12 +557,16 @@ func (table *Table) SetString(colName string, rowIndex int, newVal string) error
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "string"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -476,11 +576,15 @@ func (table *Table) SetString(colName string, rowIndex int, newVal string) error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -496,12 +600,16 @@ func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -511,11 +619,15 @@ func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -531,12 +643,16 @@ func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint16"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -546,11 +662,15 @@ func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -566,12 +686,16 @@ func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -581,11 +705,15 @@ func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -601,12 +729,16 @@ func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -616,11 +748,15 @@ func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -636,12 +772,16 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -651,11 +791,15 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
@@ -675,14 +819,16 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]byte"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -694,7 +840,9 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -710,14 +858,16 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]uint8"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -729,7 +879,9 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -745,14 +897,16 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) e
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "bool"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -764,7 +918,9 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) e
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -780,14 +936,16 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) e
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "byte"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -799,7 +957,9 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) e
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -815,14 +975,16 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float32"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -834,7 +996,9 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -850,14 +1014,16 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float64"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -869,7 +1035,9 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -885,14 +1053,16 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) err
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -904,7 +1074,9 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) err
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -920,14 +1092,16 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16)
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int16"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -939,7 +1113,9 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16)
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -955,14 +1131,16 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32)
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int32"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -974,7 +1152,9 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32)
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -990,14 +1170,16 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64)
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int64"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1009,7 +1191,9 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64)
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1025,14 +1209,16 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) e
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int8"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1044,7 +1230,9 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) e
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1060,14 +1248,16 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) e
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "rune"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1079,7 +1269,9 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) e
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1095,14 +1287,16 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal strin
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "string"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1114,7 +1308,9 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal strin
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1130,14 +1326,16 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) e
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1149,7 +1347,9 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) e
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1165,14 +1365,16 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint1
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint16"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1184,7 +1386,9 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint1
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1200,14 +1404,16 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint3
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint32"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1219,7 +1425,9 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint3
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1235,14 +1443,16 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint6
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint64"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1254,7 +1464,9 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint6
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1270,14 +1482,16 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 
 	var err error
 
-	if table == nil { return fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint8"
 
-/*
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return err }
-*/
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -1289,7 +1503,9 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 
 	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return err }
+	if !hasRow {
+		return err
+	}
 
 	// Set the newVal
 	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
@@ -1307,12 +1523,16 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]byte"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1322,11 +1542,15 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1340,12 +1564,16 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "[]uint8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1355,11 +1583,15 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1373,12 +1605,16 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "bool"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1388,11 +1624,15 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1406,12 +1646,16 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "byte"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1421,11 +1665,15 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1439,12 +1687,16 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1454,11 +1706,15 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1472,12 +1728,16 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "float64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1487,11 +1747,15 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1505,12 +1769,16 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1520,11 +1788,15 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1538,12 +1810,16 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int16"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1553,11 +1829,15 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1571,12 +1851,16 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1586,11 +1870,15 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1604,12 +1892,16 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1619,11 +1911,15 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1637,12 +1933,16 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "int8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1652,11 +1952,15 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1670,12 +1974,16 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "rune"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1685,11 +1993,15 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1703,12 +2015,16 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "string"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1718,11 +2034,15 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1736,12 +2056,16 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1751,11 +2075,15 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1769,12 +2097,16 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint16"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1784,11 +2116,15 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1802,12 +2138,16 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint32"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1817,11 +2157,15 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1835,12 +2179,16 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint64"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1850,11 +2198,15 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1868,12 +2220,16 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 
 	// See: Get<type>() functions
 
-	if table == nil { return val, fmt.Errorf("table.%s(): table is <nil>", funcName()) }
+	if table == nil {
+		return val, fmt.Errorf("table.%s(): table is <nil>", funcName())
+	}
 
 	const valType string = "uint8"
 
 	colType, err := table.ColType(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1883,11 +2239,15 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	}
 
 	colIndex, err := table.ColIndex(colName)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %15 speedup.
@@ -1913,7 +2273,9 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 	const valType string = "[]byte"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1924,7 +2286,9 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -1946,7 +2310,9 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 	const valType string = "[]uint8"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1957,7 +2323,9 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -1979,7 +2347,9 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 	const valType string = "bool"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -1990,7 +2360,9 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2012,7 +2384,9 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 	const valType string = "byte"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2023,7 +2397,9 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2045,7 +2421,9 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 	const valType string = "float32"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2056,7 +2434,9 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2078,7 +2458,9 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 	const valType string = "float64"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2089,7 +2471,9 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2111,7 +2495,9 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 	const valType string = "int"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2122,7 +2508,9 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2144,7 +2532,9 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 	const valType string = "int16"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2155,7 +2545,9 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2177,7 +2569,9 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 	const valType string = "int32"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2188,7 +2582,9 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2210,7 +2606,9 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 	const valType string = "int64"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2221,7 +2619,9 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2243,7 +2643,9 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 	const valType string = "int8"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2254,7 +2656,9 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2276,7 +2680,9 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 	const valType string = "rune"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2287,7 +2693,9 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2309,7 +2717,9 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 	const valType string = "string"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2320,7 +2730,9 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2342,7 +2754,9 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 	const valType string = "uint"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2353,7 +2767,9 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2375,7 +2791,9 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 	const valType string = "uint16"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2386,7 +2804,9 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2408,7 +2828,9 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 	const valType string = "uint32"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2419,7 +2841,9 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2441,7 +2865,9 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 	const valType string = "uint64"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2452,7 +2878,9 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2474,7 +2902,9 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 	const valType string = "uint8"
 
 	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil { return val, err }
+	if err != nil {
+		return val, err
+	}
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
@@ -2485,7 +2915,9 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 
 	// Note: hasCol was checked by ColType() above. No need to call HasCell()
 	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow { return val, err }
+	if !hasRow {
+		return val, err
+	}
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average %25 speedup.
@@ -2565,25 +2997,26 @@ func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int
 */
 
 type zeroVals struct {
-	byteSliceVal []byte
+	byteSliceVal  []byte
 	uint8SliceVal []uint8
-	boolVal bool
-	byteVal byte
-	float32Val float32
-	float64Val float64
-	intVal int
-	int16Val int16
-	int32Val int32
-	int64Val int64
-	int8Val int8
-	runeVal rune
-	stringVal string
-	uintVal uint
-	uint16Val uint16
-	uint32Val uint32
-	uint64Val uint64
-	uint8Val uint8
+	boolVal       bool
+	byteVal       byte
+	float32Val    float32
+	float64Val    float64
+	intVal        int
+	int16Val      int16
+	int32Val      int32
+	int64Val      int64
+	int8Val       int8
+	runeVal       rune
+	stringVal     string
+	uintVal       uint
+	uint16Val     uint16
+	uint32Val     uint32
+	uint64Val     uint64
+	uint8Val      uint8
 }
+
 var zeroVal zeroVals
 
 func init() {
@@ -2610,67 +3043,69 @@ func init() {
 
 func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
 
-	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s: table is <nil>", funcName())
+	}
 
 	var colType = table.colTypes[colIndex]
 
 	switch colType {
-		case "[]byte":
+	case "[]byte":
 		// This is a x10 tuning strategy to avoid type conversion []byte([]byte{})
-			table.rows[rowIndex][colIndex] = zeroVal.byteSliceVal
-		case "[]uint8":
+		table.rows[rowIndex][colIndex] = zeroVal.byteSliceVal
+	case "[]uint8":
 		// This is a x10 tuning strategy to avoid type conversion []uint8([]uint8{})
-			table.rows[rowIndex][colIndex] = zeroVal.uint8SliceVal
-		case "bool":
+		table.rows[rowIndex][colIndex] = zeroVal.uint8SliceVal
+	case "bool":
 		// This is a x10 tuning strategy to avoid type conversion bool(false)
-			table.rows[rowIndex][colIndex] = zeroVal.boolVal
-		case "byte":
+		table.rows[rowIndex][colIndex] = zeroVal.boolVal
+	case "byte":
 		// This is a x10 tuning strategy to avoid type conversion byte(0)
-			table.rows[rowIndex][colIndex] = zeroVal.byteVal
-		case "float32":
+		table.rows[rowIndex][colIndex] = zeroVal.byteVal
+	case "float32":
 		// This is a x10 tuning strategy to avoid type conversion float32(0.0)
-			table.rows[rowIndex][colIndex] = zeroVal.float32Val
-		case "float64":
+		table.rows[rowIndex][colIndex] = zeroVal.float32Val
+	case "float64":
 		// This is a x10 tuning strategy to avoid type conversion float64(0.0)
-			table.rows[rowIndex][colIndex] = zeroVal.float64Val
-		case "int":
+		table.rows[rowIndex][colIndex] = zeroVal.float64Val
+	case "int":
 		// This is a x10 tuning strategy to avoid type conversion int(0)
-			table.rows[rowIndex][colIndex] = zeroVal.intVal
-		case "int16":
+		table.rows[rowIndex][colIndex] = zeroVal.intVal
+	case "int16":
 		// This is a x10 tuning strategy to avoid type conversion int16(0)
-			table.rows[rowIndex][colIndex] = zeroVal.int16Val
-		case "int32":
+		table.rows[rowIndex][colIndex] = zeroVal.int16Val
+	case "int32":
 		// This is a x10 tuning strategy to avoid type conversion int32(0)
-			table.rows[rowIndex][colIndex] = zeroVal.int32Val
-		case "int64":
+		table.rows[rowIndex][colIndex] = zeroVal.int32Val
+	case "int64":
 		// This is a x10 tuning strategy to avoid type conversion int64(0)
-			table.rows[rowIndex][colIndex] = zeroVal.int64Val
-		case "int8":
+		table.rows[rowIndex][colIndex] = zeroVal.int64Val
+	case "int8":
 		// This is a x10 tuning strategy to avoid type conversion int8(0)
-			table.rows[rowIndex][colIndex] = zeroVal.int8Val
-		case "rune":
+		table.rows[rowIndex][colIndex] = zeroVal.int8Val
+	case "rune":
 		// This is a x10 tuning strategy to avoid type conversion rune(0)
-			table.rows[rowIndex][colIndex] = zeroVal.runeVal
-		case "string":
+		table.rows[rowIndex][colIndex] = zeroVal.runeVal
+	case "string":
 		// This is a x10 tuning strategy to avoid type conversion string("")
-			table.rows[rowIndex][colIndex] = zeroVal.stringVal
-		case "uint":
+		table.rows[rowIndex][colIndex] = zeroVal.stringVal
+	case "uint":
 		// This is a x10 tuning strategy to avoid type conversion uint(0)
-			table.rows[rowIndex][colIndex] = zeroVal.uintVal
-		case "uint16":
+		table.rows[rowIndex][colIndex] = zeroVal.uintVal
+	case "uint16":
 		// This is a x10 tuning strategy to avoid type conversion uint16(0)
-			table.rows[rowIndex][colIndex] = zeroVal.uint16Val
-		case "uint32":
+		table.rows[rowIndex][colIndex] = zeroVal.uint16Val
+	case "uint32":
 		// This is a x10 tuning strategy to avoid type conversion uint32(0)
-			table.rows[rowIndex][colIndex] = zeroVal.uint32Val
-		case "uint64":
+		table.rows[rowIndex][colIndex] = zeroVal.uint32Val
+	case "uint64":
 		// This is a x10 tuning strategy to avoid type conversion uint64(0)
-			table.rows[rowIndex][colIndex] = zeroVal.uint64Val
-		case "uint8":
+		table.rows[rowIndex][colIndex] = zeroVal.uint64Val
+	case "uint8":
 		// This is a x10 tuning strategy to avoid type conversion uint8(0)
-			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
-		default:
-			return fmt.Errorf("invalid type: %s", "uint8")
+		table.rows[rowIndex][colIndex] = zeroVal.uint8Val
+	default:
+		return fmt.Errorf("invalid type: %s", "uint8")
 	}
 
 	return nil
@@ -2678,67 +3113,69 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 
 func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 
-	if table == nil { return fmt.Errorf("table.%s: table is <nil>", funcName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s: table is <nil>", funcName())
+	}
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		var colType string = table.colTypes[colIndex]
 		switch colType {
-			case "[]byte":
+		case "[]byte":
 			// This is a x10 tuning strategy to avoid type conversion []byte([]byte{})
-				table.rows[rowIndex][colIndex] = zeroVal.byteSliceVal
-			case "[]uint8":
+			table.rows[rowIndex][colIndex] = zeroVal.byteSliceVal
+		case "[]uint8":
 			// This is a x10 tuning strategy to avoid type conversion []uint8([]uint8{})
-				table.rows[rowIndex][colIndex] = zeroVal.uint8SliceVal
-			case "bool":
+			table.rows[rowIndex][colIndex] = zeroVal.uint8SliceVal
+		case "bool":
 			// This is a x10 tuning strategy to avoid type conversion bool(false)
-				table.rows[rowIndex][colIndex] = zeroVal.boolVal
-			case "byte":
+			table.rows[rowIndex][colIndex] = zeroVal.boolVal
+		case "byte":
 			// This is a x10 tuning strategy to avoid type conversion byte(0)
-				table.rows[rowIndex][colIndex] = zeroVal.byteVal
-			case "float32":
+			table.rows[rowIndex][colIndex] = zeroVal.byteVal
+		case "float32":
 			// This is a x10 tuning strategy to avoid type conversion float32(0.0)
-				table.rows[rowIndex][colIndex] = zeroVal.float32Val
-			case "float64":
+			table.rows[rowIndex][colIndex] = zeroVal.float32Val
+		case "float64":
 			// This is a x10 tuning strategy to avoid type conversion float64(0.0)
-				table.rows[rowIndex][colIndex] = zeroVal.float64Val
-			case "int":
+			table.rows[rowIndex][colIndex] = zeroVal.float64Val
+		case "int":
 			// This is a x10 tuning strategy to avoid type conversion int(0)
-				table.rows[rowIndex][colIndex] = zeroVal.intVal
-			case "int16":
+			table.rows[rowIndex][colIndex] = zeroVal.intVal
+		case "int16":
 			// This is a x10 tuning strategy to avoid type conversion int16(0)
-				table.rows[rowIndex][colIndex] = zeroVal.int16Val
-			case "int32":
+			table.rows[rowIndex][colIndex] = zeroVal.int16Val
+		case "int32":
 			// This is a x10 tuning strategy to avoid type conversion int32(0)
-				table.rows[rowIndex][colIndex] = zeroVal.int32Val
-			case "int64":
+			table.rows[rowIndex][colIndex] = zeroVal.int32Val
+		case "int64":
 			// This is a x10 tuning strategy to avoid type conversion int64(0)
-				table.rows[rowIndex][colIndex] = zeroVal.int64Val
-			case "int8":
+			table.rows[rowIndex][colIndex] = zeroVal.int64Val
+		case "int8":
 			// This is a x10 tuning strategy to avoid type conversion int8(0)
-				table.rows[rowIndex][colIndex] = zeroVal.int8Val
-			case "rune":
+			table.rows[rowIndex][colIndex] = zeroVal.int8Val
+		case "rune":
 			// This is a x10 tuning strategy to avoid type conversion rune(0)
-				table.rows[rowIndex][colIndex] = zeroVal.runeVal
-			case "string":
+			table.rows[rowIndex][colIndex] = zeroVal.runeVal
+		case "string":
 			// This is a x10 tuning strategy to avoid type conversion string("")
-				table.rows[rowIndex][colIndex] = zeroVal.stringVal
-			case "uint":
+			table.rows[rowIndex][colIndex] = zeroVal.stringVal
+		case "uint":
 			// This is a x10 tuning strategy to avoid type conversion uint(0)
-				table.rows[rowIndex][colIndex] = zeroVal.uintVal
-			case "uint16":
+			table.rows[rowIndex][colIndex] = zeroVal.uintVal
+		case "uint16":
 			// This is a x10 tuning strategy to avoid type conversion uint16(0)
-				table.rows[rowIndex][colIndex] = zeroVal.uint16Val
-			case "uint32":
+			table.rows[rowIndex][colIndex] = zeroVal.uint16Val
+		case "uint32":
 			// This is a x10 tuning strategy to avoid type conversion uint32(0)
-				table.rows[rowIndex][colIndex] = zeroVal.uint32Val
-			case "uint64":
+			table.rows[rowIndex][colIndex] = zeroVal.uint32Val
+		case "uint64":
 			// This is a x10 tuning strategy to avoid type conversion uint64(0)
-				table.rows[rowIndex][colIndex] = zeroVal.uint64Val
-			case "uint8":
+			table.rows[rowIndex][colIndex] = zeroVal.uint64Val
+		case "uint8":
 			// This is a x10 tuning strategy to avoid type conversion uint8(0)
-				table.rows[rowIndex][colIndex] = zeroVal.uint8Val
-			default:
-				return fmt.Errorf("invalid type: %s", "uint8")
+			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
+		default:
+			return fmt.Errorf("invalid type: %s", "uint8")
 		}
 	}
 

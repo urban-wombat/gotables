@@ -234,3 +234,4 @@ TestTableSet_FileName.txt
 *.exe
 mem.profile
 rmswap.sh
+helpers.go.COMPARE
