@@ -3528,12 +3528,12 @@ func (table *Table) ShuffleRandom() error {
 
 	On error the input string is returned (not an empty string).
 	This is unusual but we do that here to avoid crunching it in the calling function:
-	```
-	otherwiseMightBeCrunched, err = GoFmtFileString(otherwiseMightBeCrunched)
-	if err != nil {
-		// otherwiseMightBeCrunched is still intact!
-	}
-	```
+
+		otherwiseMightBeCrunched, err = GoFmtFileString(otherwiseMightBeCrunched)
+		if err != nil {
+			// otherwiseMightBeCrunched is still intact!
+		}
+
 	Because this function calls out to gofmt in the operating system, the potential
 	for failure is possible (and not testable during development) on other machines.
 	Hence a more forgiving return of its input string so as to avoid crunching user data.
