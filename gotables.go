@@ -28,7 +28,8 @@ import (
 //	"unicode/utf8"
 )
 
-//	"golang.org/x/text/width"	// Would like to be able to call width.Narrow() on wide glyphs.
+//	"golang.org/x/text/width"
+// Would like to be able to call width.Narrow() on wide glyphs.
 //	Seems unavailable: http://docs.activestate.com/activego/1.8/pkg/golang.org/x/text/width
 //	                   https://godoc.org/golang.org/x/text/width#example-Transformer--Narrow
 
