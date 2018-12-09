@@ -3522,12 +3522,21 @@ func (table *Table) ShuffleRandom() error {
 }
 
 /*
-	Pipe a Go program file (as a string) through gofmt and return its output.
+	Pipe a Go program file (as a string) through Go tool gofmt and return its output.
 
-	This is used to tidy up generated Go source code.
+	Used to tidy up generated Go source code.
 
-	It is unusual to return an input string on error but we do that here
-	to not crunch it in the calling function.
+	On error the input string is returned (not an empty string).
+	This is unusual but we do that here to avoid crunching it in the calling function:
+	```
+	otherwiseMightBeCrunched, err = GoFmtFileString(otherwiseMightBeCrunched)
+	if err != nil {
+		// otherwiseMightBeCrunched is still intact!
+	}
+	```
+	Because this function calls out to gofmt in the operating system, the potential
+	for failure is possible (and not testable during development) on other machines.
+	Hence a more forgiving return of its input string so as to avoid crunching user data.
 */
 func GoFmtFileString(fileString string) (formattedFileString string, err error) {
 	// We return the input string even if error, so as to not crunch it in the calling function.
