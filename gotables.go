@@ -2213,7 +2213,7 @@ func (table *Table) IsValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
-//	if printcallers { PrintCaller() }
+	if printcallers { PrintCaller() }
 
 	// These are serious errors. Hence calls to debug.PrintStack()
 	if table.tableName == "" {
@@ -2399,15 +2399,15 @@ func funcSource() string {
 /*
 	See 1: https://stackoverflow.com/questions/35212985/is-it-possible-get-information-about-caller-function-in-golang
 
-	See 2: http://moazzam-khan.com/blog/golang-get-the-function-callers-name/
+	See 2: http://moazzam-khan.com/blog/golang-get-the-function-callers-name
 
-	This is a blend of both (above URLs) examples. Provides: 
+	This is a blend of both (above URLs) examples. Provides:-
 
-	(1) The name of the function called.
+	(1) The function name called.
 
-	(2) The file name and line number of the call.
+	(2) The function name of the caller.
 
-	(3) The function name of the caller.
+	(2) The file name[line number] at the call.
 
 	This is intentionally a print-only function because calling it from another function (other than the one being
 	tracked) will change the calling information by nesting to an additional level.
