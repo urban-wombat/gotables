@@ -3526,7 +3526,7 @@ func (table *Table) ShuffleRandom() error {
 
 	Use it to tidy up generated Go source code before writing it to file.
 
-	On error the input string is returned, not just an empty string.
+	On error the input string is returned unchanged, not just an empty string.
 	This is unusual but we do that here to avoid crunching the in the calling function
 	if it happens to be called like this:
 
