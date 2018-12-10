@@ -3537,7 +3537,7 @@ func (table *Table) ShuffleRandom() error {
 		// goProgramString has been formatted by gofmt
 
 	Because this function calls out to gofmt in the operating system, the potential
-	for failure is possible on some machines (and not testable during development).
+	for failure is possible on some machines (and not testable by me during development).
 	Hence a more forgiving return of its input string so as to avoid crunching user data.
 */
 func GoFmtProgramString(programString string) (formattedProgramString string, err error) {
