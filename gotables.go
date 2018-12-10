@@ -3064,7 +3064,7 @@ func (tableSet *TableSet) Copy(copyRows bool) (*TableSet, error) {
 /*
 	Create a new table from a range of rows in this table searched by keys.
 */
-func NewTableFromRowsBySearchRange(table *Table, newTableName string, searchValues ...interface{}) (*Table, error) {
+func (table *Table) NewTableFromRowsBySearchRange(newTableName string, searchValues ...interface{}) (*Table, error) {
 	var newTable *Table
 	var err error
 
