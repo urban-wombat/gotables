@@ -3532,7 +3532,7 @@ func (table *Table) ShuffleRandom() error {
 
 		goProgramString, err = GoFmtProgramString(goProgramString)
 		if err != nil {
-			// goProgramString is unchanged
+			// goProgramString is unchanged, not crunched
 		}
 		// goProgramString has been formatted by gofmt
 

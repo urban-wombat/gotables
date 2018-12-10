@@ -7537,7 +7537,8 @@ func stringSliceEquals(slice1, slice2 []string) bool {
 	careful tweaking to get it right. The test output
 	reported spaces expected, but the actual output
 	of GoFmtProgramString() included 5 tabs, which
-	are now in the Output area.
+	are now in the Output area. A larger example
+	would have been very tedious to get right.
 
 	hasTabs := strings.Contains(programString, "\t")
 	fmt.Printf("hasTabs = %t\n", hasTabs)
