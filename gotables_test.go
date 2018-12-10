@@ -7540,16 +7540,16 @@ func stringSliceEquals(slice1, slice2 []string) bool {
 	are now in the Output area. A larger example
 	would have been very tedious to get right.
 
-	hasTabs := strings.Contains(programString, "\t");
+	hasTabs := strings.Contains(goProgramString, "\t");
 	fmt.Printf("hasTabs = %t\n", hasTabs)
 
-	numTabs := strings.Count(programString, "\t");
+	numTabs := strings.Count(goProgramString, "\t");
 	fmt.Printf("numTabs = %d\n", numTabs)
 */
 func ExampleGoFmtProgramString() {
 	var err error
 
-programString :=
+goProgramString :=
 `package main
 import "os"
 func main() {
@@ -7557,10 +7557,10 @@ func main() {
 	if i != 42 { os.Exit(1) }
 }`
 
-	programString, err = GoFmtProgramString(programString)
+	goProgramString, err = GoFmtProgramString(goProgramString)
 	if err != nil { log.Println(err) }
 
-	fmt.Println(programString)
+	fmt.Println(goProgramString)
 
 	// Output:
 	// package main

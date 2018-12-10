@@ -3526,8 +3526,8 @@ func (table *Table) ShuffleRandom() error {
 
 	Use it to tidy up generated Go source code before writing it to file.
 
-	On error the input string is returned unchanged, not just an empty string.
-	This is unusual but we do that here to avoid crunching the in the calling function
+	On error the input string is returned unchanged, not an empty "" string.
+	This is unusual but we do that here to avoid crunching goProgramString in the calling function
 	if it happens to be called like this:
 
 		goProgramString, err = GoFmtProgramString(goProgramString)
@@ -3540,15 +3540,15 @@ func (table *Table) ShuffleRandom() error {
 	for failure is possible on some machines (and not testable by me during development).
 	Hence a more forgiving return of its input string so as to avoid crunching user data.
 */
-func GoFmtProgramString(programString string) (formattedProgramString string, err error) {
+func GoFmtProgramString(goProgramString string) (formattedGoProgramString string, err error) {
 	// We return the input string even if error, so as to not crunch it in the calling function.
-	formattedProgramString = programString
+	formattedGoProgramString = goProgramString
 
 	var cmd *exec.Cmd
 	cmd = exec.Command("gofmt")
 
 	var fileBytes []byte
-	fileBytes = []byte(programString)
+	fileBytes = []byte(goProgramString)
 	cmd.Stdin = bytes.NewBuffer(fileBytes)
 
 	var out bytes.Buffer
@@ -3557,7 +3557,7 @@ func GoFmtProgramString(programString string) (formattedProgramString string, er
 	err = cmd.Run()
 	if err != nil { return }
 
-	formattedProgramString = out.String()
+	formattedGoProgramString = out.String()
 
 	return
 }
