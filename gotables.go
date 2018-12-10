@@ -3522,31 +3522,33 @@ func (table *Table) ShuffleRandom() error {
 }
 
 /*
-	Pipe a Go program file (as a string) through Go tool gofmt and return its output.
+	Pipe a Go program file (as a string) through the Go tool gofmt and return its output.
 
-	Used to tidy up generated Go source code.
+	Use it to tidy up generated Go source code before writing it to file.
 
-	On error the input string is returned (not an empty string).
-	This is unusual but we do that here to avoid crunching it in the calling function:
+	On error the input string is returned, not just an empty string.
+	This is unusual but we do that here to avoid crunching the in the calling function
+	if it happens to be called like this:
 
-		otherwiseMightBeCrunched, err = GoFmtFileString(otherwiseMightBeCrunched)
+		goProgramString, err = GoFmtProgramString(goProgramString)
 		if err != nil {
-			// otherwiseMightBeCrunched is still intact!
+			// goProgramString is unchanged
 		}
+		// goProgramString has been formatted by gofmt
 
 	Because this function calls out to gofmt in the operating system, the potential
-	for failure is possible (and not testable during development) on other machines.
+	for failure is possible on some machines (and not testable during development).
 	Hence a more forgiving return of its input string so as to avoid crunching user data.
 */
-func GoFmtFileString(fileString string) (formattedFileString string, err error) {
+func GoFmtProgramString(programString string) (formattedProgramString string, err error) {
 	// We return the input string even if error, so as to not crunch it in the calling function.
-	formattedFileString = fileString
+	formattedProgramString = programString
 
 	var cmd *exec.Cmd
 	cmd = exec.Command("gofmt")
 
 	var fileBytes []byte
-	fileBytes = []byte(fileString)
+	fileBytes = []byte(programString)
 	cmd.Stdin = bytes.NewBuffer(fileBytes)
 
 	var out bytes.Buffer
@@ -3555,7 +3557,7 @@ func GoFmtFileString(fileString string) (formattedFileString string, err error) 
 	err = cmd.Run()
 	if err != nil { return }
 
-	formattedFileString = out.String()
+	formattedProgramString = out.String()
 
 	return
 }
