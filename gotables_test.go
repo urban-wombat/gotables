@@ -7530,3 +7530,46 @@ func stringSliceEquals(slice1, slice2 []string) bool {
 
 	return true
 }
+
+
+/*
+	NOTE: ExampleGoFmtProgramString() required some
+	careful tweaking to get it right. The test output
+	reported spaces expected, but the actual output
+	of GoFmtProgramString() included 5 tabs, which
+	are now in the Output area.
+
+	hasTabs := strings.Contains(programString, "\t")
+	fmt.Printf("hasTabs = %t\n", hasTabs)
+
+	numTabs := strings.Count(programString, "\t")
+	fmt.Printf("numTabs = %d\n", numTabs)
+*/
+func ExampleGoFmtProgramString() {
+	var err error
+
+programString :=
+`package main
+import "os"
+func main() {
+	i := 42
+	if i != 42 { os.Exit(1) }
+}`
+
+	programString, err = GoFmtProgramString(programString)
+	if err != nil { log.Println(err) }
+
+	fmt.Println(programString)
+
+	// Output:
+	// package main
+	//
+	// import "os"
+	// 
+	// func main() {
+	// 	i := 42
+	// 	if i != 42 {
+	// 		os.Exit(1)
+	// 	}
+	// }
+}
