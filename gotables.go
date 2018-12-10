@@ -2398,11 +2398,17 @@ func funcSource() string {
 
 /*
 	See 1: https://stackoverflow.com/questions/35212985/is-it-possible-get-information-about-caller-function-in-golang
+
 	See 2: http://moazzam-khan.com/blog/golang-get-the-function-callers-name/
+
 	This is a blend of both (above URLs) examples. Provides: 
+
 	(1) The name of the function called.
+
 	(2) The file name and line number of the call.
+
 	(3) The function name of the caller.
+
 	This is intentionally a print-only function because calling it from another function (other than the one being
 	tracked) will change the calling information by nesting to an additional level.
 */
