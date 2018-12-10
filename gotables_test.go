@@ -7540,10 +7540,10 @@ func stringSliceEquals(slice1, slice2 []string) bool {
 	are now in the Output area. A larger example
 	would have been very tedious to get right.
 
-	hasTabs := strings.Contains(programString, "\t")
+	hasTabs := strings.Contains(programString, "\t");
 	fmt.Printf("hasTabs = %t\n", hasTabs)
 
-	numTabs := strings.Count(programString, "\t")
+	numTabs := strings.Count(programString, "\t");
 	fmt.Printf("numTabs = %d\n", numTabs)
 */
 func ExampleGoFmtProgramString() {
