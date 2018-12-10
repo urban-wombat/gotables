@@ -2466,10 +2466,6 @@ func PrintCaller() {
 	_, _ = fmt.Fprintf(os.Stderr, "%s called by %s at %s\n", calledName, callerName, callerFile)
 }
 
-func PrintStderr(s string) {
-	_, _ = fmt.Fprintf(os.Stderr, "%s", s)
-}
-
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	if table == nil { return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", funcSource(), funcName()) }
 
