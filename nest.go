@@ -117,7 +117,7 @@ func (table *Table) Nest(nestable *Table, nestColName string) error {
 		}
 
 		nestTableName := nestColName
-		newTable, err := NewTableFromRows(nestable, nestTableName, firstRow, lastRow)
+		newTable, err := nestable.NewTableFromRows(nestTableName, firstRow, lastRow)
 		if err != nil {
 			return err
 		}
