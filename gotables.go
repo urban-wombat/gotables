@@ -61,8 +61,6 @@ const printcallers    = false
 const printstack bool = false
 const todo bool       = false
 
-var where = log.Print
-
 func init() {
 /*
 	if debugging {
@@ -75,6 +73,7 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 //	log.SetOutput(os.Stderr)
 }
+var where = log.Print
 
 /*
 #####################################################################################
