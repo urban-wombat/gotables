@@ -1544,8 +1544,8 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 
 	// Delete colName from colNamesMap. This has to come AFTER deleting the colName from colNames.
 	delete(table.colNamesMap, colName)
-	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-		table.colNamesMap[table.colNames[colIndex]] = colIndex
+	for localColIndex := 0; localColIndex < len(table.colNames); localColIndex++ {
+		table.colNamesMap[table.colNames[localColIndex]] = localColIndex
 	}
 
 	// From Ivo Balbaert p182 for deleting a single element from a slice.
