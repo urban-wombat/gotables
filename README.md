@@ -38,7 +38,7 @@ Go (golang) Table data format is simple and self-describing.
 Often data and configurations can be expressed best as tables, or can be flattened or normalised into tables.
 And events which are simple structs (or records) can be batched into tables for transmission.
 
-	`go get github.com/urban-wombat/gotables`
+	`go get -u github.com/urban-wombat/gotables`
 
 ## Here's the `gotables` API ...
 
