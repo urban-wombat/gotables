@@ -1,3 +1,5 @@
+`go get -u github.com/urban-wombat/gotables`
+
 `gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]`
 
 Echo a file of `gotables` to stdout, or just one table with -t \<this-table-only\>
