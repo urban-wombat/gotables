@@ -36,9 +36,9 @@ import (
 
 type Flags struct {
 	f string	// gotables file
-	p string	// piped input from Stdin (instead of -f)
 	t string	// table
 	r string	// rotate this table in one direction or the other (if possible)
+	pipe bool	// pipe input
 	h bool		// help
 }
 var flags Flags
@@ -57,37 +57,44 @@ func init() {
 
 func initFlags() {
 	flag.StringVar(&flags.f, "f", "", fmt.Sprintf("tables file"))
-	flag.StringVar(&flags.p, "-", "", fmt.Sprintf("piped input"))
 	flag.StringVar(&flags.t, "t", "", fmt.Sprintf("this table"))
 	flag.StringVar(&flags.r, "r", "", fmt.Sprintf("rotate table"))
+	flag.BoolVar(&flags.pipe, "-", false, fmt.Sprintf("piped input"))
 	flag.BoolVar(&flags.h, "h", false, fmt.Sprintf("print gotecho usage"))
 
 	flag.Parse()
 
-	const (
-		compulsoryFlag = true
-		optionalFlag = false
-	)
-
+/*
 	// Compulsory flag.
-	_, err := util.CheckStringFlag("f", flags.f, compulsoryFlag)
-	if err != nil {
+	exists, err := util.CheckStringFlag("f", flags.f, util.FlagRequired)
+	if !exists {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
 		printUsage()
 		os.Exit(1)
 	}
+*/
+	// Optional flag.
+	_, err := util.CheckStringFlag("f", flags.f, util.FlagOptional)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		printUsage()
+		os.Exit(1)
+	}
+	// If we get past here, -f has been provided and has an argument.
 
 	if flags.h {
 		printUsage()
 		os.Exit(2)
 	}
 
+/*
 	if len(os.Args) == 1 {
 		// No args.
 		printUsage()
 		os.Exit(3)
 	}
+*/
 }
 
 func progName() string {
@@ -97,9 +104,10 @@ func progName() string {
 
 func printUsage() {
 	var usageSlice = []string {
-		"usage:   gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]",
-		"purpose: echo a file of tables to stdout",
-		"flags:   -f  gotables-file    Input file containing a gotables.TableSet (in text format)",
+		"usage:   gotecho -f <file> [-t <this-table-only>] [-r <rotate-table>]",
+		"         If no -f <file> is specified, gotecho searches standard input.",
+		"purpose: echo a file of gotables tables to stdout",
+		"flags:   -f  <gotables-file>  Input file text file containing a gotables.TableSet",
 		"         -t  this-table-only  Echo this table only",
 		"         -r  rotate-table     Rotate this table (from tabular-to-struct or struct-to-tabular)",
 		"                              Note: Rotate tabular-to-struct is ignored if table has multiple rows",
@@ -127,11 +135,13 @@ func main() {
 	var file string
 	var tables *gotables.TableSet
 
+/*
 	if len(os.Args) <= 1 {
 		// No file arguments provided.
 		printUsage()
 		os.Exit(4)
 	}
+*/
 
 	// Clumsy way to avoid multiple files being specified with -f
 	// Only possible because we are sure what the max possible args can be.
@@ -143,12 +153,35 @@ func main() {
 		os.Exit(5)
 	}
 
-	file = flags.f
-	tables, err = gotables.NewTableSetFromFile(file)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-		os.Exit(6)
-	} else if tables.TableCount() == 0 {
+	if flags.f != "" {
+		file = flags.f
+		tables, err = gotables.NewTableSetFromFile(file)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+			os.Exit(6)
+		}
+	} else {	// Pipe from Stdin.
+		canRead, err := util.CanReadFromPipe()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+			os.Exit(6)
+		}
+		if canRead {
+where("gulping")
+			input, err := util.GulpFromPipe()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+				os.Exit(6)
+			}
+			tables, err = gotables.NewTableSetFromString(input)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+				os.Exit(6)
+			}
+		}
+	}
+
+	if tables.TableCount() == 0 {
 		fmt.Fprintf(os.Stderr, "%s (warning: file empty)\n", file)
 		os.Exit(7)
 	}
@@ -169,7 +202,7 @@ func main() {
 		} else {	// is tabular
 			// Print this table as a struct (if possible). If more than 1 row, must be printed as tabular.
 			if table.RowCount() > 1 {
-				finalMsg = fmt.Sprintf("Warning: -r %s: table [%s] with multiple (%d) rows cannot be rotated from tabular to struct shape",
+				finalMsg = fmt.Sprintf("Warning: -r %s: table [%s] with multiple %d rows cannot be rotated from tabular to struct shape",
 					table.Name(), table.Name(), table.RowCount())
 			} else {
 				// Rotate table from tabular to struct.
