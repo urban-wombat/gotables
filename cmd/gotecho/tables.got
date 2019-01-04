@@ -1,0 +1,46 @@
+# tables.got
+
+# This is a gotables file (or string) and is one way to
+# create and populate a *gotables.TableSet object containing
+# *gotables.Table objects.
+
+# When used with the flattablesc utility, it is used as a
+# schema for generating a Google FlatBuffers *.fbs schema file.
+
+# flattablesc is a code generator. Among other things, it
+# generates a *_test.go file including Benchtest functions.
+# The data in the current tables.got file is used in all
+# of those Benchtest functions. This makes comparisons between
+# bench tests fairer. So populate this file with the amount
+# of data you would like to have in your bench tests.
+
+[MyXyzTable]
+    x       y       z
+int16 float32 float64
+    4       5       6
+   44      55      66
+  444     555     666
+ 4444    5555    6666
+   16      32      64
+
+[StringsAndThings]
+flintstones nums spain              female   myui32
+string      int8 string             bool     uint32
+"Fred"         0 "The rain"         false         0
+"Wilma"        1 "in Spain"         true         11
+"Barney"       2 "stays mainly"     false        22
+"Betty"        3 "in"               true         33
+"Bam Bam"      4 "the"              false        44
+"Pebbles"      5 "plain."           true         55
+"Dino"         6 "Flintstone's pet" false        66
+"Hoppy"        7 "Rubble's pet"     false        77
+
+[Wombats]
+housingPolicy string = "burrow"
+topSpeedKmH int8     = 40
+species string       = "Vombatus"
+class string         = "Mammalia"
+wild bool            = true
+
+# Note: The columns are padded out here for readability only.
+#       The gotables parser ignores additional whitespace between cells.

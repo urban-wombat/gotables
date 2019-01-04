@@ -30,6 +30,7 @@ import (
 	"log"
 	"os"
 	"github.com/urban-wombat/gotables"
+	"github.com/urban-wombat/util"
 //	"strings"
 )
 
@@ -61,10 +62,24 @@ func initFlags() {
 
 	flag.Parse()
 
+	const (
+		compulsoryFlag = true
+		optionalFlag = false
+	)
+
 	// Compulsory flag.
+/*
 	if flags.f == "" {
 		// -f has been followed by an empty argument.
-		fmt.Fprintf(os.Stderr, "Expecting infile: -f file\n")
+		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
+		printUsage()
+		os.Exit(1)
+	}
+*/
+	_, err := util.CheckStringFlag("f", flags.f, compulsoryFlag)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
 		printUsage()
 		os.Exit(1)
 	}
@@ -137,7 +152,7 @@ func main() {
 	file = flags.f
 	tables, err = gotables.NewTableSetFromFile(file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "SYNTAX ERROR: %v\n", err)
+		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 		os.Exit(6)
 	} else if tables.TableCount() == 0 {
 		fmt.Fprintf(os.Stderr, "%s (warning: file empty)\n", file)
