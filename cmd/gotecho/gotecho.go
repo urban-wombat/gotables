@@ -36,6 +36,7 @@ import (
 
 type Flags struct {
 	f string	// gotables file
+	p string	// piped input from Stdin (instead of -f)
 	t string	// table
 	r string	// rotate this table in one direction or the other (if possible)
 	h bool		// help
@@ -56,6 +57,7 @@ func init() {
 
 func initFlags() {
 	flag.StringVar(&flags.f, "f", "", fmt.Sprintf("tables file"))
+	flag.StringVar(&flags.p, "-", "", fmt.Sprintf("piped input"))
 	flag.StringVar(&flags.t, "t", "", fmt.Sprintf("this table"))
 	flag.StringVar(&flags.r, "r", "", fmt.Sprintf("rotate table"))
 	flag.BoolVar(&flags.h, "h", false, fmt.Sprintf("print gotecho usage"))
@@ -68,14 +70,6 @@ func initFlags() {
 	)
 
 	// Compulsory flag.
-/*
-	if flags.f == "" {
-		// -f has been followed by an empty argument.
-		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
-		printUsage()
-		os.Exit(1)
-	}
-*/
 	_, err := util.CheckStringFlag("f", flags.f, compulsoryFlag)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
