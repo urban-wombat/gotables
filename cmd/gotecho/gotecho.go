@@ -32,10 +32,14 @@ import (
 	"github.com/urban-wombat/gotables"
 	"github.com/urban-wombat/util"
 //	"strings"
+	"time"
 )
 
 type Flags struct {
-	f string	// gotables file
+//	f string	// gotables file
+	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go#
+	// See: https://golang.org/pkg/flag
+	f util.StringFlag	// gotables file
 	t string	// table
 	r string	// rotate this table in one direction or the other (if possible)
 	pipe bool	// pipe input
@@ -56,11 +60,12 @@ func init() {
 }
 
 func initFlags() {
-	flag.StringVar(&flags.f, "f", "", fmt.Sprintf("tables file"))
-	flag.StringVar(&flags.t, "t", "", fmt.Sprintf("this table"))
-	flag.StringVar(&flags.r, "r", "", fmt.Sprintf("rotate table"))
-	flag.BoolVar(&flags.pipe, "-", false, fmt.Sprintf("piped input"))
-	flag.BoolVar(&flags.h, "h", false, fmt.Sprintf("print gotecho usage"))
+//	flag.StringVar(&flags.f,  "f", "",    "tables file")
+	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
+	flag.StringVar(&flags.t,  "t", "",    "this table")
+	flag.StringVar(&flags.r,  "r", "",    "rotate table")
+	flag.BoolVar(&flags.pipe, "-", false, "piped input")
+	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
 
 	flag.Parse()
 
@@ -71,17 +76,19 @@ func initFlags() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
 		printUsage()
-		os.Exit(1)
+		os.Exit(111)
 	}
 */
+/*
 	// Optional flag.
 	_, err := util.CheckStringFlag("f", flags.f, util.FlagOptional)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		printUsage()
-		os.Exit(1)
+		os.Exit(111)
 	}
 	// If we get past here, -f has been provided and has an argument.
+*/
 
 	if flags.h {
 		printUsage()
@@ -104,7 +111,7 @@ func progName() string {
 
 func printUsage() {
 	var usageSlice = []string {
-		"usage:   gotecho -f <file> [-t <this-table-only>] [-r <rotate-table>]",
+		"usage:   gotecho [-f <file>] [-t <this-table-only>] [-r <rotate-table>]",
 		"         If no -f <file> is specified, gotecho searches standard input.",
 		"purpose: echo a file of gotables tables to stdout",
 		"flags:   -f  <gotables-file>  Input file text file containing a gotables.TableSet",
@@ -153,22 +160,34 @@ func main() {
 		os.Exit(5)
 	}
 
-	if flags.f != "" {
-		file = flags.f
+/*
+where(fmt.Sprintf("flags.f.Exists() = %t", flags.f.Exists()))
+where(fmt.Sprintf("flags.f.IsSet()  = %t", flags.f.IsSet()))
+where(fmt.Sprintf("flags.f.String() = %s", flags.f.String()))
+where(fmt.Sprintf("flags.f.Error()  = %v", flags.f.Error()))
+*/
+
+	if flags.f.Error() != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: -f %v\n", flags.f.Error())
+		os.Exit(16)
+	}
+	if flags.f.Exists() && flags.f.IsSet() {
+		file = flags.f.String()
 		tables, err = gotables.NewTableSetFromFile(file)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			os.Exit(6)
 		}
 	} else {	// Pipe from Stdin.
-		canRead, err := util.CanReadFromPipe()
+		canPipe, err := util.CanReadFromPipe()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			os.Exit(6)
 		}
-		if canRead {
-where("gulping")
-			input, err := util.GulpFromPipe()
+		if canPipe {
+where("BEFORE util.GulpFromPipeWithTimeout()")
+			input, err := util.GulpFromPipeWithTimeout(3 * time.Second)
+where("AFTER  util.GulpFromPipeWithTimeout()")
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 				os.Exit(6)
@@ -178,6 +197,10 @@ where("gulping")
 				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 				os.Exit(6)
 			}
+		} else {
+			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use -f <file> instead.\n", err)
+			printUsage()
+			os.Exit(6)
 		}
 	}
 

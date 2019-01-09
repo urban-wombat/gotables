@@ -1,0 +1,9 @@
+[Struct]
+i int = 42
+
+[Table]
+s
+string
+"Hello"
+"World"
+
