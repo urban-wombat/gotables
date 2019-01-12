@@ -32,7 +32,7 @@ import (
 	"github.com/urban-wombat/gotables"
 	"github.com/urban-wombat/util"
 //	"strings"
-	"time"
+//	"time"
 )
 
 type Flags struct {
@@ -161,10 +161,10 @@ func main() {
 	}
 
 /*
-where(fmt.Sprintf("flags.f.Exists() = %t", flags.f.Exists()))
-where(fmt.Sprintf("flags.f.IsSet()  = %t", flags.f.IsSet()))
-where(fmt.Sprintf("flags.f.String() = %s", flags.f.String()))
-where(fmt.Sprintf("flags.f.Error()  = %v", flags.f.Error()))
+// where(fmt.Sprintf("flags.f.Exists() = %t", flags.f.Exists()))
+// where(fmt.Sprintf("flags.f.IsSet()  = %t", flags.f.IsSet()))
+// where(fmt.Sprintf("flags.f.String() = %s", flags.f.String()))
+// where(fmt.Sprintf("flags.f.Error()  = %v", flags.f.Error()))
 */
 
 	if flags.f.Error() != nil {
@@ -185,9 +185,10 @@ where(fmt.Sprintf("flags.f.Error()  = %v", flags.f.Error()))
 			os.Exit(6)
 		}
 		if canPipe {
-where("BEFORE util.GulpFromPipeWithTimeout()")
-			input, err := util.GulpFromPipeWithTimeout(3 * time.Second)
-where("AFTER  util.GulpFromPipeWithTimeout()")
+// where("BEFORE util.GulpFromPipeWithTimeout()")
+//			input, err := util.GulpFromPipeWithTimeout(3 * time.Second)
+			input, err := util.GulpFromPipe()
+// where("AFTER  util.GulpFromPipeWithTimeout()")
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 				os.Exit(6)

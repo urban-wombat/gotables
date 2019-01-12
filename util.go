@@ -70,11 +70,11 @@ func (sf *StringFlag) Set(s string) error {
 	return nil
 }
 
-func (sf *StringFlag) string() string {
+func (sf *StringFlag) String() string {
 	return sf.val
 }
 
-func (sf *StringFlag) isSet() bool {
+func (sf *StringFlag) IsSet() bool {
 	return sf.set
 }
 
@@ -82,7 +82,7 @@ func (sf *StringFlag) Exists() bool {
 	return sf.exists
 }
 
-func (sf *StringFlag) error() error {
+func (sf *StringFlag) Error() error {
 	return sf.err
 }
 
@@ -361,7 +361,7 @@ func wordSize() int {
 }
 
 // Check to see if this program can read piped input.
-func canReadFromPipe() (bool, error) {
+func CanReadFromPipe() (bool, error) {
 	info, err := os.Stdin.Stat()
 	if err != nil {
 		return false, err
@@ -374,7 +374,7 @@ func canReadFromPipe() (bool, error) {
 	return false, nil
 }
 
-func gulpFromPipeWithTimeout(timeout time.Duration) (input string, err error) {
+func GulpFromPipeWithTimeout(timeout time.Duration) (input string, err error) {
 where("GulpFromPipeWithTimeout")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 where("defer cancel()")
@@ -382,7 +382,7 @@ where("defer cancel()")
 
 where("BEFORE go input, err = GulpFromPipe()")
 	go func() {
-		input, err = gulpFromPipe()
+		input, err = GulpFromPipe()
 	}()
 where("AFTER go input, err = GulpFromPipe()")
 	select {
@@ -395,7 +395,7 @@ where("case <-ctx.Done():")
 }
 
 // Read and return piped input as a string.
-func gulpFromPipe() (string, error) {
+func GulpFromPipe() (string, error) {
 
 	reader := bufio.NewReader(os.Stdin)
 	var output []rune
