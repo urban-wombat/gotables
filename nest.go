@@ -4,8 +4,6 @@ package gotables
 
 import (
 	"fmt"
-
-	"github.com/urban-wombat/util"
 )
 
 /*
@@ -50,11 +48,11 @@ func (table *Table) Nest(nestable *Table, nestColName string) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(nestable, nestColName): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s(nestable, nestColName): table is <nil>", funcName())
 	}
 
 	if nestable == nil {
-		return fmt.Errorf("table.%s(nestable, nestColName): nestable is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s(nestable, nestColName): nestable is <nil>", funcName())
 	}
 
 	// Use whichever table has sort keys for the shared keys. table is dominant over nestable.

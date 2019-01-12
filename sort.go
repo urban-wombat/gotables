@@ -9,8 +9,6 @@ import (
 	"os"
 	"sort"
 	"strings"
-
-	"github.com/urban-wombat/util"
 )
 
 /*
@@ -77,7 +75,7 @@ type SortKeys []sortKey
 
 func (keys SortKeys) String() string {
 	if keys == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(SortKeys) SortKeys is <nil>\n", util.FuncSource(), util.FuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s(SortKeys) SortKeys is <nil>\n", funcSource(), funcName()))
 		return ""
 	}
 	var s string = "SortKeys["
@@ -93,7 +91,7 @@ func (keys SortKeys) String() string {
 // Returns a copy of the sort keys as a Table. Useful for debugging.
 func (thisTable *Table) GetSortKeysAsTable() (*Table, error) {
 	if thisTable == nil {
-		return nil, fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	var keysTable *Table
 	var err error
@@ -160,7 +158,7 @@ Call with an argument list, or a slice of string followed by an ellipsis ...
 func (table *Table) SetSortKeys(sortColNames ...string) error {
 
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	table.sortKeys = newSortKeys() // Replace any existing sort keys.
@@ -186,7 +184,7 @@ Example 2: SetSortKeysReverse([]string{"col1","col3"}...)
 */
 func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	for _, colName := range reverseSortColNames {
@@ -201,7 +199,7 @@ func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 
 func (table *Table) setSortKeyReverse(colName string) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if len(table.sortKeys) == 0 {
 		err := fmt.Errorf("must call SetSortKeys() before calling SetSortKeysReverse()")
@@ -224,7 +222,7 @@ func (table *Table) setSortKeyReverse(colName string) error {
 
 func (table *Table) AppendSortKey(colName string) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	colInfo, err := table.getColInfo(colName)
 	if err != nil {
@@ -256,7 +254,7 @@ func (table *Table) AppendSortKey(colName string) error {
 // Delete a sort key by name.
 func (table *Table) DeleteSortKey(keyName string) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	_, err := table.getColInfo(keyName)
 	if err != nil {
@@ -272,12 +270,12 @@ func (table *Table) DeleteSortKey(keyName string) error {
 		}
 	}
 
-	return fmt.Errorf("[%s].%s(%q) sort key not found: %q", table.Name(), util.FuncName(), keyName, keyName)
+	return fmt.Errorf("[%s].%s(%q) sort key not found: %q", table.Name(), funcName(), keyName, keyName)
 }
 
 func (table *Table) getColNames() []string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", util.FuncSource(), util.FuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s() table is <nil>\n", funcSource(), funcName()))
 		return nil
 	}
 	return table.colNames
@@ -469,11 +467,11 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 func (table *Table) Sort() error {
 
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	if len(table.sortKeys) == 0 {
-		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", util.FuncName())
+		return fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
 	table.sortByKeys(table.sortKeys)
@@ -502,11 +500,11 @@ func (table *Table) Sort() error {
 func (table *Table) SortSimple(sortCols ...string) error {
 
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	if len(sortCols) == 0 {
-		return fmt.Errorf("%s() cannot sort table using 0 sortCols", util.FuncName())
+		return fmt.Errorf("%s() cannot sort table using 0 sortCols", funcName())
 	}
 
 	err := table.SetSortKeys(sortCols...)
@@ -558,7 +556,7 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 
 func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	if len(searchValues) == 0 {
@@ -572,12 +570,12 @@ func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
 	// Test for special case where Sort() has been passed a slice without ... instead of comma-separated args.
 	if len(searchValues) == 1 && len(table.sortKeys) > 1 {
 		return fmt.Errorf("%s() searchValues count %d != sort keys count %d  If passing a slice use ellipsis syntax: Search(mySliceOfKeys...)",
-			util.FuncName(), len(searchValues), len(table.sortKeys))
+			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
 	if len(searchValues) != len(table.sortKeys) {
 		return fmt.Errorf("%s() searchValues count %d != sort keys count %d",
-			util.FuncName(), len(searchValues), len(table.sortKeys))
+			funcName(), len(searchValues), len(table.sortKeys))
 	}
 
 	// Check that searchValues are the right type.
@@ -712,22 +710,22 @@ func searchValuesMatchRowValues(table *Table, searchValues []interface{}, search
 func (table *Table) CompareRows(rowIndex1 int, rowIndex2 int) (int, error) {
 
 	if table == nil {
-		return -2, fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return -2, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	if rowIndex1 < 0 || rowIndex1 > table.RowCount()-1 {
 		return -2, fmt.Errorf("[%s].%s(%d, %d) in table [%s] with %d rows, row index %d does not exist",
-			table.Name(), util.FuncName(), rowIndex1, rowIndex2, table.Name(), table.RowCount(), rowIndex1)
+			table.Name(), funcName(), rowIndex1, rowIndex2, table.Name(), table.RowCount(), rowIndex1)
 	}
 
 	if rowIndex2 < 0 || rowIndex2 > table.RowCount()-1 {
 		return -2, fmt.Errorf("[%s].%s(%d, %d) in table [%s] with %d rows, row index %d does not exist",
-			table.Name(), util.FuncName(), rowIndex1, rowIndex2, table.Name(), table.RowCount(), rowIndex2)
+			table.Name(), funcName(), rowIndex1, rowIndex2, table.Name(), table.RowCount(), rowIndex2)
 	}
 
 	if len(table.sortKeys) == 0 {
 		return -2, fmt.Errorf("[%s].%s(%d, %d) table has 0 sort keys - use table.SetSortKeys()",
-			table.Name(), util.FuncName(), rowIndex1, rowIndex2)
+			table.Name(), funcName(), rowIndex1, rowIndex2)
 	}
 
 	// Loop through the parallel lists of sort keys and search values.
@@ -760,13 +758,13 @@ func (table *Table) SortKeyCount() int {
 // Copy sort keys into table from fromTable.
 func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 	if fromTable == nil {
-		return fmt.Errorf("fromTable.%s() fromTable is <nil>", util.FuncName())
+		return fmt.Errorf("fromTable.%s() fromTable is <nil>", funcName())
 	}
 	if fromTable.SortKeyCount() == 0 {
-		return fmt.Errorf("table.%s(fromTable): fromTable.SortKeyCount() == 0", util.FuncName())
+		return fmt.Errorf("table.%s(fromTable): fromTable.SortKeyCount() == 0", funcName())
 	}
 
 	var err error
@@ -818,7 +816,7 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 */
 func (table *Table) OrderColsBySortKeys() error {
 	if table == nil {
-		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	var err error
@@ -858,7 +856,7 @@ func (table *Table) OrderColsBySortKeys() error {
 
 // True if colName is a sort key in table. False if not. Error if colName not in table.
 func (table *Table) IsSortKey(colName string) (bool, error) {
-	if table == nil { return false, fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil { return false, fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
 	hasCol, err := table.HasCol(colName)
 	if err != nil {
@@ -879,23 +877,23 @@ func (table *Table) IsSortKey(colName string) (bool, error) {
 */
 func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
 	var err error
 
 	if colIndex1 < 0 || colIndex1 > table.ColCount()-1 {
 		return fmt.Errorf("[%s].%s: in table [%s] with %d cols, colIndex1 %d does not exist",
-			table.tableName, util.FuncName(), table.tableName, table.ColCount(), colIndex1)
+			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex1)
 	}
 
 	if colIndex2 < 0 || colIndex2 > table.ColCount()-1 {
 		return fmt.Errorf("[%s].%s: in table [%s] with %d cols, colIndex2 %d does not exist",
-			table.tableName, util.FuncName(), table.tableName, table.ColCount(), colIndex2)
+			table.tableName, funcName(), table.tableName, table.ColCount(), colIndex2)
 	}
 
 	if colIndex1 == colIndex2 {
 		return fmt.Errorf("[%s].%s: [%s] colIndex1 %d == colIndex2 %d",
-			table.tableName, util.FuncName(), table.tableName, colIndex1, colIndex2)
+			table.tableName, funcName(), table.tableName, colIndex1, colIndex2)
 	}
 
 	table.colNames[colIndex1], table.colNames[colIndex2] = table.colNames[colIndex2], table.colNames[colIndex1]
@@ -918,7 +916,7 @@ func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 */
 func (table *Table) SwapCols(colName1 string, colName2 string) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil { return fmt.Errorf("table.%s() table is <nil>", funcName()) }
 
 	var err error
 
@@ -930,7 +928,7 @@ func (table *Table) SwapCols(colName1 string, colName2 string) error {
 
 	if colName1 == colName2 {
 		return fmt.Errorf("[%s].%s: [%s] colName1 %q == colName2 %q",
-			table.tableName, util.FuncName(), table.tableName, colName1, colName2)
+			table.tableName, funcName(), table.tableName, colName1, colName2)
 	}
 
 	table.colNames[col1], table.colNames[col2] = table.colNames[col2], table.colNames[col1]
@@ -1179,11 +1177,11 @@ func (table *Table) SearchRange(searchValues ...interface{}) (firstRow int, last
 func (table *Table) SortUnique() (tableUnique *Table, err error) {
 
 	if table == nil {
-		return nil, fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+		return nil, fmt.Errorf("table.%s() table is <nil>", funcName())
 	}
 
 	if len(table.sortKeys) == 0 {
-		return nil, fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", util.FuncName())
+		return nil, fmt.Errorf("%s() cannot sort table that has 0 sort keys - use SetSortKeys()", funcName())
 	}
 
 	// Merge() eliminates duplicates (based on keys) and fills in zero and missing values where available.

@@ -27,8 +27,6 @@ import (
 	"unicode/utf8"
 	//	"unsafe"
 	"math"
-
-	"github.com/urban-wombat/util"
 )
 
 /*
@@ -485,7 +483,7 @@ func (p *parser) parseFile(inputFileName string) (*TableSet, error) {
 	p.SetFileName(fileName) // For file and line diagnostics.
 
 	if filepath.IsAbs(fileName) {
-		fileName, err = util.FilepathAbs(fileName)
+		fileName, err = FilepathAbs(fileName)
 		if err != nil {
 			return nil, err
 		}
@@ -638,14 +636,14 @@ func IsNumericColType(colType string) (bool, error) {
 */
 func isValidName(name string) (bool, error) {
 	if len(name) == 0 {
-		return false, fmt.Errorf("%s(): len(name) == 0", util.FuncName())
+		return false, fmt.Errorf("%s(): len(name) == 0", funcName())
 	}
 	if !unicode.IsLetter(rune(name[0])) && name[0] != '_' {
-		return false, fmt.Errorf("%s(): invalid first char: %c (expecting letter or '_')", util.FuncName(), name[0])
+		return false, fmt.Errorf("%s(): invalid first char: %c (expecting letter or '_')", funcName(), name[0])
 	}
 	for i := 1; i < len(name); i++ {
 		if !unicode.IsLetter(rune(name[i])) && name[i] != '_' && !unicode.IsNumber(rune(name[i])) {
-			return false, fmt.Errorf("%s(): invalid char: %c (expecting letter or '_' or number)", util.FuncName(), name[0])
+			return false, fmt.Errorf("%s(): invalid char: %c (expecting letter or '_' or number)", funcName(), name[0])
 		}
 	}
 
@@ -767,7 +765,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_8)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint8Val = uint8(uint64Val)
 			rowSlice[i] = uint8Val
@@ -785,7 +783,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
 				if err != nil {
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
 				uint8SliceVal[el] = uint8(uint64Val)
 			}
@@ -804,7 +802,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DECIMAL, _BITS_8)
 				if err != nil {
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
-					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 				}
 				byteSliceVal[el] = byte(uint64Val)
 			}
@@ -818,7 +816,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_16)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
-				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint16Val = uint16(uint64Val)
 			rowSlice[i] = uint16Val
@@ -831,7 +829,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_32)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
-				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uint32Val = uint32(uint64Val)
 			rowSlice[i] = uint32Val
@@ -844,7 +842,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			uint64Val, err = strconv.ParseUint(textFound, _DECIMAL, _BITS_64)
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
-				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			rowSlice[i] = uint64Val
 		case "uint":
@@ -866,12 +864,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					minVal = 0
 					maxVal = math.MaxUint64
 				default:
-					msg := fmt.Sprintf("#6 %s(): CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", util.FuncName(), intBits)
+					msg := fmt.Sprintf("#6 %s(): CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", funcName(), intBits)
 					log.Printf("%s", msg)
 					return nil, fmt.Errorf("%s", msg)
 				}
 				rangeMsg := rangeForIntegerType(minVal, maxVal)
-				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
+				return nil, fmt.Errorf("#7 %s(): %s %s for type %s %s", funcName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
 			}
 			uintVal = uint(uint64Val) // May be unnecessary.
 			rowSlice[i] = uintVal
