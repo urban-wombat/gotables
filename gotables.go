@@ -901,8 +901,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	
 		// Rows of data
 		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-			var row tableRow
-			row = table.rows[rowIndex]
+			var row tableRow = table.rows[rowIndex]
 			horizontalSep = ""
 			for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 				var sVal string
@@ -976,7 +975,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					iVal = row[colIndex].(int)
 					buf.WriteString(fmt.Sprintf("%d", iVal))
 				case "int8":
-					ui8Val = row[colIndex].(uint8)
+					i8Val = row[colIndex].(int8)
 					buf.WriteString(fmt.Sprintf("%d", i8Val))
 				case "int16":
 					i16Val = row[colIndex].(int16)
@@ -1430,11 +1429,13 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 			return "", fmt.Errorf("[%s].%s(substituteHeadingNames): expecting %d substituteHeadingNames, not %d",
 				table.Name(), util.FuncName(), table.ColCount(), len(substituteHeadingNames))
 		}
+		// should use copy() instead of a loop (S1001)
 		for colIndex, colName := range substituteHeadingNames {
 			record[colIndex] = colName
 		}
 	} else {
 		// Be default use table col names.
+		// should use copy() instead of a loop (S1001)
 		for colIndex, colName := range table.colNames {
 			record[colIndex] = colName
 		}
@@ -2091,7 +2092,7 @@ func (tableSet *TableSet) RenameTable(renameFrom string, renameTo string) error 
 	}
 
 	if exists, _ := tableSet.HasTable(renameTo); exists {
-		return fmt.Errorf("table [%s] already exists.", renameTo)
+		return fmt.Errorf("table [%s] already exists", renameTo)
 	}
 
 	table, err := tableSet.Table(renameFrom)
@@ -2275,6 +2276,7 @@ func (table *Table) IsValidTable() (bool, error) {
 		}
 	}
 
+	// should omit value from range; this loop is equivalent to `for keyIndex := range ...` (S1005)
 	for keyIndex, _ := range table.sortKeys {
 		if isValid, err = IsValidColName(table.sortKeys[keyIndex].colName); !isValid {
 			err = fmt.Errorf("table [%s].sortKeys[%d].colName: %v", tableName, keyIndex, err)
@@ -2309,7 +2311,7 @@ func (table *Table) isValidColNamesMap() (bool, error) {
 
 func (tableSet *TableSet) IsValidTableSet() (bool, error) {
 	if tableSet == nil {
-		return false, fmt.Errorf(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		return false, fmt.Errorf(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>", util.FuncSource(), util.FuncName()))
 	}
 
 	for i := 0; i < len(tableSet.tables); i++ {
@@ -2445,7 +2447,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 		return "", err
 	}
 
@@ -2574,7 +2576,7 @@ func (table *Table) IsValidCellValue(colName string, value interface{}) (bool, e
 	- Pad trailing zeros on the fractional part of a floating point number (which looks like an integer).
 */
 func padTrailingZeros(s string) string {
-	hasPoint := strings.Index(s, ".") >= 0
+	hasPoint := strings.Contains(s, ".")
 	b := []byte(s)
 	for i := len(b)-1; i > 0; i-- {
 		if (b[i-1] == '.' || b[i] != '0') {
@@ -2597,7 +2599,7 @@ func padTrailingZeros(s string) string {
 	- Trim trailing zeros on the fractional part of a floating point number (which looks like an integer).
 */
 func trimTrailingZeros(s string) string {
-	hasPoint := strings.Index(s, ".") >= 0
+	hasPoint := strings.Contains(s, ".")
 	b := []byte(s)
 	for i := len(b)-1; i > 0; i-- {
 		if (b[i-1] == '.' || b[i] != '0') {
@@ -2655,7 +2657,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
 	default:
-		err = fmt.Errorf("%s ERROR IN %s(%q): unknown type: %s\n", util.FuncSource(), util.FuncName(), colType, table.colTypes[colIndex])
+		err = fmt.Errorf("%s ERROR IN %s(%q): unknown type: %s", util.FuncSource(), util.FuncName(), colType, table.colTypes[colIndex])
 		return nil, err
 	}
 
@@ -2685,24 +2687,24 @@ func isExportableName(name string) bool {
 	Useful for testing.
 */
 func (table1 *Table) Equals(table2 *Table) (bool, error) {
-	if table1 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil\n") }
-	if table2 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil\n") }
+	if table1 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil") }
+	if table2 == nil { return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil") }
 
 	// Compare table names.
 	if table1.Name() != table2.Name() {
-		return false, fmt.Errorf("[%s].Equals([%s]): table names: %s != %s\n",
+		return false, fmt.Errorf("[%s].Equals([%s]): table names: %s != %s",
 			table1.Name(), table2.Name(), table1.Name(), table2.Name())
 	}
 
 	// Compare number of rows. 
 	if table1.RowCount() != table2.RowCount() {
-		return false, fmt.Errorf("[%s].Equals([%s]): row count: %d != %d\n",
+		return false, fmt.Errorf("[%s].Equals([%s]): row count: %d != %d",
 			table1.Name(), table2.Name(), table1.RowCount(), table2.RowCount())
 	}
 
 	// Compare number of columns.
 	if table1.ColCount() != table2.ColCount() {
-		return false, fmt.Errorf("[%s].Equals([%s]): col count: %d != %d\n",
+		return false, fmt.Errorf("[%s].Equals([%s]): col count: %d != %d",
 			table1.Name(), table2.Name(), table1.ColCount(), table2.ColCount())
 	}
 
@@ -2722,7 +2724,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 			return false, err
 		}
 		if type1 != type2 {
-			return false, fmt.Errorf("[%s].Equals([%s]): col %q type: %s != %s\n",
+			return false, fmt.Errorf("[%s].Equals([%s]): col %q type: %s != %s",
 				table1.Name(), table2.Name(), colName, type1, type2)
 		}
 	}
@@ -2744,7 +2746,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 			if val1 != val2 {
-				return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v\n",
+				return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
 					table1.Name(), table2.Name(), colName, colIndex, val1, val2)
 			}
 		}

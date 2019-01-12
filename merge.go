@@ -101,15 +101,16 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	}
 
 	if table1 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>\n", util.FuncName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>", util.FuncName())
 		return merged, err
 	}
 
 	if table2 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>\n", util.FuncName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>", util.FuncName())
 		return merged, err
 	}
 
+	// TODO: this value of merged is never used (SA4006)
 	if table1.RowCount() == 0 {
 		merged, err = sortMerged(table2)
 		if err != nil {
@@ -118,6 +119,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return table2, nil
 	}
 
+	// TODO: this value of merged is never used (SA4006)
 	if table2.RowCount() == 0 {
 		merged, err = sortMerged(table1)
 		if err != nil {
@@ -420,7 +422,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 						if !isValid {
 							return nil, err
 						} else {
-							return nil, fmt.Errorf("What? We seem to have an unlisted type: %s", colType)
+							return nil, fmt.Errorf("what? We seem to have an unlisted type: %s", colType)
 						}
 				}
 			}

@@ -1117,7 +1117,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bytes.Compare(ui8Slice, []uint8{0,1,2}) != 0 {	// Slices not equal.
+		if !bytes.Equal(ui8Slice, []uint8{0,1,2}) {	// Slices not equal.
 			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []uint8{0,1,2}, ui8Slice)
 		}
 
@@ -1129,7 +1129,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bytes.Compare(ui8Slice, []uint8{2,4,6}) != 0 {	// Slices not equal.
+		if !bytes.Equal(ui8Slice, []uint8{2,4,6}) {	// Slices not equal.
 			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []uint8{2,4,6}, ui8Slice)
 		}
 	}
@@ -1185,7 +1185,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bytes.Compare(byteSlice, []byte{4,5,6}) != 0 {	// Slices not equal.
+		if !bytes.Equal(byteSlice, []byte{4,5,6}) {	// Slices not equal.
 			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []byte{4,5,6}, byteSlice)
 		}
 
@@ -1197,7 +1197,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if bytes.Compare(byteSlice, []byte{7,8,9}) != 0 {	// Slices not equal.
+		if !bytes.Equal(byteSlice, []byte{7,8,9}) {	// Slices not equal.
 			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []byte{7,8,9}, byteSlice)
 		}
 	}
@@ -4246,7 +4246,7 @@ func TestTable_Search_2keys(t *testing.T) {
 	for _, item := range dontExist {
 		searchValues = item
 		expecting = -1
-		found, err = table.Search(searchValues...)
+		found, _ = table.Search(searchValues...)
 		if found != expecting {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
@@ -4323,7 +4323,7 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 	for _, item := range dontExist {
 		searchValues = item
 		expecting = -1
-		found, err = table.Search(searchValues...)
+		found, _ = table.Search(searchValues...)
 		if found != expecting {
 			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
@@ -5808,8 +5808,7 @@ func TestTable_AppendRow(t *testing.T) {
 	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-		var rowIndex int
-		rowIndex = 0
+		var rowIndex int = 0
 		expecting, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil { t.Error(err) }
 
@@ -6182,7 +6181,7 @@ func TestManyUnicodes(t *testing.T) {
 		if err != nil { t.Error(err) }
 
 		var specialChars = "\a\b\f\n\r\t\v"
-		var isSpecialChar bool = strings.Index(specialChars, string(glyph)) >= 0
+		var isSpecialChar bool = strings.Contains(specialChars, string(glyph))
 		// where(fmt.Sprintf("%c isSpecialChar? = %t", glyph, isSpecialChar))
 		if (code >= 32 && code < 127) || code > 159 || isSpecialChar {
 			// Printable characters: glyphs are set to themselves (and not '0').
@@ -7593,7 +7592,6 @@ func TestCmdGotecho(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	const files = "gotecho_test_files/"
 	const tables_got = "gotecho_files/tables.got"
 	goArgs := []string{"run", "cmd/gotecho/gotecho.go"}
 

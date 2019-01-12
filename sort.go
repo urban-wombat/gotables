@@ -169,7 +169,7 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 		err := table.AppendSortKey(colName)
 		if err != nil {
 //			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
-			errSortKey := fmt.Errorf("SetSortKeys(%v): %v\n", sortColNames, err)
+			errSortKey := fmt.Errorf("SetSortKeys(%v): %v", sortColNames, err)
 			return errSortKey
 		}
 	}
@@ -192,7 +192,7 @@ func (table *Table) SetSortKeysReverse(reverseSortColNames ...string) error {
 	for _, colName := range reverseSortColNames {
 		err := table.setSortKeyReverse(colName)
 		if err != nil {
-			errSortKey := fmt.Errorf("SetSortKeysReverse(%v): %v\n", reverseSortColNames, err)
+			errSortKey := fmt.Errorf("SetSortKeysReverse(%v): %v", reverseSortColNames, err)
 			return errSortKey
 		}
 	}
@@ -929,7 +929,7 @@ func (table *Table) SwapCols(colName1 string, colName2 string) error {
 	if err != nil { return err }
 
 	if colName1 == colName2 {
-		fmt.Errorf("[%s].%s: [%s] colName1 %q == colName2 %q",
+		return fmt.Errorf("[%s].%s: [%s] colName1 %q == colName2 %q",
 			table.tableName, util.FuncName(), table.tableName, colName1, colName2)
 	}
 

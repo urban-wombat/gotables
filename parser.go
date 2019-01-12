@@ -485,7 +485,7 @@ func (p *parser) parseFile(inputFileName string) (*TableSet, error) {
 	p.SetFileName(fileName) // For file and line diagnostics.
 
 	if filepath.IsAbs(fileName) {
-		fileName, err := util.FilepathAbs(fileName)
+		fileName, err = util.FilepathAbs(fileName)
 		if err != nil {
 			return nil, err
 		}
