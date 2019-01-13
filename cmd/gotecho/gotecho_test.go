@@ -47,7 +47,7 @@ func TestCmdGotecho(t *testing.T) {
 	}
 
 	const tables_got = "gotecho_files/tables.got"
-	goArgs := []string{"run", "cmd/gotecho/gotecho.go"}
+	goArgs := []string{"run", "gotecho.go"}
 
 	var tests = []struct {
 		desc string
@@ -56,6 +56,8 @@ func TestCmdGotecho(t *testing.T) {
 		exitCodeExpected int
 		args string
 	}{
+	//  Description						Piped?	Expected								Exit?	Arguments
+	/*
 		{ "echo all",                    false, "gotecho_files/tables.got",               0, "-f "+tables_got+"" },
 		{ "only Table",                  false, "gotecho_files/Table.got",                0, "-f "+tables_got+" -t Table" },
 		{ "only Struct",                 false, "gotecho_files/Struct.got",               0, "-f "+tables_got+" -t Struct" },
@@ -63,7 +65,6 @@ func TestCmdGotecho(t *testing.T) {
 		{ "rotate struct",               false, "gotecho_files/rotateStructHasTable.got", 0, "-f "+tables_got+" -r Struct" },
 		{ "rotate struct no table",      false, "gotecho_files/rotateStructNoTable.got",  0, "-f "+tables_got+" -r Struct -t Struct" },
 		{ "ignores rotate table",        false, "gotecho_files/Table.got",                0, "-f "+tables_got+" -r Table -t Table" },
-	/*
 		{ "pipe echo all",               true,  "gotecho_files/tables.got",               0, "" },
 		{ "pipe only Table",             true,  "gotecho_files/Table.got",                0, "-t Table" },
 		{ "pipe only Struct",            true,  "gotecho_files/Struct.got",               0, "-t Struct" },
@@ -71,9 +72,9 @@ func TestCmdGotecho(t *testing.T) {
 		{ "pipe rotate struct",          true,  "gotecho_files/rotateStructHasTable.got", 0, "-r Struct" },
 		{ "pipe rotate struct no table", true,  "gotecho_files/rotateStructNoTable.got",  0, "-r Struct -t Struct" },
 		{ "pipe ignores rotate table",   true,  "gotecho_files/Table.got",                0, "-r Table -t Table" },
-		{ "echo all - missing filename", false, "gotecho_files/tables.got",               1, "-f" },
-		{ "echo all - missing -f",       false, "gotecho_files/tables.got",               0, ""+tables_got+"" },
+		{ "echo all - missing filename", false, "gotecho_files/empty.got",                1, "-f" },
 	*/
+		{ "echo all - missing -f",       false, "gotecho_files/empty.got",                1, ""+tables_got+"" },
 	}
 
 	var cmd *exec.Cmd
