@@ -50,7 +50,7 @@ var flags Flags
 func init() {
 	log.SetFlags(log.Lshortfile)
 }
-var where = log.Print
+// var where = log.Print
 
 func init() {
 	log.SetFlags(log.Lshortfile)
