@@ -28,6 +28,8 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+
+	"github.com/urban-wombat/util"
 )
 
 /*
@@ -99,12 +101,12 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	}
 
 	if table1 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>", funcName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table1 is <nil>", util.FuncName())
 		return merged, err
 	}
 
 	if table2 == nil {
-		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>", funcName())
+		err = fmt.Errorf("func (table1 *Table) %s(table2 *Table): table2 is <nil>", util.FuncName())
 		return merged, err
 	}
 

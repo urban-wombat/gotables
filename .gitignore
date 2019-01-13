@@ -235,3 +235,4 @@ TestTableSet_FileName.txt
 mem.profile
 rmswap.sh
 helpers.go.COMPARE
+*.MOVED

@@ -14,7 +14,7 @@ import (
 	"testing"
 //	"time"
 
-//	"github.com/urban-wombat/util"
+	"github.com/urban-wombat/util"
 )
 
 /*
@@ -41,7 +41,7 @@ SOFTWARE.
 
 func TestCmdGotecho(t *testing.T) {
 
-	installed, err := isCommandInstalled("go")
+	installed, err := util.IsCommandInstalled("go")
 	if  !installed {
 		t.Fatal(err)
 	}

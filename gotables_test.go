@@ -589,7 +589,7 @@ func ExampleRound() {
 	numberToRound := 12.326
 	places := 2 // The rounded fractional part will have 2 decimal places.
 
-	rounded := round(numberToRound, places)
+	rounded := util.Round(numberToRound, places)
 	fmt.Println(rounded)
 	// Output:
 	// 12.33
@@ -609,7 +609,7 @@ func TestRound(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		rounded := round(test.val, test.places)
+		rounded := util.Round(test.val, test.places)
 		if rounded != test.rounded {
 			t.Errorf("test[%d]: expecting %f, not %f", i, test.rounded, rounded)
 		}
@@ -2580,7 +2580,7 @@ func TestTableSet_FileName(t *testing.T) {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	actualFileName := funcNameNoParens() + ".txt"
+	actualFileName := util.FuncNameNoParens() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
 		t.Error(err)
@@ -4793,7 +4793,7 @@ func Test_Search(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s()\n", funcName())
+		// fmt.Printf("%s()\n", util.FuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
@@ -4859,7 +4859,7 @@ func TestSearchLast(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s()\n", funcName())
+		// fmt.Printf("%s()\n", util.FuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int

@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/urban-wombat/util"
 )
 //
 //// The word size (in bits) of the machine we're now running on. Typically 64 or 32 bits.
@@ -42,7 +44,7 @@ import (
 */
 func (table *Table) GenerateTypeStruct() (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
+		return "", fmt.Errorf("table.%s table is <nil>", util.FuncName())
 	}
 
 	var buf bytes.Buffer
@@ -94,7 +96,7 @@ func (table *Table) GenerateTypeStruct() (string, error) {
 */
 func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 	if tableSet == nil {
-		return "", fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+		return "", fmt.Errorf("tableSet.%s tableSet is <nil>", util.FuncName())
 	}
 	
 	var buf bytes.Buffer
@@ -219,7 +221,7 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 */
 func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
+		return "", fmt.Errorf("table.%s table is <nil>", util.FuncName())
 	}
 
 	var buf bytes.Buffer
@@ -286,7 +288,7 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 */
 func (tableSet *TableSet) generateTypeStructSliceFromTableSet() (string, error) {
 	if tableSet == nil {
-		return "", fmt.Errorf("tableSet.%s() tableSet is <nil>", funcName())
+		return "", fmt.Errorf("tableSet.%s tableSet is <nil>", util.FuncName())
 	}
 
 	var tableSetGenerated string = ""
@@ -486,7 +488,7 @@ func setterName(typeName string) string {
 */
 func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("table.%s() table is <nil>", funcName())
+		return "", fmt.Errorf("table.%s table is <nil>", util.FuncName())
 	}
 
 	var err error
