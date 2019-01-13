@@ -199,7 +199,7 @@ func main() {
 				os.Exit(6)
 			}
 		} else {
-			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use -f <file> instead.\n", err)
+			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use -f <file> instead: %v\n", err)
 			printUsage()
 			os.Exit(6)
 		}
