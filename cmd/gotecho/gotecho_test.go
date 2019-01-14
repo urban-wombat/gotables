@@ -46,35 +46,36 @@ func TestCmdGotecho(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	const tables_got = "gotecho_files/tables.got"
+	const tables_got = "test_files/tables.got"
 	goArgs := []string{"run", "gotecho.go"}
 
 	var tests = []struct {
 		desc string
 		stdinPipe bool			// Will "cat" (via stdin) file to gotecho.
 		fileOfExpected string	// Name of file containing expected data.
-		exitCodeExpected int
-		args string
+		exitCodeExpected int	// 0 means success expected, 1 means failure expected.
+		args string				// The arguments passed to "go run gotables.go".
 	}{
-	//  Description						Piped?	Expected								Exit?	Arguments
+	//  Description						Piped?	Expected							Exit?	Arguments
 	/*
-		{ "echo all",                    false, "gotecho_files/tables.got",               0, "-f "+tables_got+"" },
-		{ "only Table",                  false, "gotecho_files/Table.got",                0, "-f "+tables_got+" -t Table" },
-		{ "only Struct",                 false, "gotecho_files/Struct.got",               0, "-f "+tables_got+" -t Struct" },
-		{ "missing table",               false, "gotecho_files/empty.got",                1, "-f "+tables_got+" -t MissingTable" },
-		{ "rotate struct",               false, "gotecho_files/rotateStructHasTable.got", 0, "-f "+tables_got+" -r Struct" },
-		{ "rotate struct no table",      false, "gotecho_files/rotateStructNoTable.got",  0, "-f "+tables_got+" -r Struct -t Struct" },
-		{ "ignores rotate table",        false, "gotecho_files/Table.got",                0, "-f "+tables_got+" -r Table -t Table" },
-		{ "pipe echo all",               true,  "gotecho_files/tables.got",               0, "" },
-		{ "pipe only Table",             true,  "gotecho_files/Table.got",                0, "-t Table" },
-		{ "pipe only Struct",            true,  "gotecho_files/Struct.got",               0, "-t Struct" },
-		{ "pipe missing table",          true,  "gotecho_files/empty.got",                1, "-t MissingTable" },
-		{ "pipe rotate struct",          true,  "gotecho_files/rotateStructHasTable.got", 0, "-r Struct" },
-		{ "pipe rotate struct no table", true,  "gotecho_files/rotateStructNoTable.got",  0, "-r Struct -t Struct" },
-		{ "pipe ignores rotate table",   true,  "gotecho_files/Table.got",                0, "-r Table -t Table" },
-		{ "echo all - missing filename", false, "gotecho_files/empty.got",                1, "-f" },
 	*/
-		{ "echo all - missing -f",       false, "gotecho_files/empty.got",                1, ""+tables_got+"" },
+		{ "echo all",                    false, "test_files/tables.got",               0, "-f "+tables_got+"" },
+		{ "only Table",                  false, "test_files/Table.got",                0, "-f "+tables_got+" -t Table" },
+		{ "only Struct",                 false, "test_files/Struct.got",               0, "-f "+tables_got+" -t Struct" },
+		{ "missing table",               false, "test_files/empty.got",                1, "-f "+tables_got+" -t MissingTable" },
+		{ "rotate struct",               false, "test_files/rotateStructHasTable.got", 0, "-f "+tables_got+" -r Struct" },
+		{ "rotate struct no table",      false, "test_files/rotateStructNoTable.got",  0, "-f "+tables_got+" -r Struct -t Struct" },
+		{ "ignores rotate table",        false, "test_files/Table.got",                0, "-f "+tables_got+" -r Table -t Table" },
+		{ "pipe echo all",               true,  "test_files/tables.got",               0, "" },
+		{ "pipe only Table",             true,  "test_files/Table.got",                0, "-t Table" },
+		{ "pipe only Struct",            true,  "test_files/Struct.got",               0, "-t Struct" },
+		{ "pipe missing table",          true,  "test_files/empty.got",                1, "-t MissingTable" },
+		{ "pipe rotate struct",          true,  "test_files/rotateStructHasTable.got", 0, "-r Struct" },
+		{ "pipe rotate struct no table", true,  "test_files/rotateStructNoTable.got",  0, "-r Struct -t Struct" },
+		{ "pipe ignores rotate table",   true,  "test_files/Table.got",                0, "-r Table -t Table" },
+		{ "echo all - missing filename", false, "test_files/empty.got",                1, "-f" },
+		{ "echo all - missing -f",       false, "test_files/empty.got",                1, ""+tables_got+"" },
+		{ "<nil>| echo - missing -f",    true,  "test_files/empty.got",                1, "" },					// echo "" | gotecho
 	}
 
 	var cmd *exec.Cmd
@@ -82,7 +83,7 @@ func TestCmdGotecho(t *testing.T) {
 		const verbose = true
 		if verbose {
 			// fmt.Println("---------------------------------------------------")
-			fmt.Printf("test[%d] %s\n", i, test.desc)
+			fmt.Printf("test[%2d] %s\n", i, test.desc)
 		}
 		contents, err := ioutil.ReadFile(test.fileOfExpected)
 		if err != nil { t.Error(err) }
@@ -103,12 +104,17 @@ func TestCmdGotecho(t *testing.T) {
 			stdin, err = cmd.StdinPipe()
 			if err != nil { t.Error(err) }
 
-			tablesBytes, err := ioutil.ReadFile(tables_got)
-			if err != nil { t.Error(err) }
-			tables_txt := string(tablesBytes)
+			var tablesTxt string
+			if strings.HasPrefix(test.desc, "<nil>|") {
+				tablesTxt = ""
+			} else {
+				tablesBytes, err := ioutil.ReadFile(tables_got)
+				if err != nil { t.Error(err) }
+				tablesTxt = string(tablesBytes)
+			}
 			go func() {
 				defer stdin.Close()
-				io.WriteString(stdin, tables_txt)
+				io.WriteString(stdin, tablesTxt)
 			}()
 		}
 
@@ -134,12 +140,12 @@ where(fmt.Sprintf("stderr = \n%s", stderr))
 */
 
 		if stdout != expected {
-			t.Errorf("test[%d] %s: ( gotecho %s ) OUTPUT != EXPECTED:-\nOUTPUT:\n%s\nEXPECTED:\n%s\nSTDERR:\n%s",
+			t.Errorf("test[%2d] %s: ( gotecho %s ) OUTPUT != EXPECTED:-\nOUTPUT:\n%s\nEXPECTED:\n%s\nSTDERR:\n%s",
 				i, test.desc, test.args, stdout, expected, stderr)
 		}
 
 		if exitCode != test.exitCodeExpected {
-			t.Errorf("test[%d] %s: ( gotecho %s ) exitCode %d != exitCodeExpected %d\nSTDERR:\n%s",
+			t.Errorf("test[%2d] %s: ( gotecho %s ) exitCode %d != exitCodeExpected %d\nSTDERR:\n%s",
 				i, test.desc, test.args, exitCode, test.exitCodeExpected, stderr)
 		}
 	}

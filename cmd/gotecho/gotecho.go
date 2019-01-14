@@ -24,15 +24,14 @@ SOFTWARE.
 */
 
 import (
-	"path/filepath"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"time"
+
 	"github.com/urban-wombat/gotables"
 	"github.com/urban-wombat/util"
-//	"strings"
-//	"time"
 )
 
 type Flags struct {
@@ -42,7 +41,7 @@ type Flags struct {
 	f util.StringFlag	// gotables file
 	t string	// table
 	r string	// rotate this table in one direction or the other (if possible)
-	pipe bool	// pipe input
+	pipe bool	// pipe stdin
 	h bool		// help
 }
 var flags Flags
@@ -50,7 +49,7 @@ var flags Flags
 func init() {
 	log.SetFlags(log.Lshortfile)
 }
-// var where = log.Print
+var where = log.Print
 
 func init() {
 	log.SetFlags(log.Lshortfile)
@@ -64,7 +63,7 @@ func initFlags() {
 	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
 	flag.StringVar(&flags.t,  "t", "",    "this table")
 	flag.StringVar(&flags.r,  "r", "",    "rotate table")
-	flag.BoolVar(&flags.pipe, "-", false, "piped input")
+	flag.BoolVar(&flags.pipe, "-", false, "piped stdin")
 	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
 
 	flag.Parse()
@@ -104,15 +103,11 @@ func initFlags() {
 */
 }
 
-func progName() string {
-//	return strings.TrimSuffix(filepath.Base(os.Args[0]), ".exe")
-	return filepath.Base(os.Args[0])
-}
-
 func printUsage() {
 	var usageSlice = []string {
-		"usage:   gotecho [-f <file>] [-t <this-table-only>] [-r <rotate-table>]",
-		"         If no -f <file> is specified, gotecho searches standard input.",
+		"usage1:  gotecho  [-f <file>] [-t <this-table-only>] [-r <rotate-table>]",
+		"usage2:  cat <file> | gotecho [-t <this-table-only>] [-r <rotate-table>]",
+		"         If no -f <file> is specified, gotecho searches standard input",
 		"purpose: echo a file of gotables tables to stdout",
 		"flags:   -f  <gotables-file>  Input file text file containing a gotables.TableSet",
 		"         -t  this-table-only  Echo this table only",
@@ -127,7 +122,7 @@ func printUsage() {
 	}
 
 /*
-	var progNameEndsWithExe bool = strings.HasSuffix(progName(), ".exe")
+	var progNameEndsWithExe bool = strings.HasSuffix(util.ProgName(), ".exe")
 	if progNameEndsWithExe {
 		// We are testing. Provide a useful example. Does not appear in final product.
 		usageString += "example: go run gotecho.go -f ../flattablesmain/mytables.got -r AllTypes"
@@ -185,15 +180,13 @@ func main() {
 			os.Exit(6)
 		}
 		if canPipe {
-// where("BEFORE util.GulpFromPipeWithTimeout()")
-//			input, err := util.GulpFromPipeWithTimeout(3 * time.Second)
-			input, err := util.GulpFromPipe()
-// where("AFTER  util.GulpFromPipeWithTimeout()")
+			stdin, err := util.GulpFromPipeWithTimeout(1 * time.Second)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+				fmt.Fprintf(os.Stderr, "ERROR: %s %v\n", util.ProgName(), err)
+				printUsage()
 				os.Exit(6)
 			}
-			tables, err = gotables.NewTableSetFromString(input)
+			tables, err = gotables.NewTableSetFromString(stdin)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 				os.Exit(6)
@@ -206,7 +199,7 @@ func main() {
 	}
 
 	if tables.TableCount() == 0 {
-		fmt.Fprintf(os.Stderr, "%s (warning: file empty)\n", file)
+		fmt.Fprintf(os.Stderr, "%s (warning: gotables file is empty)\n", file)
 		os.Exit(7)
 	}
 
