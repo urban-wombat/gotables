@@ -68,39 +68,10 @@ func initFlags() {
 
 	flag.Parse()
 
-/*
-	// Compulsory flag.
-	exists, err := util.CheckStringFlag("f", flags.f, util.FlagRequired)
-	if !exists {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		fmt.Fprintf(os.Stderr, "Expecting infile: -f <gotables-file>\n")
-		printUsage()
-		os.Exit(111)
-	}
-*/
-/*
-	// Optional flag.
-	_, err := util.CheckStringFlag("f", flags.f, util.FlagOptional)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		printUsage()
-		os.Exit(111)
-	}
-	// If we get past here, -f has been provided and has an argument.
-*/
-
 	if flags.h {
 		printUsage()
-		os.Exit(2)
+		os.Exit(1)
 	}
-
-/*
-	if len(os.Args) == 1 {
-		// No args.
-		printUsage()
-		os.Exit(3)
-	}
-*/
 }
 
 func printUsage() {
@@ -137,14 +108,6 @@ func main() {
 	var file string
 	var tables *gotables.TableSet
 
-/*
-	if len(os.Args) <= 1 {
-		// No file arguments provided.
-		printUsage()
-		os.Exit(4)
-	}
-*/
-
 	// Clumsy way to avoid multiple files being specified with -f
 	// Only possible because we are sure what the max possible args can be.
 	const maxArgsPossible = 7
@@ -152,7 +115,7 @@ func main() {
 		// No file arguments provided.
 		fmt.Fprintf(os.Stderr, "Too many arguments on command line %s\n", os.Args[1:])
 		printUsage()
-		os.Exit(5)
+		os.Exit(2)
 	}
 
 /*
@@ -164,20 +127,20 @@ func main() {
 
 	if flags.f.Error() != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: -f %v\n", flags.f.Error())
-		os.Exit(16)
+		os.Exit(3)
 	}
 	if flags.f.Exists() && flags.f.IsSet() {
 		file = flags.f.String()
 		tables, err = gotables.NewTableSetFromFile(file)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-			os.Exit(6)
+			os.Exit(4)
 		}
 	} else {	// Pipe from Stdin.
 		canPipe, err := util.CanReadFromPipe()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-			os.Exit(6)
+			os.Exit(5)
 		}
 		if canPipe {
 			stdin, err := util.GulpFromPipeWithTimeout(1 * time.Second)
@@ -189,18 +152,18 @@ func main() {
 			tables, err = gotables.NewTableSetFromString(stdin)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-				os.Exit(6)
+				os.Exit(7)
 			}
 		} else {
 			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use -f <file> instead: %v\n", err)
 			printUsage()
-			os.Exit(6)
+			os.Exit(8)
 		}
 	}
 
 	if tables.TableCount() == 0 {
 		fmt.Fprintf(os.Stderr, "%s (warning: gotables file is empty)\n", file)
-		os.Exit(7)
+		os.Exit(9)
 	}
 
 	var finalMsg string
@@ -208,7 +171,7 @@ func main() {
 		table, err := tables.Table(flags.r)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error finding -r %s: %s\n", flags.r, err)
-			os.Exit(8)
+			os.Exit(10)
 		}
 
 		isStructShape, _ := table.IsStructShape()
@@ -234,7 +197,7 @@ func main() {
 		table, err := tables.Table(flags.t)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error finding -t %s: %s\n", flags.t, err)
-			os.Exit(9)
+			os.Exit(11)
 		}
 		fmt.Println(table)
 	} else {
