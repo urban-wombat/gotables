@@ -50,11 +50,7 @@ https://github.com/urban-wombat/gotables/releases
 
 ## Command line utilities ...
 
-* [gotecho](https://github.com/urban-wombat/gotables/tree/master/cmd/gotecho) - echo 1 or all tables from a gotables file
-* [gotsyntax](https://github.com/urban-wombat/gotables/tree/master/cmd/gotsyntax) - check syntax of 1 or more gotables files
-* [flattablesc](https://github.com/urban-wombat/flattables/tree/master/cmd/flattablesc) - generate Google FlatBuffers code
-
-| CLI | purpose |
+| CLI | Purpose |
 | --- | ------- |
 | [gotecho](https://github.com/urban-wombat/gotables/tree/master/cmd/gotecho)           | echo 1 or all tables from a gotables file
 | [gotsyntax](https://github.com/urban-wombat/gotables/tree/master/cmd/gotsyntax)       | check syntax of 1 or more gotables files
