@@ -50,9 +50,9 @@ https://github.com/urban-wombat/gotables/releases
 
 ## Command line utilities ...
 
-* https://github.com/urban-wombat/flattables/tree/master/cmd/flattablesc
-* https://github.com/urban-wombat/gotables/tree/master/cmd/gotecho
-* https://github.com/urban-wombat/gotables/tree/master/cmd/gotsyntax
+* [gotecho](https://github.com/urban-wombat/gotables/tree/master/cmd/gotecho)
+* [gotsyntax](https://github.com/urban-wombat/gotables/tree/master/cmd/gotsyntax)
+* [flattablesc](https://github.com/urban-wombat/flattables/tree/master/cmd/flattablesc)
 
 ## Contact:
 
