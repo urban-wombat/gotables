@@ -5,14 +5,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-//	"os"
 	"os/exec"
-//	"path/filepath"
-//	"runtime/debug"
 	"strings"
 	"syscall"
 	"testing"
-//	"time"
 
 	"github.com/urban-wombat/util"
 )
@@ -56,9 +52,7 @@ func TestCmdGotecho(t *testing.T) {
 		exitCodeExpected int	// 0 means success expected, 1 means failure expected.
 		args string				// The arguments passed to "go run gotables.go".
 	}{
-	//  Description						Piped?	Expected							Exit?	Arguments
-	/*
-	*/
+	//  Description						Piped?	Expected						ExitVal?	Arguments
 		{ "echo all",                    false, "test_files/tables.got",               0, "-f "+tables_got+"" },
 		{ "only Table",                  false, "test_files/Table.got",                0, "-f "+tables_got+" -t Table" },
 		{ "only Struct",                 false, "test_files/Struct.got",               0, "-f "+tables_got+" -t Struct" },

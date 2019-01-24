@@ -32,8 +32,8 @@ string      int8 string             bool     uint32
 "Betty"        3 "in"               true         33
 "Bam Bam"      4 "the"              false        44
 "Pebbles"      5 "plain."           true         55
-"Dino"         6 "Flintstone's pet" false        66
-"Hoppy"        7 "Rubble's pet"     false        77
+"Dino"         6 "Flintstone pet"   false        66
+"Hoppy"        7 "Rubble pet"       false        77
 
 [Wombats]
 housingPolicy string = "burrow"

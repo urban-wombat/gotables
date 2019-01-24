@@ -36,7 +36,7 @@ import (
 
 type Flags struct {
 //	f string	// gotables file
-	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go#
+	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go
 	// See: https://golang.org/pkg/flag
 	f util.StringFlag	// gotables file
 	t string	// table
@@ -118,18 +118,13 @@ func main() {
 		os.Exit(2)
 	}
 
-/*
-// where(fmt.Sprintf("flags.f.Exists() = %t", flags.f.Exists()))
-// where(fmt.Sprintf("flags.f.IsSet()  = %t", flags.f.IsSet()))
-// where(fmt.Sprintf("flags.f.String() = %s", flags.f.String()))
-// where(fmt.Sprintf("flags.f.Error()  = %v", flags.f.Error()))
-*/
+// flags.f.Print()
 
 	if flags.f.Error() != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: -f %v\n", flags.f.Error())
 		os.Exit(3)
 	}
-	if flags.f.Exists() && flags.f.IsSet() {
+	if flags.f.AllOk() {
 		file = flags.f.String()
 		tables, err = gotables.NewTableSetFromFile(file)
 		if err != nil {
