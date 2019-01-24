@@ -35,13 +35,10 @@ import (
 )
 
 type Flags struct {
-//	f string	// gotables file
 	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go
 	// See: https://golang.org/pkg/flag
 	f util.StringFlag	// gotables file
-//	t string	// table
 	t util.StringFlag	// table name
-//	r string	// rotate this table in one direction or the other (if possible)
 	r util.StringFlag	// rotate this table in one direction or the other (if possible)
 	pipe bool	// pipe stdin
 	h bool		// help
@@ -61,11 +58,8 @@ func init() {
 }
 
 func initFlags() {
-//	flag.StringVar(&flags.f,  "f", "",    "tables file")
 	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
-//	flag.StringVar(&flags.t,  "t", "",    "this table")
 	flag.Var(&flags.t,        "t",        "this table")		// flag.Var() defaults to initial value of variable.
-//	flag.StringVar(&flags.r,  "r", "",    "rotate table")
 	flag.Var(&flags.r,        "r",        "rotate table")	// flag.Var() defaults to initial value of variable.
 	flag.BoolVar(&flags.pipe, "-", false, "piped stdin")
 	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
