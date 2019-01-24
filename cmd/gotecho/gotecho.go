@@ -39,8 +39,10 @@ type Flags struct {
 	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go
 	// See: https://golang.org/pkg/flag
 	f util.StringFlag	// gotables file
-	t string	// table
-	r string	// rotate this table in one direction or the other (if possible)
+//	t string	// table
+	t util.StringFlag	// table name
+//	r string	// rotate this table in one direction or the other (if possible)
+	r util.StringFlag	// rotate this table in one direction or the other (if possible)
 	pipe bool	// pipe stdin
 	h bool		// help
 }
@@ -61,8 +63,10 @@ func init() {
 func initFlags() {
 //	flag.StringVar(&flags.f,  "f", "",    "tables file")
 	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
-	flag.StringVar(&flags.t,  "t", "",    "this table")
-	flag.StringVar(&flags.r,  "r", "",    "rotate table")
+//	flag.StringVar(&flags.t,  "t", "",    "this table")
+	flag.Var(&flags.t,        "t",        "this table")		// flag.Var() defaults to initial value of variable.
+//	flag.StringVar(&flags.r,  "r", "",    "rotate table")
+	flag.Var(&flags.r,        "r",        "rotate table")	// flag.Var() defaults to initial value of variable.
 	flag.BoolVar(&flags.pipe, "-", false, "piped stdin")
 	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
 
@@ -162,10 +166,14 @@ func main() {
 	}
 
 	var finalMsg string
-	if flags.r != "" {
-		table, err := tables.Table(flags.r)
+	if flags.r.AllOk() {
+		if flags.t.AllOk() && flags.t.String() != flags.r.String() {
+			finalMsg = fmt.Sprintf("warning: ignoring gotecho -r %s which is a different table from gotecho -t %s\n",
+				flags.r.String(), flags.t.String())
+		}
+		table, err := tables.Table(flags.r.String())
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error finding -r %s: %s\n", flags.r, err)
+			fmt.Fprintf(os.Stderr, "Error finding -r %s: %s\n", flags.r.String(), err)
 			os.Exit(10)
 		}
 
@@ -177,7 +185,7 @@ func main() {
 		} else {	// is tabular
 			// Print this table as a struct (if possible). If more than 1 row, must be printed as tabular.
 			if table.RowCount() > 1 {
-				finalMsg = fmt.Sprintf("Warning: -r %s: table [%s] with multiple %d rows cannot be rotated from tabular to struct shape",
+				finalMsg = fmt.Sprintf("warning: gotecho -r %s: table [%s] with multiple %d rows cannot be rotated from tabular to struct shape",
 					table.Name(), table.Name(), table.RowCount())
 			} else {
 				// Rotate table from tabular to struct.
@@ -187,9 +195,9 @@ func main() {
 
 	}
 
-	if flags.t != "" {
+	if flags.t.AllOk() {
 		// Print just this table.
-		table, err := tables.Table(flags.t)
+		table, err := tables.Table(flags.t.String())
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error finding -t %s: %s\n", flags.t, err)
 			os.Exit(11)
@@ -201,6 +209,6 @@ func main() {
 	}
 
 	if len(finalMsg) > 0 {
-		fmt.Fprintf(os.Stderr, "%s.\n", finalMsg)
+		fmt.Fprintf(os.Stderr, "%s\n", finalMsg)
 	}
 }
