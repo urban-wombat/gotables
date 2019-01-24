@@ -40,7 +40,6 @@ type Flags struct {
 	f util.StringFlag	// gotables file
 	t util.StringFlag	// table name
 	r util.StringFlag	// rotate this table in one direction or the other (if possible)
-//	pipe bool	// pipe stdin
 	h bool		// help
 }
 var flags Flags
@@ -61,7 +60,6 @@ func initFlags() {
 	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.t,        "t",        "this table")		// flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.r,        "r",        "rotate table")	// flag.Var() defaults to initial value of variable.
-//	flag.BoolVar(&flags.pipe, "-", false, "piped stdin")
 	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
 
 	flag.Parse()
