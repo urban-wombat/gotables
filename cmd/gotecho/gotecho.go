@@ -134,7 +134,7 @@ func main() {
 			os.Exit(5)
 		}
 		if canPipe {
-			stdin, err := util.GulpFromPipeWithTimeout(1 * time.Second)
+			stdin, err := util.GulpFromPipeWithTimeout(5 * time.Second)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %s %v\n", util.ProgName(), err)
 				printUsage()
