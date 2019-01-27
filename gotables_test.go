@@ -1273,7 +1273,7 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 	var err error
 
 	// For testing machine-dependent types
-	var intBits int = strconv.IntSize // uint and int are the same bit size.
+	var intBits int = strconv.IntSize // uint and int are the same bit size. Like sizeof()
 	var intMinVal int64
 	var intMaxVal uint64
 	var uintMaxVal uint64
@@ -1531,7 +1531,7 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 	// NOTE: Only half of these tests will be executed. They are machine dependent: 32-bit OR 64-bit machines.
 
 	// For testing machine-dependent types
-	var intBits int = strconv.IntSize // uint and int are the same bit size.
+	var intBits int = strconv.IntSize // uint and int are the same bit size. Like sizeof()
 	switch intBits {
 	case 32: // NOTE: This will be executed on 32-bit machines ONLY.
 		tests = append(tests, testCase{`
