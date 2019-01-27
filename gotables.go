@@ -69,7 +69,7 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 //	log.SetOutput(os.Stderr)
 }
-// var where = log.Print
+var where = log.Print
 
 /*
 #####################################################################################
@@ -1198,7 +1198,6 @@ func (table *Table) StringPadded() string {
 				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
 				var replicatedPercentChars string
 				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-//				s = fmt.Sprintf("%q", replicatedPercentChars)
 				// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
 				s = fmt.Sprintf("\"%s\"", replicatedPercentChars)
 			case "bool":

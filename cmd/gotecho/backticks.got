@@ -1,2 +1,2 @@
 [backticks]
-backticks string = `This string is delimited with "back ticks"`
+normal string = "Double \"quotes\""

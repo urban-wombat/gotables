@@ -61,7 +61,7 @@ func init() {
 		"[]byte"  : "[]uint8",
 		  "int32" :   "rune",
 		  "rune"  :   "int32",
-//		"[]int32" : "[]rune",
+//		"[]int32" : "[]rune",	// Proposed?
 	}
 }
 
@@ -742,7 +742,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 		case "string":
 			rangeFound = stringRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
+				return nil, fmt.Errorf("%s expecting a valid value of double-quoted %s but found: %s (Need backticks? Use []byte)", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			stringVal = textFound[1:len(textFound)-1] // Strip off leading and trailing "" quotes.
