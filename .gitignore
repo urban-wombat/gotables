@@ -237,3 +237,4 @@ rmswap.sh
 helpers.go.COMPARE
 *.MOVED
 cmd/gotecho/backticks.got
+cmd/gotecho/gotecho.a

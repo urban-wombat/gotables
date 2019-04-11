@@ -99,6 +99,7 @@ func printUsage() {
 	fmt.Fprintf(os.Stderr, "%s\n", usageString)
 }
 
+// export main
 func main() {
 	var err error
 	var file string
