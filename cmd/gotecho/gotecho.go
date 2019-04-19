@@ -34,33 +34,37 @@ import (
 	"github.com/urban-wombat/util"
 )
 
+const pipeTimeout = 3 // seconds
+
 type Flags struct {
 	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go
 	// See: https://golang.org/pkg/flag
-	f util.StringFlag	// gotables file
-	t util.StringFlag	// table name
-	r util.StringFlag	// rotate this table in one direction or the other (if possible)
-	h bool		// help
+	f util.StringFlag // gotables file
+	t util.StringFlag // table name
+	r util.StringFlag // rotate this table in one direction or the other (if possible)
+	h bool            // help
 }
+
 var flags Flags
 
 func init() {
 	log.SetFlags(log.Lshortfile)
 }
+
 var where = log.Print
 
 func init() {
 	log.SetFlags(log.Lshortfile)
 
-	flag.Usage = printUsage	// Override the default flag.Usage variable.
+	flag.Usage = printUsage // Override the default flag.Usage variable.
 	initFlags()
 }
 
 func initFlags() {
-	flag.Var(&flags.f,        "f",        "tables file")	// flag.Var() defaults to initial value of variable.
-	flag.Var(&flags.t,        "t",        "this table")		// flag.Var() defaults to initial value of variable.
-	flag.Var(&flags.r,        "r",        "rotate table")	// flag.Var() defaults to initial value of variable.
-	flag.BoolVar(&flags.h,    "h", false, "print gotecho usage")
+	flag.Var(&flags.f, "f", "tables file")  // flag.Var() defaults to initial value of variable.
+	flag.Var(&flags.t, "t", "this table")   // flag.Var() defaults to initial value of variable.
+	flag.Var(&flags.r, "r", "rotate table") // flag.Var() defaults to initial value of variable.
+	flag.BoolVar(&flags.h, "h", false, "print gotecho usage")
 
 	flag.Parse()
 
@@ -71,10 +75,11 @@ func initFlags() {
 }
 
 func printUsage() {
-	var usageSlice = []string {
+	var usageSlice = []string{
 		"usage1:  gotecho  [-f <file>] [-t <this-table-only>] [-r <rotate-table>]",
 		"usage2:  cat <file> | gotecho [-t <this-table-only>] [-r <rotate-table>]",
-		"         If no -f <file> is specified, gotecho searches standard input",
+		"         If no -f <file> is specified, gotecho searches standard input for " +
+			fmt.Sprintf("%d", pipeTimeout) + " seconds",
 		"purpose: echo a file of gotables tables to stdout",
 		"flags:   -f  <gotables-file>  Input file text file containing a gotables.TableSet",
 		"         -t  this-table-only  Echo this table only",
@@ -88,13 +93,13 @@ func printUsage() {
 		usageString += usageSlice[i] + "\n"
 	}
 
-/*
-	var progNameEndsWithExe bool = strings.HasSuffix(util.ProgName(), ".exe")
-	if progNameEndsWithExe {
-		// We are testing. Provide a useful example. Does not appear in final product.
-		usageString += "example: go run gotecho.go -f ../flattablesmain/mytables.got -r AllTypes"
-	}
-*/
+	/*
+		var progNameEndsWithExe bool = strings.HasSuffix(util.ProgName(), ".exe")
+		if progNameEndsWithExe {
+			// We are testing. Provide a useful example. Does not appear in final product.
+			usageString += "example: go run gotecho.go -f ../flattablesmain/mytables.got -r AllTypes"
+		}
+	*/
 
 	fmt.Fprintf(os.Stderr, "%s\n", usageString)
 }
@@ -115,7 +120,7 @@ func main() {
 		os.Exit(2)
 	}
 
-// flags.f.Print()
+	// flags.f.Print()
 
 	if flags.f.Error() != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: -f %v\n", flags.f.Error())
@@ -128,14 +133,14 @@ func main() {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			os.Exit(4)
 		}
-	} else {	// Pipe from Stdin.
+	} else { // Pipe from Stdin.
 		canPipe, err := util.CanReadFromPipe()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			os.Exit(5)
 		}
 		if canPipe {
-			stdin, err := util.GulpFromPipeWithTimeout(5 * time.Second)
+			stdin, err := util.GulpFromPipeWithTimeout(pipeTimeout * time.Second)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ERROR: %s %v\n", util.ProgName(), err)
 				printUsage()
@@ -175,7 +180,7 @@ func main() {
 		if isStructShape {
 			// Rotate table from struct to tabular.
 			table.SetStructShape(false)
-		} else {	// is tabular
+		} else { // is tabular
 			// Print this table as a struct (if possible). If more than 1 row, must be printed as tabular.
 			if table.RowCount() > 1 {
 				finalMsg = fmt.Sprintf("warning: gotecho -r %s: table [%s] with multiple %d rows cannot be rotated from tabular to struct shape",
