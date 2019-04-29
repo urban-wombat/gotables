@@ -1018,6 +1018,14 @@ func max(a int, b int) int {
 	}
 }
 
+func min(a int, b int) int {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
 // 18.01.2017 M Gorman
 // This prints a gotable in tabular format. Called indirectly by table.String()
 func printMatrix(tableName string, matrix [][]string, width []int, precis []int, alignRight []bool, colTypes []string) string {
