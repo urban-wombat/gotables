@@ -746,19 +746,24 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-//where(textFound)
-//where(len(textFound))
-//			unquoted, err := strconv.Unquote(textFound)
-//			if err != nil {
-//				return nil, fmt.Errorf("strconv.Unquote(%s) error: %v", stringVal, err)
-//			}
 			stringVal = textFound[1:len(textFound)-1] // Strip off leading and trailing "" quotes.
-//if unquoted != stringVal {
-//	where(fmt.Sprintf("unquoted `%s` != stringVal `%s`", unquoted, stringVal))
-//}
-//where(stringVal)
-//where(len(stringVal))
+/*
+			unquoted, err := strconv.Unquote(textFound)
+			if err != nil {
+				return nil, fmt.Errorf("strconv.Unquote(%s) error: %v", stringVal, err)
+			}
+if unquoted != stringVal {
+	where(fmt.Sprintf("textFound %s", textFound))
+	where(len(textFound))
+	where(fmt.Sprintf("unquoted `%s` != stringVal `%s`", unquoted, stringVal))
+	where(fmt.Sprintf("stringVal = %s", stringVal))
+	where(len(stringVal))
+	where()
+	where()
+}
+*/
 			rowSlice[i] = stringVal
+//			rowSlice[i] = unquoted
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
