@@ -613,76 +613,6 @@ func TestReadString15(t *testing.T) {
 */
 }
 
-/*
- 7 \a   U+0007 alert or bell
- 8 \b   U+0008 backspace
- 9 \t   U+0009 horizontal tab
-10 \n   U+000A line feed or newline
-11 \v   U+000b vertical tab
-12 \f   U+000C form feed
-13 \r   U+000D carriage return
-34 \"   U+0022 double quote  (valid escape only within string literals) CAN    use in string literal
-44 \'   U+0027 single quote  (valid escape only within rune literals)   CANNOT use in string literal
-92 \\   U+005c backslash
-*/
-// This is a test of my undestanding.
-func TestUnquote(t *testing.T) {
-	var tests = []struct {
-		quoted   string
-		expected []byte
-	}{
-		{ `"abc"`,					[]byte{97, 98, 99} },
-		{ "\"abc\"",				[]byte{97, 98, 99} },
-		{ "'a'",					[]byte{97} },
-		{ `"\a\b\t\n\v\f\r\"\\Y'Z"`,[]byte{7, 8, 9, 10, 11, 12, 13, 34, 92, 89, 39, 90} },
-		{ `"\a"`,					[]byte{7} },
-		{ `"\a\b"`,					[]byte{7, 8} },
-		{ `"\a\b\f\n\r\t\v"`,		[]byte{7, 8, 12, 10, 13, 9, 11} },
-		{ `"\a\b\f\n\r\t\v'"`,		[]byte{7, 8, 12, 10, 13, 9, 11, 39} },
-		{ `"'"`,					[]byte{39} },	// \'   U+0027 single quote  (valid escape only within rune   literals)
-		{ `"\""`,					[]byte{34} },	// \"   U+0022 double quote  (valid escape only within string literals)
-		{ "`abc`",					[]byte{97, 98, 99} },
-	}
-
-	for i, test := range tests {
-
-		// Unquote
-
-		var unquoted string
-		unquoted, err := strconv.Unquote(test.quoted)
-		if err != nil {
-			t.Errorf("strconv.Unquote(%q) error: %v", test.quoted, err)
-		}
-
-		// Check for len() error.
-		if len(unquoted) != len(test.expected) {
-			t.Errorf("len(unquoted)=%d != len(test.expected)=%d", len(unquoted), len(test.expected))
-		}
-
-		for j := 0; j < min(len(unquoted), len(test.expected)); j++ {	// min() in case of len() error above.
-			if unquoted[j] != test.expected[j] {
-				t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.expected[j], unquoted[j])
-			}
-		}
-
-		// Quote
-
-		const printable = 32
-		var quoted string = strconv.Quote(unquoted)
-		// Ignore first and last char which may be ' or ` rather than "
-		for j := 1; j < min(len(quoted)-1, len(test.quoted)); j++ {	// min() in case of len() error above.
-			if quoted[j] != test.quoted[j] {
-				if test.quoted[j] >= printable && quoted[j] >= printable {
-					t.Errorf("test[%d]: expecting quoted[%d] = %d '%c', not %d '%c'",
-						i, j, test.quoted[j], test.quoted[j], quoted[j], quoted[j])
-				} else {
-					t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.quoted[j], quoted[j])
-				}
-			}
-		}
-	}
-}
-
 func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
 	tableSet, err := NewTableSet(tableSetName)
@@ -7696,4 +7626,76 @@ func main() {
 	// 		os.Exit(1)
 	// 	}
 	// }
+}
+
+/*
+ 7 \a   U+0007 alert or bell
+ 8 \b   U+0008 backspace
+ 9 \t   U+0009 horizontal tab
+10 \n   U+000A line feed or newline
+11 \v   U+000b vertical tab
+12 \f   U+000C form feed
+13 \r   U+000D carriage return
+34 \"   U+0022 double quote  (valid escape only within string literals) CAN    use in string literal
+44 \'   U+0027 single quote  (valid escape only within rune literals)   CANNOT use in string literal
+92 \\   U+005c backslash
+*/
+// This is a test of my undestanding.
+func TestUnquote(t *testing.T) {
+	var tests = []struct {
+		quoted   string
+		expected []byte
+	}{
+		{ `"abc"`,					[]byte{97, 98, 99} },
+		{ "`abc`",					[]byte{97, 98, 99} },
+		{ "\"abc\"",				[]byte{97, 98, 99} },
+		{ "'a'",					[]byte{97} },
+		{ `"\a\b\t\n\v\f\r\"\\Y'Z"`,[]byte{7, 8, 9, 10, 11, 12, 13, 34, 92, 89, 39, 90} },
+		{ `"\a"`,					[]byte{7} },
+		{ `"\a\b"`,					[]byte{7, 8} },
+		{ `"\a\b\f\n\r\t\v"`,		[]byte{7, 8, 12, 10, 13, 9, 11} },
+		{ `"\a\b\f\n\r\t\v'"`,		[]byte{7, 8, 12, 10, 13, 9, 11, 39} },
+		{ `"'"`,					[]byte{39} },	// \'   U+0027 single quote  (valid escape only within rune   literals)
+		{ `"\""`,					[]byte{34} },	// \"   U+0022 double quote  (valid escape only within string literals)
+	}
+
+	for i, test := range tests {
+
+		// Unquote
+		// Test that Unquote returns a string consisting of the expected bytes.
+
+		var unquoted string
+		unquoted, err := strconv.Unquote(test.quoted)
+		if err != nil {
+			t.Errorf("strconv.Unquote(%q) error: %v", test.quoted, err)
+		}
+
+		// Check for len() error.
+		if len(unquoted) != len(test.expected) {
+			t.Errorf("len(unquoted)=%d != len(test.expected)=%d", len(unquoted), len(test.expected))
+		}
+
+		for j := 0; j < min(len(unquoted), len(test.expected)); j++ {	// min() in case of len() error above.
+			if unquoted[j] != test.expected[j] {
+				t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.expected[j], unquoted[j])
+			}
+		}
+
+		// Quote
+		// Test that Quote reverses the string back to the original quoted string.
+
+		const printable = 32
+		var quoted string = strconv.Quote(unquoted)
+		// Ignore first and last char which may be ' or ` rather than "
+		for j := 1; j < min(len(quoted)-1, len(test.quoted)); j++ {	// min() in case of len() error above.
+			if quoted[j] != test.quoted[j] {
+				if test.quoted[j] >= printable && quoted[j] >= printable {
+					t.Errorf("test[%d]: expecting quoted[%d] = %d '%c', not %d '%c'",
+						i, j, test.quoted[j], test.quoted[j], quoted[j], quoted[j])
+				} else {
+					t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.quoted[j], quoted[j])
+				}
+			}
+		}
+	}
 }
