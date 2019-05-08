@@ -5518,18 +5518,19 @@ func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
 	`[ForCSV]
-	first_name  last_name   username    i   f64     b       f32     commas  quotes
-	string      string      string      int float64 bool    float32 string  string
-	"Rob"       "Pike"      "rob"       1   1.1     true    NaN     ",end"  "\"xyz\""
-	"Ken"       "Thompson"  "ken"       3   NaN     true    3.3     "beg,"  "'abc'"
-	"Robert"    "Griesemer" "gri"       5   5.5     true    NaN     "md,l"  " \"\" "
+	first_name  last_name   username    i   f64     b       f32     commas  quotes		runes end
+	string      string      string      int float64 bool    float32 string  string		rune  string
+	"Rob"       "Pike"      "rob"       1   1.1     true    NaN     ",end"  "\"xyz\""	'本'  "end"
+	"Ken"       "Thompson"  "ken"       3   NaN     true    3.3     "beg,"  "'abc'"		'\''  "end"
+	"Robert"    "Griesemer" "gri"       5   5.5     true    NaN     "m,d"   " \"\" "	' '   "end"
 	`
+//本
 	table, err := NewTableFromString(tableString)
 	if err != nil {
         log.Println(err)
 	}
 
-	fmt.Println("Before table.GetTableAsCSV() ...")
+	fmt.Println("gotables table we wish to convert to CSV ...")
 	fmt.Println(table)
 
 	var csv string
@@ -5538,39 +5539,38 @@ func ExampleTable_GetTableAsCSV() {
         log.Println(err)
 	}
 
-	fmt.Println("After table.GetTableAsCSV() ...")
+	fmt.Println("gotables table converted to CSV ...")
 	fmt.Println(csv)
 
-	substituteHeadingNames := []string{"First Name", "Last Name", "username", "i", "f64", "bool", "f32", "Commas", "Quotes"}
-
-	csv, err = table.GetTableAsCSV(substituteHeadingNames...)
+	optionalSubstituteHeadingNames := []string{"F Name", "L Name", "", "i", "f64", "bool", "f32", "Commas", "Quotes", "Runes", "end"}
+	csv, err = table.GetTableAsCSV(optionalSubstituteHeadingNames...)
 	if err != nil {
         log.Println(err)
 	}
 
-	fmt.Println("After table.GetTableAsCSV(substituteHeadingNames) ...")
+	fmt.Println("gotables table converted to CSV with user-provided optional heading names ...")
 	fmt.Println(csv)
 
 	// Output:
-	// Before table.GetTableAsCSV() ...
+	// gotables table we wish to convert to CSV ...
 	// [ForCSV]
-	// first_name last_name   username   i     f64 b        f32 commas quotes
-	// string     string      string   int float64 bool float32 string string
-	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN ",end" "\"xyz\""
-	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3 "beg," "'abc'"
-	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN "md,l" " \"\" "
+	// first_name last_name   username   i     f64 b        f32 commas quotes    runes end
+	// string     string      string   int float64 bool float32 string string    rune  string
+	// "Rob"      "Pike"      "rob"      1     1.1 true     NaN ",end" "\"xyz\"" '本'   "end"
+	// "Ken"      "Thompson"  "ken"      3     NaN true     3.3 "beg," "'abc'"   '\''  "end"
+	// "Robert"   "Griesemer" "gri"      5     5.5 true     NaN "m,d"  " \"\" "  ' '   "end"
 	// 
-	// After table.GetTableAsCSV() ...
-	// first_name,last_name,username,i,f64,b,f32,commas,quotes
-	// Rob,Pike,rob,1,1.1,true,,",end","\""xyz\"""
-	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
-	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
+	// gotables table converted to CSV ...
+	// first_name,last_name,username,i,f64,b,f32,commas,quotes,runes,end
+	// Rob,Pike,rob,1,1.1,true,,",end","""xyz""",本,end
+	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc',',end
+	// Robert,Griesemer,gri,5,5.5,true,,"m,d"," """" "," ",end
 	// 
-	// After table.GetTableAsCSV(substituteHeadingNames) ...
-	// First Name,Last Name,username,i,f64,bool,f32,Commas,Quotes
-	// Rob,Pike,rob,1,1.1,true,,",end","\""xyz\"""
-	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc'
-	// Robert,Griesemer,gri,5,5.5,true,,"md,l"," \""\"" "
+	// gotables table converted to CSV with user-provided optional heading names ...
+	// F Name,L Name,username,i,f64,bool,f32,Commas,Quotes,Runes,end
+	// Rob,Pike,rob,1,1.1,true,,",end","""xyz""",本,end
+	// Ken,Thompson,ken,3,,true,3.3,"beg,",'abc',',end
+	// Robert,Griesemer,gri,5,5.5,true,,"m,d"," """" "," ",end
 }
 
 func TestTable_Copy(t *testing.T) {
@@ -5973,7 +5973,7 @@ func TestRune(t *testing.T) {
 		{ '\r',			"'\r'", 		13, true, 5 },	//  5	\r   U+000D carriage return
 		{ '\t',			"'\t'", 		 9, true, 6 },	//  6	\t   U+0009 horizontal tab
 		{ '\v',			"'\v'", 		11, true, 7 },	//  7	\v   U+000b vertical tab
-		{ '\\',			"'\\'", 		92, true, 8 },	//  8	\\   U+005c backslash
+		{ 'A',			"'A'",			65, true, 8 },	//  8	\\   U+005c backslash		strconv.UnquoteChar() doesn't like '\\'
 		{ '\'',			`'\''`, 		39, true, 9 },	//  9	\'   U+0027 single quote  (valid escape only within rune literals)
 		{ 'a',			"'a'", 			97, true, 10 },	// 10	
 		{ 'ä',			"'ä'",		   228, true, 11 },	// 11
@@ -5989,7 +5989,7 @@ func TestRune(t *testing.T) {
 		{ '\u2318',		"'\u2318'",  8984, true, 21 },	// 21
 		{ 'ऎ',			"'ऎ'", 		 2318, true, 22 },	// 22	// Place of Interest Sign apparently interchangable 2318 8984
 		{ 'B',			"'B'", 			66, true, 23 },	// 23
-		{ '\u0000',		"'U+0000'", 	 0, true, 24 },	// 24	// Zero value of a rune.
+		{ '\u0000',		"'\u0000'", 	 0, true, 24 },	// 24	// Zero value of a rune.
 /*		These literals are caught by the Go compiler. Not possible to check them here.
 		{ IGNORE_RUNE,	"'aa'", 		-1, false },// 25	// illegal: too many characters
 		{ IGNORE_RUNE,	"'\xa'", 		-1, false },// 26	// illegal: too few hexadecimal digits
@@ -5998,7 +5998,7 @@ func TestRune(t *testing.T) {
 		{ IGNORE_RUNE,	"'\U00110000'",	-1, false },// 29	// illegal: invalid Unicode code point
 */
 		{ 'D',			"'\x44'", 			68, true, 25 },	// 25
-		{ IGNORE_RUNE,	"'U+00'", 			 0, true, 26 },	// 26
+		{ IGNORE_RUNE,	"'\x00'", 			 0, true, 26 },	// 26
 	}
 
 	// Note: runeRegexpString is defined in parser.go
@@ -6066,7 +6066,7 @@ func TestRune(t *testing.T) {
 				}
 */
 				size := utf8.RuneLen(rune2)
-				t.Errorf("test[%d/%d]: expecting rune %q %d but got %c %d size=%d Decode failed on string %q len=%d",
+				t.Errorf("test[%d/%d]: expecting rune %q %d but got %q %d size=%d Decode failed on string %q len=%d",
 					i, len(tests)-1, test.int32Val, test.int32Val, rune2, rune2, size, test.stringVal, len(test.stringVal))
 			}
 		}
@@ -6089,32 +6089,28 @@ func printBytes(b []byte) (s string) {
 
 func TestRuneTable(t *testing.T) {
 
-var runes string = `
-	[Runes]
+var runes string =
+  `[Runes]
 	code     glyph  dec str
 	rune     rune   int string
-	'U+0000' ''       0 ""
-	'U+61'   'a'     97 "a"
-	'U+0061' 'a'     97 "a"
+	'\u0000' '\x00'   0 ""
 	'\x61'   'a'     97 "a"
-	'\x0061' 'a'     97 "a"
-	'\u61'   'a'     97 "a"
 	'\u0061' 'a'     97 "a"
-	'U+0007' '\a'     7 "\a"
-	'U+0008' '\b'     8 "\b"
-	'U+0009' '\t'     9 "\t"
-	'U+000A' '\n'    10 "\n"
-	'U+000B' '\v'    11 "\v"
-	'U+000C' '\f'    12 "\f"
-	'U+000D' '\r'    13 "\r"
-	'U+005C' '\\'    92 "\\"
-	'U+4E16' '世' 19990 "世"
-	'U+754C' '界' 30028 "界"
-	'U+0041' 'A'     65 "A"
-	'U+0042' 'B'     66 "A"
-	'U+0043' 'C'     67 "A"
-	'\u44'   'D'     68 "D"
-	'\x006D' 'm'    109 "m"
+	'\u0007' '\a'     7 "\a"
+	'\u0008' '\b'     8 "\b"
+	'\u0009' '\t'     9 "\t"
+	'\u000A' '\n'    10 "\n"
+	'\u000B' '\v'    11 "\v"
+	'\u000C' '\f'    12 "\f"
+	'\u000D' '\r'    13 "\r"
+	'\u005C' '\\'    92 "\\"
+	'\u4E16' '世' 19990 "世"
+	'\u754C' '界' 30028 "界"
+	'\u0041' 'A'     65 "A"
+	'\u0042' 'B'     66 "A"
+	'\u0043' 'C'     67 "A"
+	'\u0044' 'D'     68 "D"
+	'\x6D'   'm'    109 "m"
 	'z'      'z'    122 "z"
 	`
 
@@ -6148,11 +6144,11 @@ var runes string = `
 
 func TestRuneStruct(t *testing.T) {
 
-var runes string = `
-	[Runes]
+var runes string =
+	`[Runes]
 	c1     rune = 'a'
 	numval int  = 97
-	c2     rune = '\x2200'
+	c2     rune = '\x22'
     `
 
 	_, err := NewTableFromString(runes)
@@ -6259,22 +6255,22 @@ func TestManyUnicodes(t *testing.T) {
 }
 
 func TestSomeUnicodes(t *testing.T) {
-	tableString := `
-	[Literals1]
+	tableString :=
+	`[Literals1]
 	code     glyph dec s
 	rune     rune  int string
-	'U+0000' ''      0 ""
-	'U+0061' 'a'    97 "a"
-	'U+0007' '\a'    7 "\a"
-	'U+0008' '\b'    8 "\b"
-	'U+0009' '\t'    9 "\t"
-	'U+000A' '\n'   10 "\n"
-	'U+000B' '\v'   11 "\v"
-	'U+000C' '\f'   12 "\f"
-	'U+000D' '\r'   13 "\r"
-	'U+000D' '\\'   13 "\\"
-	'U+000D' '世'   13 "世"
-	'U+000D' '界'   13 "界"
+	'\u0000' '\x00'  0 ""
+	'\u0061' 'a'    97 "a"
+	'\u0007' '\a'    7 "\a"
+	'\u0008' '\b'    8 "\b"
+	'\u0009' '\t'    9 "\t"
+	'\u000A' '\n'   10 "\n"
+	'\u000B' '\v'   11 "\v"
+	'\u000C' '\f'   12 "\f"
+	'\u000D' '\r'   13 "\r"
+	'\u000D' '\\'   13 "\\"
+	'\u000D' '世'   13 "世"
+	'\u000D' '界'   13 "界"
 	`
 
 	// where(tableString)
@@ -6288,33 +6284,30 @@ func TestSomeUnicodes(t *testing.T) {
 // Note: Glyph width is (in my experience) difficult to manage. Hence the uneven columns. May revisit.
 func ExampleNewTableFromString_unicodeRuneLiterals() {
 
-var runesEqual string =
-`
+var runesEqual string = `
 [RunesEqual]
 code     glyph  dec str
 rune     rune   int string
-'U+0000' ''       0 ""
-'U+61'   'a'     97 "a"
-'U+0061' 'a'     97 "a"
+'\u0000' '\x00'   0 ""
 '\x61'   'a'     97 "a"
-'\x0061' 'a'     97 "a"
-'\u61'   'a'     97 "a"
 '\u0061' 'a'     97 "a"
-'U+0007' '\a'     7 "\a"
-'U+0008' '\b'     8 "\b"
-'U+0009' '\t'     9 "\t"
-'U+000A' '\n'    10 "\n"
-'U+000B' '\v'    11 "\v"
-'U+000C' '\f'    12 "\f"
-'U+000D' '\r'    13 "\r"
-'U+005C' '\\'    92 "\\"
-'U+4E16' '世' 19990 "世"
-'U+754C' '界' 30028 "界"
-'U+0041' 'A'     65 "A"
-'U+0042' 'B'     66 "A"
-'U+0043' 'C'     67 "A"
-'\u44'   'D'     68 "D"
-'\x006D' 'm'    109 "m"
+'\u0061' 'a'     97 "a"
+'\u0061' 'a'     97 "a"
+'\u0007' '\a'     7 "\a"
+'\u0008' '\b'     8 "\b"
+'\u0009' '\t'     9 "\t"
+'\u000A' '\n'    10 "\n"
+'\u000B' '\v'    11 "\v"
+'\u000C' '\f'    12 "\f"
+'\u000D' '\r'    13 "\r"
+'\u005C' '\\'    92 "\\"
+'\u4E16' '世' 19990 "世"
+'\u754C' '界' 30028 "界"
+'\u0041' 'A'     65 "A"
+'\u0042' 'B'     66 "A"
+'\u0043' 'C'     67 "A"
+'\x44'   'D'     68 "D"
+'\u006D' 'm'    109 "m"
 'z'      'z'    122 "z"
 `
 
@@ -6332,57 +6325,53 @@ rune     rune   int string
 	// [RunesEqual]
 	// code     glyph  dec str
 	// rune     rune   int string
-	// 'U+0000' ''       0 ""
-	// 'U+61'   'a'     97 "a"
-	// 'U+0061' 'a'     97 "a"
+	// '\u0000' '\x00'   0 ""
 	// '\x61'   'a'     97 "a"
-	// '\x0061' 'a'     97 "a"
-	// '\u61'   'a'     97 "a"
 	// '\u0061' 'a'     97 "a"
-	// 'U+0007' '\a'     7 "\a"
-	// 'U+0008' '\b'     8 "\b"
-	// 'U+0009' '\t'     9 "\t"
-	// 'U+000A' '\n'    10 "\n"
-	// 'U+000B' '\v'    11 "\v"
-	// 'U+000C' '\f'    12 "\f"
-	// 'U+000D' '\r'    13 "\r"
-	// 'U+005C' '\\'    92 "\\"
-	// 'U+4E16' '世' 19990 "世"
-	// 'U+754C' '界' 30028 "界"
-	// 'U+0041' 'A'     65 "A"
-	// 'U+0042' 'B'     66 "A"
-	// 'U+0043' 'C'     67 "A"
-	// '\u44'   'D'     68 "D"
-	// '\x006D' 'm'    109 "m"
+	// '\u0061' 'a'     97 "a"
+	// '\u0061' 'a'     97 "a"
+	// '\u0007' '\a'     7 "\a"
+	// '\u0008' '\b'     8 "\b"
+	// '\u0009' '\t'     9 "\t"
+	// '\u000A' '\n'    10 "\n"
+	// '\u000B' '\v'    11 "\v"
+	// '\u000C' '\f'    12 "\f"
+	// '\u000D' '\r'    13 "\r"
+	// '\u005C' '\\'    92 "\\"
+	// '\u4E16' '世' 19990 "世"
+	// '\u754C' '界' 30028 "界"
+	// '\u0041' 'A'     65 "A"
+	// '\u0042' 'B'     66 "A"
+	// '\u0043' 'C'     67 "A"
+	// '\x44'   'D'     68 "D"
+	// '\u006D' 'm'    109 "m"
 	// 'z'      'z'    122 "z"
 	// 
 	// (2) Runes output table:
 	// [RunesEqual]
-	// code  glyph   dec str
-	// rune  rune    int string
-	// ''    ''        0 ""
-	// 'a'   'a'      97 "a"
-	// 'a'   'a'      97 "a"
-	// 'a'   'a'      97 "a"
-	// 'a'   'a'      97 "a"
-	// 'a'   'a'      97 "a"
-	// 'a'   'a'      97 "a"
-	// '\a'  '\a'      7 "\a"
-	// '\b'  '\b'      8 "\b"
-	// '\t'  '\t'      9 "\t"
-	// '\n'  '\n'     10 "\n"
-	// '\v'  '\v'     11 "\v"
-	// '\f'  '\f'     12 "\f"
-	// '\r'  '\r'     13 "\r"
-	// '\'   '\'      92 "\\"
-	// '世'   '世'   19990 "世"
-	// '界'   '界'   30028 "界"
-	// 'A'   'A'      65 "A"
-	// 'B'   'B'      66 "A"
-	// 'C'   'C'      67 "A"
-	// 'D'   'D'      68 "D"
-	// 'm'   'm'     109 "m"
-	// 'z'   'z'     122 "z"
+	// code   glyph    dec str
+	// rune   rune     int string
+	// '\x00' '\x00'     0 ""
+	// 'a'    'a'       97 "a"
+	// 'a'    'a'       97 "a"
+	// 'a'    'a'       97 "a"
+	// 'a'    'a'       97 "a"
+	// '\a'   '\a'       7 "\a"
+	// '\b'   '\b'       8 "\b"
+	// '\t'   '\t'       9 "\t"
+	// '\n'   '\n'      10 "\n"
+	// '\v'   '\v'      11 "\v"
+	// '\f'   '\f'      12 "\f"
+	// '\r'   '\r'      13 "\r"
+	// '\\'   '\\'      92 "\\"
+	// '世'    '世'    19990 "世"
+	// '界'    '界'    30028 "界"
+	// 'A'    'A'       65 "A"
+	// 'B'    'B'       66 "A"
+	// 'C'    'C'       67 "A"
+	// 'D'    'D'       68 "D"
+	// 'm'    'm'      109 "m"
+	// 'z'    'z'      122 "z"
 }
 
 func printStringBytes(s string) {
@@ -6405,33 +6394,28 @@ func printRuneBytes(r rune) {
 // Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
 func ExampleNewTableFromString_unicodeRuneLiteralsUnpadded() {
 
-var runesEqual string =
-`
+var runesEqual string = `
 [RunesEqual]
 code     glyph  dec str
 rune     rune   int string
-'U+0000' ''       0 ""
-'U+61'   'a'     97 "a"
-'U+0061' 'a'     97 "a"
+'\u0000' '\x00'   0 ""
 '\x61'   'a'     97 "a"
-'\x0061' 'a'     97 "a"
-'\u61'   'a'     97 "a"
 '\u0061' 'a'     97 "a"
-'U+0007' '\a'     7 "\a"
-'U+0008' '\b'     8 "\b"
-'U+0009' '\t'     9 "\t"
-'U+000A' '\n'    10 "\n"
-'U+000B' '\v'    11 "\v"
-'U+000C' '\f'    12 "\f"
-'U+000D' '\r'    13 "\r"
-'U+005C' '\\'    92 "\\"
-'U+4E16' '世' 19990 "世"
-'U+754C' '界' 30028 "界"
-'U+0041' 'A'     65 "A"
-'U+0042' 'B'     66 "A"
-'U+0043' 'C'     67 "A"
-'\u44'   'D'     68 "D"
-'\x006D' 'm'    109 "m"
+'\u0007' '\a'     7 "\a"
+'\u0008' '\b'     8 "\b"
+'\u0009' '\t'     9 "\t"
+'\u000A' '\n'    10 "\n"
+'\u000B' '\v'    11 "\v"
+'\u000C' '\f'    12 "\f"
+'\u000D' '\r'    13 "\r"
+'\u005C' '\\'    92 "\\"
+'\u4E16' '世' 19990 "世"
+'\u754C' '界' 30028 "界"
+'\u0041' 'A'     65 "A"
+'\u0042' 'B'     66 "A"
+'\u0043' 'C'     67 "A"
+'\x44'   'D'     68 "D"
+'\u006D' 'm'    109 "m"
 'z'      'z'    122 "z"
 `
 
@@ -6449,39 +6433,31 @@ rune     rune   int string
 	// [RunesEqual]
 	// code     glyph  dec str
 	// rune     rune   int string
-	// 'U+0000' ''       0 ""
-	// 'U+61'   'a'     97 "a"
-	// 'U+0061' 'a'     97 "a"
+	// '\u0000' '\x00'   0 ""
 	// '\x61'   'a'     97 "a"
-	// '\x0061' 'a'     97 "a"
-	// '\u61'   'a'     97 "a"
 	// '\u0061' 'a'     97 "a"
-	// 'U+0007' '\a'     7 "\a"
-	// 'U+0008' '\b'     8 "\b"
-	// 'U+0009' '\t'     9 "\t"
-	// 'U+000A' '\n'    10 "\n"
-	// 'U+000B' '\v'    11 "\v"
-	// 'U+000C' '\f'    12 "\f"
-	// 'U+000D' '\r'    13 "\r"
-	// 'U+005C' '\\'    92 "\\"
-	// 'U+4E16' '世' 19990 "世"
-	// 'U+754C' '界' 30028 "界"
-	// 'U+0041' 'A'     65 "A"
-	// 'U+0042' 'B'     66 "A"
-	// 'U+0043' 'C'     67 "A"
-	// '\u44'   'D'     68 "D"
-	// '\x006D' 'm'    109 "m"
+	// '\u0007' '\a'     7 "\a"
+	// '\u0008' '\b'     8 "\b"
+	// '\u0009' '\t'     9 "\t"
+	// '\u000A' '\n'    10 "\n"
+	// '\u000B' '\v'    11 "\v"
+	// '\u000C' '\f'    12 "\f"
+	// '\u000D' '\r'    13 "\r"
+	// '\u005C' '\\'    92 "\\"
+	// '\u4E16' '世' 19990 "世"
+	// '\u754C' '界' 30028 "界"
+	// '\u0041' 'A'     65 "A"
+	// '\u0042' 'B'     66 "A"
+	// '\u0043' 'C'     67 "A"
+	// '\x44'   'D'     68 "D"
+	// '\u006D' 'm'    109 "m"
 	// 'z'      'z'    122 "z"
 	// 
 	// (2) Runes output table:
 	// [RunesEqual]
 	// code glyph dec str
 	// rune rune int string
-	// '' '' 0 ""
-	// 'a' 'a' 97 "a"
-	// 'a' 'a' 97 "a"
-	// 'a' 'a' 97 "a"
-	// 'a' 'a' 97 "a"
+	// '\x00' '\x00' 0 ""
 	// 'a' 'a' 97 "a"
 	// 'a' 'a' 97 "a"
 	// '\a' '\a' 7 "\a"
@@ -6491,7 +6467,7 @@ rune     rune   int string
 	// '\v' '\v' 11 "\v"
 	// '\f' '\f' 12 "\f"
 	// '\r' '\r' 13 "\r"
-	// '\' '\' 92 "\\"
+	// '\\' '\\' 92 "\\"
 	// '世' '世' 19990 "世"
 	// '界' '界' 30028 "界"
 	// 'A' 'A' 65 "A"

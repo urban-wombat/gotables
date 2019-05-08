@@ -923,35 +923,11 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				switch table.colTypes[colIndex] {
 				case "string":
 					sVal = row[colIndex].(string)
-					// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
-					var replicatedPercentChars string
-					replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-//					buf.WriteString(fmt.Sprintf("%q", replicatedPercentChars))
-					// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
-					buf.WriteString(fmt.Sprintf("\"%s\"", replicatedPercentChars))
+					var quoted string = strconv.Quote(sVal)
+					buf.WriteString(quoted)
 				case "rune":
 					runeVal = row[colIndex].(rune)
-					// Handle special cases.
-					switch runeVal {
-						case 0:
-							s = "''"
-						case 7:
-							s = "'\\a'"
-						case 8:
-							s = "'\\b'"
-						case 9:
-							s = "'\\t'"
-						case 10:
-							s = "'\\n'"
-						case 11:
-							s = "'\\v'"
-						case 12:
-							s = "'\\f'"
-						case 13:
-							s = "'\\r'"
-						default:
-							s = fmt.Sprintf("'%s'", string(runeVal))
-					}
+					s = strconv.QuoteRune(runeVal)
 					buf.WriteString(fmt.Sprintf("%s", s))
 				case "bool":
 					tVal = row[colIndex].(bool)
@@ -1203,11 +1179,7 @@ func (table *Table) StringPadded() string {
 			switch table.colTypes[colIndex] {
 			case "string":
 				sVal = row[colIndex].(string)
-				// Replicate "%" chars in strings so they won't be interpreted by Sprintf()
-				var replicatedPercentChars string
-				replicatedPercentChars = strings.Replace(sVal, "%", "%%", -1)
-				// Note: Don't use %q. Use \"%s\" instead. Because %q replicates escape slashes.
-				s = fmt.Sprintf("\"%s\"", replicatedPercentChars)
+				s = strconv.Quote(sVal)
 			case "bool":
 				tVal = row[colIndex].(bool)
 				s = fmt.Sprintf("%t", tVal)
@@ -1246,27 +1218,7 @@ func (table *Table) StringPadded() string {
 				s = fmt.Sprintf("%d", i32Val)
 			case "rune":
 				runeVal = row[colIndex].(rune)
-				// Handle special cases.
-				switch runeVal {
-					case 0:
-						s = "''"
-					case 7:
-						s = "'\\a'"
-					case 8:
-						s = "'\\b'"
-					case 9:
-						s = "'\\t'"
-					case 10:
-						s = "'\\n'"
-					case 11:
-						s = "'\\v'"
-					case 12:
-						s = "'\\f'"
-					case 13:
-						s = "'\\r'"
-					default:
-						s = fmt.Sprintf("'%s'", string(runeVal))
-				}
+				s = strconv.QuoteRune(runeVal)
 /*
 				if len(s) >= 5 {
 					s = width.Narrow(s)	// This package seems to be unavailable.
@@ -1414,11 +1366,11 @@ func setWidths(s string, colIndex int, prenum []int, points []int, precis []int,
 /*
 Return a table as a comma separated variables for spreadsheets.
 
-substituteHeadingNames is optional. Leave empty or provide table.ColCount() []string of names.
+optionalSubstituteHeadingNames: Leave empty or provide a []string of names of length table.ColCount() 
 
 See: https://en.wikipedia.org/wiki/Comma-separated_values
 */
-func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, error) {
+func (table *Table) GetTableAsCSV(optionalSubstituteHeadingNames ...string) (string, error) {
 	var err error
 
 	if table == nil {
@@ -1430,15 +1382,25 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 	var record []string = make([]string, table.ColCount())
 
 	// Col names
-	if len(substituteHeadingNames) > 0 {
+	if len(optionalSubstituteHeadingNames) > 0 {
 		// Use user-provided headings.
-		if len(substituteHeadingNames) != table.ColCount() {
-			return "", fmt.Errorf("[%s].%s(substituteHeadingNames): expecting %d substituteHeadingNames, not %d",
-				table.Name(), util.FuncName(), table.ColCount(), len(substituteHeadingNames))
+		if len(optionalSubstituteHeadingNames) != table.ColCount() {
+			return "", fmt.Errorf("[%s].%s(optionalSubstituteHeadingNames): expecting %d []optionalSubstituteHeadingNames, not %d",
+				table.Name(), util.FuncName(), table.ColCount(), len(optionalSubstituteHeadingNames))
 		}
 		// should use copy() instead of a loop (S1001)
-		for colIndex, colName := range substituteHeadingNames {
-			record[colIndex] = colName
+		for colIndex, substituteHeadingName := range optionalSubstituteHeadingNames {
+			if len(optionalSubstituteHeadingNames[colIndex]) > 0 {
+				// Use substitute heading name.
+				record[colIndex] = substituteHeadingName
+			} else {
+				// Default to existing heading name.
+				colName, err := table.ColNameByColIndex(colIndex)
+				if err != nil {
+					return "", err
+				}
+				record[colIndex] = colName
+			}
 		}
 	} else {
 		// Be default use table col names.
@@ -1461,7 +1423,7 @@ func (table *Table) GetTableAsCSV(substituteHeadingNames ...string) (string, err
 				return "", nil
 			}
 
-			// Handle special case of NaN which needs to be written as ""
+			// Handle special case of NaN which needs to be written as "" which is ,, in CSV.
 			switch table.colTypes[colIndex] {
 			case "float32", "float64":
 				if sVal == "NaN" {

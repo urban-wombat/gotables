@@ -24,8 +24,6 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-	"unicode/utf8"
-	//	"unsafe"
 	"math"
 
 	"github.com/urban-wombat/util"
@@ -66,6 +64,9 @@ func init() {
 }
 
 var globalLineNum int
+
+var globalErrorLimit int = 10
+var globalErrorCount int
 
 const _ALL_SUBSTRINGS = -1
 
@@ -746,24 +747,11 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			stringVal = textFound[1:len(textFound)-1] // Strip off leading and trailing "" quotes.
-/*
-			unquoted, err := strconv.Unquote(textFound)
+			unquoted, err := strconv.Unquote(textFound)	// Note: strconv.Unquote() strips off surrounding double-quotes.
 			if err != nil {
 				return nil, fmt.Errorf("strconv.Unquote(%s) error: %v", stringVal, err)
 			}
-if unquoted != stringVal {
-	where(fmt.Sprintf("textFound %s", textFound))
-	where(len(textFound))
-	where(fmt.Sprintf("unquoted `%s` != stringVal `%s`", unquoted, stringVal))
-	where(fmt.Sprintf("stringVal = %s", stringVal))
-	where(len(stringVal))
-	where()
-	where()
-}
-*/
-			rowSlice[i] = stringVal
-//			rowSlice[i] = unquoted
+			rowSlice[i] = unquoted
 		case "bool":
 			rangeFound = boolRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
@@ -962,26 +950,18 @@ if unquoted != stringVal {
 			rowSlice[i] = int32Val
 		case "rune":
 			rangeFound = runeRegexp.FindStringIndex(remaining)
-			// where(fmt.Sprintf("remaining = %q", remaining))
-			// where(fmt.Sprintf("rangeFound = %v", rangeFound))
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			if rangeFound[1] - rangeFound[0]+1 < 3 {	// Expecting 2 delimeters plus at least 1 char.
-				return nil, fmt.Errorf("%s invalid rune with zero length", p.gotFilePos())
+			if rangeFound[1] - rangeFound[0] < 3 {	// Expecting 2 delimeters surrounding at least 1 char.
+				return nil, fmt.Errorf("%s invalid rune with zero length: ''", p.gotFilePos())
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			// where(fmt.Sprintf("textFound = %q", textFound))
 			var runeText string = textFound[1:len(textFound)-1] // Strip off leading and trailing '' quotes.
-			// where(fmt.Sprintf(" runeText =   %s", runeText))
-			// where()
-			// printStringBytes(runeText)
 			runeVal, err = parseRune(runeText)
 			if err != nil {
-				return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
 			}
-			// printRuneBytes(runeVal)
-			// where(fmt.Sprintf("runeVal = %c", runeVal))
 			rowSlice[i] = runeVal
 		case "int64":
 			rangeFound = intRegexp.FindStringIndex(remaining)
@@ -1125,126 +1105,19 @@ fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
 	return true, nil
 }
 
-// parseRune() accepts either a unicode character or a unicode code.
-// A valid rune is either 0 or a single-quote-delimited unicode character.
-// The unicode code range is from 0 to a maximum value, with an excluded inner range.
-// Codes are treated here as uint64 even though rune is aliased to int32.
-// Use utf8.RuneLen() to get rune length. Don't bother returning it here.
-func parseRune(s string) (rune, error) {
-
+func parseRune(runeText string) (rune, error) {
+	var err error
+	const delim = '\''	// Single quote for single-quote unquote rules.
 	var runeVal rune
+	var tail string	// remainder (if any) of string after first rune is unquoted.
 
-	if hasDelims(s, "'") {
-		return 0, fmt.Errorf("parseRune(): expecting an undelimited rune, not: %s", s)
+	runeVal, _, tail, err = strconv.UnquoteChar(runeText, delim)
+	if err != nil {
+		return 0, fmt.Errorf("invalid rune literal '%s' with %s: %s", runeText, err, runeText)
 	}
-
-	// where(fmt.Sprintf("bare string: %s", s))
-
-	if len(s) == 0 {	// Empty (zero value) rune: ''
-		// Zero value. See: https://tour.golang.org/basics/12
-		runeVal = 0
-		return runeVal, nil
+	if len(tail) > 0 {
+		return 0, fmt.Errorf("invalid rune literal '%s' with trailing char%s: %q", runeText, plural(len(tail)), tail)
 	}
-
-	switch s {
-		case "\\":	// DecodeRuneInString() cannot decode this rune literal.
-			runeVal = '\\'	// Backslash: U+005C decimal 92
-			return runeVal, nil
-		case "\\\\":	// String with escaped slashes.
-			runeVal = '\\'	// Backslash: U+005C decimal 92
-			return runeVal, nil
-		case "\\'":	// DecodeRuneInString() cannot decode this rune literal.
-			runeVal = '\''	// Apostrophe/single-quote: U+0027 decimal 39
-			return runeVal, nil
-		case "\\a":
-			runeVal = '\a'	// 7
-			return runeVal, nil
-		case "\\b":
-			runeVal = '\b'	// 8
-			return runeVal, nil
-		case "\\t":
-			runeVal = '\t'	// 9
-			return runeVal, nil
-		case "\\n":
-			runeVal = '\n'	// 10
-			return runeVal, nil
-		case "\\v":
-			runeVal = '\v'	// 11
-			return runeVal, nil
-		case "\\f":
-			runeVal = '\f'	// 12
-			return runeVal, nil
-		case "\\r":
-			runeVal = '\r'	// 13
-			return runeVal, nil
-		default:
-			// where("outer default")
-			var lens int = len(s)
-			if lens > 2 {	// See what's there.
-				// where("len > 2")
-				var prefix string
-				var bytes []byte = make([]byte, 2)
-				bytes[0] = s[0]
-				bytes[1] = s[1]
-				prefix = string(bytes)
-
-/*
-where(fmt.Sprintf("string: %s", s))
-where(fmt.Sprintf("prefix: %s", prefix))
-where(fmt.Sprintf("len(prefix): len(%s) = %d", prefix, len(prefix)))
-for j := 0; j < len(s); j++ {
-	fmt.Printf("s[%d] = %c\n", j, s[j])
-}
-for j := 0; j < len(prefix); j++ {
-	fmt.Printf("prefix[%d] = %c\n", j, prefix[j])
-}
-*/
-				switch prefix {
-					case "\\u", "\\U", "\\x", "\\X", "\\", "u+", "U+":	// Looks like hex.
-						// where("case looks like hex")
-						var uint64Val uint64
-						var err error
-						uint64Val, err = strconv.ParseUint(s[2:], _HEX, _BITS_64)
-						if err != nil {
-							return 0, fmt.Errorf("invalid rune cannot parse hex value: %s", s)
-						}
-						runeVal = rune(uint64Val)
-						// where(fmt.Sprintf("is hex: %q", runeVal))
-						return runeVal, nil
-					default:	// Probably an ordinary rune.
-						var size int
-						runeVal, size = utf8.DecodeRuneInString(s)
-						// where(fmt.Sprintf("utf8.ValidString = %t runeVal = %q size = %d s = %s", utf8.ValidString(s), runeVal, size, s))
-						if size < lens {
-							return 0, fmt.Errorf("#1 invalid rune %q size=%d in string %q len=%d has unexpected trailing chars: %s",
-								runeVal, size, s, len(s), s[size:])
-						}
-						if size < 1 {
-							return 0, fmt.Errorf("#1 invalid rune with size 0")
-						}
-						// where(fmt.Sprintf("Probably a glyph: %s (code = %d)", s, runeVal))
-				}
-				// where("outside inner switch")
-			} else {
-				var size int
-				runeVal, size = utf8.DecodeRuneInString(s)
-				// where(fmt.Sprintf("utf8.ValidString = %t runeVal = %q size = %d s = %s", utf8.ValidString(s), runeVal, size, s))
-				if size < lens {
-					return 0, fmt.Errorf("#2 invalid rune %q has unexpected trailing chars: %s", runeVal, s[size:])
-				}
-				if size < 1 {
-					return 0, fmt.Errorf("#2 invalid rune with size 0")
-				}
-				// where(fmt.Sprintf("else glyph = %q (code = %d)", runeVal, runeVal))
-			}
-	}
-	// where("outside outer switch")
-
-	validRune := utf8.ValidRune(runeVal)
-	if !validRune {
-		return 0, fmt.Errorf("invalid rune: %q", runeVal)
-	}
-	// where(fmt.Sprintf("runeVal = %d", runeVal))
 
 	return runeVal, nil
 }
