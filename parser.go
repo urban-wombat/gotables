@@ -105,7 +105,8 @@ var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
 // var runeRegexpString string = `'((\\n)|(\\')|(\\[xXuU].*)|([^']*))'`
 // Note: (\\') successfully parses '\'' It needs to go before ([^']*)
 //             This may not be terribly efficient, awaiting a more specific regular expresssion.
-var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xXuU].*)|([^']*))'`
+// var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xXuU].*)|([^']*))'`
+var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xuU].*)|([^']*))'`
 var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
@@ -1105,6 +1106,7 @@ fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
 	return true, nil
 }
 
+var globalPrevRuneVal rune
 func parseRune(runeText string) (rune, error) {
 	var err error
 	const delim = '\''	// Single quote for single-quote unquote rules.
@@ -1113,12 +1115,15 @@ func parseRune(runeText string) (rune, error) {
 
 	runeVal, _, tail, err = strconv.UnquoteChar(runeText, delim)
 	if err != nil {
+
 		// Work around an apparent bug in strconv.UnquoteChar() where it returns an error trying to parse "\\"
 		if runeText == "\\" {
 			return '\\', nil
 		}
+
 		return 0, fmt.Errorf("invalid rune literal '%s' with %s: %s", runeText, err, runeText)
 	}
+
 	if len(tail) > 0 {
 		return 0, fmt.Errorf("invalid rune literal '%s' with trailing char%s: %q", runeText, plural(len(tail)), tail)
 	}

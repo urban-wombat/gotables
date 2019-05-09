@@ -6168,27 +6168,27 @@ func TestManyUnicodes(t *testing.T) {
 	if skip  {
 		// where(fmt.Sprintf("skip = %t", skip))
 		// This is a token tiny test with speed the priority.
-		var tableString string = `
-		[Runes]
+		var tableString string = 
+		`[Runes]
 		code     glyph decimal
 		rune     rune  int32
-		'U+0000' '0' 0
-		'U+0001' '0' 1
-		'U+0002' '0' 2
-		'U+0003' '0' 3
-		'U+0004' '0' 4
-		'U+0005' '0' 5
-		'U+0006' '0' 6
-		'U+0007' '\a' 7
-		'U+0008' '\b' 8
-		'U+0009' '\t' 9
-		'U+000A' '\n' 10
-		'U+000B' '\v' 11
-		'U+000C' '\f' 12
-		'U+000D' '\r' 13
-		'U+000E' '0' 14
-		'U+000F' '0' 15
-		'U+0010' '0' 16
+		'\u0000' '0' 0
+		'\u0001' '0' 1
+		'\u0002' '0' 2
+		'\u0003' '0' 3
+		'\u0004' '0' 4
+		'\u0005' '0' 5
+		'\u0006' '0' 6
+		'\u0007' '\a' 7
+		'\u0008' '\b' 8
+		'\u0009' '\t' 9
+		'\u000A' '\n' 10
+		'\u000B' '\v' 11
+		'\u000C' '\f' 12
+		'\u000D' '\r' 13
+		'\u000E' '0' 14
+		'\u000F' '0' 15
+		'\u0010' '0' 16
 		`
 		table, err = NewTableFromString(tableString)
 		if err != nil { t.Error(err) }
