@@ -1,6 +1,6 @@
 `go get -u github.com/urban-wombat/gotables/cmd/gotecho`
 
-Usage1: `gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]`
+Usage1: `gotecho [-t <this-table-only>] [-r <rotate-table>] <gotables-file>`
 
 Usage2: `cat <gotables-file> | gotecho [-t <this-table-only>] [-r <rotate-table>]`
 
