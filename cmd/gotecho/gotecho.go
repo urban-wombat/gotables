@@ -39,7 +39,6 @@ const pipeTimeout = 3 // seconds
 type Flags struct {
 	// See: https://stackoverflow.com/questions/35809252/check-if-flag-was-provided-in-go
 	// See: https://golang.org/pkg/flag
-	f util.StringFlag // gotables file
 	t util.StringFlag // table name
 	r util.StringFlag // rotate this table in one direction or the other (if possible)
 	h bool            // help
@@ -61,7 +60,6 @@ func init() {
 }
 
 func initFlags() {
-	flag.Var(&flags.f, "f", "tables file")  // flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.t, "t", "this table")   // flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.r, "r", "rotate table") // flag.Var() defaults to initial value of variable.
 	flag.BoolVar(&flags.h, "h", false, "print gotecho usage")
@@ -76,12 +74,11 @@ func initFlags() {
 
 func printUsage() {
 	var usageSlice = []string{
-		"usage1:  gotecho  [-f <file>] [-t <this-table-only>] [-r <rotate-table>]",
-		"usage2:  cat <file> | gotecho [-t <this-table-only>] [-r <rotate-table>]",
-		"         If no -f <file> is specified, gotecho searches standard input for " +
+		"usage 1  gotecho [-t <this-table-only>] [-r <rotate-table>] <gotables-file>",
+		"usage 2  cat <gotables-file> | gotecho [-t <this-table-only>] [-r <rotate-table>]",
+		"         If no <gotables-file> is specified, gotecho searches standard input for " +
 			fmt.Sprintf("%d", pipeTimeout) + " seconds",
 		"purpose: echo a file of gotables tables to stdout",
-		"flags:   -f  <gotables-file>  Input file text file containing a gotables.TableSet",
 		"         -t  this-table-only  Echo this table only",
 		"         -r  rotate-table     Rotate this table (from tabular-to-struct or struct-to-tabular)",
 		"                              Note: Rotate tabular-to-struct is ignored if table has multiple rows",
@@ -93,24 +90,15 @@ func printUsage() {
 		usageString += usageSlice[i] + "\n"
 	}
 
-	/*
-		var progNameEndsWithExe bool = strings.HasSuffix(util.ProgName(), ".exe")
-		if progNameEndsWithExe {
-			// We are testing. Provide a useful example. Does not appear in final product.
-			usageString += "example: go run gotecho.go -f ../flattablesmain/mytables.got -r AllTypes"
-		}
-	*/
-
 	fmt.Fprintf(os.Stderr, "%s\n", usageString)
 }
 
-// export main
 func main() {
 	var err error
 	var file string
 	var tables *gotables.TableSet
 
-	// Clumsy way to avoid multiple files being specified with -f
+	// Clumsy way to avoid multiple files being specified
 	// Only possible because we are sure what the max possible args can be.
 	const maxArgsPossible = 7
 	if len(os.Args) > maxArgsPossible {
@@ -120,14 +108,15 @@ func main() {
 		os.Exit(2)
 	}
 
-	// flags.f.Print()
-
-	if flags.f.Error() != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: -f %v\n", flags.f.Error())
+	if len(os.Args) > 2 && os.Args[1] != "-t" && os.Args[1] != "-r" {
+		fmt.Fprintf(os.Stderr, "expecting flags to come before <gotables-file>\n")
+		printUsage()
 		os.Exit(3)
 	}
-	if flags.f.AllOk() {
-		file = flags.f.String()
+
+	var nonFlagArgs []string = nonFlagArgs(flag.Args())
+	if len(nonFlagArgs) >= 1 {
+		file = nonFlagArgs[0]
 		tables, err = gotables.NewTableSetFromFile(file)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
@@ -152,7 +141,7 @@ func main() {
 				os.Exit(7)
 			}
 		} else {
-			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use -f <file> instead: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Cannot pipe to gotecho (on this computer). Use <gotables-file> instead: %v\n", err)
 			printUsage()
 			os.Exit(8)
 		}
@@ -190,7 +179,6 @@ func main() {
 				table.SetStructShape(true)
 			}
 		}
-
 	}
 
 	if flags.t.AllOk() {
@@ -209,4 +197,15 @@ func main() {
 	if len(finalMsg) > 0 {
 		fmt.Fprintf(os.Stderr, "%s\n", finalMsg)
 	}
+}
+
+func nonFlagArgs(nfa []string) (nonFlagArgs []string) {
+	for i := 0; i < len(nfa); i++ {
+		if len(nfa[i]) > 0 {
+			nonFlagArgs = append(nonFlagArgs, nfa[i])
+		} else { // Not sure why this could happen.
+			// fmt.Printf("nfa[%d] = \"\"\n", i)
+		}
+	}
+	return
 }

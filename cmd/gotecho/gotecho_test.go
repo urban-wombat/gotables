@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os/exec"
+	"regexp"
 	"strings"
 	"syscall"
 	"testing"
@@ -53,13 +54,15 @@ func TestCmdGotecho(t *testing.T) {
 		args string				// The arguments passed to "go run gotables.go".
 	}{
 	//  Description						Piped?	Expected						ExitVal?	Arguments
-		{ "echo all",                    false, "test_files/tables.got",               0, "-f "+tables_got+"" },
-		{ "only Table",                  false, "test_files/Table.got",                0, "-f "+tables_got+" -t Table" },
-		{ "only Struct",                 false, "test_files/Struct.got",               0, "-f "+tables_got+" -t Struct" },
-		{ "missing table",               false, "test_files/empty.got",                1, "-f "+tables_got+" -t MissingTable" },
-		{ "rotate struct",               false, "test_files/rotateStructHasTable.got", 0, "-f "+tables_got+" -r Struct" },
-		{ "rotate struct no table",      false, "test_files/rotateStructNoTable.got",  0, "-f "+tables_got+" -r Struct -t Struct" },
-		{ "ignores rotate table",        false, "test_files/Table.got",                0, "-f "+tables_got+" -r Table -t Table" },
+/*
+*/
+		{ "echo all",                    false, "test_files/tables.got",               0, tables_got },
+		{ "only Table",                  false, "test_files/Table.got",                0, "-t Table  "+tables_got },
+		{ "only Struct",                 false, "test_files/Struct.got",               0, "-t Struct "+tables_got },
+		{ "missing table",               false, "test_files/empty.got",                1, "-t MissingTable "+tables_got },
+		{ "rotate struct",               false, "test_files/rotateStructHasTable.got", 0, "-r Struct "+tables_got },
+		{ "rotate struct no table",      false, "test_files/rotateStructNoTable.got",  0, "-r Struct -t Struct "+tables_got },
+		{ "ignores rotate table",        false, "test_files/Table.got",                0, "-r Table -t Table "+tables_got },
 		{ "pipe echo all",               true,  "test_files/tables.got",               0, "" },
 		{ "pipe only Table",             true,  "test_files/Table.got",                0, "-t Table" },
 		{ "pipe only Struct",            true,  "test_files/Struct.got",               0, "-t Struct" },
@@ -67,24 +70,31 @@ func TestCmdGotecho(t *testing.T) {
 		{ "pipe rotate struct",          true,  "test_files/rotateStructHasTable.got", 0, "-r Struct" },
 		{ "pipe rotate struct no table", true,  "test_files/rotateStructNoTable.got",  0, "-r Struct -t Struct" },
 		{ "pipe ignores rotate table",   true,  "test_files/Table.got",                0, "-r Table -t Table" },
-		{ "echo all - missing filename", false, "test_files/empty.got",                1, "-f" },
-		{ "echo all - missing -f",       false, "test_files/empty.got",                1, ""+tables_got+"" },
-		{ "<nil>| echo - missing -f",    true,  "test_files/empty.got",                1, "" },					// echo "" | gotecho
+		{ "echo missing <file>",         false, "test_files/empty.got",                1, "" },
+		{ "echo -r -t missing <file>",   false, "test_files/empty.got",                1, "-r Table -t Table" },
+		{ "echo -r missing <file>",      false, "test_files/empty.got",                1, "-r Table" },
+		{ "echo -t missing <file>",      false, "test_files/empty.got",                1, "-t Table" },
+		{ "<nil>| echo missing <file>",  true,  "test_files/empty.got",                1, "" },					// echo "" | gotecho
+/*
+*/
 	}
 
+	whiteSpace := regexp.MustCompile(`\s+`)
+
 	var cmd *exec.Cmd
+	fmt.Printf("%-8s %-30s %s\n", "Test#", "Description", "Command")
 	for i, test := range tests {
 		const verbose = true
 		if verbose {
 			// fmt.Println("---------------------------------------------------")
-			fmt.Printf("test[%2d] %s\n", i, test.desc)
+			fmt.Printf("test[%2d] %-28s   go run gotecho.go %s\n", i, test.desc, test.args)
 		}
 		contents, err := ioutil.ReadFile(test.fileOfExpected)
 		if err != nil { t.Error(err) }
 		expected := string(contents)
 
 		args := goArgs
-		slicedArgs := strings.Split(test.args, " ")
+		slicedArgs := whiteSpace.Split(test.args, -1)
 		args = append(args, slicedArgs...)
 		cmd = exec.Command("go", args...)
 
@@ -119,28 +129,30 @@ func TestCmdGotecho(t *testing.T) {
 		if hasError {
 			ws := exitError.Sys().(syscall.WaitStatus)
 			exitCode = ws.ExitStatus()
-			//where(fmt.Sprintf("exitError = %v", exitError))
-			//where(fmt.Sprintf("hasError = %v", hasError))
-			//where(fmt.Sprintf("exitCode = %v", exitCode))
+/*
+			where(fmt.Sprintf("exitError = %v", exitError))
+			where(fmt.Sprintf("hasError = %v", hasError))
+			where(fmt.Sprintf("exitCode = %v", exitCode))
+*/
 		}
 
 		stdout := stdoutByteBuffer.String()
 		stderr := stderrByteBuffer.String()
 
 /*
-where(fmt.Sprintf("expected =\n%s", expected))
-where(fmt.Sprintf("stdout = \n%s", stdout))
-where(fmt.Sprintf("stderr = \n%s", stderr))
+		where(fmt.Sprintf("expected =\n%s", expected))
+		where(fmt.Sprintf("stdout = \n%s", stdout))
+		where(fmt.Sprintf("stderr = \n%s", stderr))
 */
 
 		if stdout != expected {
-			t.Errorf("test[%2d] %s: ( gotecho %s ) OUTPUT != EXPECTED:-\nOUTPUT:\n%s\nEXPECTED:\n%s\nSTDERR:\n%s",
-				i, test.desc, test.args, stdout, expected, stderr)
+			t.Errorf("test[%2d] %s: %s OUTPUT != EXPECTED:-\nOUTPUT:\n%s\nEXPECTED:\n%s\nSTDERR:\n%s",
+				i, test.desc, cmd.Args, stdout, expected, stderr)
 		}
 
 		if exitCode != test.exitCodeExpected {
-			t.Errorf("test[%2d] %s: ( gotecho %s ) exitCode %d != exitCodeExpected %d\nSTDERR:\n%s",
-				i, test.desc, test.args, exitCode, test.exitCodeExpected, stderr)
+			t.Errorf("test[%2d] %s: %s exitCode %d != exitCodeExpected %d\nSTDERR:\n%s",
+				i, test.desc, cmd.Args, exitCode, test.exitCodeExpected, stderr)
 		}
 	}
 }
