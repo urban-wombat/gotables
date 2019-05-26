@@ -63,7 +63,7 @@ func init() {
 func initFlags() {
 	flag.Var(&flags.t, "t", "this table")   // flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.r, "r", "rotate table") // flag.Var() defaults to initial value of variable.
-	flag.BoolVar(&flags.u, "u", false, "unpadded")
+	flag.BoolVar(&flags.u, "u", false, "unpadded table format (unaligned columns)")
 	flag.BoolVar(&flags.h, "h", false, "print gotecho usage")
 
 	flag.Parse()
