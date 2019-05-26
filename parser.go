@@ -732,7 +732,6 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 	var lenColTypes = len(colTypes)
 	var i int
 
-	var stringVal string
 	var boolVal bool
 	var uint8Val uint8
 	var uint8SliceVal []uint8
@@ -764,8 +763,8 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			unquoted, err := strconv.Unquote(textFound) // Note: strconv.Unquote() strips off surrounding double-quotes.
 			if err != nil {
-				return nil, fmt.Errorf("%s strconv.Unquote(%s) error: %v: %s",
-					p.gotFilePos(), stringVal, err, textFound)
+				return nil, fmt.Errorf("%s error: %v of string: %s",
+					p.gotFilePos(), err, textFound)
 			}
 			rowSlice[i] = unquoted
 		case "bool":

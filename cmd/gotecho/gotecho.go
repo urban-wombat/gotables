@@ -41,6 +41,7 @@ type Flags struct {
 	// See: https://golang.org/pkg/flag
 	t util.StringFlag // table name
 	r util.StringFlag // rotate this table in one direction or the other (if possible)
+	u bool            // unpadded tables (as opposed to default padded format tables)
 	h bool            // help
 }
 
@@ -62,6 +63,7 @@ func init() {
 func initFlags() {
 	flag.Var(&flags.t, "t", "this table")   // flag.Var() defaults to initial value of variable.
 	flag.Var(&flags.r, "r", "rotate table") // flag.Var() defaults to initial value of variable.
+	flag.BoolVar(&flags.u, "u", false, "unpadded")
 	flag.BoolVar(&flags.h, "h", false, "print gotecho usage")
 
 	flag.Parse()
@@ -82,6 +84,7 @@ func printUsage() {
 		"         -t  this-table-only  Echo this table only",
 		"         -r  rotate-table     Rotate this table (from tabular-to-struct or struct-to-tabular)",
 		"                              Note: Rotate tabular-to-struct is ignored if table has multiple rows",
+		"         -u                   Unpadded table format (default is padded: numbers aligned right, strings left)",
 		"         -h                   Help",
 	}
 
@@ -188,10 +191,18 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error finding -t %s: %s\n", flags.t.String(), err)
 			os.Exit(11)
 		}
-		fmt.Println(table)
+		if flags.u { // unpadded
+			fmt.Println(table.StringUnpadded())
+		} else { // padded (default)
+			fmt.Println(table)
+		}
 	} else {
 		// Print all tables.
-		fmt.Println(tables)
+		if flags.u { // unpadded
+			fmt.Println(tables.StringUnpadded())
+		} else { // padded (default)
+			fmt.Println(tables)
+		}
 	}
 
 	if len(finalMsg) > 0 {
