@@ -8,23 +8,23 @@ package gotables
 
 import (
 	"fmt"
-//	"os"
+	//	"os"
 	"bufio"
-//	"bytes"
+	//	"bytes"
 	"errors"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
-//	"path"
+	//	"path"
 	"path/filepath"
 	"regexp"
 	"runtime"
-//	"runtime/debug"
+	//	"runtime/debug"
+	"math"
 	"strconv"
 	"strings"
 	"unicode"
-	"math"
 
 	"github.com/urban-wombat/util"
 )
@@ -52,14 +52,14 @@ SOFTWARE.
 */
 
 func init() {
-	typeAliasMap = map[string]string {
-		  "uint8" :   "byte",
-		  "byte"  :   "uint8",
-		"[]uint8" : "[]byte",
-		"[]byte"  : "[]uint8",
-		  "int32" :   "rune",
-		  "rune"  :   "int32",
-//		"[]int32" : "[]rune",	// Proposed?
+	typeAliasMap = map[string]string{
+		"uint8":   "byte",
+		"byte":    "uint8",
+		"[]uint8": "[]byte",
+		"[]byte":  "[]uint8",
+		"int32":   "rune",
+		"rune":    "int32",
+		//		"[]int32" : "[]rune",	// Proposed?
 	}
 }
 
@@ -73,8 +73,8 @@ const _ALL_SUBSTRINGS = -1
 // Constants for strconv parse functions.
 const (
 	_DECIMAL = 10
-	_OCT = 8
-	_HEX = 16
+	_OCT     = 8
+	_HEX     = 16
 	_BITS_8  = 8  // Bit width.
 	_BITS_16 = 16 // Bit width.
 	_BITS_32 = 32 // Bit width.
@@ -111,8 +111,8 @@ var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
 // var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
-var uintRegexpString string = `[+]?\b\d+\b`	// Without ^ so we can use uintRegexpString in uintSliceRegexpString
-var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString))	// Prepend ^
+var uintRegexpString string = `[+]?\b\d+\b`                                              // Without ^ so we can use uintRegexpString in uintSliceRegexpString
+var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString)) // Prepend ^
 var uintSliceRegexpString string = fmt.Sprintf(`^\[(%s)*([ ]%s)*\]`, uintRegexpString, uintRegexpString)
 var uintSliceRegexp *regexp.Regexp = regexp.MustCompile(uintSliceRegexpString)
 
@@ -122,7 +122,7 @@ var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 // From Regular Expressions Cookbook.
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
-var namePattern      =   `^[a-zA-Z_][a-zA-Z0-9_]*$`
+var namePattern = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 var tableNamePattern = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
@@ -221,7 +221,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowSliceOfStruct tableRow	// Needs to persist over multiple lines.
+	var rowSliceOfStruct tableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -287,10 +287,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			const structNameIndex = 0
 			const structTypeIndex = 1
 			const structEqualsIndex = 2
-			const tokenCountForNameType = 2					// (a) name type
-			var isNameTypeStruct bool						// (a) name type
-			const minTokenCountForNameTypeEqualsValue = 4	// (b) name type = value
-			var isNameTypeEqualsValueStruct bool			// (b) name type = value
+			const tokenCountForNameType = 2               // (a) name type
+			var isNameTypeStruct bool                     // (a) name type
+			const minTokenCountForNameTypeEqualsValue = 4 // (b) name type = value
+			var isNameTypeEqualsValueStruct bool          // (b) name type = value
 
 			// This is a recognition step.
 			// Determine whether this is a candidate struct of either:
@@ -308,7 +308,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					isNameTypeStruct = true
 					looksLikeStructShape = true
 				}
-			} else {	// lenLineSplit must be >= 4
+			} else { // lenLineSplit must be >= 4
 				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
 				if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
 					isNameTypeEqualsValueStruct = true
@@ -343,7 +343,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				}
 
 				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
-				if table.ColCount() == 1 {	// The first struct item.
+				if table.ColCount() == 1 { // The first struct item.
 					structHasRowData = isNameTypeEqualsValueStruct
 				}
 
@@ -374,15 +374,18 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
 						err = table.AppendRow()
-						if err != nil { return nil, err }
+						if err != nil {
+							return nil, err
+						}
 					}
-
 
 					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
 					// Zero rows or one row is needed for a struct table.
 					if table.RowCount() == 0 {
 						err = table.AppendRow()
-						if err != nil { return nil, err }
+						if err != nil {
+							return nil, err
+						}
 					}
 					if debugging {
 						// where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
@@ -390,24 +393,29 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					}
 
 					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
-					if err != nil { return nil, err }
+					if err != nil {
+						return nil, err
+					}
 
 					var val interface{} = rowSliceOfStruct[0]
 					var colIndex int = len(table.rows[0]) - 1
 					const rowIndexAlwaysZero int = 0
 					/* NOTE: Reinstate function call when old model is removed.
-					         This (if called now) double-sets the value.
+					   This (if called now) double-sets the value.
 					*/
 					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
-					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
-
+					if err != nil {
+						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					}
 
 					// Still expecting _COL_NAMES which is where we find struct: name type = value
 
 					// rowMapOfStruct is a variable of type tableRow which is a map: map[string]interface{}
 					// Look up the value by reference to the colName.
 					err = table.SetVal(colName, 0, val)
-					if err != nil { return nil, fmt.Errorf("%s %s", p.gotFilePos(), err) }
+					if err != nil {
+						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					}
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
@@ -437,14 +445,16 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColTypes := len(parserColTypes)
 			if lenColTypes != lenColNames {
 				return nil,
-				fmt.Errorf("%s expecting: %d col type%s but found: %d",
-					p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
+					fmt.Errorf("%s expecting: %d col type%s but found: %d",
+						p.gotFilePos(), lenColNames, plural(lenColNames), lenColTypes)
 			}
 
 			// Append cols here now that both parserColNames and parserColTypes are available.
 			// Trust that gotables syntax error handling will ensure both are available here.
 			err = table.appendCols(parserColNames, parserColTypes)
-			if err != nil { return nil, err }
+			if err != nil {
+				return nil, err
+			}
 
 			expecting = _COL_ROWS
 
@@ -456,10 +466,14 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			var rowSlice tableRow
 			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
-			if err != nil { return nil, err }
+			if err != nil {
+				return nil, err
+			}
 
 			err = table.appendRowSlice(rowSlice)
-			if err != nil { return tables, err }
+			if err != nil {
+				return tables, err
+			}
 
 			lenRowSlice := len(rowSlice)
 			if lenColTypes != lenRowSlice {
@@ -537,7 +551,7 @@ func file_line() string {
 func (p *parser) getTableName(line string) (string, error) {
 
 	fields := strings.Fields(line)
-	if len(fields) != 1 {	// Note: len(fields) cannot be 0, because len(line) > 0
+	if len(fields) != 1 { // Note: len(fields) cannot be 0, because len(line) > 0
 		return "", fmt.Errorf("%s expecting a table name in square brackets but found: %s", p.gotFilePos(), fields[0])
 	}
 
@@ -657,12 +671,12 @@ func isValidName(name string) (bool, error) {
 // Note: The same validity rules apply to both table names and col names.
 func IsValidColName(colName string) (bool, error) {
 
-/*
-	result := colNameRegexp.MatchString(colName)
-	if !result {
-		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar2\")", colName)
-	}
-*/
+	/*
+		result := colNameRegexp.MatchString(colName)
+		if !result {
+			return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar2\")", colName)
+		}
+	*/
 
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(colName)
@@ -685,13 +699,13 @@ func IsValidTableName(tableName string) (bool, error) {
 		return false, errors.New("invalid table name has zero length")
 	}
 
-/*
-	// Same regular expression as table name without square brackets.
-	result := colNameRegexp.MatchString(tableName)
-	if !result {
-		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
-	}
-*/
+	/*
+		// Same regular expression as table name without square brackets.
+		result := colNameRegexp.MatchString(tableName)
+		if !result {
+			return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
+		}
+	*/
 
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(tableName)
@@ -748,9 +762,10 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			unquoted, err := strconv.Unquote(textFound)	// Note: strconv.Unquote() strips off surrounding double-quotes.
+			unquoted, err := strconv.Unquote(textFound) // Note: strconv.Unquote() strips off surrounding double-quotes.
 			if err != nil {
-				return nil, fmt.Errorf("strconv.Unquote(%s) error: %v", stringVal, err)
+				return nil, fmt.Errorf("%s strconv.Unquote(%s) error: %v: %s",
+					p.gotFilePos(), stringVal, err, textFound)
 			}
 			rowSlice[i] = unquoted
 		case "bool":
@@ -954,11 +969,11 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
-			if rangeFound[1] - rangeFound[0] < 3 {	// Expecting 2 delimeters surrounding at least 1 char.
+			if rangeFound[1]-rangeFound[0] < 3 { // Expecting 2 delimeters surrounding at least 1 char.
 				return nil, fmt.Errorf("%s invalid rune with zero length: ''", p.gotFilePos())
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			var runeText string = textFound[1:len(textFound)-1] // Strip off leading and trailing '' quotes.
+			var runeText string = textFound[1 : len(textFound)-1] // Strip off leading and trailing '' quotes.
 			runeVal, err = parseRune(runeText)
 			if err != nil {
 				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
@@ -1055,7 +1070,7 @@ func plural(items int) string {
 */
 func splitSliceString(sliceString string) (sliceStringSplit []string) {
 	if len(sliceString) == 0 {
-		sliceStringSplit = []string{}	// 0 elements, not 1 element.
+		sliceStringSplit = []string{} // 0 elements, not 1 element.
 	} else {
 		sliceStringSplit = whiteRegexp.Split(sliceString, _ALL_SUBSTRINGS)
 	}
@@ -1065,16 +1080,18 @@ func splitSliceString(sliceString string) (sliceStringSplit []string) {
 func hasDelims(s string, delim string) bool {
 	var lens int = len(s)
 
-	if lens < 1 { return false }
-
-/*
-	if lens >= 2 {
-		if s[0] == delim[0] && s[lens-1] == delim[0] {
-where()
-			return true
-		}
+	if lens < 1 {
+		return false
 	}
-*/
+
+	/*
+	   	if lens >= 2 {
+	   		if s[0] == delim[0] && s[lens-1] == delim[0] {
+	   where()
+	   			return true
+	   		}
+	   	}
+	*/
 
 	if strings.HasSuffix(string(s[0]), delim) && strings.HasSuffix(string(s[len(s)-1]), delim) {
 		return true
@@ -1084,7 +1101,9 @@ where()
 }
 
 func trimDelims(s string, delim string) string {
-	if len(s) < 2 { return s }
+	if len(s) < 2 {
+		return s
+	}
 	s = strings.TrimPrefix(s, delim)
 	s = strings.TrimSuffix(s, delim)
 	return s
@@ -1096,8 +1115,8 @@ func isValidUnicode(code uint64) (bool, error) {
 	const maxUnicode = 0x10FFFF
 	const minReservedUnicode = 0xD800
 	const maxReservedUnicode = 0xDFFF
-fmt.Printf("maxUnicode    =    %d\n", maxUnicode)
-fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
+	fmt.Printf("maxUnicode    =    %d\n", maxUnicode)
+	fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
 
 	if code > maxUnicode {
 		return false, fmt.Errorf("invalid unicode number > %X (%d) for rune: %X (%d)", code, code, code, code)
@@ -1107,11 +1126,12 @@ fmt.Printf("math.MaxInt32 = %d\n", math.MaxInt32)
 }
 
 var globalPrevRuneVal rune
+
 func parseRune(runeText string) (rune, error) {
 	var err error
-	const delim = '\''	// Single quote for single-quote unquote rules.
+	const delim = '\'' // Single quote for single-quote unquote rules.
 	var runeVal rune
-	var tail string	// remainder (if any) of string after first rune is unquoted.
+	var tail string // remainder (if any) of string after first rune is unquoted.
 
 	runeVal, _, tail, err = strconv.UnquoteChar(runeText, delim)
 	if err != nil {
