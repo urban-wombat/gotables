@@ -32,6 +32,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Types are defined in helpersmain.go
+
 //	------------------------------------------------------------------
 //	next group: Set<type>() functions for each of 18 types.
 //	------------------------------------------------------------------
@@ -73,7 +75,7 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -116,7 +118,7 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -159,7 +161,7 @@ func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -202,7 +204,7 @@ func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -245,7 +247,7 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) err
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -288,7 +290,7 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) err
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -331,7 +333,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -374,7 +376,7 @@ func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -417,7 +419,7 @@ func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -460,7 +462,7 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -503,7 +505,7 @@ func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -546,7 +548,7 @@ func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -589,7 +591,7 @@ func (table *Table) SetString(colName string, rowIndex int, newVal string) error
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -632,7 +634,7 @@ func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -675,7 +677,7 @@ func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -718,7 +720,7 @@ func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -761,7 +763,7 @@ func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -804,7 +806,7 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
@@ -1555,7 +1557,7 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].([]byte)
 
 	return
@@ -1596,7 +1598,7 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].([]uint8)
 
 	return
@@ -1637,7 +1639,7 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(bool)
 
 	return
@@ -1678,7 +1680,7 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(byte)
 
 	return
@@ -1719,7 +1721,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(float32)
 
 	return
@@ -1760,7 +1762,7 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(float64)
 
 	return
@@ -1801,7 +1803,7 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(int)
 
 	return
@@ -1842,7 +1844,7 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(int16)
 
 	return
@@ -1883,7 +1885,7 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(int32)
 
 	return
@@ -1924,7 +1926,7 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(int64)
 
 	return
@@ -1965,7 +1967,7 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(int8)
 
 	return
@@ -2006,7 +2008,7 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(rune)
 
 	return
@@ -2047,7 +2049,7 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(string)
 
 	return
@@ -2088,7 +2090,7 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(uint)
 
 	return
@@ -2129,7 +2131,7 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(uint16)
 
 	return
@@ -2170,7 +2172,7 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(uint32)
 
 	return
@@ -2211,7 +2213,7 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(uint64)
 
 	return
@@ -2252,7 +2254,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %15 speedup.
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex].(uint8)
 
 	return
@@ -2293,7 +2295,7 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].([]byte)
 
 	return
@@ -2330,7 +2332,7 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].([]uint8)
 
 	return
@@ -2367,7 +2369,7 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(bool)
 
 	return
@@ -2404,7 +2406,7 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(byte)
 
 	return
@@ -2441,7 +2443,7 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(float32)
 
 	return
@@ -2478,7 +2480,7 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(float64)
 
 	return
@@ -2515,7 +2517,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(int)
 
 	return
@@ -2552,7 +2554,7 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(int16)
 
 	return
@@ -2589,7 +2591,7 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(int32)
 
 	return
@@ -2626,7 +2628,7 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(int64)
 
 	return
@@ -2663,7 +2665,7 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(int8)
 
 	return
@@ -2700,7 +2702,7 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(rune)
 
 	return
@@ -2737,7 +2739,7 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(string)
 
 	return
@@ -2774,7 +2776,7 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(uint)
 
 	return
@@ -2811,7 +2813,7 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(uint16)
 
 	return
@@ -2848,7 +2850,7 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(uint32)
 
 	return
@@ -2885,7 +2887,7 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(uint64)
 
 	return
@@ -2922,7 +2924,7 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 	}
 
 	// Get the val
-	// Note: This essentially inlines GetVal(): an average %25 speedup.
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
 	val = table.rows[rowIndex][colIndex].(uint8)
 
 	return
@@ -3107,7 +3109,9 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		// This is a x10 tuning strategy to avoid type conversion uint8(0)
 		table.rows[rowIndex][colIndex] = zeroVal.uint8Val
 	default:
-		return fmt.Errorf("invalid type: %s", "uint8")
+		//			return fmt.Errorf("invalid type: %s", "uint8")
+		// User-defined interface type.
+		table.rows[rowIndex][colIndex] = nil
 	}
 
 	return nil
@@ -3177,7 +3181,9 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 			// This is a x10 tuning strategy to avoid type conversion uint8(0)
 			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
 		default:
-			return fmt.Errorf("invalid type: %s", "uint8")
+			//				return fmt.Errorf("invalid type: %s", "uint8")
+			// User-defined interface type.
+			table.rows[rowIndex][colIndex] = nil
 		}
 	}
 

@@ -1235,6 +1235,7 @@ func (table *Table) StringPadded() string {
 			var i64Val int64
 			var f32Val float32
 			var f64Val float64
+			var iFaceVal interface{}
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
@@ -1300,8 +1301,16 @@ func (table *Table) StringPadded() string {
 				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
+				// Is a user-defined interface value.
+				iFaceVal = row[colIndex]
+				if iFaceVal == nil {
+					s = "<nil>"
+					setWidths(s, colIndex, prenum, points, precis, width)
+				}
+/*
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 				return ""
+*/
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
 
@@ -2763,11 +2772,12 @@ func trimTrailingZeros(s string) string {
 func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, error) {
 
 	var colType string
-	var typeOfCol reflect.Type
 	colType, err := table.ColTypeByColIndex(colIndex)
 	if err != nil {
 		return nil, err
 	}
+
+	var typeOfCol reflect.Type
 
 	switch colType {
 	case "string":
@@ -3617,6 +3627,86 @@ func (table *Table) ShuffleRandom() error {
 	random.Shuffle(len(table.rows), func(i, j int) {
 		table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 	})
+
+	return nil
+}
+
+/*
+//	Set table cell in colName at rowIndex to newVal int64
+func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+	}
+
+	const valType string = "int64"
+
+	colType, err := table.ColType(colName)
+	if err != nil {
+		return err
+	}
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				util.FuncName(), table.Name(), colName, colType, valType, newVal)
+		}
+	}
+
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return err
+	}
+
+	// Note: hasCol was checked by ColType() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return err
+	}
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	table.rows[rowIndex][colIndex] = newVal
+
+	return nil
+}
+*/
+
+//	Set table cell in colIndex at rowIndex to newVal int64
+func (table *Table) SetInterfaceValueByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil {
+		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+	}
+
+	var valType string = fmt.Sprintf("%T", newVal)
+
+	colType := table.colTypes[colIndex]
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				util.FuncName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return err
+	}
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
+	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }

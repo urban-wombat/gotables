@@ -65,7 +65,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	// Make sort keys of both input tables the same.
 	setSortKeysBetweenTables := func () error {
 		if table1.SortKeyCount() > 0 {
-			// Table1 is dominant.
+			// Note: table1 is dominant.
 			err = table2.SetSortKeysFromTable(table1)
 			if err != nil {
 				return err
@@ -176,13 +176,13 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	}
 	tempColCount++
 
-	// Make space for both tables.
+	// Make space (enough rows) for both tables.
 	err = merged.AppendRows(table1.RowCount() + table2.RowCount())
 	if err != nil {
 		return nil, err
 	}
 
-	// Set floats to NaN values.
+	// Set floats to NaN values, their default value if not set.
 	err = merged.SetAllFloatCellsToNaN()
 	if err != nil {
 		return nil, err
@@ -246,7 +246,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 	// where(fmt.Sprintf("BEFORE Merge()\n%s\n", merged))
 
-	// Loop through to second-last row, comparing each row with the row after it.
+	// Loop through to the second-last row, comparing each row with the row after it.
 	for rowIndex := 0; rowIndex < merged.RowCount()-1; rowIndex++ {
 
 		// Reduce make it easier to reason about assignments of val1 and val2.

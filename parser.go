@@ -615,15 +615,29 @@ Go types NOT supported: complex64 complex128
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		msg := fmt.Sprintf("invalid col type: %s (Valid types:", colType)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
+		validUserDefined, _ := IsValidUserDefinedType(colType)
+		if !validUserDefined {
+			msg := fmt.Sprintf("invalid col type: %s (valid types:", colType)
+			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+			for typeName, _ := range globalColTypesMap {
+				msg += fmt.Sprintf(" %s", typeName)
+			}
+			msg += ") and user-defined types"
+			err := errors.New(msg)
+			return false, err
 		}
-		msg += ")"
-		err := errors.New(msg)
-		return false, err
 	}
+	return true, nil
+}
+
+// This needs tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
+func IsValidUserDefinedType(colType string) (bool, error) {
+	for _, c := range colType {
+		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '.' {
+			return false, fmt.Errorf("invalid user-defined col type: %s (must contain only letters, numbers and periods)", colType)
+		}
+	}
+
 	return true, nil
 }
 
@@ -674,14 +688,14 @@ func IsValidColName(colName string) (bool, error) {
 	/*
 		result := colNameRegexp.MatchString(colName)
 		if !result {
-			return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar2\")", colName)
+			return false, fmt.Errorf("invalid col name: %q (valid example: \"_Foo2Bar2\")", colName)
 		}
 	*/
 
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(colName)
 	if !isValid {
-		return false, fmt.Errorf("invalid col name: %q (Valid example: \"_Foo2Bar3\")", colName)
+		return false, fmt.Errorf("invalid col name: %q (valid example: \"_Foo2Bar3\")", colName)
 	}
 
 	_, contains := globalColTypesMap[colName]
@@ -703,14 +717,14 @@ func IsValidTableName(tableName string) (bool, error) {
 		// Same regular expression as table name without square brackets.
 		result := colNameRegexp.MatchString(tableName)
 		if !result {
-			return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
+			return false, fmt.Errorf("invalid table name: %q (valid example: \"_Foo1Bar2\")", tableName)
 		}
 	*/
 
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(tableName)
 	if !isValid {
-		return false, fmt.Errorf("invalid table name: %q (Valid example: \"_Foo1Bar2\")", tableName)
+		return false, fmt.Errorf("invalid table name: %q (valid example: \"_Foo1Bar2\")", tableName)
 	}
 
 	_, contains := globalColTypesMap[tableName]

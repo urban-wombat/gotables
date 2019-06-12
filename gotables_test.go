@@ -569,49 +569,50 @@ func TestReadString14(t *testing.T) {
 	}
 	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
 }
-// Testing table with escaped characters.
-func TestReadString15(t *testing.T) {
-	var err error
 
-	s :=
-	`[Table]
-	s		chars
-	string	[]byte
-	"Fred"	[22]
-	`
-//	"\""	[34]
-
-	table, err := NewTableFromString(s)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
-
-/*
-	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		s, err := table.GetString("s", rowIndex)
-		if err != nil {
-			t.Error(err)
-		}
-
-		chars, err := table.GetByteSlice("chars", rowIndex)
-		if err != nil {
-			t.Error(err)
-		}
-
-		if len(s) != len(chars) {
-			t.Errorf("len(%q)=%d != len(%v)=%d", s, len(s), chars, len(chars))
-		}
-
-		for i := 0; i < table.RowCount(); i++ {
-			if s[i] != chars[i] {
-				t.Errorf("s[%d] != chars[%d]: '%c' != %d", i, i, s[i], chars[i])
-			}
-		}
-	}
-*/
-}
+//	// Testing table with escaped characters.
+//	func TestReadString15(t *testing.T) {
+//		var err error
+//	
+//		s :=
+//		`[Table]
+//		s		chars
+//		str   	[]byte
+//		"Fred"	[22]
+//		`
+//	//	"\""	[34]
+//	
+//		table, err := NewTableFromString(s)
+//		if err != nil {
+//			t.Error(err)
+//		}
+//	
+//		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+//	
+//	/*
+//		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+//			s, err := table.GetString("s", rowIndex)
+//			if err != nil {
+//				t.Error(err)
+//			}
+//	
+//			chars, err := table.GetByteSlice("chars", rowIndex)
+//			if err != nil {
+//				t.Error(err)
+//			}
+//	
+//			if len(s) != len(chars) {
+//				t.Errorf("len(%q)=%d != len(%v)=%d", s, len(s), chars, len(chars))
+//			}
+//	
+//			for i := 0; i < table.RowCount(); i++ {
+//				if s[i] != chars[i] {
+//					t.Errorf("s[%d] != chars[%d]: '%c' != %d", i, i, s[i], chars[i])
+//				}
+//			}
+//		}
+//	*/
+//	}
 
 func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
@@ -7674,4 +7675,75 @@ func TestUnquote(t *testing.T) {
 			}
 		}
 	}
+}
+
+//	Test Set and Get table cell in colName at rowIndex to newValue interface
+func TestSetAndGetInterfaceValue(t *testing.T) {
+
+	const colName string = "Flintstones"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendCol("i", "int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendCol("s", "string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	type person struct {
+		First string
+		Last  string
+		Human bool
+	}
+
+	fred := person{"Fred", "Flintstone", true}
+
+	var colType string = fmt.Sprintf("%T", fred)
+
+	err = table.AppendCol(colName, colType)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	fmt.Println(table)
+
+/*
+	var tests = []struct {
+		expected int64
+	}{
+		{-9223372036854775808},
+		{9223372036854775807},
+	}
+
+	const rowIndex = 0
+
+	for _, test := range tests {
+
+		err = table.SetIFace(colName, rowIndex, test.expected)
+		if err != nil {
+			t.Error(err)
+		}
+
+		value, err := table.GetIFace(colName, rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if value != test.expected {
+			t.Errorf("expecting GetIFace() value %v, not %v", test.expected, value)
+		}
+	}
+*/
 }
