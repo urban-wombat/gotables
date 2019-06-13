@@ -3634,7 +3634,10 @@ func (table *Table) ShuffleRandom() error {
 	return nil
 }
 
-//	Set table cell in colName at rowIndex to newVal interface{}
+/*	Set table cell in colName at rowIndex to newVal interface{}
+
+	For storage of user-defined types in a table.
+*/
 func (table *Table) SetInterfaceVal(colName string, rowIndex int, newVal interface{}) error {
 
 	var err error
@@ -3675,7 +3678,10 @@ func (table *Table) SetInterfaceVal(colName string, rowIndex int, newVal interfa
 	return nil
 }
 
-//	Set table cell in colIndex at rowIndex to newVal interface{}
+/*	Set table cell in colIndex at rowIndex to newVal interface{}
+
+	For storage of user-defined types in a table.
+*/
 func (table *Table) SetInterfaceValByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
 
 	// See: Set<type>ByColIndex() functions
@@ -3737,7 +3743,11 @@ func interfaceValAsString(val interface{}) (string, error) {
 	return "<nil>", nil
 }
 
-//	Set table cell in colIndex at rowIndex to newValue interface{}
+/*	Get interface table cell from colIndex at rowIndex
+
+	For storage of user-defined types in a table.
+	Retrieve to an interface{} type and then assert to your type.
+*/
 func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
 	if table == nil {
@@ -3772,7 +3782,11 @@ func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val i
 	return
 }
 
-//	Get interface table cell from colName at rowIndex
+/*	Get interface table cell from colName at rowIndex
+
+	For storage of user-defined types in a table.
+	Retrieve to an interface{} type and then assert to your type.
+*/
 func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface{}, err error) {
 
 	// See: Get<type>() functions

@@ -2264,7 +2264,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 //	next group: Get<type>ByColIndex() functions for each of 18 types.
 //	----------------------------------------------------------------------------
 
-//	Set table cell in colIndex at rowIndex to newValue []byte
+//  Get []byte table cell from colIndex at rowIndex
 func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []byte, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2301,7 +2301,7 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue []uint8
+//  Get []uint8 table cell from colIndex at rowIndex
 func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []uint8, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2338,7 +2338,7 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue bool
+//  Get bool table cell from colIndex at rowIndex
 func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2375,7 +2375,7 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue byte
+//  Get byte table cell from colIndex at rowIndex
 func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2412,7 +2412,7 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float32
+//  Get float32 table cell from colIndex at rowIndex
 func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float32, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2449,7 +2449,7 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue float64
+//  Get float64 table cell from colIndex at rowIndex
 func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float64, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2486,7 +2486,7 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int
+//  Get int table cell from colIndex at rowIndex
 func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2523,7 +2523,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int16
+//  Get int16 table cell from colIndex at rowIndex
 func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2560,7 +2560,7 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int32
+//  Get int32 table cell from colIndex at rowIndex
 func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2597,7 +2597,7 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int64
+//  Get int64 table cell from colIndex at rowIndex
 func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2634,7 +2634,7 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue int8
+//  Get int8 table cell from colIndex at rowIndex
 func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2671,7 +2671,7 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue rune
+//  Get rune table cell from colIndex at rowIndex
 func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2708,7 +2708,7 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue string
+//  Get string table cell from colIndex at rowIndex
 func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2745,7 +2745,7 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint
+//  Get uint table cell from colIndex at rowIndex
 func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2782,7 +2782,7 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint16
+//  Get uint16 table cell from colIndex at rowIndex
 func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2819,7 +2819,7 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint32
+//  Get uint32 table cell from colIndex at rowIndex
 func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2856,7 +2856,7 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint64
+//  Get uint64 table cell from colIndex at rowIndex
 func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64, err error) {
 
 	// See: Get<type>ByColIndex() functions
@@ -2893,7 +2893,7 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 	return
 }
 
-//	Set table cell in colIndex at rowIndex to newValue uint8
+//  Get uint8 table cell from colIndex at rowIndex
 func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, err error) {
 
 	// See: Get<type>ByColIndex() functions
