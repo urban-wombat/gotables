@@ -7680,9 +7680,14 @@ func TestUnquote(t *testing.T) {
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
 func TestSetAndGetInterfaceValue(t *testing.T) {
 
+	var err error
+	var table *Table
+	var lastColIndex int
+	var lastRowIndex int
+
 	const colName string = "Flintstones"
 
-	table, err := NewTable("SetAndGet")
+	table, err = NewTable("SetAndGet")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7697,6 +7702,16 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = table.AppendCol("f", "float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendCol("b", "bool")
+	if err != nil {
+		t.Error(err)
+	}
+
 	type person struct {
 		First string
 		Last  string
@@ -7704,10 +7719,69 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	fred := person{"Fred", "Flintstone", true}
+	wilma := person{"Wilma", "Flintstone", true}
+	dino := person{"Dino", "Flintstone", false}
 
 	var colType string = fmt.Sprintf("%T", fred)
 
 	err = table.AppendCol(colName, colType)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInt("i", lastRowIndex, 42)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetString("s", lastRowIndex, "My String")
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetBool("b", lastRowIndex, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastColIndex = table.ColCount()-1
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInterfaceValByColIndex(lastColIndex, lastRowIndex, fred)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInterfaceVal(colName, lastRowIndex, wilma)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInterfaceVal(colName, lastRowIndex, dino)
 	if err != nil {
 		t.Error(err)
 	}

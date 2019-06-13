@@ -7,6 +7,7 @@ package gotables
 import (
 	"bytes"
 	"encoding/csv"
+	"encoding/gob"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -1149,6 +1150,8 @@ func (table *Table) String() string {
 }
 
 func (table *Table) StringPadded() string {
+	var err error
+
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
 		return ""
@@ -1293,20 +1296,20 @@ func (table *Table) StringPadded() string {
 				f32Val = row[colIndex].(float32)
 				var f64ValForFormatFloat float64 = float64(f32Val)
 				s = strconv.FormatFloat(f64ValForFormatFloat, 'f', -1, 32) // -1 strips off excess decimal places.
-				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			case "float64":
 				f64Val = row[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
-				//					precis[colIndex] = max(precis[colIndex], precisionOf(s))
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				if iFaceVal == nil {
-					s = "<nil>"
-					setWidths(s, colIndex, prenum, points, precis, width)
+				s, err = interfaceValAsString(iFaceVal)
+				if err != nil {
+					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
+					return ""
 				}
+				setWidths(s, colIndex, prenum, points, precis, width)
 /*
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 				return ""
@@ -3631,11 +3634,8 @@ func (table *Table) ShuffleRandom() error {
 	return nil
 }
 
-/*
-//	Set table cell in colName at rowIndex to newVal int64
-func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
-
-	// See: Set<type>() functions
+//	Set table cell in colName at rowIndex to newVal interface{}
+func (table *Table) SetInterfaceVal(colName string, rowIndex int, newVal interface{}) error {
 
 	var err error
 
@@ -3643,7 +3643,7 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
 	}
 
-	const valType string = "int64"
+	var valType string = fmt.Sprintf("%T", newVal)
 
 	colType, err := table.ColType(colName)
 	if err != nil {
@@ -3669,15 +3669,14 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 	}
 
 	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average %30 speedup.
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
 }
-*/
 
-//	Set table cell in colIndex at rowIndex to newVal int64
-func (table *Table) SetInterfaceValueByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
+//	Set table cell in colIndex at rowIndex to newVal interface{}
+func (table *Table) SetInterfaceValByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -3709,4 +3708,31 @@ func (table *Table) SetInterfaceValueByColIndex(colIndex int, rowIndex int, newV
 	table.rows[rowIndex][colIndex] = newVal
 
 	return nil
+}
+
+// Gob-encode the value as a string and quote it for safe parsing.
+func interfaceValAsString(val interface{}) (string, error) {
+	var err error
+
+	if val != nil {
+		// Create quoted string representation of val, for humans to read, not for parsing.
+		unQuotedValString := fmt.Sprintf("%#v", val)
+		quotedValString := fmt.Sprintf("%q", unQuotedValString)
+
+		// Created quoted string representation of GOB encoding of val, for parsing.
+		var buffer bytes.Buffer
+		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
+		err = encoder.Encode(val)
+		if err != nil {
+			return "", err
+		}
+		unQuotedEncoding := buffer.String()
+		quotedEncoding := fmt.Sprintf("%q", unQuotedEncoding)
+
+		// Enclose each in contiguous square-brackets for parsing.
+		s := fmt.Sprintf("[%s][%s]", quotedValString, quotedEncoding)
+		return s, nil
+	}
+
+	return "<nil>", nil
 }
