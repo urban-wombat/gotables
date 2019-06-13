@@ -3758,7 +3758,7 @@ func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val i
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average 25% speedup.
-	val = table.rows[rowIndex][colIndex].(int64)
+	val = table.rows[rowIndex][colIndex]
 
 	var valType string = fmt.Sprintf("%T", val)
 

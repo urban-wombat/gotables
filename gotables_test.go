@@ -7796,6 +7796,12 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 
 	fmt.Println(table)
 
+	br, err := table.GetInterfaceValByColIndex(lastColIndex, lastRowIndex)
+	if err != nil {
+		t.Error(err)
+	}
+	where(br)
+
 /*
 	var tests = []struct {
 		expected int64
