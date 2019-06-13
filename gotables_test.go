@@ -7721,15 +7721,11 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	fred := person{"Fred", "Flintstone", true}
 	wilma := person{"Wilma", "Flintstone", true}
 	dino := person{"Dino", "Flintstone", false}
+	barney := person{"Barney", "Rubble", true}
 
 	var colType string = fmt.Sprintf("%T", fred)
 
 	err = table.AppendCol(colName, colType)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
 	if err != nil {
 		t.Error(err)
 	}
@@ -7752,12 +7748,13 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetBool("b", lastRowIndex, true)
+	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = table.AppendRow()
+	lastRowIndex = table.RowCount()-1
+	err = table.SetBool("b", lastRowIndex, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7787,6 +7784,12 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInterfaceVal(colName, lastRowIndex, barney)
 	if err != nil {
 		t.Error(err)
 	}
