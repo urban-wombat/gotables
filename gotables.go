@@ -3716,33 +3716,6 @@ func (table *Table) SetInterfaceValByColIndex(colIndex int, rowIndex int, newVal
 	return nil
 }
 
-// Gob-encode the value as a string and quote it for safe parsing.
-func interfaceValAsString(val interface{}) (string, error) {
-	var err error
-
-	if val != nil {
-		// Create quoted string representation of val, for humans to read, not for parsing.
-		unQuotedValString := fmt.Sprintf("%#v", val)
-		quotedValString := fmt.Sprintf("%q", unQuotedValString)
-
-		// Created quoted string representation of GOB encoding of val, for parsing.
-		var buffer bytes.Buffer
-		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(val)
-		if err != nil {
-			return "", err
-		}
-		unQuotedEncoding := buffer.String()
-		quotedEncoding := fmt.Sprintf("%q", unQuotedEncoding)
-
-		// Enclose each in contiguous square-brackets for parsing.
-		s := fmt.Sprintf("[%s][%s]", quotedValString, quotedEncoding)
-		return s, nil
-	}
-
-	return "<nil>", nil
-}
-
 /*	Get interface table cell from colIndex at rowIndex
 
 	For storage of user-defined types in a table.
@@ -3825,4 +3798,38 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	}
 
 	return
+}
+
+/*	Gob-encode the value as a string and quote it for safe parsing.
+
+	Whilst it's easy to generate a string (textual table) from a gotables.Table
+	(with gotables.Table.String() or gotables.Table.StringUnpadded())
+	it's not something that can be done by hand, unlike simple Go types such
+	as string, int and bool. If you wish to hand-generate a textual table, use
+	InterfaceValAsString() to convert your user-defined values to strings.
+*/
+func InterfaceValAsString(val interface{}) (string, error) {
+	var err error
+
+	if val != nil {
+		// Create quoted string representation of val, for humans to read, not for parsing.
+		unQuotedValString := fmt.Sprintf("%#v", val)
+		quotedValString := fmt.Sprintf("%q", unQuotedValString)
+
+		// Created quoted string representation of GOB encoding of val, for parsing.
+		var buffer bytes.Buffer
+		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
+		err = encoder.Encode(val)
+		if err != nil {
+			return "", err
+		}
+		unQuotedEncoding := buffer.String()
+		quotedEncoding := fmt.Sprintf("%q", unQuotedEncoding)
+
+		// Enclose each in contiguous square-brackets for parsing.
+		s := fmt.Sprintf("[%s][%s]", quotedValString, quotedEncoding)
+		return s, nil
+	}
+
+	return "<nil>", nil
 }
