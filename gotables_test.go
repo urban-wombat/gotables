@@ -7799,7 +7799,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 
-	fmt.Println(table)
+where(table)
 
 	var iface interface{}
 	var br person
@@ -7808,7 +7808,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 	br = iface.(person)
-	where(br.First)
+where(br.First)
 
 	var ff person
 	iface, err = table.GetInterfaceVal("Flintstones", 0)
@@ -7816,7 +7816,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 	ff = iface.(person)
-	where(ff.First)
+where(ff.First)
 
 /*
 	var tests = []struct {

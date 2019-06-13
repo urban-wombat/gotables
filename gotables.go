@@ -1304,7 +1304,7 @@ func (table *Table) StringPadded() string {
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				s, err = interfaceValAsString(iFaceVal)
+				s, err = InterfaceValAsString(iFaceVal)
 				if err != nil {
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
@@ -3805,7 +3805,7 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	The string consists of a contiguous pair of strings in square brackets: [human-readable][machine-readable]
 	The [human-readable] part is for human readability only and is not parsed (it is skipped).
 	The [machine-readable] part contains the machine-decodable text from which the original
-	value is reconstituted.
+	value is reconstructed.
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	(using methods gotables.Table.String() or gotables.Table.StringUnpadded())
