@@ -3802,10 +3802,16 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 
 /*	Gob-encode the value as a string and quote it for safe parsing.
 
+	The string consists of a contiguous pair of strings in square brackets: [human-readable][machine-readable]
+	The [human-readable] part is for human readability only and is not parsed (it is skipped).
+	The [machine-readable] part contains the machine-decodable text from which the original
+	value is reconstituted.
+
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
-	(with gotables.Table.String() or gotables.Table.StringUnpadded())
+	(using methods gotables.Table.String() or gotables.Table.StringUnpadded())
 	it's not something that can be done by hand, unlike simple Go types such
-	as string, int and bool. If you wish to hand-generate a textual table, use
+	as string, int and bool. If you wish to hand-generate a textual table
+	containing user-defined values, use
 	InterfaceValAsString() to convert your user-defined values to strings.
 */
 func InterfaceValAsString(val interface{}) (string, error) {
