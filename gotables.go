@@ -3772,9 +3772,8 @@ func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val i
 	return
 }
 
-/*
-//	Get int64 table cell from colName at rowIndex
-func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error) {
+//	Get interface table cell from colName at rowIndex
+func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface{}, err error) {
 
 	// See: Get<type>() functions
 
@@ -3782,18 +3781,9 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
 	}
 
-	const valType string = "int64"
-
 	colType, err := table.ColType(colName)
 	if err != nil {
 		return val, err
-	}
-
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				util.FuncName(), table.Name(), colName, colType)
-		}
 	}
 
 	colIndex, err := table.ColIndex(colName)
@@ -3809,8 +3799,16 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average 15% speedup.
-	val = table.rows[rowIndex][colIndex].(int64)
+	val = table.rows[rowIndex][colIndex]
+
+	var valType string = fmt.Sprintf("%T", val)
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
+				util.FuncName(), table.Name(), colName, colType)
+		}
+	}
 
 	return
 }
-*/

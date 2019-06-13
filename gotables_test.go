@@ -7766,6 +7766,11 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
 	lastRowIndex = table.RowCount()-1
 	err = table.SetInterfaceVal(colName, lastRowIndex, wilma)
 	if err != nil {
@@ -7796,11 +7801,22 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 
 	fmt.Println(table)
 
-	br, err := table.GetInterfaceValByColIndex(lastColIndex, lastRowIndex)
+	var iface interface{}
+	var br person
+	iface, err = table.GetInterfaceValByColIndex(lastColIndex, lastRowIndex)
 	if err != nil {
 		t.Error(err)
 	}
-	where(br)
+	br = iface.(person)
+	where(br.First)
+
+	var ff person
+	iface, err = table.GetInterfaceVal("Flintstones", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	ff = iface.(person)
+	where(ff.First)
 
 /*
 	var tests = []struct {
