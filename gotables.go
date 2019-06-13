@@ -1031,8 +1031,18 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
+					// Is a user-defined interface value.
+					var iFaceVal interface{} = row[colIndex]
+					iFaceValString, err := InterfaceValAsString(iFaceVal)
+					if err != nil {
+						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
+						return ""
+					}
+					 buf.WriteString(fmt.Sprintf("%s", iFaceValString))
+/*
 					log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 					return ""
+*/
 				}
 
 				horizontalSep = string(horizontalSeparator)

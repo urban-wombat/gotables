@@ -7800,6 +7800,8 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 where(table)
+tbl := table.StringUnpadded()
+where(tbl)
 
 	var iface interface{}
 	var br person
