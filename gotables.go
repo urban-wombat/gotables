@@ -1033,7 +1033,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				default:
 					// Is a user-defined interface value.
 					var iFaceVal interface{} = row[colIndex]
-					iFaceValString, err := InterfaceValAsString(iFaceVal)
+					iFaceValString, err := InterfaceValAsEncodedString(iFaceVal)
 					if err != nil {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
@@ -1314,7 +1314,7 @@ func (table *Table) StringPadded() string {
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				s, err = InterfaceValAsString(iFaceVal)
+				s, err = InterfaceValAsEncodedString(iFaceVal)
 				if err != nil {
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
@@ -3822,9 +3822,9 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	it's not something that can be done by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
-	InterfaceValAsString() to convert your user-defined values to strings.
+	InterfaceValAsEncodedString() to convert your user-defined values to strings.
 */
-func InterfaceValAsString(val interface{}) (string, error) {
+func InterfaceValAsEncodedString(val interface{}) (string, error) {
 	var err error
 
 	if val != nil {
