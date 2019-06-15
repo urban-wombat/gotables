@@ -7888,8 +7888,10 @@ where(parsed)
 		name string
 		Colour string
 		cylinders int
+		rangeKm int
+		litresPer100Km float32
 	}
-	var lexus = car{"Lexus", "silver", 4}
+	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
 	err = parsed.SetUserDefinedType("userDefined", 0, lexus)
 	if err != nil {
 		t.Error(err)
