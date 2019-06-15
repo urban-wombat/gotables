@@ -60,7 +60,7 @@ const printcallers = false
 const printstack bool = false
 const todo bool = false
 
-var encodedBase64StringRegexp *regexp.Regexp = regexp.MustCompile(`^\[\[.*\]\["`)
+var userDefinedTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
 
 var gobRegistered map[interface{}]bool = map[interface{}]bool{}
 
@@ -1039,7 +1039,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				default:
 					// Is a user-defined interface value.
 					var iFaceVal interface{} = row[colIndex]
-					iFaceValString, err := InterfaceValAsEncodedString(iFaceVal)
+					iFaceValString, err := EncodeUserDefinedType(iFaceVal)
 					if err != nil {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
@@ -1320,7 +1320,7 @@ func (table *Table) StringPadded() string {
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				s, err = InterfaceValAsEncodedString(iFaceVal)
+				s, err = EncodeUserDefinedType(iFaceVal)
 				if err != nil {
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
@@ -3828,9 +3828,9 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	it's not something that can be done by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
-	InterfaceValAsEncodedString() to convert your user-defined values to strings.
+	EncodeUserDefinedType() to convert your user-defined values to strings.
 */
-func InterfaceValAsEncodedString(val interface{}) (string, error) {
+func EncodeUserDefinedType(val interface{}) (string, error) {
 	var err error
 
 	if val != nil {
@@ -3853,7 +3853,7 @@ func InterfaceValAsEncodedString(val interface{}) (string, error) {
 		quotedValString := fmt.Sprintf("%q", unQuotedValString)
 
 		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
-		s := fmt.Sprintf("[[%s][%s]]", base64String, quotedValString)
+		s := fmt.Sprintf("{{%s}{%s}}", base64String, quotedValString)
 
 		return s, nil
 	}
@@ -3861,31 +3861,37 @@ func InterfaceValAsEncodedString(val interface{}) (string, error) {
 	return "<nil>", nil
 }
 
-func EncodedStringAsInterfaceVal(encoded string) (interface{}, error) {
+func ParseUserDefinedType(encoded string) (interface{}, error) {
 	var err error
-	// Get the first part of the text [first-part][second-part] that double-encodes the value.
-	// This skips/ignores the human-readable second part.
-	var base64Encoded string = encodedBase64StringRegexp.FindString(encoded)
 
-	base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
-	where(base64Encoded)
-
-	// Decode/uncompress the base64 string back to GOB-encoded.
-	var gobEncodedBytes []byte
-	gobEncodedBytes, err = base64.StdEncoding.DecodeString(base64Encoded)
-	if err != nil {
-		return nil, err
+	if encoded == "<nil>" {
+		return nil, nil
+	} else {
+	
+		// Get the first part of the text [first-part][second-part] that double-encodes the value.
+		// This skips/ignores the human-readable second part.
+		var base64Encoded string = userDefinedTypeBase64PartRegexp.FindString(encoded)
+	
+		base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
+		where(base64Encoded)
+	
+		// Decode/uncompress the base64 string back to GOB-encoded.
+		var gobEncodedBytes []byte
+		gobEncodedBytes, err = base64.StdEncoding.DecodeString(base64Encoded)
+		if err != nil {
+			return nil, err
+		}
+	
+		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
+		var decoder *gob.Decoder = gob.NewDecoder(buffer)
+		var interfaceOut interface{}
+		err = decoder.Decode(&interfaceOut)
+		if err != nil {
+			return nil, err
+		}
+	
+		return interfaceOut, nil
 	}
-
-	var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
-	var decoder *gob.Decoder = gob.NewDecoder(buffer)
-	var interfaceOut interface{}
-	err = decoder.Decode(&interfaceOut)
-	if err != nil {
-		return nil, err
-	}
-
-	return interfaceOut, nil
 }
 
 // Avoid calling gob.Register() for types already registered.

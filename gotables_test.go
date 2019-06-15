@@ -7719,11 +7719,11 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		Misc string
 	}
 
-	fred := person{"Fred", "Flintstone", true, `}"]`}
-	wilma := person{"Wilma", "Flintstone", true, `"]`}
-	dino := person{"Dino", "Flintstone", false, `}"][`}
-	barney := person{"Barney", "Rubble", true, "]["}
-	betty := person{"Betty", "Rubble", true, `]["`}
+	fred := person{"Fred", "Flintstone", true, `}"}`}
+	wilma := person{"Wilma", "Flintstone", true, `"}`}
+	dino := person{"Dino", "Flintstone", false, `}"}{`}
+	barney := person{"Barney", "Rubble", true, "}{"}
+	betty := person{"Betty", "Rubble", true, `}{"`}
 
 //	gob.Register(fred)
 
@@ -7813,6 +7813,11 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
 where(table)
 
 	var iface interface{}
@@ -7822,7 +7827,7 @@ where(table)
 		t.Error(err)
 	}
 	br = iface.(person)
-where(br.First)
+where(br.First, br.Human)
 
 	var ff person
 	iface, err = table.GetInterfaceVal("Flintstones", 0)
@@ -7833,11 +7838,11 @@ where(br.First)
 where(ff.First)
 
 where(fred)
-encoded, err := InterfaceValAsEncodedString(ff)
+encoded, err := EncodeUserDefinedType(ff)
 if err != nil {
 	t.Error(err)
 }
-decoded, err := EncodedStringAsInterfaceVal(encoded)
+decoded, err := ParseUserDefinedType(encoded)
 if err != nil {
 	t.Error(err)
 }
@@ -7845,6 +7850,12 @@ var fredDecoded person = decoded.(person)
 if fredDecoded != fred {
 	t.Error(err)
 }
+
+parsed, err := NewTableFromString(table.StringUnpadded())
+if fredDecoded != fred {
+	t.Error(err)
+}
+where(parsed)
 
 /*
 	var tests = []struct {

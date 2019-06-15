@@ -129,6 +129,8 @@ var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 
+var userDefinedTypeRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
+
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
 
@@ -762,6 +764,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 	var int64Val int64
 	var float32Val float32
 	var float64Val float64
+	var userDefinedType interface{}
 
 	for i = 0; i < lenColTypes; i++ {
 		if len(remaining) == 0 { // End of line
@@ -1036,8 +1039,20 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			rowSlice[i] = float64Val
 		default:
+			rangeFound = userDefinedTypeRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			userDefinedType, err = ParseUserDefinedType(textFound)
+			if err != nil {
+				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
+			}
+			rowSlice[i] = userDefinedType
+/*
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
+*/
 		}
 		remaining = remaining[rangeFound[1]:]
 		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
