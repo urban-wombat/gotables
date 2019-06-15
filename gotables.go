@@ -3893,6 +3893,14 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
+
+	Always check that returned value is not nil before asserting the type:
+
+		var myType MyType
+		val, err := ParseUserDefinedType(encodedString)
+		if val != nil {
+			myType = val.(MyType)
+		}
 */
 func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err error) {
 	if encoded == "<nil>" {
