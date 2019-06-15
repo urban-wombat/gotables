@@ -3851,6 +3851,9 @@ func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interf
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
 	EncodeUserDefinedType() to convert your user-defined values to strings.
+
+	If you wish to create a text table by hand, you can use <nil> values as place-holders
+	for user-defined types, and set them later.
 */
 func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err error) {
 	if userDefinedType != nil {
@@ -3912,7 +3915,6 @@ func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err erro
 		var base64Encoded string = userDefinedTypeBase64PartRegexp.FindString(encoded)
 	
 		base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
-		where(base64Encoded)
 	
 		// Decode/uncompress the base64 string back to GOB-encoded.
 		var gobEncodedBytes []byte
