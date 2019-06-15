@@ -7716,15 +7716,17 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 		First string
 		Last  string
 		Human bool
+		Misc string
 	}
 
-	fred := person{"Fred", "Flintstone", true}
-	wilma := person{"Wilma", "Flintstone", true}
-	dino := person{"Dino", "Flintstone", false}
-	barney := person{"Barney", "Rubble", true}
+	fred := person{"Fred", "Flintstone", true, `}"]`}
+	wilma := person{"Wilma", "Flintstone", true, `"]`}
+	dino := person{"Dino", "Flintstone", false, `}"][`}
+	barney := person{"Barney", "Rubble", true, "]["}
+
+//	gob.Register(fred)
 
 	var colType string = fmt.Sprintf("%T", fred)
-
 	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Error(err)
@@ -7800,8 +7802,6 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 where(table)
-tbl := table.StringUnpadded()
-where(tbl)
 
 	var iface interface{}
 	var br person
@@ -7819,6 +7819,20 @@ where(br.First)
 	}
 	ff = iface.(person)
 where(ff.First)
+
+where(fred)
+encoded, err := InterfaceValAsEncodedString(ff)
+if err != nil {
+	t.Error(err)
+}
+decoded, err := EncodedStringAsInterfaceVal(encoded)
+if err != nil {
+	t.Error(err)
+}
+var fredDecoded person = decoded.(person)
+if fredDecoded != fred {
+	t.Error(err)
+}
 
 /*
 	var tests = []struct {

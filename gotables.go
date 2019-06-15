@@ -6,6 +6,7 @@ package gotables
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/csv"
 	"encoding/gob"
 	"errors"
@@ -16,6 +17,7 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
+	"regexp"
 	"runtime/debug"
 	"sort"
 	"strconv"
@@ -57,6 +59,10 @@ const debugging bool = false
 const printcallers = false
 const printstack bool = false
 const todo bool = false
+
+var encodedBase64StringRegexp *regexp.Regexp = regexp.MustCompile(`^\[\[.*\]\["`)
+
+var gobRegistered map[interface{}]bool = map[interface{}]bool{}
 
 func init() {
 	/*
@@ -3818,7 +3824,7 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	value is reconstructed.
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
-	(using methods gotables.Table.String() or gotables.Table.StringUnpadded())
+	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
 	it's not something that can be done by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
@@ -3828,24 +3834,71 @@ func InterfaceValAsEncodedString(val interface{}) (string, error) {
 	var err error
 
 	if val != nil {
-		// Create quoted string representation of val, for humans to read, not for parsing.
-		unQuotedValString := fmt.Sprintf("%#v", val)
-		quotedValString := fmt.Sprintf("%q", unQuotedValString)
-
-		// Created quoted string representation of GOB encoding of val, for parsing.
-		var buffer bytes.Buffer
+		// Created a GOB encoding of val.
+		gobRegister(val)
+		var buffer bytes.Buffer	// To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(val)
+		err = encoder.Encode(&val)	// Use ADDRESS of interface, or it will be concrete type.
 		if err != nil {
 			return "", err
 		}
-		unQuotedEncoding := buffer.String()
-		quotedEncoding := fmt.Sprintf("%q", unQuotedEncoding)
+		var gobEncodedBytes []byte = buffer.Bytes()	// GOB encoding as bytes.
 
-		// Enclose each in contiguous square-brackets for parsing.
-		s := fmt.Sprintf("[%s][%s]", quotedValString, quotedEncoding)
+		// Compress to printable characters.
+		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
+
+		// Create quoted string representation of val, for humans to read, not for parsing.
+		// It is quoted to ensure a regexp match for the end will not find something in the middle.
+		unQuotedValString := fmt.Sprintf("%#v", val)
+		quotedValString := fmt.Sprintf("%q", unQuotedValString)
+
+		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
+		s := fmt.Sprintf("[[%s][%s]]", base64String, quotedValString)
+
 		return s, nil
 	}
 
 	return "<nil>", nil
+}
+
+func EncodedStringAsInterfaceVal(encoded string) (interface{}, error) {
+	var err error
+	// Get the first part of the text [first-part][second-part] that double-encodes the value.
+	// This skips/ignores the human-readable second part.
+	var base64Encoded string = encodedBase64StringRegexp.FindString(encoded)
+
+	base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
+	where(base64Encoded)
+
+	// Decode/uncompress the base64 string back to GOB-encoded.
+	var gobEncodedBytes []byte
+	gobEncodedBytes, err = base64.StdEncoding.DecodeString(base64Encoded)
+	if err != nil {
+		return nil, err
+	}
+
+	var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
+	var decoder *gob.Decoder = gob.NewDecoder(buffer)
+	var interfaceOut interface{}
+	err = decoder.Decode(&interfaceOut)
+	if err != nil {
+		return nil, err
+	}
+
+	return interfaceOut, nil
+}
+
+// Avoid calling gob.Register() for types already registered.
+func gobRegister(val interface{}) {
+	var typeName string = fmt.Sprintf("%T", val)
+	_, exists := gobRegistered[typeName]
+	if !exists {
+		// This registers the concrete type of val.
+		gob.Register(val)
+
+		// This stores the concrete type-name of val e.g. "gotables.person".
+		// Storing val stores only the specific instance of val, which means 
+		// the type would be registered per instance and not per type.
+		gobRegistered[typeName] = true
+	}
 }
