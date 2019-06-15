@@ -5974,7 +5974,7 @@ func TestRune(t *testing.T) {
 		{ '\r',			"'\r'", 		13, true, 5 },	//  5	\r   U+000D carriage return
 		{ '\t',			"'\t'", 		 9, true, 6 },	//  6	\t   U+0009 horizontal tab
 		{ '\v',			"'\v'", 		11, true, 7 },	//  7	\v   U+000b vertical tab
-		{ '\\',			"'\\'",			92, true, 8 },	//  8	\\   U+005c backslash 92	strconv.UnquoteChar() doesn't like '\\'
+		{ '\\',			"'\\\\'",		92, true, 8 },	//  8	\\   U+005c backslash 92	strconv.UnquoteChar() doesn't like '\\'
 		{ '\'',			`'\''`, 		39, true, 9 },	//  9	\'   U+0027 single quote  (valid escape only within rune literals)
 		{ 'a',			"'a'", 			97, true, 10 },	// 10	
 		{ 'ä',			"'ä'",		   228, true, 11 },	// 11

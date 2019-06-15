@@ -1149,10 +1149,13 @@ func parseRune(runeText string) (rune, error) {
 	runeVal, _, tail, err = strconv.UnquoteChar(runeText, delim)
 	if err != nil {
 
+/*
 		// Work around an apparent bug in strconv.UnquoteChar() where it returns an error trying to parse "\\"
 		if runeText == "\\" {
 			return '\\', nil
 		}
+		// Turns out not to be a bug. String should be "\\\\"
+*/
 
 		return 0, fmt.Errorf("invalid rune literal '%s' with %s: %s", runeText, err, runeText)
 	}
