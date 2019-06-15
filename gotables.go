@@ -3816,13 +3816,13 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	return
 }
 
-/*	Encode a value of a user-defined type as a string that is safe for parsing as a table cell.
+/*	Encode a value of a user-defined type as an encoded string that is safe for parsing as a table cell.
 
 	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
 
 	The {machine-readable} part contains the machine-decodable text from which the original
 	value is reconstructed.
-	The value is GOB-encoded and then compressed to base64.
+	The value is GOB-encoded then compressed to base64.
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
@@ -3834,15 +3834,13 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	containing user-defined values, use
 	EncodeUserDefinedType() to convert your user-defined values to strings.
 */
-func EncodeUserDefinedType(val interface{}) (string, error) {
-	var err error
-
-	if val != nil {
-		// Created a GOB encoding of val.
-		gobRegister(val)
+func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err error) {
+	if userDefinedType != nil {
+		// Created a GOB encoding of userDefinedType.
+		gobRegister(userDefinedType)
 		var buffer bytes.Buffer	// To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(&val)	// Use ADDRESS of interface, or it will be concrete type.
+		err = encoder.Encode(&userDefinedType)	// Use ADDRESS of interface, or it will be concrete type.
 		if err != nil {
 			return "", err
 		}
@@ -3851,34 +3849,33 @@ func EncodeUserDefinedType(val interface{}) (string, error) {
 		// Compress to printable characters.
 		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
 
-		// Create quoted string representation of val, for humans to read, not for parsing.
+		// Create quoted string representation of userDefinedType, for humans to read, not for parsing.
 		// It is quoted to ensure a regexp match for the end will not find something in the middle.
-		unQuotedValString := fmt.Sprintf("%#v", val)
+		unQuotedValString := fmt.Sprintf("%#v", userDefinedType)
 		quotedValString := fmt.Sprintf("%q", unQuotedValString)
 
 		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
-		s := fmt.Sprintf("{{%s}{%s}}", base64String, quotedValString)
+		encoded = fmt.Sprintf("{{%s}{%s}}", base64String, quotedValString)
 
-		return s, nil
+		return encoded, nil
 	}
 
-	return "<nil>", nil
+	encoded = "<nil>"
+	return
 }
 
-/*	Parse a value of a user-defined type from a string.
+/*	Parse a value of a user-defined type from an encoded string.
 
 	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
 
 	The {machine-readable} part contains the machine-decodable text from which the original
 	value is reconstructed.
-	The value is GOB-encoded and then compressed to base64.
+	The value is GOB-encoded then compressed to base64.
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
 */
-func ParseUserDefinedType(encoded string) (interface{}, error) {
-	var err error
-
+func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {
@@ -3899,13 +3896,13 @@ func ParseUserDefinedType(encoded string) (interface{}, error) {
 	
 		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
 		var decoder *gob.Decoder = gob.NewDecoder(buffer)
-		var interfaceOut interface{}
-		err = decoder.Decode(&interfaceOut)
+//		var interfaceOut interface{}
+		err = decoder.Decode(&userDefinedType)
 		if err != nil {
 			return nil, err
 		}
 	
-		return interfaceOut, nil
+		return userDefinedType, nil
 	}
 }
 
