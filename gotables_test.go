@@ -7723,6 +7723,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	wilma := person{"Wilma", "Flintstone", true, `"]`}
 	dino := person{"Dino", "Flintstone", false, `}"][`}
 	barney := person{"Barney", "Rubble", true, "]["}
+	betty := person{"Betty", "Rubble", true, `]["`}
 
 //	gob.Register(fred)
 
@@ -7797,6 +7798,17 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 
 	lastRowIndex = table.RowCount()-1
 	err = table.SetInterfaceVal(colName, lastRowIndex, barney)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount()-1
+	err = table.SetInterfaceVal(colName, lastRowIndex, betty)
 	if err != nil {
 		t.Error(err)
 	}
