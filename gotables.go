@@ -3822,7 +3822,7 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 
 	The {machine-readable} part contains the machine-decodable text from which the original
 	value is reconstructed.
-	The value is GOB-encoded then compressed to base64.
+	The value is GOB-encoded and compressed to base64.
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
@@ -3870,7 +3870,7 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	The {machine-readable} part contains the machine-decodable text from which the original
 	value is reconstructed.
-	The value is GOB-encoded then compressed to base64.
+	The value is GOB-encoded and compressed to base64.
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
