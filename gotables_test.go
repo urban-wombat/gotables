@@ -7884,6 +7884,18 @@ where(parsed)
 	}
 	where(parsed)
 
+	type car struct {
+		name string
+		Colour string
+		cylinders int
+	}
+	var lexus = car{"Lexus", "silver", 4}
+	err = parsed.SetUserDefinedType("userDefined", 0, lexus)
+	if err != nil {
+		t.Error(err)
+	}
+	where(parsed)
+
 /*
 	var tests = []struct {
 		expected int64
