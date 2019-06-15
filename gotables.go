@@ -1689,7 +1689,7 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 		return err
 	}
 	valType := fmt.Sprintf("%T", val)
-	if valType != colType {
+	if (val != nil) && (valType != colType) {
 		if !isAlias(colType, valType) {
 			colName := table.colNames[colIndex]
 			return fmt.Errorf("%s: table [%s] col index %d col name %s expecting type %s not type %s: %v",
@@ -2609,8 +2609,22 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
+		// Is a user-defined interface value.
+		var userDefinedVal string
+		if interfaceType == nil {
+			userDefinedVal = "<nil>"
+		} else {
+			userDefinedVal, err = EncodeUserDefinedType(interfaceType)
+			if err != nil {
+				log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
+				return "", err
+			}
+		}
+		buf.WriteString(fmt.Sprintf("%s", userDefinedVal))
+/*
 		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 		return "", err
+*/
 	}
 
 	s = buf.String()
@@ -3654,7 +3668,7 @@ func (table *Table) ShuffleRandom() error {
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetInterfaceVal(colName string, rowIndex int, newVal interface{}) error {
+func (table *Table) SetUserDefinedType(colName string, rowIndex int, newVal interface{}) error {
 
 	var err error
 
@@ -3698,7 +3712,7 @@ func (table *Table) SetInterfaceVal(colName string, rowIndex int, newVal interfa
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetInterfaceValByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
+func (table *Table) SetUserDefinedTypeByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -3737,7 +3751,7 @@ func (table *Table) SetInterfaceValByColIndex(colIndex int, rowIndex int, newVal
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetUserDefinedTypeByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
@@ -3776,7 +3790,7 @@ func (table *Table) GetInterfaceValByColIndex(colIndex int, rowIndex int) (val i
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interface{}, err error) {
 
 	// See: Get<type>() functions
 
@@ -3803,6 +3817,9 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	// Get the val
 	// Note: This essentially inlines GetVal(): an average 15% speedup.
 	val = table.rows[rowIndex][colIndex]
+	if val == nil {
+		return
+	}
 
 	var valType string = fmt.Sprintf("%T", val)
 

@@ -7678,7 +7678,7 @@ func TestUnquote(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
-func TestSetAndGetInterfaceValue(t *testing.T) {
+func TestSetAndGetUserDefinedType(t *testing.T) {
 
 	var err error
 	var table *Table
@@ -7711,6 +7711,14 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+/*
+	// This creates a <nil> person.
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+*/
 
 	type person struct {
 		First string
@@ -7764,7 +7772,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 
 	lastColIndex = table.ColCount()-1
 	lastRowIndex = table.RowCount()-1
-	err = table.SetInterfaceValByColIndex(lastColIndex, lastRowIndex, fred)
+	err = table.SetUserDefinedTypeByColIndex(lastColIndex, lastRowIndex, fred)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7775,7 +7783,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetInterfaceVal(colName, lastRowIndex, wilma)
+	err = table.SetUserDefinedType(colName, lastRowIndex, wilma)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7786,7 +7794,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetInterfaceVal(colName, lastRowIndex, dino)
+	err = table.SetUserDefinedType(colName, lastRowIndex, dino)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7797,7 +7805,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetInterfaceVal(colName, lastRowIndex, barney)
+	err = table.SetUserDefinedType(colName, lastRowIndex, barney)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7808,7 +7816,7 @@ func TestSetAndGetInterfaceValue(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetInterfaceVal(colName, lastRowIndex, betty)
+	err = table.SetUserDefinedType(colName, lastRowIndex, betty)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7822,7 +7830,7 @@ where(table)
 
 	var iface interface{}
 	var br person
-	iface, err = table.GetInterfaceValByColIndex(lastColIndex, lastRowIndex)
+	iface, err = table.GetUserDefinedTypeByColIndex(lastColIndex, lastRowIndex)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7830,7 +7838,7 @@ where(table)
 where(br.First, br.Human)
 
 	var ff person
-	iface, err = table.GetInterfaceVal("Flintstones", 0)
+	iface, err = table.GetUserDefinedType("Flintstones", 0)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7856,6 +7864,25 @@ if fredDecoded != fred {
 	t.Error(err)
 }
 where(parsed)
+
+	// Struct format table.
+	var stableString string =
+	`[stable]
+	i int = 42
+	userDefined gotables.car = <nil>
+	s string = "forty-two"`
+
+	stable, err := NewTableFromString(stableString)
+	if err != nil {
+		t.Error(err)
+	}
+	where(stable)
+
+	parsed, err = NewTableFromString(stable.String())
+	if err != nil {
+		t.Error(err)
+	}
+	where(parsed)
 
 /*
 	var tests = []struct {
