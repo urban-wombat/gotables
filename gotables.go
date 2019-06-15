@@ -3899,10 +3899,10 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	Always check returned value is not nil before asserting the type:
 
-		var myType MyType
+		var myVal MyType
 		val, err := ParseUserDefinedType(encodedString)
 		if val != nil {
-			myType = val.(MyType)
+			myVal = val.(MyType)
 		}
 */
 func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err error) {
