@@ -3816,16 +3816,20 @@ func (table *Table) GetInterfaceVal(colName string, rowIndex int) (val interface
 	return
 }
 
-/*	Gob-encode the value as a string and quote it for safe parsing.
+/*	Encode a value of a user-defined type as a string that is safe for parsing as a table cell.
 
-	The string consists of a contiguous pair of strings in square brackets: [human-readable][machine-readable]
-	The [human-readable] part is for human readability only and is not parsed (it is skipped).
-	The [machine-readable] part contains the machine-decodable text from which the original
+	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
+
+	The {machine-readable} part contains the machine-decodable text from which the original
 	value is reconstructed.
+	The value is GOB-encoded and then compressed to base64.
+
+	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
+	The value is converted to its "%#v" format and quoted for safe parsing.
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
-	it's not something that can be done by hand, unlike simple Go types such
+	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
 	EncodeUserDefinedType() to convert your user-defined values to strings.
@@ -3861,6 +3865,17 @@ func EncodeUserDefinedType(val interface{}) (string, error) {
 	return "<nil>", nil
 }
 
+/*	Parse a value of a user-defined type from a string.
+
+	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
+
+	The {machine-readable} part contains the machine-decodable text from which the original
+	value is reconstructed.
+	The value is GOB-encoded and then compressed to base64.
+
+	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
+	The value is converted to its "%#v" format and quoted for safe parsing.
+*/
 func ParseUserDefinedType(encoded string) (interface{}, error) {
 	var err error
 
