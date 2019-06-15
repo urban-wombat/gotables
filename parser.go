@@ -1154,7 +1154,7 @@ func parseRune(runeText string) (rune, error) {
 		if runeText == "\\" {
 			return '\\', nil
 		}
-		// Turns out not to be a bug. String should be "\\\\"
+		// Turns out not to be a bug. String should be "'\\\\'"
 */
 
 		return 0, fmt.Errorf("invalid rune literal '%s' with %s: %s", runeText, err, runeText)
