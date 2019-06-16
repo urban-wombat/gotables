@@ -17,7 +17,6 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
-	"regexp"
 	"runtime/debug"
 	"sort"
 	"strconv"
@@ -59,8 +58,6 @@ const debugging bool = false
 const printcallers = false
 const printstack bool = false
 const todo bool = false
-
-var userDefinedTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
 
 var gobRegistered map[interface{}]bool = map[interface{}]bool{}
 

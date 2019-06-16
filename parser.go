@@ -130,6 +130,7 @@ var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 
 var userDefinedTypeRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
+var userDefinedTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
 
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
