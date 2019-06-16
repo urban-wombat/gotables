@@ -3845,6 +3845,10 @@ func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interf
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
 
+	Note: This applies only to the text version of a gotables Table (returned by Table.String())
+	and not to the in-memory *Table cells containing user-defined values, which contain the
+	actual values.
+
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
 	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
@@ -3896,6 +3900,10 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
+
+	Note: This applies only to the text version of a gotables Table (returned by Table.String())
+	and not to the in-memory *Table cells containing user-defined values, which contain the
+	actual values.
 
 	Always check returned value is not nil before asserting the type:
 
