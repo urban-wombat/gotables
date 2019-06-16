@@ -3832,7 +3832,8 @@ func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interf
 
 /*	Encode a value of a user-defined type as an encoded string that is safe for parsing as a table cell.
 
-	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
+	The string consists of a contiguous pair of strings in curley braces:
+		{{machine-readable}{human-readable}}
 	that form a cell in a string representation of a gotables.Table.
 
 	The {machine-readable} part contains the machine-decodable text from which the original
@@ -3888,7 +3889,8 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 /*	Parse a value of a user-defined type from an encoded string.
 
-	The string consists of a contiguous pair of strings in curley braces: {{machine-readable}{human-readable}}
+	The string consists of a contiguous pair of strings in curley braces:
+		{{machine-readable}{human-readable}}
 	that form a cell in a string representation of a gotables.Table.
 
 	The {machine-readable} part contains the machine-decodable text from which the original
