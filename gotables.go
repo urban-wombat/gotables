@@ -3747,6 +3747,21 @@ func (table *Table) SetUserDefinedTypeByColIndex(colIndex int, rowIndex int, new
 
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
+
+	Is like its non-Must<Get/Set> alternative but panics on error.
+*/
+func (table *Table) GetUserDefinedTypeByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
+	val, err := table.GetUserDefinedTypeByColIndex(colIndex, rowIndex)
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+/*	Get interface table cell from colIndex at rowIndex
+
+	For storage of user-defined types in a table.
+	Retrieve to an interface{} type and then assert to your type.
 */
 func (table *Table) GetUserDefinedTypeByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
