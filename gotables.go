@@ -3847,7 +3847,7 @@ func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interf
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values.
+	actual values you can set or get via SetUserDefinedType() and GetUserDefinedType().
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
@@ -3903,7 +3903,7 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values.
+	actual values you can set or get via SetUserDefinedType() and GetUserDefinedType().
 
 	Always check returned value is not nil before asserting the type:
 
