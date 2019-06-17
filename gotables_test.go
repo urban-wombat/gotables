@@ -7826,16 +7826,16 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 		t.Error(err)
 	}
 
-where(table)
+//where(table)
 
 	var iface interface{}
+/*
 	var br person
-	iface, err = table.GetUserDefinedTypeByColIndex(lastColIndex, lastRowIndex)
-	if err != nil {
-		t.Error(err)
-	}
+	iface = table.GetUserDefinedTypeByColIndexMustGet(lastColIndex, lastRowIndex)
 	br = iface.(person)
-where(br.First, br.Human)
+//where(br.First, br.Human)
+//	where(table.GetUserDefinedTypeByColIndexMustGet(lastColIndex, lastRowIndex).(person))
+*/
 
 	var ff person
 	iface, err = table.GetUserDefinedType("Flintstones", 0)
@@ -7843,9 +7843,9 @@ where(br.First, br.Human)
 		t.Error(err)
 	}
 	ff = iface.(person)
-where(ff.First)
+//where(ff.First)
 
-where(fred)
+//where(fred)
 encoded, err := EncodeUserDefinedType(ff)
 if err != nil {
 	t.Error(err)
@@ -7863,7 +7863,7 @@ parsed, err := NewTableFromString(table.StringUnpadded())
 if fredDecoded != fred {
 	t.Error(err)
 }
-where(parsed)
+//where(parsed)
 
 	// Struct format table.
 	var stableString string =
@@ -7876,13 +7876,13 @@ where(parsed)
 	if err != nil {
 		t.Error(err)
 	}
-	where(stable)
+	//where(stable)
 
 	parsed, err = NewTableFromString(stable.String())
 	if err != nil {
 		t.Error(err)
 	}
-	where(parsed)
+	//where(parsed)
 
 	type car struct {
 		name string
@@ -7896,7 +7896,7 @@ where(parsed)
 	if err != nil {
 		t.Error(err)
 	}
-	where(parsed)
+	//where(parsed)
 
 /*
 	var tests = []struct {
