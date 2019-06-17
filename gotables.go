@@ -1954,6 +1954,18 @@ func (table *Table) RowCount() int {
 	return len(table.rows)
 }
 
+/*	Returns an interface{} value which may contain any valid gotables data type or NaN.
+
+	Like its non-MustGet alternative but panics on error.
+*/
+func (table *Table) GetValMustGet(colName string, rowIndex int) (val interface{}) {
+	val, err := table.GetVal(colName, rowIndex)
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Why don't we simply call GetValByColIndex() ???
@@ -1991,6 +2003,18 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	}
 
 	return val, nil
+}
+
+/*	Returns an interface{} value which may contain any valid gotables data type or NaN.
+
+	Like its non-MustGet alternative but panics on error.
+*/
+func (table *Table) GetValByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
+	val, err := table.GetValByColIndex(colIndex, rowIndex)
+	if err != nil {
+		panic(err)
+	}
+	return val
 }
 
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
