@@ -3315,39 +3315,39 @@ func ZeroValue(typeName string) (interface{}, error) {
 	case "bool":
 		return false, nil
 	case "float32":
-		return 0.0, nil
+		return float32(0.0), nil
 	case "float64":
-		return 0.0, nil
+		return float64(0.0), nil
 	case "uint":
-		return 0, nil
+		return uint(0), nil
 	case "[]uint8":
 		return []uint8{}, nil
 	case "[]byte":
 		return []byte{}, nil
 	case "int":
-		return 0, nil
+		return int(0), nil
 	case "int16":
-		return 0, nil
+		return int16(0), nil
 	case "int32":
-		return 0, nil
+		return int32(0), nil
 	case "rune":
-		return 0, nil
+		return rune(0), nil
 	case "int64":
-		return 0, nil
+		return int64(0), nil
 	case "int8":
-		return 0, nil
+		return int8(0), nil
 	case "string":
 		return "", nil
 	case "uint16":
-		return 0, nil
+		return uint16(0), nil
 	case "uint32":
-		return 0, nil
+		return uint32(0), nil
 	case "uint64":
-		return 0, nil
+		return uint64(0), nil
 	case "uint8":
 		return uint8(0), nil
 	case "byte":
-		return 0, nil
+		return byte(0), nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
