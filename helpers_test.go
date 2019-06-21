@@ -5222,3 +5222,2337 @@ func BenchmarkHelperSetAndGetUint8(b *testing.B) {
 		}
 	}
 }
+
+//	Test Get[]byteMustGet
+//  Test that the method panics on error.
+func TestGetByteSliceMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got []byte
+	got = table.GetByteSliceMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches, err = Uint8SliceEquals(expecting.([]byte), got)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetByteSliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetByteSliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetByteSliceMustGet(colName, minusIndex)
+}
+
+//	Test Get[]uint8MustGet
+//  Test that the method panics on error.
+func TestGetUint8SliceMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got []uint8
+	got = table.GetUint8SliceMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches, err = Uint8SliceEquals(expecting.([]uint8), got)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint8SliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint8SliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUint8SliceMustGet(colName, minusIndex)
+}
+
+//	Test GetboolMustGet
+//  Test that the method panics on error.
+func TestGetBoolMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got bool
+	got = table.GetBoolMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetBoolMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetBoolMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetBoolMustGet(colName, minusIndex)
+}
+
+//	Test GetbyteMustGet
+//  Test that the method panics on error.
+func TestGetByteMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got byte
+	got = table.GetByteMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetByteMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetByteMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetByteMustGet(colName, minusIndex)
+}
+
+//	Test Getfloat32MustGet
+//  Test that the method panics on error.
+func TestGetFloat32MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got float32
+	got = table.GetFloat32MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetFloat32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetFloat32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetFloat32MustGet(colName, minusIndex)
+}
+
+//	Test Getfloat64MustGet
+//  Test that the method panics on error.
+func TestGetFloat64MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got float64
+	got = table.GetFloat64MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetFloat64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetFloat64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetFloat64MustGet(colName, minusIndex)
+}
+
+//	Test GetintMustGet
+//  Test that the method panics on error.
+func TestGetIntMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int
+	got = table.GetIntMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetIntMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetIntMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetIntMustGet(colName, minusIndex)
+}
+
+//	Test Getint16MustGet
+//  Test that the method panics on error.
+func TestGetInt16MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int16
+	got = table.GetInt16MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetInt16MustGet(colName, minusIndex)
+}
+
+//	Test Getint32MustGet
+//  Test that the method panics on error.
+func TestGetInt32MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int32
+	got = table.GetInt32MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetInt32MustGet(colName, minusIndex)
+}
+
+//	Test Getint64MustGet
+//  Test that the method panics on error.
+func TestGetInt64MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int64
+	got = table.GetInt64MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetInt64MustGet(colName, minusIndex)
+}
+
+//	Test Getint8MustGet
+//  Test that the method panics on error.
+func TestGetInt8MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int8
+	got = table.GetInt8MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetInt8MustGet(colName, minusIndex)
+}
+
+//	Test GetruneMustGet
+//  Test that the method panics on error.
+func TestGetRuneMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got rune
+	got = table.GetRuneMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetRuneMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetRuneMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetRuneMustGet(colName, minusIndex)
+}
+
+//	Test GetstringMustGet
+//  Test that the method panics on error.
+func TestGetStringMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got string
+	got = table.GetStringMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetStringMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetStringMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetStringMustGet(colName, minusIndex)
+}
+
+//	Test GetuintMustGet
+//  Test that the method panics on error.
+func TestGetUintMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint
+	got = table.GetUintMustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUintMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUintMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUintMustGet(colName, minusIndex)
+}
+
+//	Test Getuint16MustGet
+//  Test that the method panics on error.
+func TestGetUint16MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint16
+	got = table.GetUint16MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUint16MustGet(colName, minusIndex)
+}
+
+//	Test Getuint32MustGet
+//  Test that the method panics on error.
+func TestGetUint32MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint32
+	got = table.GetUint32MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUint32MustGet(colName, minusIndex)
+}
+
+//	Test Getuint64MustGet
+//  Test that the method panics on error.
+func TestGetUint64MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint64
+	got = table.GetUint64MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUint64MustGet(colName, minusIndex)
+}
+
+//	Test Getuint8MustGet
+//  Test that the method panics on error.
+func TestGetUint8MustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint8
+	got = table.GetUint8MustGet(colName, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetUint8MustGet(colName, minusIndex)
+}
+
+//	Test Get[]byteByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetByteSliceByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got []byte
+	got = table.GetByteSliceByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches, err = Uint8SliceEquals(expecting.([]byte), got)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetByteSliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetByteSliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetByteSliceByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Get[]uint8ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got []uint8
+	got = table.GetUint8SliceByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches, err = Uint8SliceEquals(expecting.([]uint8), got)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint8SliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint8SliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUint8SliceByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetboolByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetBoolByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got bool
+	got = table.GetBoolByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetBoolByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetBoolByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetBoolByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetbyteByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetByteByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got byte
+	got = table.GetByteByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetByteByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetByteByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetByteByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getfloat32ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetFloat32ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got float32
+	got = table.GetFloat32ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetFloat32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetFloat32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetFloat32ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getfloat64ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetFloat64ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got float64
+	got = table.GetFloat64ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetFloat64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetFloat64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetFloat64ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetintByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetIntByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int
+	got = table.GetIntByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetIntByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetIntByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetIntByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getint16ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetInt16ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int16
+	got = table.GetInt16ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetInt16ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getint32ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetInt32ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int32
+	got = table.GetInt32ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetInt32ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getint64ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetInt64ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int64
+	got = table.GetInt64ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetInt64ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getint8ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetInt8ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got int8
+	got = table.GetInt8ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetInt8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetInt8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetInt8ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetruneByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetRuneByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got rune
+	got = table.GetRuneByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetRuneByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetRuneByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetRuneByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetstringByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetStringByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got string
+	got = table.GetStringByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetStringByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetStringByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetStringByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetuintByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUintByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint
+	got = table.GetUintByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUintByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUintByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUintByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getuint16ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUint16ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint16
+	got = table.GetUint16ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUint16ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getuint32ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUint32ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint32
+	got = table.GetUint32ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUint32ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getuint64ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUint64ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint64
+	got = table.GetUint64ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUint64ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test Getuint8ByColIndexMustGet
+//  Test that the method panics on error.
+func TestGetUint8ByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("Table")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = ZeroValue("uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	var got uint8
+	got = table.GetUint8ByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//where(table)
+	//where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Errorf("func TestGetUint8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("func TestGetUint8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetUint8ByColIndexMustGet(colIndex, minusIndex)
+}
