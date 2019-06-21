@@ -3345,7 +3345,7 @@ func ZeroValue(typeName string) (interface{}, error) {
 	case "uint64":
 		return 0, nil
 	case "uint8":
-		return 0, nil
+		return uint8(0), nil
 	case "byte":
 		return 0, nil
 	default:

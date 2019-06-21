@@ -7712,14 +7712,6 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 		t.Error(err)
 	}
 
-/*
-	// This creates a <nil> person.
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-*/
-
 	type person struct {
 		First string
 		Last  string
@@ -7897,6 +7889,7 @@ if fredDecoded != fred {
 		t.Error(err)
 	}
 	//where(parsed)
+
 
 /*
 	var tests = []struct {
