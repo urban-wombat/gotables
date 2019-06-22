@@ -5253,7 +5253,7 @@ func TestGetByteSliceMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("[]byte")
+	expecting, err = zeroValue("[]byte")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5320,7 +5320,7 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("[]uint8")
+	expecting, err = zeroValue("[]uint8")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5387,7 +5387,7 @@ func TestGetBoolMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("bool")
+	expecting, err = zeroValue("bool")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5451,7 +5451,7 @@ func TestGetByteMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("byte")
+	expecting, err = zeroValue("byte")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5515,7 +5515,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("float32")
+	expecting, err = zeroValue("float32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5579,7 +5579,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("float64")
+	expecting, err = zeroValue("float64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5643,7 +5643,7 @@ func TestGetIntMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int")
+	expecting, err = zeroValue("int")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5707,7 +5707,7 @@ func TestGetInt16MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int16")
+	expecting, err = zeroValue("int16")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5771,7 +5771,7 @@ func TestGetInt32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int32")
+	expecting, err = zeroValue("int32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5835,7 +5835,7 @@ func TestGetInt64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int64")
+	expecting, err = zeroValue("int64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5899,7 +5899,7 @@ func TestGetInt8MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int8")
+	expecting, err = zeroValue("int8")
 	if err != nil {
 		t.Error(err)
 	}
@@ -5963,7 +5963,7 @@ func TestGetRuneMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("rune")
+	expecting, err = zeroValue("rune")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6027,7 +6027,7 @@ func TestGetStringMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("string")
+	expecting, err = zeroValue("string")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6091,7 +6091,7 @@ func TestGetUintMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint")
+	expecting, err = zeroValue("uint")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6155,7 +6155,7 @@ func TestGetUint16MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint16")
+	expecting, err = zeroValue("uint16")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6219,7 +6219,7 @@ func TestGetUint32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint32")
+	expecting, err = zeroValue("uint32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6283,7 +6283,7 @@ func TestGetUint64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint64")
+	expecting, err = zeroValue("uint64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6347,7 +6347,7 @@ func TestGetUint8MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint8")
+	expecting, err = zeroValue("uint8")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6412,7 +6412,7 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("[]byte")
+	expecting, err = zeroValue("[]byte")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6480,7 +6480,7 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("[]uint8")
+	expecting, err = zeroValue("[]uint8")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6548,7 +6548,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("bool")
+	expecting, err = zeroValue("bool")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6613,7 +6613,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("byte")
+	expecting, err = zeroValue("byte")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6678,7 +6678,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("float32")
+	expecting, err = zeroValue("float32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6743,7 +6743,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("float64")
+	expecting, err = zeroValue("float64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6808,7 +6808,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int")
+	expecting, err = zeroValue("int")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6873,7 +6873,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int16")
+	expecting, err = zeroValue("int16")
 	if err != nil {
 		t.Error(err)
 	}
@@ -6938,7 +6938,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int32")
+	expecting, err = zeroValue("int32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7003,7 +7003,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int64")
+	expecting, err = zeroValue("int64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7068,7 +7068,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("int8")
+	expecting, err = zeroValue("int8")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7133,7 +7133,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("rune")
+	expecting, err = zeroValue("rune")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7198,7 +7198,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("string")
+	expecting, err = zeroValue("string")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7263,7 +7263,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint")
+	expecting, err = zeroValue("uint")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7328,7 +7328,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint16")
+	expecting, err = zeroValue("uint16")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7393,7 +7393,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint32")
+	expecting, err = zeroValue("uint32")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7458,7 +7458,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint64")
+	expecting, err = zeroValue("uint64")
 	if err != nil {
 		t.Error(err)
 	}
@@ -7523,7 +7523,7 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = ZeroValue("uint8")
+	expecting, err = zeroValue("uint8")
 	if err != nil {
 		t.Error(err)
 	}

@@ -3310,7 +3310,7 @@ func mu(all ...interface{}) []interface{} {
 	return all
 }
 
-func ZeroValue(typeName string) (interface{}, error) {
+func zeroValue(typeName string) (interface{}, error) {
 	switch typeName {
 	case "bool":
 		return false, nil
