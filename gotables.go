@@ -3382,7 +3382,7 @@ func nonZeroValue(typeName string) (interface{}, error) {
 	case "int32":
 		return int32(1), nil
 	case "rune":
-		return rune(1), nil
+		return rune('1'), nil
 	case "int64":
 		return int64(1), nil
 	case "int8":

@@ -5275,8 +5275,8 @@ func TestGetByteSliceMustGet(t *testing.T) {
 		t.Error(err)
 	}
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetByteSliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5347,8 +5347,8 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 		t.Error(err)
 	}
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint8SliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5416,8 +5416,8 @@ func TestGetBoolMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetBoolMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5485,8 +5485,8 @@ func TestGetByteMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetByteMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5554,8 +5554,8 @@ func TestGetFloat32MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetFloat32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5623,8 +5623,8 @@ func TestGetFloat64MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetFloat64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5692,8 +5692,8 @@ func TestGetIntMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetIntMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5761,8 +5761,8 @@ func TestGetInt16MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5830,8 +5830,8 @@ func TestGetInt32MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5899,8 +5899,8 @@ func TestGetInt64MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -5968,8 +5968,8 @@ func TestGetInt8MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6037,8 +6037,8 @@ func TestGetRuneMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetRuneMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6106,8 +6106,8 @@ func TestGetStringMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetStringMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6175,8 +6175,8 @@ func TestGetUintMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUintMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6244,8 +6244,8 @@ func TestGetUint16MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6313,8 +6313,8 @@ func TestGetUint32MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6382,8 +6382,8 @@ func TestGetUint64MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6451,8 +6451,8 @@ func TestGetUint8MustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
@@ -6524,8 +6524,8 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 		t.Error(err)
 	}
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetByteSliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6597,8 +6597,8 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 		t.Error(err)
 	}
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint8SliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6667,8 +6667,8 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetBoolByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6737,8 +6737,8 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetByteByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6807,8 +6807,8 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetFloat32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6877,8 +6877,8 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetFloat64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -6947,8 +6947,8 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetIntByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7017,8 +7017,8 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7087,8 +7087,8 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7157,8 +7157,8 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7227,8 +7227,8 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetInt8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7297,8 +7297,8 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetRuneByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7367,8 +7367,8 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetStringByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7437,8 +7437,8 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUintByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7507,8 +7507,8 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7577,8 +7577,8 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7647,8 +7647,8 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
@@ -7717,8 +7717,8 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	var matches bool
 	matches = (expecting == got)
 
-	//where(table)
-	//where(fmt.Sprintf("got == expecting = %t", matches))
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
 		t.Errorf("func TestGetUint8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
