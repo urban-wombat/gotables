@@ -3360,6 +3360,57 @@ func zeroValue(typeName string) (interface{}, error) {
 	}
 }
 
+// For testing. To ensure the returned value is not merely the zero value default.
+func nonZeroValue(typeName string) (interface{}, error) {
+	switch typeName {
+	case "bool":
+		return true, nil
+	case "float32":
+		return float32(1.1), nil
+	case "float64":
+		return float64(1.1), nil
+	case "uint":
+		return uint(1), nil
+	case "[]uint8":
+		return []uint8{1}, nil
+	case "[]byte":
+		return []byte{1}, nil
+	case "int":
+		return int(1), nil
+	case "int16":
+		return int16(1), nil
+	case "int32":
+		return int32(1), nil
+	case "rune":
+		return rune(1), nil
+	case "int64":
+		return int64(1), nil
+	case "int8":
+		return int8(1), nil
+	case "string":
+		return "1", nil
+	case "uint16":
+		return uint16(1), nil
+	case "uint32":
+		return uint32(1), nil
+	case "uint64":
+		return uint64(1), nil
+	case "uint8":
+		return uint8(1), nil
+	case "byte":
+		return byte(1), nil
+	default:
+		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
+		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+		for typeName, _ := range globalColTypesMap {
+			msg += fmt.Sprintf(" %s", typeName)
+		}
+		msg += ")"
+		err := errors.New(msg)
+		return nil, err
+	}
+}
+
 /*
 	Check whether tableSet1 and tableSet2 are the same.
 */

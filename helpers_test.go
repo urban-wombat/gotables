@@ -5223,7 +5223,7 @@ func BenchmarkHelperSetAndGetUint8(b *testing.B) {
 	}
 }
 
-//	Test Get[]byteMustGet
+//	Test GetByteSliceMustGet()
 //  Test that the method panics on error.
 func TestGetByteSliceMustGet(t *testing.T) {
 
@@ -5253,7 +5253,12 @@ func TestGetByteSliceMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("[]byte")
+	expecting, err = nonZeroValue("[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetByteSlice(colName, 0, expecting.([]byte))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5290,7 +5295,7 @@ func TestGetByteSliceMustGet(t *testing.T) {
 	table.GetByteSliceMustGet(colName, minusIndex)
 }
 
-//	Test Get[]uint8MustGet
+//	Test GetUint8SliceMustGet()
 //  Test that the method panics on error.
 func TestGetUint8SliceMustGet(t *testing.T) {
 
@@ -5320,7 +5325,12 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("[]uint8")
+	expecting, err = nonZeroValue("[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint8Slice(colName, 0, expecting.([]uint8))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5357,7 +5367,7 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 	table.GetUint8SliceMustGet(colName, minusIndex)
 }
 
-//	Test GetboolMustGet
+//	Test GetBoolMustGet()
 //  Test that the method panics on error.
 func TestGetBoolMustGet(t *testing.T) {
 
@@ -5387,7 +5397,12 @@ func TestGetBoolMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("bool")
+	expecting, err = nonZeroValue("bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetBool(colName, 0, expecting.(bool))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5421,7 +5436,7 @@ func TestGetBoolMustGet(t *testing.T) {
 	table.GetBoolMustGet(colName, minusIndex)
 }
 
-//	Test GetbyteMustGet
+//	Test GetByteMustGet()
 //  Test that the method panics on error.
 func TestGetByteMustGet(t *testing.T) {
 
@@ -5451,7 +5466,12 @@ func TestGetByteMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("byte")
+	expecting, err = nonZeroValue("byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetByte(colName, 0, expecting.(byte))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5485,7 +5505,7 @@ func TestGetByteMustGet(t *testing.T) {
 	table.GetByteMustGet(colName, minusIndex)
 }
 
-//	Test Getfloat32MustGet
+//	Test GetFloat32MustGet()
 //  Test that the method panics on error.
 func TestGetFloat32MustGet(t *testing.T) {
 
@@ -5515,7 +5535,12 @@ func TestGetFloat32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("float32")
+	expecting, err = nonZeroValue("float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetFloat32(colName, 0, expecting.(float32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5549,7 +5574,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 	table.GetFloat32MustGet(colName, minusIndex)
 }
 
-//	Test Getfloat64MustGet
+//	Test GetFloat64MustGet()
 //  Test that the method panics on error.
 func TestGetFloat64MustGet(t *testing.T) {
 
@@ -5579,7 +5604,12 @@ func TestGetFloat64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("float64")
+	expecting, err = nonZeroValue("float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetFloat64(colName, 0, expecting.(float64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5613,7 +5643,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 	table.GetFloat64MustGet(colName, minusIndex)
 }
 
-//	Test GetintMustGet
+//	Test GetIntMustGet()
 //  Test that the method panics on error.
 func TestGetIntMustGet(t *testing.T) {
 
@@ -5643,7 +5673,12 @@ func TestGetIntMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int")
+	expecting, err = nonZeroValue("int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt(colName, 0, expecting.(int))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5677,7 +5712,7 @@ func TestGetIntMustGet(t *testing.T) {
 	table.GetIntMustGet(colName, minusIndex)
 }
 
-//	Test Getint16MustGet
+//	Test GetInt16MustGet()
 //  Test that the method panics on error.
 func TestGetInt16MustGet(t *testing.T) {
 
@@ -5707,7 +5742,12 @@ func TestGetInt16MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int16")
+	expecting, err = nonZeroValue("int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt16(colName, 0, expecting.(int16))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5741,7 +5781,7 @@ func TestGetInt16MustGet(t *testing.T) {
 	table.GetInt16MustGet(colName, minusIndex)
 }
 
-//	Test Getint32MustGet
+//	Test GetInt32MustGet()
 //  Test that the method panics on error.
 func TestGetInt32MustGet(t *testing.T) {
 
@@ -5771,7 +5811,12 @@ func TestGetInt32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int32")
+	expecting, err = nonZeroValue("int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt32(colName, 0, expecting.(int32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5805,7 +5850,7 @@ func TestGetInt32MustGet(t *testing.T) {
 	table.GetInt32MustGet(colName, minusIndex)
 }
 
-//	Test Getint64MustGet
+//	Test GetInt64MustGet()
 //  Test that the method panics on error.
 func TestGetInt64MustGet(t *testing.T) {
 
@@ -5835,7 +5880,12 @@ func TestGetInt64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int64")
+	expecting, err = nonZeroValue("int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt64(colName, 0, expecting.(int64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5869,7 +5919,7 @@ func TestGetInt64MustGet(t *testing.T) {
 	table.GetInt64MustGet(colName, minusIndex)
 }
 
-//	Test Getint8MustGet
+//	Test GetInt8MustGet()
 //  Test that the method panics on error.
 func TestGetInt8MustGet(t *testing.T) {
 
@@ -5899,7 +5949,12 @@ func TestGetInt8MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int8")
+	expecting, err = nonZeroValue("int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt8(colName, 0, expecting.(int8))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5933,7 +5988,7 @@ func TestGetInt8MustGet(t *testing.T) {
 	table.GetInt8MustGet(colName, minusIndex)
 }
 
-//	Test GetruneMustGet
+//	Test GetRuneMustGet()
 //  Test that the method panics on error.
 func TestGetRuneMustGet(t *testing.T) {
 
@@ -5963,7 +6018,12 @@ func TestGetRuneMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("rune")
+	expecting, err = nonZeroValue("rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetRune(colName, 0, expecting.(rune))
 	if err != nil {
 		t.Error(err)
 	}
@@ -5997,7 +6057,7 @@ func TestGetRuneMustGet(t *testing.T) {
 	table.GetRuneMustGet(colName, minusIndex)
 }
 
-//	Test GetstringMustGet
+//	Test GetStringMustGet()
 //  Test that the method panics on error.
 func TestGetStringMustGet(t *testing.T) {
 
@@ -6027,7 +6087,12 @@ func TestGetStringMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("string")
+	expecting, err = nonZeroValue("string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetString(colName, 0, expecting.(string))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6061,7 +6126,7 @@ func TestGetStringMustGet(t *testing.T) {
 	table.GetStringMustGet(colName, minusIndex)
 }
 
-//	Test GetuintMustGet
+//	Test GetUintMustGet()
 //  Test that the method panics on error.
 func TestGetUintMustGet(t *testing.T) {
 
@@ -6091,7 +6156,12 @@ func TestGetUintMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint")
+	expecting, err = nonZeroValue("uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint(colName, 0, expecting.(uint))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6125,7 +6195,7 @@ func TestGetUintMustGet(t *testing.T) {
 	table.GetUintMustGet(colName, minusIndex)
 }
 
-//	Test Getuint16MustGet
+//	Test GetUint16MustGet()
 //  Test that the method panics on error.
 func TestGetUint16MustGet(t *testing.T) {
 
@@ -6155,7 +6225,12 @@ func TestGetUint16MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint16")
+	expecting, err = nonZeroValue("uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint16(colName, 0, expecting.(uint16))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6189,7 +6264,7 @@ func TestGetUint16MustGet(t *testing.T) {
 	table.GetUint16MustGet(colName, minusIndex)
 }
 
-//	Test Getuint32MustGet
+//	Test GetUint32MustGet()
 //  Test that the method panics on error.
 func TestGetUint32MustGet(t *testing.T) {
 
@@ -6219,7 +6294,12 @@ func TestGetUint32MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint32")
+	expecting, err = nonZeroValue("uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint32(colName, 0, expecting.(uint32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6253,7 +6333,7 @@ func TestGetUint32MustGet(t *testing.T) {
 	table.GetUint32MustGet(colName, minusIndex)
 }
 
-//	Test Getuint64MustGet
+//	Test GetUint64MustGet()
 //  Test that the method panics on error.
 func TestGetUint64MustGet(t *testing.T) {
 
@@ -6283,7 +6363,12 @@ func TestGetUint64MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint64")
+	expecting, err = nonZeroValue("uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint64(colName, 0, expecting.(uint64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6317,7 +6402,7 @@ func TestGetUint64MustGet(t *testing.T) {
 	table.GetUint64MustGet(colName, minusIndex)
 }
 
-//	Test Getuint8MustGet
+//	Test GetUint8MustGet()
 //  Test that the method panics on error.
 func TestGetUint8MustGet(t *testing.T) {
 
@@ -6347,7 +6432,12 @@ func TestGetUint8MustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint8")
+	expecting, err = nonZeroValue("uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint8(colName, 0, expecting.(uint8))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6381,7 +6471,7 @@ func TestGetUint8MustGet(t *testing.T) {
 	table.GetUint8MustGet(colName, minusIndex)
 }
 
-//	Test Get[]byteByColIndexMustGet
+//	Test GetByteSliceByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 
@@ -6412,7 +6502,12 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("[]byte")
+	expecting, err = nonZeroValue("[]byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetByteSliceByColIndex(colIndex, 0, expecting.([]byte))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6449,7 +6544,7 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 	table.GetByteSliceByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Get[]uint8ByColIndexMustGet
+//	Test GetUint8SliceByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 
@@ -6480,7 +6575,12 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("[]uint8")
+	expecting, err = nonZeroValue("[]uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint8SliceByColIndex(colIndex, 0, expecting.([]uint8))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6517,7 +6617,7 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 	table.GetUint8SliceByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetboolByColIndexMustGet
+//	Test GetBoolByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetBoolByColIndexMustGet(t *testing.T) {
 
@@ -6548,7 +6648,12 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("bool")
+	expecting, err = nonZeroValue("bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetBoolByColIndex(colIndex, 0, expecting.(bool))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6582,7 +6687,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	table.GetBoolByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetbyteByColIndexMustGet
+//	Test GetByteByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetByteByColIndexMustGet(t *testing.T) {
 
@@ -6613,7 +6718,12 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("byte")
+	expecting, err = nonZeroValue("byte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetByteByColIndex(colIndex, 0, expecting.(byte))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6647,7 +6757,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	table.GetByteByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getfloat32ByColIndexMustGet
+//	Test GetFloat32ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 
@@ -6678,7 +6788,12 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("float32")
+	expecting, err = nonZeroValue("float32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetFloat32ByColIndex(colIndex, 0, expecting.(float32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6712,7 +6827,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	table.GetFloat32ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getfloat64ByColIndexMustGet
+//	Test GetFloat64ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 
@@ -6743,7 +6858,12 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("float64")
+	expecting, err = nonZeroValue("float64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetFloat64ByColIndex(colIndex, 0, expecting.(float64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6777,7 +6897,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	table.GetFloat64ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetintByColIndexMustGet
+//	Test GetIntByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetIntByColIndexMustGet(t *testing.T) {
 
@@ -6808,7 +6928,12 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int")
+	expecting, err = nonZeroValue("int")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetIntByColIndex(colIndex, 0, expecting.(int))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6842,7 +6967,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	table.GetIntByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getint16ByColIndexMustGet
+//	Test GetInt16ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetInt16ByColIndexMustGet(t *testing.T) {
 
@@ -6873,7 +6998,12 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int16")
+	expecting, err = nonZeroValue("int16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt16ByColIndex(colIndex, 0, expecting.(int16))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6907,7 +7037,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	table.GetInt16ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getint32ByColIndexMustGet
+//	Test GetInt32ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetInt32ByColIndexMustGet(t *testing.T) {
 
@@ -6938,7 +7068,12 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int32")
+	expecting, err = nonZeroValue("int32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt32ByColIndex(colIndex, 0, expecting.(int32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -6972,7 +7107,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	table.GetInt32ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getint64ByColIndexMustGet
+//	Test GetInt64ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetInt64ByColIndexMustGet(t *testing.T) {
 
@@ -7003,7 +7138,12 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int64")
+	expecting, err = nonZeroValue("int64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt64ByColIndex(colIndex, 0, expecting.(int64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7037,7 +7177,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	table.GetInt64ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getint8ByColIndexMustGet
+//	Test GetInt8ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetInt8ByColIndexMustGet(t *testing.T) {
 
@@ -7068,7 +7208,12 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("int8")
+	expecting, err = nonZeroValue("int8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetInt8ByColIndex(colIndex, 0, expecting.(int8))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7102,7 +7247,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	table.GetInt8ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetruneByColIndexMustGet
+//	Test GetRuneByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetRuneByColIndexMustGet(t *testing.T) {
 
@@ -7133,7 +7278,12 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("rune")
+	expecting, err = nonZeroValue("rune")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetRuneByColIndex(colIndex, 0, expecting.(rune))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7167,7 +7317,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	table.GetRuneByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetstringByColIndexMustGet
+//	Test GetStringByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetStringByColIndexMustGet(t *testing.T) {
 
@@ -7198,7 +7348,12 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("string")
+	expecting, err = nonZeroValue("string")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetStringByColIndex(colIndex, 0, expecting.(string))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7232,7 +7387,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	table.GetStringByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test GetuintByColIndexMustGet
+//	Test GetUintByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUintByColIndexMustGet(t *testing.T) {
 
@@ -7263,7 +7418,12 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint")
+	expecting, err = nonZeroValue("uint")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUintByColIndex(colIndex, 0, expecting.(uint))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7297,7 +7457,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	table.GetUintByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getuint16ByColIndexMustGet
+//	Test GetUint16ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUint16ByColIndexMustGet(t *testing.T) {
 
@@ -7328,7 +7488,12 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint16")
+	expecting, err = nonZeroValue("uint16")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint16ByColIndex(colIndex, 0, expecting.(uint16))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7362,7 +7527,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	table.GetUint16ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getuint32ByColIndexMustGet
+//	Test GetUint32ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUint32ByColIndexMustGet(t *testing.T) {
 
@@ -7393,7 +7558,12 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint32")
+	expecting, err = nonZeroValue("uint32")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint32ByColIndex(colIndex, 0, expecting.(uint32))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7427,7 +7597,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	table.GetUint32ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getuint64ByColIndexMustGet
+//	Test GetUint64ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUint64ByColIndexMustGet(t *testing.T) {
 
@@ -7458,7 +7628,12 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint64")
+	expecting, err = nonZeroValue("uint64")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint64ByColIndex(colIndex, 0, expecting.(uint64))
 	if err != nil {
 		t.Error(err)
 	}
@@ -7492,7 +7667,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	table.GetUint64ByColIndexMustGet(colIndex, minusIndex)
 }
 
-//	Test Getuint8ByColIndexMustGet
+//	Test GetUint8ByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetUint8ByColIndexMustGet(t *testing.T) {
 
@@ -7523,7 +7698,12 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	// Test a simple get.
 
 	var expecting interface{}
-	expecting, err = zeroValue("uint8")
+	expecting, err = nonZeroValue("uint8")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.SetUint8ByColIndex(colIndex, 0, expecting.(uint8))
 	if err != nil {
 		t.Error(err)
 	}
