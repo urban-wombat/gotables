@@ -8385,3 +8385,80 @@ func TestSetAndGetCustomType(t *testing.T) {
 		}
 	*/
 }
+
+
+func TestCustomTypeWithMethod(t *testing.T) {
+	var err error
+
+	tableString :=
+	`[table]
+	i	j	k
+	int	int	int
+	1	3	0
+	6	8	0
+	16	2	0`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+//	where(table)
+
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+		err = table.multiplyInt("i", "j", "k", rowIndex)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+
+//	where(table)
+}
+
+func (table *Table) multiplyInt(factorCol1 string, factorCol2 string, productCol string, row int) (err error) {
+	var factor1, factor2, product int
+
+	factor1, err = table.GetInt(factorCol1, row)
+	if err != nil {
+		return err
+	}
+
+	factor2, err = table.GetInt(factorCol2, row)
+	if err != nil {
+		return err
+	}
+
+	product = factor1 * factor2
+
+	err = table.SetInt(productCol, row, product)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// import "github.com/urban-wombat/gotables"
+
+type person struct {
+	first string
+	last  string
+}
+
+func customTypeDemo() {
+	var err error
+	var table *Table
+
+	var tableString string =
+	`[MyTable]
+	age		person		heightCm
+	int		main.person	int
+	33		<nil>		160
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		panic(err)
+	}
+	_ = table
+}
