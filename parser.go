@@ -618,7 +618,7 @@ Go types NOT supported: complex64 complex128
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		validCustom, _ := IsValidCustomType(colType)
+		validCustom, _ := isValidCustomType(colType)
 		if !validCustom {
 			msg := fmt.Sprintf("invalid col type: %s (valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
@@ -633,8 +633,8 @@ func IsValidColType(colType string) (bool, error) {
 	return true, nil
 }
 
-// This needs tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
-func IsValidCustomType(colType string) (bool, error) {
+// This needs much tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
+func isValidCustomType(colType string) (bool, error) {
 	for _, c := range colType {
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '.' {
 			return false, fmt.Errorf("invalid user-defined col type: %s (must contain only letters, numbers and periods)", colType)
