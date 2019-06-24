@@ -628,7 +628,7 @@ func IsValidColType(colType string) (bool, error) {
 			}
 			msg += fmt.Sprintf(") and user-defined types (%v)", customErr)
 */
-			msg := fmt.Sprintf("invalid col type: %s (allowed: most Go built-in types and custom types)", colType)
+			msg := fmt.Sprintf("invalid col type: %s (allowed: most Go built-in types, and custom types)", colType)
 			err := errors.New(msg)
 where(err)
 			return false, err
