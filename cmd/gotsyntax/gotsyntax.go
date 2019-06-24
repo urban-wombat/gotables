@@ -3,8 +3,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/urban-wombat/gotables"
+	"os"
 )
 
 /*
@@ -42,20 +42,20 @@ func main() {
 		os.Exit(exitVal)
 	}
 
-/*	Let's remember how to do this.
-	var file *os.File
-	var fileInfo os.FileInfo
-	var fileMode os.FileMode
-	var isRegular bool
-*/
+	/*	Let's remember how to do this.
+		var file *os.File
+		var fileInfo os.FileInfo
+		var fileMode os.FileMode
+		var isRegular bool
+	*/
 	for i := 1; i < len(os.Args); i++ {
 		fileName = os.Args[i]
-/*		Let's remember how to do this.
-		file, err = os.Open(fileName)
-		fileInfo, err = file.Stat()
-		fileMode = fileInfo.Mode()
-		isRegular = fileMode.IsRegular()
-*/
+		/*		Let's remember how to do this.
+				file, err = os.Open(fileName)
+				fileInfo, err = file.Stat()
+				fileMode = fileInfo.Mode()
+				isRegular = fileMode.IsRegular()
+		*/
 		tables, err = gotables.NewTableSetFromFile(fileName)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error    %v\n", err)

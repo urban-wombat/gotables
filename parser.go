@@ -1050,10 +1050,10 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
 			}
 			rowSlice[i] = customType
-/*
-			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
-			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
-*/
+			/*
+				log.Printf("Unreachable code in getRowCol()") // Need to define another type?
+				return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
+			*/
 		}
 		remaining = remaining[rangeFound[1]:]
 		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
@@ -1165,13 +1165,13 @@ func parseRune(runeText string) (rune, error) {
 	runeVal, _, tail, err = strconv.UnquoteChar(runeText, delim)
 	if err != nil {
 
-/*
-		// Work around an apparent bug in strconv.UnquoteChar() where it returns an error trying to parse "\\"
-		if runeText == "\\" {
-			return '\\', nil
-		}
-		// Turns out not to be a bug. String should be "'\\\\'"
-*/
+		/*
+			// Work around an apparent bug in strconv.UnquoteChar() where it returns an error trying to parse "\\"
+			if runeText == "\\" {
+				return '\\', nil
+			}
+			// Turns out not to be a bug. String should be "'\\\\'"
+		*/
 
 		return 0, fmt.Errorf("invalid rune literal '%s' with %s: %s", runeText, err, runeText)
 	}

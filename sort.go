@@ -168,7 +168,7 @@ func (table *Table) SetSortKeys(sortColNames ...string) error {
 	for _, colName := range sortColNames {
 		err := table.AppendSortKey(colName)
 		if err != nil {
-//			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
+			//			errSortKey := errors.New(fmt.Sprintf("SetSortKeys(%v): %v\n", sortColNames, err))
 			errSortKey := fmt.Errorf("SetSortKeys(%v): %v", sortColNames, err)
 			return errSortKey
 		}
@@ -510,7 +510,9 @@ func (table *Table) SortSimple(sortCols ...string) error {
 	}
 
 	err := table.SetSortKeys(sortCols...)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	table.sortByKeys(table.sortKeys)
 
@@ -535,7 +537,7 @@ func (table tableSortable) Less(i int, j int) bool {
 
 func (table *Table) sortByKeys(sortKeys SortKeys) {
 	sort.Sort(tableSortable{table, table.rows, func(iRow, jRow tableRow) bool {
-//		compareCount++
+		//		compareCount++
 		for _, sortKey := range table.sortKeys {
 			var colName string = sortKey.colName
 			colIndex, _ := table.ColIndex(colName)
@@ -549,7 +551,7 @@ func (table *Table) sortByKeys(sortKeys SortKeys) {
 				compared *= -1
 			}
 			if compared != 0 {
-				return compared < 0		// Less is true if compared < 0
+				return compared < 0 // Less is true if compared < 0
 			}
 		}
 		return false
@@ -609,7 +611,7 @@ func (table *Table) checkSearchArguments(searchValues ...interface{}) error {
 	Search first is what the Go sort.Search() function does.
 */
 func (table *Table) Search(searchValues ...interface{}) (int, error) {
-   	return table.SearchFirst(searchValues...)
+	return table.SearchFirst(searchValues...)
 }
 
 /*
@@ -634,7 +636,7 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 	var searchIndex int = -1
 
 	// sort.Search() is enclosed (enclosure) here so it can access table values.
-	searchIndex = SearchFirst(table.RowCount(), func(rowIndex int) bool {	// Locally-defined Search() function
+	searchIndex = SearchFirst(table.RowCount(), func(rowIndex int) bool { // Locally-defined Search() function
 		var keyCount = len(table.sortKeys)
 		var keyLast = keyCount - 1
 		var compared int
@@ -646,7 +648,7 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 			cellVal, err := table.GetVal(colName, rowIndex)
 			if err != nil {
 				// Should never happen. Hasn't been tested.
-				break	// Out to searchByKeys() enclosing function.
+				break // Out to searchByKeys() enclosing function.
 			}
 			compared = sortFunc(cellVal, searchVal)
 
@@ -656,13 +658,13 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 			}
 
 			// Most searches will be single-key searches, so last key is the most common.
-			if keyIndex == keyLast {	// Last key is the deciding key because all previous keys matched.
+			if keyIndex == keyLast { // Last key is the deciding key because all previous keys matched.
 				return compared >= 0
 			} else {
-				if compared > 0 {	// Definite result regardless of subsequent keys: no match.
+				if compared > 0 { // Definite result regardless of subsequent keys: no match.
 					return true
 				} else if compared < 0 {
-					return false	// Definite result regardless of subsequent keys: no match.
+					return false // Definite result regardless of subsequent keys: no match.
 				}
 			}
 			// Otherwise the first keys are equal, so keep looping through keys.
@@ -686,11 +688,11 @@ func (table *Table) searchByKeysFirst(searchValues []interface{}) (int, error) {
 func searchValuesMatchRowValues(table *Table, searchValues []interface{}, searchIndex int) bool {
 	// Loop through the parallel lists of sort keys and search values.
 	for i := 0; i < len(table.sortKeys); i++ {
-		colName    := table.sortKeys[i].colName
-		sortFunc   := table.sortKeys[i].sortFunc
+		colName := table.sortKeys[i].colName
+		sortFunc := table.sortKeys[i].sortFunc
 		cellVal, _ := table.GetVal(colName, searchIndex)
-		searchVal  := searchValues[i]
-		compared   := sortFunc(cellVal, searchVal)
+		searchVal := searchValues[i]
+		compared := sortFunc(cellVal, searchVal)
 		if compared != 0 {
 			// At least one search value doesn't match a cell value.
 			return false
@@ -732,11 +734,11 @@ func (table *Table) CompareRows(rowIndex1 int, rowIndex2 int) (int, error) {
 
 	// Loop through the parallel lists of sort keys and search values.
 	for i := 0; i < len(table.sortKeys); i++ {
-		sortFunc    := table.sortKeys[i].sortFunc
-		colName     := table.sortKeys[i].colName
+		sortFunc := table.sortKeys[i].sortFunc
+		colName := table.sortKeys[i].colName
 		cellVal1, _ := table.GetVal(colName, rowIndex1)
 		cellVal2, _ := table.GetVal(colName, rowIndex2)
-		compared    := sortFunc(cellVal1, cellVal2)
+		compared := sortFunc(cellVal1, cellVal2)
 
 		if compared != 0 {
 			// We have a decision: At least one search value doesn't match a cell value.
@@ -745,7 +747,7 @@ func (table *Table) CompareRows(rowIndex1 int, rowIndex2 int) (int, error) {
 	}
 
 	// They all match. Means they're equal.
-	return 0, nil	// Equal.
+	return 0, nil // Equal.
 }
 
 // Factory function to generate a slice of SortKeys.
@@ -770,7 +772,7 @@ func (table *Table) SetSortKeysFromTable(fromTable *Table) error {
 	}
 
 	var err error
-	var ascending []string	// They default to ascending, and may be later reversed.
+	var ascending []string // They default to ascending, and may be later reversed.
 	var descending []string
 
 	keysTable, err := fromTable.GetSortKeysAsTable()
@@ -822,7 +824,7 @@ func (table *Table) OrderColsBySortKeys() error {
 	}
 
 	var err error
-	var newOrder []string = make([]string, table.ColCount())	// List of new colNames.
+	var newOrder []string = make([]string, table.ColCount()) // List of new colNames.
 	var key int
 
 	// Populate new order ...
@@ -858,7 +860,9 @@ func (table *Table) OrderColsBySortKeys() error {
 
 // True if colName is a sort key in table. False if not. Error if colName not in table.
 func (table *Table) IsSortKey(colName string) (bool, error) {
-	if table == nil { return false, fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil {
+		return false, fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+	}
 
 	hasCol, err := table.HasCol(colName)
 	if err != nil {
@@ -879,7 +883,9 @@ func (table *Table) IsSortKey(colName string) (bool, error) {
 */
 func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+	}
 
 	var err error
 
@@ -903,10 +909,14 @@ func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 	table.colTypes[colIndex1], table.colTypes[colIndex2] = table.colTypes[colIndex2], table.colTypes[colIndex1]
 
 	colName1, err := table.ColName(colIndex1)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	colName2, err := table.ColName(colIndex2)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	table.colNamesMap[colName1], table.colNamesMap[colName2] = table.colNamesMap[colName2], table.colNamesMap[colName1]
 
@@ -918,15 +928,21 @@ func (table *Table) SwapColsByColIndex(colIndex1 int, colIndex2 int) error {
 */
 func (table *Table) SwapCols(colName1 string, colName2 string) error {
 	// This sets out the relationship between table.colNames, table.colTypes and table.colNamesMap.
-	if table == nil { return fmt.Errorf("table.%s() table is <nil>", util.FuncName()) }
+	if table == nil {
+		return fmt.Errorf("table.%s() table is <nil>", util.FuncName())
+	}
 
 	var err error
 
 	col1, err := table.ColIndex(colName1)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	col2, err := table.ColIndex(colName2)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	if colName1 == colName2 {
 		return fmt.Errorf("[%s].%s: [%s] colName1 %q == colName2 %q",
@@ -947,7 +963,7 @@ func (table *Table) SwapCols(colName1 string, colName2 string) error {
 
 	To see the currently-set sort keys use GetSortKeysAsTable()
 */
-   func (table *Table) SearchLast(searchValues ...interface{}) (int, error) {
+func (table *Table) SearchLast(searchValues ...interface{}) (int, error) {
 
 	err := table.checkSearchArguments(searchValues...)
 	if err != nil {
@@ -964,7 +980,7 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 	var searchIndex int = -1
 
 	// sort.Search() is enclosed (enclosure) here so it can access table values.
-	searchIndex = SearchLast(table.RowCount(), func(rowIndex int) bool {	// Locally-defined Search() function
+	searchIndex = SearchLast(table.RowCount(), func(rowIndex int) bool { // Locally-defined Search() function
 		var keyCount = len(table.sortKeys)
 		var keyLast = keyCount - 1
 		var compared int
@@ -976,7 +992,7 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 			cellVal, err := table.GetVal(colName, rowIndex)
 			if err != nil {
 				// Should never happen. Hasn't been tested.
-				break	// Out to searchByKeys() enclosing function.
+				break // Out to searchByKeys() enclosing function.
 			}
 			compared = sortFunc(cellVal, searchVal)
 
@@ -986,13 +1002,13 @@ func (table *Table) searchByKeysLast(searchValues []interface{}) (int, error) {
 			}
 
 			// Most searches will be single-key searches, so last key is the most common.
-			if keyIndex == keyLast {	// Last key is the deciding key because all previous keys matched.
+			if keyIndex == keyLast { // Last key is the deciding key because all previous keys matched.
 				return compared <= 0
 			} else {
-				if compared < 0 {	// Definite result regardless of subsequent keys: no match.
+				if compared < 0 { // Definite result regardless of subsequent keys: no match.
 					return true
 				} else if compared > 0 {
-					return false	// Definite result regardless of subsequent keys: no match.
+					return false // Definite result regardless of subsequent keys: no match.
 				}
 			}
 			// Otherwise the first keys are equal, so keep looping through keys.
@@ -1029,7 +1045,7 @@ func search(n int, f func(int) bool) int {
 		}
 	}
 	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
-//	fmt.Printf("%2d %2d %2d\n", i, h, j)
+	//	fmt.Printf("%2d %2d %2d\n", i, h, j)
 	return i
 }
 

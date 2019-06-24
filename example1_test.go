@@ -14,7 +14,7 @@ import (
 
 func ExampleTable_Sort_complete() {
 	tableString :=
-	`[planets]
+		`[planets]
 	name         mass distance moons index mnemonic
 	string    float64  float64   int   int string
 	"Mercury"   0.055      0.4     0     0 "my"
@@ -126,11 +126,10 @@ func ExampleTable_Sort_complete() {
 	fmt.Printf("%d planets have %d moons.\n", planets, moons)
 	fmt.Println()
 
-
 	// Sort Unique.
 
 	tableString =
-	`[Unique]
+		`[Unique]
 	KeyCol number   s
 	int float32 string
 	2   0       "two point two"
@@ -177,15 +176,15 @@ func ExampleTable_Sort_complete() {
 	// "Saturn"   95.0       29.4    62     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// 
+	//
 	// rowIndex = 0
 	// name = Mercury
 	// mass = 0.055000
-	// 
+	//
 	// name = Venus
 	// mnemonic = very
 	// mnemonic = VERY
-	// 
+	//
 	// [planets]
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
@@ -197,9 +196,9 @@ func ExampleTable_Sort_complete() {
 	// "Saturn"   95.0       29.4    62     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Venus"     0.815      0.7     0     1 "VERY"
-	// 
+	//
 	// Mars has 2 moons.
-	// 
+	//
 	// [planets]
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
@@ -211,9 +210,9 @@ func ExampleTable_Sort_complete() {
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Saturn"   95.0       29.4    62     5 "sat"
 	// "Jupiter" 318.0        5.2    67     4 "just"
-	// 
+	//
 	// 2 planets have 0 moons.
-	// 
+	//
 	// [Unique]
 	// KeyCol  number s
 	//    int float32 string
@@ -230,7 +229,7 @@ func ExampleTable_Sort_complete() {
 	//      5     NaN "minus 5"
 	//      5    -0.0 "minus 5"
 	//      5    -5.0 "minus 5"
-	// 
+	//
 	// [Unique]
 	// KeyCol  number s
 	//    int float32 string

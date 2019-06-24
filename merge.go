@@ -1,6 +1,5 @@
 package gotables
 
-
 /*
 Copyright (c) 2017 Malcolm Gorman
 
@@ -22,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 
 import (
 	"fmt"
@@ -63,7 +61,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 	// Local function.
 	// Make sort keys of both input tables the same.
-	setSortKeysBetweenTables := func () error {
+	setSortKeysBetweenTables := func() error {
 		if table1.SortKeyCount() > 0 {
 			// Note: table1 is dominant.
 			err = table2.SetSortKeysFromTable(table1)
@@ -84,7 +82,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 	}
 
 	// Local function.
-	sortMerged := func (localMerged *Table) (*Table, error) {
+	sortMerged := func(localMerged *Table) (*Table, error) {
 		if localMerged.SortKeyCount() == 0 {
 			err = setSortKeysBetweenTables()
 			if err != nil {
@@ -166,7 +164,7 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 		return nil, err
 	}
 
-	var tempColCount int	// To ignore temporary columns.
+	var tempColCount int // To ignore temporary columns.
 
 	// Add a column to keep track of which columns came from which table.
 	const tableNumberColName = "_TABLE_"
@@ -251,14 +249,14 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 
 		// Reduce make it easier to reason about assignments of val1 and val2.
 		rowIndex1 := rowIndex
-		rowIndex2 := rowIndex+1
+		rowIndex2 := rowIndex + 1
 
 		var comparison int
 		comparison, err = merged.CompareRows(rowIndex, rowIndex+1)
 		if err != nil {
 			return nil, err
 		}
-//		where(fmt.Sprintf("[%s].CompareRows(%d, %d) = %d\n", merged.Name(), rowIndex, rowIndex+1, comparison))
+		//		where(fmt.Sprintf("[%s].CompareRows(%d, %d) = %d\n", merged.Name(), rowIndex, rowIndex+1, comparison))
 		if comparison == 0 {
 			// They are equal.
 			// Loop through columns, short of the last (temporary) column(s).
@@ -269,171 +267,171 @@ func (table1 *Table) Merge(table2 *Table) (merged *Table, err error) {
 					return nil, err
 				}
 				switch colType {
-					case "string":
-						var val1 string
-						var val2 string
-						const zeroVal = ""
-						val1, err = merged.GetStringByColIndex(colIndex, rowIndex)
+				case "string":
+					var val1 string
+					var val2 string
+					const zeroVal = ""
+					val1, err = merged.GetStringByColIndex(colIndex, rowIndex)
+					if err != nil {
+						return nil, err
+					}
+					val2, err = merged.GetStringByColIndex(colIndex, rowIndex+1)
+					if err != nil {
+						return nil, err
+					}
+					if val1 != zeroVal { // Covers combinations (c) and (d)
+						err = merged.SetStringByColIndex(colIndex, rowIndex+1, val1) // Use val1
 						if err != nil {
 							return nil, err
 						}
-						val2, err = merged.GetStringByColIndex(colIndex, rowIndex+1)
+					} else if val2 != zeroVal { // Covers combination (b)
+						err = merged.SetStringByColIndex(colIndex, rowIndex, val2) // Use val2
 						if err != nil {
 							return nil, err
 						}
-						if val1 != zeroVal {	// Covers combinations (c) and (d)
-							err = merged.SetStringByColIndex(colIndex, rowIndex+1, val1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						} else if val2 != zeroVal {	// Covers combination (b)
-							err = merged.SetStringByColIndex(colIndex, rowIndex, val2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						}
-						// Otherwise both vals must be zero. Do nothing.
-					case "bool":
-						var val1 bool
-						var val2 bool
-						const zeroVal = false
-						val1, err = merged.GetBoolByColIndex(colIndex, rowIndex)
+					}
+					// Otherwise both vals must be zero. Do nothing.
+				case "bool":
+					var val1 bool
+					var val2 bool
+					const zeroVal = false
+					val1, err = merged.GetBoolByColIndex(colIndex, rowIndex)
+					if err != nil {
+						return nil, err
+					}
+					val2, err = merged.GetBoolByColIndex(colIndex, rowIndex+1)
+					if err != nil {
+						return nil, err
+					}
+					if val1 != zeroVal { // Covers combinations (c) and (d)
+						err = merged.SetBoolByColIndex(colIndex, rowIndex+1, val1) // Use val1
 						if err != nil {
 							return nil, err
 						}
-						val2, err = merged.GetBoolByColIndex(colIndex, rowIndex+1)
+					} else if val2 != zeroVal { // Covers combination (b)
+						err = merged.SetBoolByColIndex(colIndex, rowIndex, val2) // Use val2
 						if err != nil {
 							return nil, err
 						}
-						if val1 != zeroVal {	// Covers combinations (c) and (d)
-							err = merged.SetBoolByColIndex(colIndex, rowIndex+1, val1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						} else if val2 != zeroVal {	// Covers combination (b)
-							err = merged.SetBoolByColIndex(colIndex, rowIndex, val2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						}
-						// Otherwise both vals must be zero. Do nothing.
-					case "int8", "int16", "int32", "int64", "int":
-						var tmp1 interface{}
-						var tmp2 interface{}
-						var val1 int64
-						var val2 int64
-						const zeroVal = 0
-						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
+					}
+					// Otherwise both vals must be zero. Do nothing.
+				case "int8", "int16", "int32", "int64", "int":
+					var tmp1 interface{}
+					var tmp2 interface{}
+					var val1 int64
+					var val2 int64
+					const zeroVal = 0
+					tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
+					if err != nil {
+						return nil, err
+					}
+					val1 = reflect.ValueOf(tmp1).Int()
+					tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
+					if err != nil {
+						return nil, err
+					}
+					val2 = reflect.ValueOf(tmp2).Int()
+					if val1 != zeroVal { // Covers combinations (c) and (d)
+						err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1) // Use val1
 						if err != nil {
 							return nil, err
 						}
-						val1 = reflect.ValueOf(tmp1).Int()
-						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
+					} else if val2 != zeroVal { // Covers combination (b)
+						err = merged.SetValByColIndex(colIndex, rowIndex, tmp2) // Use val2
 						if err != nil {
 							return nil, err
 						}
-						val2 = reflect.ValueOf(tmp2).Int()
-						if val1 != zeroVal {	// Covers combinations (c) and (d)
-							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						} else if val2 != zeroVal {	// Covers combination (b)
-							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						}
-						// Otherwise both vals must be zero. Do nothing.
-					case "uint8", "uint16", "uint32", "uint64", "uint":
-						var tmp1 interface{}
-						var tmp2 interface{}
-						var val1 uint64
-						var val2 uint64
-						const zeroVal = 0
-						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
+					}
+					// Otherwise both vals must be zero. Do nothing.
+				case "uint8", "uint16", "uint32", "uint64", "uint":
+					var tmp1 interface{}
+					var tmp2 interface{}
+					var val1 uint64
+					var val2 uint64
+					const zeroVal = 0
+					tmp1, err = merged.GetValByColIndex(colIndex, rowIndex)
+					if err != nil {
+						return nil, err
+					}
+					val1 = reflect.ValueOf(tmp1).Uint()
+					tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
+					if err != nil {
+						return nil, err
+					}
+					val2 = reflect.ValueOf(tmp2).Uint()
+					if val1 != zeroVal { // Covers combinations (c) and (d)
+						err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1) // Use val1
 						if err != nil {
 							return nil, err
 						}
-						val1 = reflect.ValueOf(tmp1).Uint()
-						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex+1)
+					} else if val2 != zeroVal { // Covers combination (b)
+						err = merged.SetValByColIndex(colIndex, rowIndex, tmp2) // Use val2
 						if err != nil {
 							return nil, err
 						}
-						val2 = reflect.ValueOf(tmp2).Uint()
-						if val1 != zeroVal {	// Covers combinations (c) and (d)
-							err = merged.SetValByColIndex(colIndex, rowIndex+1, tmp1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						} else if val2 != zeroVal {	// Covers combination (b)
-							err = merged.SetValByColIndex(colIndex, rowIndex, tmp2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						}
-						// Otherwise both vals must be zero. Do nothing.
-					case "float32", "float64":
-						// Note: NaN is more zero than zero, so zero value 0.0 trumps NaN.
-						var tmp1 interface{}
-						var tmp2 interface{}
-						var val1 float64
-						var val2 float64
-						const zeroVal = 0.0
+					}
+					// Otherwise both vals must be zero. Do nothing.
+				case "float32", "float64":
+					// Note: NaN is more zero than zero, so zero value 0.0 trumps NaN.
+					var tmp1 interface{}
+					var tmp2 interface{}
+					var val1 float64
+					var val2 float64
+					const zeroVal = 0.0
 
-						tmp1, err = merged.GetValByColIndex(colIndex, rowIndex1)
+					tmp1, err = merged.GetValByColIndex(colIndex, rowIndex1)
+					if err != nil {
+						return nil, err
+					}
+					val1 = reflect.ValueOf(tmp1).Float()
+
+					tmp2, err = merged.GetValByColIndex(colIndex, rowIndex2)
+					if err != nil {
+						return nil, err
+					}
+					val2 = reflect.ValueOf(tmp2).Float()
+
+					if val1 != zeroVal && !math.IsNaN(val1) { // Covers combinations (c) and (d)
+						err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1) // Use val1
 						if err != nil {
 							return nil, err
 						}
-						val1 = reflect.ValueOf(tmp1).Float()
-
-						tmp2, err = merged.GetValByColIndex(colIndex, rowIndex2)
+					} else if val2 != zeroVal && !math.IsNaN(val2) { // Covers combination (b)
+						err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2) // Use val2
 						if err != nil {
 							return nil, err
 						}
-						val2 = reflect.ValueOf(tmp2).Float()
-
-						if val1 != zeroVal && !math.IsNaN(val1) {	// Covers combinations (c) and (d)
-							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						} else if val2 != zeroVal && !math.IsNaN(val2) {	// Covers combination (b)
-							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						} else if math.IsNaN(val1) { // Maybe one of them is NaN and the other is zero.
-							err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2)	// Use val2
-							if err != nil {
-								return nil, err
-							}
-						} else if math.IsNaN(val2) { // Maybe one of them is NaN and the other is zero.
-							err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1)	// Use val1
-							if err != nil {
-								return nil, err
-							}
-						}
-						// Otherwise both vals must be zero. Do nothing.
-					default:
-						// Should never reach here.
-						var isValid bool
-						isValid, err = IsValidColType(colType)
-						if !isValid {
+					} else if math.IsNaN(val1) { // Maybe one of them is NaN and the other is zero.
+						err = merged.SetValByColIndex(colIndex, rowIndex1, tmp2) // Use val2
+						if err != nil {
 							return nil, err
-						} else {
-							return nil, fmt.Errorf("what? We seem to have an unlisted type: %s", colType)
 						}
+					} else if math.IsNaN(val2) { // Maybe one of them is NaN and the other is zero.
+						err = merged.SetValByColIndex(colIndex, rowIndex2, tmp1) // Use val1
+						if err != nil {
+							return nil, err
+						}
+					}
+					// Otherwise both vals must be zero. Do nothing.
+				default:
+					// Should never reach here.
+					var isValid bool
+					isValid, err = IsValidColType(colType)
+					if !isValid {
+						return nil, err
+					} else {
+						return nil, fmt.Errorf("what? We seem to have an unlisted type: %s", colType)
+					}
 				}
 			}
 
 			/*
-			Tag one of the (now identical) rows for deletion.
-			Choose the 1st row (rowIndex1) because rowIndex2 will be compared with the subsequent row.
-			Each row1 (of row1 and row2) will be marked for deletion after its values have been merged.
-			This performs a cascading/progressive copy of the least-zero value forward in the matching rows
-			so that the single remaining matching row contains the least-zero value.
-			E.g. float 4.4 will trump 0.0 will trump NaN.
+				Tag one of the (now identical) rows for deletion.
+				Choose the 1st row (rowIndex1) because rowIndex2 will be compared with the subsequent row.
+				Each row1 (of row1 and row2) will be marked for deletion after its values have been merged.
+				This performs a cascading/progressive copy of the least-zero value forward in the matching rows
+				so that the single remaining matching row contains the least-zero value.
+				E.g. float 4.4 will trump 0.0 will trump NaN.
 			*/
 			err = merged.SetBool(deleteColName, rowIndex1, true)
 			if err != nil {
@@ -491,7 +489,9 @@ func (srcTable *Table) copyTableCells(beginRow int, targTable *Table) error {
 	for srcCol := 0; srcCol < srcTable.ColCount(); srcCol++ {
 		colName, err := srcTable.ColName(srcCol)
 		// where(fmt.Sprintf("srcTable.ColName(%d) = %q\n", srcCol, colName))
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 
 		// Note: multiple assignment syntax in for loop.
 		for srcRow, targRow := 0, beginRow; targRow < (beginRow + srcTable.RowCount()); srcRow, targRow = srcRow+1, targRow+1 {

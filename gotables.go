@@ -1041,11 +1041,11 @@ func (table *Table) _String(horizontalSeparator byte) string {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
 					}
-					 buf.WriteString(fmt.Sprintf("%s", iFaceValString))
-/*
-					log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-					return ""
-*/
+					buf.WriteString(fmt.Sprintf("%s", iFaceValString))
+					/*
+						log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+						return ""
+					*/
 				}
 
 				horizontalSep = string(horizontalSeparator)
@@ -1323,10 +1323,10 @@ func (table *Table) StringPadded() string {
 					return ""
 				}
 				setWidths(s, colIndex, prenum, points, precis, width)
-/*
-				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-				return ""
-*/
+				/*
+					log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+					return ""
+				*/
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
 
@@ -1983,13 +1983,13 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 
 	// Sadly, slice doesn't return a boolean to test whether a retrieval is in range.
 	/*	CHECKED IN table.GetValByColIndex()
-	//	hasRow, err := table.HasRow(rowIndex)
-	//	if !hasRow { return nil, err }
+		//	hasRow, err := table.HasRow(rowIndex)
+		//	if !hasRow { return nil, err }
 	*/
 
 	/*	CHECKED IN table.GetValByColIndex()
-	//	hasCol, err := table.HasCol(colName)
-	//	if !hasCol { return nil, err }
+		//	hasCol, err := table.HasCol(colName)
+		//	if !hasCol { return nil, err }
 	*/
 
 	colIndex, err := table.ColIndex(colName)
@@ -2642,10 +2642,10 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 			}
 		}
 		buf.WriteString(fmt.Sprintf("%s", customVal))
-/*
-		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-		return "", err
-*/
+		/*
+			err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+			return "", err
+		*/
 	}
 
 	s = buf.String()
@@ -3966,13 +3966,13 @@ func EncodeCustomType(customType interface{}) (encoded string, err error) {
 	if customType != nil {
 		// Created a GOB encoding of customType.
 		gobRegister(customType)
-		var buffer bytes.Buffer	// To receive GOB encoding.
+		var buffer bytes.Buffer // To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(&customType)	// Use ADDRESS of interface, or it will be concrete type.
+		err = encoder.Encode(&customType) // Use ADDRESS of interface, or it will be concrete type.
 		if err != nil {
 			return "", err
 		}
-		var gobEncodedBytes []byte = buffer.Bytes()	// GOB encoding as bytes.
+		var gobEncodedBytes []byte = buffer.Bytes() // GOB encoding as bytes.
 
 		// Compress to printable characters.
 		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
@@ -4021,28 +4021,28 @@ func ParseCustomType(encoded string) (customType interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {
-	
+
 		// Get the first part of the text [first-part][second-part] that double-encodes the value.
 		// This skips/ignores the human-readable second part.
 		var base64Encoded string = customTypeBase64PartRegexp.FindString(encoded)
-	
-		base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
-	
+
+		base64Encoded = encoded[2 : len(base64Encoded)-3] // Strip off leading [[ and trailing ]["
+
 		// Decode/uncompress the base64 string back to GOB-encoded.
 		var gobEncodedBytes []byte
 		gobEncodedBytes, err = base64.StdEncoding.DecodeString(base64Encoded)
 		if err != nil {
 			return nil, err
 		}
-	
+
 		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
 		var decoder *gob.Decoder = gob.NewDecoder(buffer)
-//		var interfaceOut interface{}
+		//		var interfaceOut interface{}
 		err = decoder.Decode(&customType)
 		if err != nil {
 			return nil, err
 		}
-	
+
 		return customType, nil
 	}
 }
@@ -4056,7 +4056,7 @@ func gobRegister(val interface{}) {
 		gob.Register(val)
 
 		// This stores the concrete type-name of val e.g. "gotables.person".
-		// Storing val stores only the specific instance of val, which means 
+		// Storing val stores only the specific instance of val, which means
 		// the type would be registered per instance and not per type.
 		gobRegistered[typeName] = true
 	}

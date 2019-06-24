@@ -15,8 +15,7 @@ import (
 func ExampleTable_SetByteSlice_complete() {
 	// Create a struct-shaped table with two cells
 	// for a string and a byte, just to show how it's done.
-	var s string =
-	`[myTableStruct]
+	var s string = `[myTableStruct]
 	hello string = "Hello world!"
 	b byte = 255
 	`
@@ -62,7 +61,7 @@ func ExampleTable_SetByteSlice_complete() {
 	// [myTableStruct]
 	// hello string = "Hello world!"
 	// b byte = 255
-	// 
+	//
 	// H = byte 72
 	// e = byte 101
 	// l = byte 108
@@ -76,12 +75,12 @@ func ExampleTable_SetByteSlice_complete() {
 	// e = byte 101
 	// ! = byte 33
 	// helloByteSlice = [72 101 108 108 111 32 115 108 105 99 101 33]
-	// 
+	//
 	// [myTableStruct]
 	// hello string = "Hello world!"
 	// b byte = 255
 	// helloSlice []byte = [72 101 108 108 111 32 115 108 105 99 101 33]
-	// 
+	//
 	// retrievedSlice = [72 101 108 108 111 32 115 108 105 99 101 33]
 }
 

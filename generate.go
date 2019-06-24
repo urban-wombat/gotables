@@ -10,6 +10,7 @@ import (
 
 	"github.com/urban-wombat/util"
 )
+
 //
 //// The word size (in bits) of the machine we're now running on. Typically 64 or 32 bits.
 //func WordSize() int {
@@ -98,7 +99,7 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 	if tableSet == nil {
 		return "", fmt.Errorf("tableSet.%s tableSet is <nil>", util.FuncName())
 	}
-	
+
 	var buf bytes.Buffer
 	var delim string = ""
 
@@ -127,16 +128,16 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 	See also: GenerateTypeStructSliceFromTableSet()
 
 	Source table:
-		
+
 		[MyTable]
 		      f b       i str       bb
 		float32 bool  int string    []byte
 		    4.4 true   32 "Hello!"  [3 2 1 0]
 		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
 		    6.6 false   0 "Great!"  [0 1 2]
-		
+
 	Previously-generated type struct - using GenerateTypeStruct()
-		
+
 		type MyTable struct {
 		        f float32
 		        b bool
@@ -144,7 +145,7 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 		        str string
 		        bb []byte
 		}
-		
+
 	Generated Go function - using GenerateTypeStructSliceFromTable()
 
         Automatically generated source code. DO NOT MODIFY. Generated 1:09 PM Friday 29 Sep 2017.
@@ -155,41 +156,41 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 		        if table == nil {
 		                return nil, fmt.Errorf("TypeStructSliceFromTable_MyTable(slice []MyTable) slice is <nil>")
 		        }
-		
+
 		        var MyTable []MyTable = make([]MyTable, table.RowCount())
-		
+
 		        for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		                f, err := table.GetFloat32("f", rowIndex)
 		                if err != nil {
 		                        return nil, err
 		                }
 		                MyTable[rowIndex].f = f
-		
+
 		                b, err := table.GetBool("b", rowIndex)
 		                if err != nil {
 		                        return nil, err
 		                }
 		                MyTable[rowIndex].b = b
-		
+
 		                i, err := table.GetInt("i", rowIndex)
 		                if err != nil {
 		                        return nil, err
 		                }
 		                MyTable[rowIndex].i = i
-		
+
 		                str, err := table.GetString("str", rowIndex)
 		                if err != nil {
 		                        return nil, err
 		                }
 		                MyTable[rowIndex].str = str
-		
+
 		                bb, err := table.GetByteSlice("bb", rowIndex)
 		                if err != nil {
 		                        return nil, err
 		                }
 		                MyTable[rowIndex].bb = bb
 		        }
-		
+
 		        return MyTable, nil
 		}
 
@@ -237,35 +238,35 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 	buf.WriteString("*/\n")
 
 	buf.WriteString(fmt.Sprintf("func %s(table *gotables.Table) ([]%s, error) {\n", funcName, tableName))
-		buf.WriteString("\tif table == nil {\n")
-			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
-		buf.WriteString("\t}\n\n")
+	buf.WriteString("\tif table == nil {\n")
+	buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
+	buf.WriteString("\t}\n\n")
 
-		buf.WriteString(fmt.Sprintf("\tvar %s []%s = make([]%s, table.RowCount())\n\n", tableName, tableName, tableName))
+	buf.WriteString(fmt.Sprintf("\tvar %s []%s = make([]%s, table.RowCount())\n\n", tableName, tableName, tableName))
 
-		buf.WriteString("\tfor rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {\n")
-			var sep string = ""
-			for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-				colName, err := table.ColName(colIndex)
-				if err != nil {
-					return "", err
-				}
-				colType, err := table.ColTypeByColIndex(colIndex)
-				if err != nil {
-					return "", err
-				}
-				buf.WriteString(sep)
-				buf.WriteString(fmt.Sprintf("\t\t%s, err := table.%s(%q, rowIndex)\n", colName, getterName(colType), colName))
-				buf.WriteString("\t\tif err != nil {\n")
-				buf.WriteString("\t\t\treturn nil, err\n")
-				buf.WriteString("\t\t}\n")
-				buf.WriteString(fmt.Sprintf("\t\t%s[rowIndex].%s = %s\n", tableName, colName, colName))
-				sep = "\n"
-			}
-		
-		buf.WriteString("\t}\n\n")
+	buf.WriteString("\tfor rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {\n")
+	var sep string = ""
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colName, err := table.ColName(colIndex)
+		if err != nil {
+			return "", err
+		}
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString(sep)
+		buf.WriteString(fmt.Sprintf("\t\t%s, err := table.%s(%q, rowIndex)\n", colName, getterName(colType), colName))
+		buf.WriteString("\t\tif err != nil {\n")
+		buf.WriteString("\t\t\treturn nil, err\n")
+		buf.WriteString("\t\t}\n")
+		buf.WriteString(fmt.Sprintf("\t\t%s[rowIndex].%s = %s\n", tableName, colName, colName))
+		sep = "\n"
+	}
 
-		buf.WriteString(fmt.Sprintf("\treturn %s, nil\n", tableName))
+	buf.WriteString("\t}\n\n")
+
+	buf.WriteString(fmt.Sprintf("\treturn %s, nil\n", tableName))
 
 	buf.WriteString("}\n")
 
@@ -273,7 +274,6 @@ func (table *Table) GenerateTypeStructSliceFromTable() (string, error) {
 
 	return typeStruct, nil
 }
-
 
 /*
 	Generate a set of Go functions (as a string) to convert a gotables.TableSet to slices of struct.
@@ -354,16 +354,16 @@ func setterName(typeName string) string {
 	See also: GenerateTypeStructSliceFromTable() - convert in the opposite direction
 
 	Source table:
-		
+
 		[MyTable]
 		      f b       i str       bb
 		float32 bool  int string    []byte
 		    4.4 true   32 "Hello!"  [3 2 1 0]
 		    5.5 true  -32 "Goodie!" [4 5 6 7 8]
 		    6.6 false   0 "Great!"  [0 1 2]
-		
+
 	Previously-generated type struct - using GenerateTypeStruct()
-		
+
 		type MyTable struct {
 		        f float32
 		        b bool
@@ -371,7 +371,7 @@ func setterName(typeName string) string {
 		        str string
 		        bb []byte
 		}
-		
+
 	Generated Go function - using GenerateTypeStructSliceToTable()
 
         Automatically generated source code. DO NOT MODIFY. Generated 1:12 PM Friday 29 Sep 2017.
@@ -381,9 +381,9 @@ func setterName(typeName string) string {
 		        if slice == nil {
 		                return nil, fmt.Errorf("TypeStructSliceToTable_MyTable(slice []MyTable) slice is <nil>")
 		        }
-		
+
 		        var err error
-		
+
 		        var seedTable string = `
 		        [MyTable]
 		        f float32
@@ -397,39 +397,39 @@ func setterName(typeName string) string {
 		        if err != nil {
 		                return nil, err
 		        }
-		
+
 		        for rowIndex := 0; rowIndex < len(slice); rowIndex++ {
 		                err = table.AppendRow()
 		                if err != nil {
 		                        return nil, err
 		                }
-		
+
 		                err = table.SetFloat32("f", rowIndex, slice[rowIndex].f)
 		                if err != nil {
 		                        return nil, err
 		                }
-		
+
 		                err = table.SetBool("b", rowIndex, slice[rowIndex].b)
 		                if err != nil {
 		                        return nil, err
 		                }
-		
+
 		                err = table.SetInt("i", rowIndex, slice[rowIndex].i)
 		                if err != nil {
 		                        return nil, err
 		                }
-		
+
 		                err = table.SetString("str", rowIndex, slice[rowIndex].str)
 		                if err != nil {
 		                        return nil, err
 		                }
-		
+
 		                err = table.SetByteSlice("bb", rowIndex, slice[rowIndex].bb)
 		                if err != nil {
 		                        return nil, err
 		                }
 		        }
-		
+
 		        return table, nil
 		}
 
@@ -505,56 +505,56 @@ func (table *Table) GenerateTypeStructSliceToTable() (string, error) {
 	buf.WriteString("*/\n")
 
 	buf.WriteString(fmt.Sprintf("func %s(slice []%s) (*gotables.Table, error) {\n", funcName, tableName))
-		buf.WriteString("\tif slice == nil {\n")
-			buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
-		buf.WriteString("\t}\n\n")
+	buf.WriteString("\tif slice == nil {\n")
+	buf.WriteString(fmt.Sprintf("\t\treturn nil, fmt.Errorf(\"%s(slice []%s) slice is <nil>\")\n", funcName, tableName))
+	buf.WriteString("\t}\n\n")
 
-		buf.WriteString("\tvar err error\n\n")
+	buf.WriteString("\tvar err error\n\n")
 
-		colNames, colTypes, err := table.GetColInfoAsSlices()
+	colNames, colTypes, err := table.GetColInfoAsSlices()
+	if err != nil {
+		return "", err
+	}
+
+	tableName = table.Name()
+
+	buf.WriteString("\tvar table *gotables.Table\n")
+	buf.WriteString(fmt.Sprintf("\tvar tableName string = %q\n", tableName))
+	buf.WriteString(fmt.Sprintf("\tvar colNames []string = %s\n", stringSliceToLiteral(colNames)))
+	buf.WriteString(fmt.Sprintf("\tvar colTypes []string = %s\n", stringSliceToLiteral(colTypes)))
+
+	buf.WriteString("\ttable, err = gotables.NewTableFromMetadata(tableName, colNames, colTypes)\n")
+	buf.WriteString("\tif err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n\n")
+
+	buf.WriteString("\tfor rowIndex := 0; rowIndex < len(slice); rowIndex++ {\n")
+	buf.WriteString("\t\terr = table.AppendRow()\n")
+	buf.WriteString("\t\tif err != nil {\n")
+	buf.WriteString("\t\t\treturn nil, err\n")
+	buf.WriteString("\t\t}\n\n")
+	var sep string = ""
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colName, err := table.ColName(colIndex)
 		if err != nil {
 			return "", err
 		}
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString(sep)
+		buf.WriteString(fmt.Sprintf("\t\terr = table.%s(%q, rowIndex, slice[rowIndex].%s)\n",
+			setterName(colType), colName, colName))
+		buf.WriteString("\t\tif err != nil {\n")
+		buf.WriteString("\t\t\treturn nil, err\n")
+		buf.WriteString("\t\t}\n")
+		sep = "\n"
+	}
 
-		tableName = table.Name()
+	buf.WriteString("\t}\n\n")
 
-		buf.WriteString("\tvar table *gotables.Table\n")
-		buf.WriteString(fmt.Sprintf("\tvar tableName string = %q\n", tableName))
-		buf.WriteString(fmt.Sprintf("\tvar colNames []string = %s\n", stringSliceToLiteral(colNames)))
-		buf.WriteString(fmt.Sprintf("\tvar colTypes []string = %s\n", stringSliceToLiteral(colTypes)))
-
-		buf.WriteString("\ttable, err = gotables.NewTableFromMetadata(tableName, colNames, colTypes)\n")
-		buf.WriteString("\tif err != nil {\n")
-		buf.WriteString("\t\treturn nil, err\n")
-		buf.WriteString("\t}\n\n")
-
-		buf.WriteString("\tfor rowIndex := 0; rowIndex < len(slice); rowIndex++ {\n")
-			buf.WriteString("\t\terr = table.AppendRow()\n")
-			buf.WriteString("\t\tif err != nil {\n")
-			buf.WriteString("\t\t\treturn nil, err\n")
-			buf.WriteString("\t\t}\n\n")
-			var sep string = ""
-			for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-				colName, err := table.ColName(colIndex)
-				if err != nil {
-					return "", err
-				}
-				colType, err := table.ColTypeByColIndex(colIndex)
-				if err != nil {
-					return "", err
-				}
-				buf.WriteString(sep)
-				buf.WriteString(fmt.Sprintf("\t\terr = table.%s(%q, rowIndex, slice[rowIndex].%s)\n",
-					setterName(colType), colName, colName))
-				buf.WriteString("\t\tif err != nil {\n")
-				buf.WriteString("\t\t\treturn nil, err\n")
-				buf.WriteString("\t\t}\n")
-				sep = "\n"
-			}
-		
-		buf.WriteString("\t}\n\n")
-
-		buf.WriteString("\treturn table, nil\n")
+	buf.WriteString("\treturn table, nil\n")
 
 	buf.WriteString("}\n")
 
