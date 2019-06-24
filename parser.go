@@ -618,14 +618,17 @@ Go types NOT supported: complex64 complex128
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		validCustomType, customErr := isValidCustomType(colType)
+		validCustomType, _ := isValidCustomType(colType)
 		if !validCustomType {
+/*
 			msg := fmt.Sprintf("invalid col type: %s (valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 			for typeName, _ := range globalColTypesMap {
 				msg += fmt.Sprintf(" %s", typeName)
 			}
 			msg += fmt.Sprintf(") and user-defined types (%v)", customErr)
+*/
+			msg := fmt.Sprintf("invalid col type: %s (allowed: most Go built-in types and custom types)", colType)
 			err := errors.New(msg)
 where(err)
 			return false, err
