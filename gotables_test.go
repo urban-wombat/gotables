@@ -8310,7 +8310,7 @@ func TestSetAndGetCustomType(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	decoded, err := ParseCustomType(encoded)
+	decoded, err := DecodeCustomType(encoded)
 	if err != nil {
 		t.Error(err)
 	}

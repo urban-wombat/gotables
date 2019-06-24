@@ -4012,12 +4012,12 @@ func EncodeCustomType(customType interface{}) (encoded string, err error) {
 	Always check returned value is not nil before asserting the type:
 
 		var myVal MyType
-		val, err := ParseCustomType(encodedString)
+		val, err := DecodeCustomType(encodedString)
 		if val != nil {
 			myVal = val.(MyType)
 		}
 */
-func ParseCustomType(encoded string) (customType interface{}, err error) {
+func DecodeCustomType(encoded string) (customType interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {

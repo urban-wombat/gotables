@@ -1045,7 +1045,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			customType, err = ParseCustomType(textFound)
+			customType, err = DecodeCustomType(textFound)
 			if err != nil {
 				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
 			}
