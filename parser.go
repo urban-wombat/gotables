@@ -129,8 +129,8 @@ var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 
-var userDefinedTypeRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
-var userDefinedTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
+var customTypeRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
+var customTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
 
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
@@ -618,8 +618,8 @@ Go types NOT supported: complex64 complex128
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		validUserDefined, _ := IsValidUserDefinedType(colType)
-		if !validUserDefined {
+		validCustom, _ := IsValidCustomType(colType)
+		if !validCustom {
 			msg := fmt.Sprintf("invalid col type: %s (valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 			for typeName, _ := range globalColTypesMap {
@@ -634,7 +634,7 @@ func IsValidColType(colType string) (bool, error) {
 }
 
 // This needs tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
-func IsValidUserDefinedType(colType string) (bool, error) {
+func IsValidCustomType(colType string) (bool, error) {
 	for _, c := range colType {
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '.' {
 			return false, fmt.Errorf("invalid user-defined col type: %s (must contain only letters, numbers and periods)", colType)
@@ -765,7 +765,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 	var int64Val int64
 	var float32Val float32
 	var float64Val float64
-	var userDefinedType interface{}
+	var customType interface{}
 
 	for i = 0; i < lenColTypes; i++ {
 		if len(remaining) == 0 { // End of line
@@ -1040,16 +1040,16 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			rowSlice[i] = float64Val
 		default:
-			rangeFound = userDefinedTypeRegexp.FindStringIndex(remaining)
+			rangeFound = customTypeRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			userDefinedType, err = ParseUserDefinedType(textFound)
+			customType, err = ParseCustomType(textFound)
 			if err != nil {
 				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
 			}
-			rowSlice[i] = userDefinedType
+			rowSlice[i] = customType
 /*
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())

@@ -1036,7 +1036,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				default:
 					// Is a user-defined interface value.
 					var iFaceVal interface{} = row[colIndex]
-					iFaceValString, err := EncodeUserDefinedType(iFaceVal)
+					iFaceValString, err := EncodeCustomType(iFaceVal)
 					if err != nil {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
@@ -1317,7 +1317,7 @@ func (table *Table) StringPadded() string {
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				s, err = EncodeUserDefinedType(iFaceVal)
+				s, err = EncodeCustomType(iFaceVal)
 				if err != nil {
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
@@ -2631,17 +2631,17 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
 		// Is a user-defined interface value.
-		var userDefinedVal string
+		var customVal string
 		if interfaceType == nil {
-			userDefinedVal = "<nil>"
+			customVal = "<nil>"
 		} else {
-			userDefinedVal, err = EncodeUserDefinedType(interfaceType)
+			customVal, err = EncodeCustomType(interfaceType)
 			if err != nil {
 				log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 				return "", err
 			}
 		}
-		buf.WriteString(fmt.Sprintf("%s", userDefinedVal))
+		buf.WriteString(fmt.Sprintf("%s", customVal))
 /*
 		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 		return "", err
@@ -3740,7 +3740,7 @@ func (table *Table) ShuffleRandom() error {
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetUserDefinedType(colName string, rowIndex int, newVal interface{}) error {
+func (table *Table) SetCustomType(colName string, rowIndex int, newVal interface{}) error {
 
 	var err error
 
@@ -3784,7 +3784,7 @@ func (table *Table) SetUserDefinedType(colName string, rowIndex int, newVal inte
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetUserDefinedTypeByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
+func (table *Table) SetCustomTypeByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -3825,8 +3825,8 @@ func (table *Table) SetUserDefinedTypeByColIndex(colIndex int, rowIndex int, new
 
 	Like its non-MustGet alternative but panics on error.
 */
-func (table *Table) GetUserDefinedTypeByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
-	val, err := table.GetUserDefinedTypeByColIndex(colIndex, rowIndex)
+func (table *Table) GetCustomTypeByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
+	val, err := table.GetCustomTypeByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
 	}
@@ -3838,7 +3838,7 @@ func (table *Table) GetUserDefinedTypeByColIndexMustGet(colIndex int, rowIndex i
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetUserDefinedTypeByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetCustomTypeByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
@@ -3879,8 +3879,8 @@ func (table *Table) GetUserDefinedTypeByColIndex(colIndex int, rowIndex int) (va
 
 	Like its non-MustGet alternative but panics on error.
 */
-func (table *Table) GetUserDefinedTypeMustGet(colName string, rowIndex int) (val interface{}) {
-	val, err := table.GetUserDefinedType(colName, rowIndex)
+func (table *Table) GetCustomTypeMustGet(colName string, rowIndex int) (val interface{}) {
+	val, err := table.GetCustomType(colName, rowIndex)
 	if err != nil {
 		panic(err)
 	}
@@ -3892,7 +3892,7 @@ func (table *Table) GetUserDefinedTypeMustGet(colName string, rowIndex int) (val
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetCustomType(colName string, rowIndex int) (val interface{}, err error) {
 
 	// See: Get<type>() functions
 
@@ -3950,25 +3950,25 @@ func (table *Table) GetUserDefinedType(colName string, rowIndex int) (val interf
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetUserDefinedType() and GetUserDefinedType().
+	actual values you can set or get via SetCustomType() and GetCustomType().
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
 	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
-	EncodeUserDefinedType() to convert your user-defined values to strings.
+	EncodeCustomType() to convert your user-defined values to strings.
 
 	If you wish to create a text table by hand, you can use <nil> values as place-holders
 	for user-defined types, and set them later.
 */
-func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err error) {
-	if userDefinedType != nil {
-		// Created a GOB encoding of userDefinedType.
-		gobRegister(userDefinedType)
+func EncodeCustomType(customType interface{}) (encoded string, err error) {
+	if customType != nil {
+		// Created a GOB encoding of customType.
+		gobRegister(customType)
 		var buffer bytes.Buffer	// To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(&userDefinedType)	// Use ADDRESS of interface, or it will be concrete type.
+		err = encoder.Encode(&customType)	// Use ADDRESS of interface, or it will be concrete type.
 		if err != nil {
 			return "", err
 		}
@@ -3977,9 +3977,9 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 		// Compress to printable characters.
 		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
 
-		// Create quoted string representation of userDefinedType, for humans to read, not for parsing.
+		// Create quoted string representation of customType, for humans to read, not for parsing.
 		// It is quoted to ensure a regexp match for the end will not find something in the middle.
-		unQuotedValString := fmt.Sprintf("%#v", userDefinedType)
+		unQuotedValString := fmt.Sprintf("%#v", customType)
 		quotedValString := fmt.Sprintf("%q", unQuotedValString)
 
 		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
@@ -4007,24 +4007,24 @@ func EncodeUserDefinedType(userDefinedType interface{}) (encoded string, err err
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetUserDefinedType() and GetUserDefinedType().
+	actual values you can set or get via SetCustomType() and GetCustomType().
 
 	Always check returned value is not nil before asserting the type:
 
 		var myVal MyType
-		val, err := ParseUserDefinedType(encodedString)
+		val, err := ParseCustomType(encodedString)
 		if val != nil {
 			myVal = val.(MyType)
 		}
 */
-func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err error) {
+func ParseCustomType(encoded string) (customType interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {
 	
 		// Get the first part of the text [first-part][second-part] that double-encodes the value.
 		// This skips/ignores the human-readable second part.
-		var base64Encoded string = userDefinedTypeBase64PartRegexp.FindString(encoded)
+		var base64Encoded string = customTypeBase64PartRegexp.FindString(encoded)
 	
 		base64Encoded = encoded[2:len(base64Encoded)-3]	// Strip off leading [[ and trailing ]["
 	
@@ -4038,12 +4038,12 @@ func ParseUserDefinedType(encoded string) (userDefinedType interface{}, err erro
 		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
 		var decoder *gob.Decoder = gob.NewDecoder(buffer)
 //		var interfaceOut interface{}
-		err = decoder.Decode(&userDefinedType)
+		err = decoder.Decode(&customType)
 		if err != nil {
 			return nil, err
 		}
 	
-		return userDefinedType, nil
+		return customType, nil
 	}
 }
 

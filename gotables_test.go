@@ -7678,7 +7678,7 @@ func TestUnquote(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
-func TestSetAndGetUserDefinedType(t *testing.T) {
+func TestSetAndGetCustomType(t *testing.T) {
 
 	var err error
 	var table *Table
@@ -7764,7 +7764,7 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 
 	lastColIndex = table.ColCount()-1
 	lastRowIndex = table.RowCount()-1
-	err = table.SetUserDefinedTypeByColIndex(lastColIndex, lastRowIndex, fred)
+	err = table.SetCustomTypeByColIndex(lastColIndex, lastRowIndex, fred)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7775,7 +7775,7 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetUserDefinedType(colName, lastRowIndex, wilma)
+	err = table.SetCustomType(colName, lastRowIndex, wilma)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7786,7 +7786,7 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetUserDefinedType(colName, lastRowIndex, dino)
+	err = table.SetCustomType(colName, lastRowIndex, dino)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7797,7 +7797,7 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetUserDefinedType(colName, lastRowIndex, barney)
+	err = table.SetCustomType(colName, lastRowIndex, barney)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7808,7 +7808,7 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 	}
 
 	lastRowIndex = table.RowCount()-1
-	err = table.SetUserDefinedType(colName, lastRowIndex, betty)
+	err = table.SetCustomType(colName, lastRowIndex, betty)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7823,14 +7823,14 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 	var iface interface{}
 /*
 	var br person
-	iface = table.GetUserDefinedTypeByColIndexMustGet(lastColIndex, lastRowIndex)
+	iface = table.GetCustomTypeByColIndexMustGet(lastColIndex, lastRowIndex)
 	br = iface.(person)
 //where(br.First, br.Human)
-//	where(table.GetUserDefinedTypeByColIndexMustGet(lastColIndex, lastRowIndex).(person))
+//	where(table.GetCustomTypeByColIndexMustGet(lastColIndex, lastRowIndex).(person))
 */
 
 	var ff person
-	iface, err = table.GetUserDefinedType("Flintstones", 0)
+	iface, err = table.GetCustomType("Flintstones", 0)
 	if err != nil {
 		t.Error(err)
 	}
@@ -7838,11 +7838,11 @@ func TestSetAndGetUserDefinedType(t *testing.T) {
 //where(ff.First)
 
 //where(fred)
-encoded, err := EncodeUserDefinedType(ff)
+encoded, err := EncodeCustomType(ff)
 if err != nil {
 	t.Error(err)
 }
-decoded, err := ParseUserDefinedType(encoded)
+decoded, err := ParseCustomType(encoded)
 if err != nil {
 	t.Error(err)
 }
@@ -7861,7 +7861,7 @@ if fredDecoded != fred {
 	var stableString string =
 	`[stable]
 	i int = 42
-	userDefined gotables.car = <nil>
+	custom gotables.car = <nil>
 	s string = "forty-two"`
 
 	stable, err := NewTableFromString(stableString)
@@ -7884,7 +7884,7 @@ if fredDecoded != fred {
 		litresPer100Km float32
 	}
 	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
-	err = parsed.SetUserDefinedType("userDefined", 0, lexus)
+	err = parsed.SetCustomType("custom", 0, lexus)
 	if err != nil {
 		t.Error(err)
 	}
