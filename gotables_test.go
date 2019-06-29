@@ -8,7 +8,7 @@ import (
 	"log"
 	"math"
 	"math/rand"
-//	"os"
+	//	"os"
 	//	"os/exec"
 	//	"path/filepath"
 	"regexp"
@@ -8310,221 +8310,221 @@ func TestUnquote(t *testing.T) {
 
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
 func TestSetAndGetCustomTypeVal(t *testing.T) {
-//	var err error
-//	var table *Table
-//	var lastColIndex int
-//	var lastRowIndex int
-//
-//	const colName string = "Flintstones"
-//
-//	table, err = NewTable("SetAndGet")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendCol("i", "int")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendCol("s", "string")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendCol("f", "float64")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendCol("b", "bool")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	type person struct {
-//		First string
-//		Last  string
-//		Human bool
-//		Misc  string
-//	}
-//
-//	fred := person{"Fred", "Flintstone", true, `}"}`}
-//	wilma := person{"Wilma", "Flintstone", true, `"}`}
-//	dino := person{"Dino", "Flintstone", false, `}"}{`}
-//	barney := person{"Barney", "Rubble", true, "}{"}
-//	betty := person{"Betty", "Rubble", true, `}{"`}
-//
-//	//	gob.Register(fred)
-//
-//	var colType string = fmt.Sprintf("%T", fred)
-//	err = table.AppendCol(colName, colType)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetInt("i", lastRowIndex, 42)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetString("s", lastRowIndex, "My String")
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetBool("b", lastRowIndex, true)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastColIndex = table.ColCount() - 1
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	lastRowIndex = table.RowCount() - 1
-//	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	err = table.AppendRow()
-//	if err != nil {
-//		t.Error(err)
-//	}
-//
-//	//where(table)
-//
-//	var iface interface{}
-//	/*
-//	   	var br person
-//	   	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
-//	   	br = iface.(person)
-//	   //where(br.First, br.Human)
-//	   //	where(table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex).(person))
-//	*/
-//
-//	var ff person
-//	iface, err = table.GetCustomTypeVal("Flintstones", 0)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	ff = iface.(person)
-//	//where(ff.First)
-//
-//	//where(fred)
-//	encoded, err := EncodeCustomTypeVal(ff)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	decoded, err := DecodeCustomTypeVal(encoded)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	var fredDecoded person = decoded.(person)
-//	if fredDecoded != fred {
-//		t.Error(err)
-//	}
-//
-//	parsed, err := NewTableFromString(table.StringUnpadded())
-//	if fredDecoded != fred {
-//		t.Error(err)
-//	}
-//	//where(parsed)
-//
-//	// Struct format table.
-//	var stableString string = `[stable]
-//	i int = 42
-//	custom gotables.car = <nil>
-//	s string = "forty-two"`
-//
-//where("\n\t" + stableString)
-//	stable, err := NewTableFromString(stableString)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	//where(stable)
-//
-//where()
-//	parsed, err = NewTableFromString(stable.String())
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	//where(parsed)
-//
-//
-//where()
-//	type car struct {
-//		name           string
-//		Colour         string
-//		cylinders      int
-//		rangeKm        int
-//		litresPer100Km float32
-//	}
-//where()
-//	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
-//	err = parsed.SetCustomTypeVal("custom", 0, lexus)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	//where(parsed)
-//where()
-////os.Exit(44)
+	//	var err error
+	//	var table *Table
+	//	var lastColIndex int
+	//	var lastRowIndex int
+	//
+	//	const colName string = "Flintstones"
+	//
+	//	table, err = NewTable("SetAndGet")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendCol("i", "int")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendCol("s", "string")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendCol("f", "float64")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendCol("b", "bool")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	type person struct {
+	//		First string
+	//		Last  string
+	//		Human bool
+	//		Misc  string
+	//	}
+	//
+	//	fred := person{"Fred", "Flintstone", true, `}"}`}
+	//	wilma := person{"Wilma", "Flintstone", true, `"}`}
+	//	dino := person{"Dino", "Flintstone", false, `}"}{`}
+	//	barney := person{"Barney", "Rubble", true, "}{"}
+	//	betty := person{"Betty", "Rubble", true, `}{"`}
+	//
+	//	//	gob.Register(fred)
+	//
+	//	var colType string = fmt.Sprintf("%T", fred)
+	//	err = table.AppendCol(colName, colType)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetInt("i", lastRowIndex, 42)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetString("s", lastRowIndex, "My String")
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetBool("b", lastRowIndex, true)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastColIndex = table.ColCount() - 1
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	lastRowIndex = table.RowCount() - 1
+	//	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	err = table.AppendRow()
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//
+	//	//where(table)
+	//
+	//	var iface interface{}
+	//	/*
+	//	   	var br person
+	//	   	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
+	//	   	br = iface.(person)
+	//	   //where(br.First, br.Human)
+	//	   //	where(table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex).(person))
+	//	*/
+	//
+	//	var ff person
+	//	iface, err = table.GetCustomTypeVal("Flintstones", 0)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	ff = iface.(person)
+	//	//where(ff.First)
+	//
+	//	//where(fred)
+	//	encoded, err := EncodeCustomTypeVal(ff)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	decoded, err := DecodeCustomTypeVal(encoded)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	var fredDecoded person = decoded.(person)
+	//	if fredDecoded != fred {
+	//		t.Error(err)
+	//	}
+	//
+	//	parsed, err := NewTableFromString(table.StringUnpadded())
+	//	if fredDecoded != fred {
+	//		t.Error(err)
+	//	}
+	//	//where(parsed)
+	//
+	//	// Struct format table.
+	//	var stableString string = `[stable]
+	//	i int = 42
+	//	custom gotables.car = <nil>
+	//	s string = "forty-two"`
+	//
+	//where("\n\t" + stableString)
+	//	stable, err := NewTableFromString(stableString)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	//where(stable)
+	//
+	//where()
+	//	parsed, err = NewTableFromString(stable.String())
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	//where(parsed)
+	//
+	//
+	//where()
+	//	type car struct {
+	//		name           string
+	//		Colour         string
+	//		cylinders      int
+	//		rangeKm        int
+	//		litresPer100Km float32
+	//	}
+	//where()
+	//	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
+	//	err = parsed.SetCustomTypeVal("custom", 0, lexus)
+	//	if err != nil {
+	//		t.Error(err)
+	//	}
+	//	//where(parsed)
+	//where()
+	////os.Exit(44)
 
 	/*
 		var tests = []struct {
@@ -8555,12 +8555,11 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	*/
 }
 
-
 func TestCustomTypeWithMethod(t *testing.T) {
 	var err error
 
 	tableString :=
-	`[table]
+		`[table]
 	i	j	k
 	int	int	int
 	1	3	0
@@ -8572,7 +8571,7 @@ func TestCustomTypeWithMethod(t *testing.T) {
 		t.Error(err)
 	}
 
-//	where(table)
+	//	where(table)
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		err = table.multiplyInt("i", "j", "k", rowIndex)
@@ -8581,7 +8580,7 @@ func TestCustomTypeWithMethod(t *testing.T) {
 		}
 	}
 
-//	where(table)
+	//	where(table)
 }
 
 func (table *Table) multiplyInt(factorCol1 string, factorCol2 string, productCol string, row int) (err error) {
@@ -8618,8 +8617,7 @@ func customTypeDemo() {
 	var err error
 	var table *Table
 
-	var tableString string =
-	`[MyTable]
+	var tableString string = `[MyTable]
 	age		person		heightCm
 	int		main.person	int
 	33		<nil>		160
@@ -8632,7 +8630,6 @@ func customTypeDemo() {
 	_ = table
 }
 
-
 func TestIsValidCustomType(t *testing.T) {
 	var isValid bool
 
@@ -8640,22 +8637,22 @@ func TestIsValidCustomType(t *testing.T) {
 		candidate string
 		expected  bool
 	}{
-		{"abc123.xyz456",	true},
-		{"abc_123.xyz_456",	true},	// Though not good style to use underscores.
-		{"a.x",				true},
-		{"a1.x1",			true},
-		{"a.b.c",			true},
-		{"a.b.c.d",			true},
-		{"a.b.c.d.e",		true},
-		{".",				false},
-		{"1.",				false},
-		{"1.2",				false},
-		{".2",				false},
-		{"a1",				false},
-		{"1a",				false},
-		{"1a.a1",			false},
-		{"a.",				false},
-		{".a",				false},
+		{"abc123.xyz456", true},
+		{"abc_123.xyz_456", true}, // Though not good style to use underscores.
+		{"a.x", true},
+		{"a1.x1", true},
+		{"a.b.c", true},
+		{"a.b.c.d", true},
+		{"a.b.c.d.e", true},
+		{".", false},
+		{"1.", false},
+		{"1.2", false},
+		{".2", false},
+		{"a1", false},
+		{"1a", false},
+		{"1a.a1", false},
+		{"a.", false},
+		{".a", false},
 	}
 
 	for i, test := range tests {

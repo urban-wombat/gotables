@@ -293,7 +293,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			const structNameIndex = 0
 			const structTypeIndex = 1
 			const structEqualsIndex = 2
-			var isNameAndTypeEqualsValueStruct bool          // (c) <name> <type> = <value>
+			var isNameAndTypeEqualsValueStruct bool // (c) <name> <type> = <value>
 
 			// This is a recognition step.
 			// Determine whether this is a candidate struct of either:-
@@ -303,39 +303,39 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			// Note: strings can mean len(lineSplit) > 4 but still valid. So can't just test for exactly 4.
 			var lenLineSplit int = len(lineSplit)
-			var looksLikeStructShape bool	// i.e. NOT table shape
+			var looksLikeStructShape bool // i.e. NOT table shape
 
 			switch lenLineSplit {
-				case 1:
-					// <name>
-					looksLikeStructShape = false	// Looks like a table.
-				case 2:
-					// (a) <name> <type>
-					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
-					if secondTokenIsType {
-						looksLikeStructShape = true
-					}
-				case 3:
-					// (b) <name> <type> =      // INVALID
-					if lineSplit[structEqualsIndex] == "=" {
-						return nil, fmt.Errorf("%s looks like struct but missing value after equals: %s %s %s",
-							p.gotFilePos(), lineSplit[0], lineSplit[1], lineSplit[2])
-					}
-					looksLikeStructShape = false
-				case 4:
-					// (c) <name> <type> = <value>
-					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
-					if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
-						isNameAndTypeEqualsValueStruct = true
-						looksLikeStructShape = true
-					}
-				default:	// > 4
-					// (c) <name> <type> = <value>	// Note strings with whitespace can mean > 4
-					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
-					if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
-						isNameAndTypeEqualsValueStruct = true
-						looksLikeStructShape = true
-					}
+			case 1:
+				// <name>
+				looksLikeStructShape = false // Looks like a table.
+			case 2:
+				// (a) <name> <type>
+				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+				if secondTokenIsType {
+					looksLikeStructShape = true
+				}
+			case 3:
+				// (b) <name> <type> =      // INVALID
+				if lineSplit[structEqualsIndex] == "=" {
+					return nil, fmt.Errorf("%s looks like struct but missing value after equals: %s %s %s",
+						p.gotFilePos(), lineSplit[0], lineSplit[1], lineSplit[2])
+				}
+				looksLikeStructShape = false
+			case 4:
+				// (c) <name> <type> = <value>
+				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+				if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
+					isNameAndTypeEqualsValueStruct = true
+					looksLikeStructShape = true
+				}
+			default: // > 4
+				// (c) <name> <type> = <value>	// Note strings with whitespace can mean > 4
+				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+				if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
+					isNameAndTypeEqualsValueStruct = true
+					looksLikeStructShape = true
+				}
 			}
 
 			if looksLikeStructShape {
