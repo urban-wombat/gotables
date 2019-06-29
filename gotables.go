@@ -1036,7 +1036,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				default:
 					// Is a user-defined interface value.
 					var iFaceVal interface{} = row[colIndex]
-					iFaceValString, err := EncodeCustomType(iFaceVal)
+					iFaceValString, err := EncodeCustomTypeVal(iFaceVal)
 					if err != nil {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
@@ -1317,7 +1317,7 @@ func (table *Table) StringPadded() string {
 			default:
 				// Is a user-defined interface value.
 				iFaceVal = row[colIndex]
-				s, err = EncodeCustomType(iFaceVal)
+				s, err = EncodeCustomTypeVal(iFaceVal)
 				if err != nil {
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
@@ -1555,8 +1555,12 @@ func (table *Table) AppendCol(colName string, colType string) error {
 		return err
 	}
 
-	if isValid, err := IsValidColType(colType); !isValid {
-		return err
+	if isValidColType, err := IsValidColType(colType); !isValidColType {
+		if isValidCustomType, _ := isValidCustomType(colType); isValidCustomType {
+			// Do nothing. Just accept it as-is. Unsatisfactory: A solution in the parser would be better.
+		} else {
+			return err
+		}
 	}
 
 	// Make sure this col name doesn't already exist.
@@ -2635,7 +2639,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		if interfaceType == nil {
 			customVal = "<nil>"
 		} else {
-			customVal, err = EncodeCustomType(interfaceType)
+			customVal, err = EncodeCustomTypeVal(interfaceType)
 			if err != nil {
 				log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 				return "", err
@@ -3740,10 +3744,8 @@ func (table *Table) ShuffleRandom() error {
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetCustomType(colName string, rowIndex int, newVal interface{}) error {
-
+func (table *Table) SetCustomTypeVal(colName string, rowIndex int, newVal interface{}) error {
 	var err error
-
 	if table == nil {
 		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
 	}
@@ -3784,7 +3786,7 @@ func (table *Table) SetCustomType(colName string, rowIndex int, newVal interface
 
 	For storage of user-defined types in a table.
 */
-func (table *Table) SetCustomTypeByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
+func (table *Table) SetCustomTypeValByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
 
 	// See: Set<type>ByColIndex() functions
 
@@ -3825,8 +3827,8 @@ func (table *Table) SetCustomTypeByColIndex(colIndex int, rowIndex int, newVal i
 
 	Like its non-MustGet alternative but panics on error.
 */
-func (table *Table) GetCustomTypeByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
-	val, err := table.GetCustomTypeByColIndex(colIndex, rowIndex)
+func (table *Table) GetCustomTypeValByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
+	val, err := table.GetCustomTypeValByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
 	}
@@ -3838,7 +3840,7 @@ func (table *Table) GetCustomTypeByColIndexMustGet(colIndex int, rowIndex int) (
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetCustomTypeByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetCustomTypeValByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
@@ -3879,8 +3881,8 @@ func (table *Table) GetCustomTypeByColIndex(colIndex int, rowIndex int) (val int
 
 	Like its non-MustGet alternative but panics on error.
 */
-func (table *Table) GetCustomTypeMustGet(colName string, rowIndex int) (val interface{}) {
-	val, err := table.GetCustomType(colName, rowIndex)
+func (table *Table) GetCustomTypeValMustGet(colName string, rowIndex int) (val interface{}) {
+	val, err := table.GetCustomTypeVal(colName, rowIndex)
 	if err != nil {
 		panic(err)
 	}
@@ -3892,7 +3894,7 @@ func (table *Table) GetCustomTypeMustGet(colName string, rowIndex int) (val inte
 	For storage of user-defined types in a table.
 	Retrieve to an interface{} type and then assert to your type.
 */
-func (table *Table) GetCustomType(colName string, rowIndex int) (val interface{}, err error) {
+func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interface{}, err error) {
 
 	// See: Get<type>() functions
 
@@ -3950,19 +3952,19 @@ func (table *Table) GetCustomType(colName string, rowIndex int) (val interface{}
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetCustomType() and GetCustomType().
+	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
 	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
-	EncodeCustomType() to convert your user-defined values to strings.
+	EncodeCustomTypeVal() to convert your user-defined values to strings.
 
 	If you wish to create a text table by hand, you can use <nil> values as place-holders
 	for user-defined types, and set them later.
 */
-func EncodeCustomType(customType interface{}) (encoded string, err error) {
+func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 	if customType != nil {
 		// Created a GOB encoding of customType.
 		gobRegister(customType)
@@ -4007,17 +4009,17 @@ func EncodeCustomType(customType interface{}) (encoded string, err error) {
 
 	Note: This applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetCustomType() and GetCustomType().
+	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
 
 	Always check returned value is not nil before asserting the type:
 
 		var myVal MyType
-		val, err := DecodeCustomType(encodedString)
+		val, err := DecodeCustomTypeVal(encodedString)
 		if val != nil {
 			myVal = val.(MyType)
 		}
 */
-func DecodeCustomType(encoded string) (customType interface{}, err error) {
+func DecodeCustomTypeVal(encoded string) (customType interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {

@@ -8,7 +8,7 @@ import (
 	"log"
 	"math"
 	"math/rand"
-	//	"os"
+//	"os"
 	//	"os/exec"
 	//	"path/filepath"
 	"regexp"
@@ -121,7 +121,7 @@ func TestTableSetRenameTable(t *testing.T) {
 	}
 }
 
-func TestReadString01(t *testing.T) {
+func TestNewTableFromString01(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[EmptyTable1]
 
@@ -189,7 +189,7 @@ func TestReadString01(t *testing.T) {
 	}
 }
 
-func TestReadString02(t *testing.T) {
+func TestNewTableFromString02(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[EmptyTable1]
 
@@ -204,7 +204,7 @@ func TestReadString02(t *testing.T) {
 	}
 }
 
-func TestReadString03(t *testing.T) {
+func TestNewTableFromString03(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
@@ -218,7 +218,7 @@ func TestReadString03(t *testing.T) {
 	}
 }
 
-func TestReadString04(t *testing.T) {
+func TestNewTableFromString04(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableWithRow]
 		D	E	F
@@ -232,7 +232,7 @@ func TestReadString04(t *testing.T) {
 	}
 }
 
-func TestReadString05(t *testing.T) {
+func TestNewTableFromString05(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[TableEmpty]
 		
@@ -274,7 +274,7 @@ func TestReadString05(t *testing.T) {
 	}
 }
 
-func TestReadString06(t *testing.T) {
+func TestNewTableFromString06(t *testing.T) {
 	tableSet, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -327,7 +327,7 @@ func TestReadString06(t *testing.T) {
 	}
 }
 
-func TestReadString07(t *testing.T) {
+func TestNewTableFromString07(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableStruct]
 		i int = 42
@@ -343,7 +343,7 @@ func TestReadString07(t *testing.T) {
 	}
 }
 
-func TestReadString08(t *testing.T) {
+func TestNewTableFromString08(t *testing.T) {
 	_, err := NewTableSetFromString(
 		`[TableShaped]
 		X Y Z
@@ -360,7 +360,7 @@ func TestReadString08(t *testing.T) {
 }
 
 // Testing struct using = with zero rows.
-func TestReadString09(t *testing.T) {
+func TestNewTableFromString09(t *testing.T) {
 	table, err := NewTableFromString(
 		`[TableStruct]
 		i int
@@ -400,7 +400,7 @@ func TestReadString09(t *testing.T) {
 // 02.05.2017
 // Testing struct without = having zero rows.
 // This is a struct format change to have = only if there is a value following it.
-func TestReadString10(t *testing.T) {
+func TestNewTableFromString10(t *testing.T) {
 	table, err := NewTableFromString(
 		`[BlankTableStruct]
 		i int
@@ -440,7 +440,7 @@ func TestReadString10(t *testing.T) {
 // 02.05.2017
 // Testing struct with name type = value
 // This is a struct format change to have = only if there is a value following it.
-func TestReadString11(t *testing.T) {
+func TestNewTableFromString11(t *testing.T) {
 	table, err := NewTableFromString(
 		`[ValuesTableStruct]
 		i int = 1
@@ -481,7 +481,7 @@ func TestReadString11(t *testing.T) {
 // 02.05.2017
 // Testing struct with name type = value
 // This is a struct format change to have = only if there is a value following it.
-func TestReadString12(t *testing.T) {
+func TestNewTableFromString12(t *testing.T) {
 	_, err := NewTableFromString(
 		`[InvalidTableStruct]
 		i int =
@@ -495,7 +495,7 @@ func TestReadString12(t *testing.T) {
 
 // 02/09.2017
 // Testing table with slice of uint: []uint
-func TestReadString13(t *testing.T) {
+func TestNewTableFromString13(t *testing.T) {
 	var err error
 
 	// Should pass: all values are in uint8 range
@@ -552,7 +552,7 @@ func TestReadString13(t *testing.T) {
 
 // 03/09.2017
 // Testing table with slice of uint: []uint
-func TestReadString14(t *testing.T) {
+func TestNewTableFromString14(t *testing.T) {
 	var err error
 	s :=
 		`[TableX]
@@ -601,7 +601,7 @@ func TestReadString14(t *testing.T) {
 }
 
 //	// Testing table with escaped characters.
-//	func TestReadString15(t *testing.T) {
+//	func TestNewTableFromString15(t *testing.T) {
 //		var err error
 //
 //		s :=
@@ -643,6 +643,169 @@ func TestReadString14(t *testing.T) {
 //		}
 //	*/
 //	}
+
+// Test surprise syntax error discovered using Go Playground.
+// It seems we've never tested a 2-column table.
+func TestNewTableFromString16(t *testing.T) {
+	var err error
+	var s string
+
+	s = `[Table]
+	i
+	int
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i	j
+	int int
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i	j	k
+	int int int
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i	j	k	l
+	int int int	int
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i	j	k	l	m
+	int int int	int	int
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i   x
+	int []uint8
+	1   [10 11 12 13]
+	2   [20 21 22 23]
+	3   [30 31 32]
+	4   [40 41 42 43 44]
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x		y
+	float32	float64
+	1.0		1.1
+	2.0		2.2
+	3.0		3.3
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	i   x
+	int []uint8
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x		y
+	float32	float64
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x		y
+	float32	abc123.xyz456
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x		abc123.xyz456
+	float32	abc123.xyz456
+	`
+	// :3: looks like struct but invalid col name: float32 (cannot use Go type as col name)
+	_, err = NewTableFromString(s)
+	if err == nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x	abc123.xyz456
+	y	abc123.xyz456
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x	abc123.xyz456 =
+	y	abc123.xyz456 =
+	`
+	// looks like struct but missing value after equals: x abc123.xyz456 =
+	_, err = NewTableFromString(s)
+	if err == nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x	y	=
+	`
+	// looks like struct but missing value after equals: x y =
+	_, err = NewTableFromString(s)
+	if err == nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x string = "one"
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s = `[Table]
+	x string = "one two"
+	`
+	_, err = NewTableFromString(s)
+	if err != nil {
+		t.Error(err)
+	}
+}
 
 func ExampleNewTableSet() {
 	tableSetName := "MyTableSet"
@@ -8146,216 +8309,222 @@ func TestUnquote(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
-func TestSetAndGetCustomType(t *testing.T) {
-
-	var err error
-	var table *Table
-	var lastColIndex int
-	var lastRowIndex int
-
-	const colName string = "Flintstones"
-
-	table, err = NewTable("SetAndGet")
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendCol("i", "int")
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendCol("s", "string")
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendCol("f", "float64")
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendCol("b", "bool")
-	if err != nil {
-		t.Error(err)
-	}
-
-	type person struct {
-		First string
-		Last  string
-		Human bool
-		Misc  string
-	}
-
-	fred := person{"Fred", "Flintstone", true, `}"}`}
-	wilma := person{"Wilma", "Flintstone", true, `"}`}
-	dino := person{"Dino", "Flintstone", false, `}"}{`}
-	barney := person{"Barney", "Rubble", true, "}{"}
-	betty := person{"Betty", "Rubble", true, `}{"`}
-
-	//	gob.Register(fred)
-
-	var colType string = fmt.Sprintf("%T", fred)
-	err = table.AppendCol(colName, colType)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetInt("i", lastRowIndex, 42)
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetString("s", lastRowIndex, "My String")
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetBool("b", lastRowIndex, true)
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastColIndex = table.ColCount() - 1
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetCustomTypeByColIndex(lastColIndex, lastRowIndex, fred)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetCustomType(colName, lastRowIndex, wilma)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetCustomType(colName, lastRowIndex, dino)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetCustomType(colName, lastRowIndex, barney)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	lastRowIndex = table.RowCount() - 1
-	err = table.SetCustomType(colName, lastRowIndex, betty)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = table.AppendRow()
-	if err != nil {
-		t.Error(err)
-	}
-
-	//where(table)
-
-	var iface interface{}
-	/*
-	   	var br person
-	   	iface = table.GetCustomTypeByColIndexMustGet(lastColIndex, lastRowIndex)
-	   	br = iface.(person)
-	   //where(br.First, br.Human)
-	   //	where(table.GetCustomTypeByColIndexMustGet(lastColIndex, lastRowIndex).(person))
-	*/
-
-	var ff person
-	iface, err = table.GetCustomType("Flintstones", 0)
-	if err != nil {
-		t.Error(err)
-	}
-	ff = iface.(person)
-	//where(ff.First)
-
-	//where(fred)
-	encoded, err := EncodeCustomType(ff)
-	if err != nil {
-		t.Error(err)
-	}
-	decoded, err := DecodeCustomType(encoded)
-	if err != nil {
-		t.Error(err)
-	}
-	var fredDecoded person = decoded.(person)
-	if fredDecoded != fred {
-		t.Error(err)
-	}
-
-	parsed, err := NewTableFromString(table.StringUnpadded())
-	if fredDecoded != fred {
-		t.Error(err)
-	}
-	//where(parsed)
-
-	// Struct format table.
-	var stableString string = `[stable]
-	i int = 42
-	custom gotables.car = <nil>
-	s string = "forty-two"`
-
-	stable, err := NewTableFromString(stableString)
-	if err != nil {
-		t.Error(err)
-	}
-	//where(stable)
-
-	parsed, err = NewTableFromString(stable.String())
-	if err != nil {
-		t.Error(err)
-	}
-	//where(parsed)
-
-	type car struct {
-		name           string
-		Colour         string
-		cylinders      int
-		rangeKm        int
-		litresPer100Km float32
-	}
-	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
-	err = parsed.SetCustomType("custom", 0, lexus)
-	if err != nil {
-		t.Error(err)
-	}
-	//where(parsed)
+func TestSetAndGetCustomTypeVal(t *testing.T) {
+//	var err error
+//	var table *Table
+//	var lastColIndex int
+//	var lastRowIndex int
+//
+//	const colName string = "Flintstones"
+//
+//	table, err = NewTable("SetAndGet")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendCol("i", "int")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendCol("s", "string")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendCol("f", "float64")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendCol("b", "bool")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	type person struct {
+//		First string
+//		Last  string
+//		Human bool
+//		Misc  string
+//	}
+//
+//	fred := person{"Fred", "Flintstone", true, `}"}`}
+//	wilma := person{"Wilma", "Flintstone", true, `"}`}
+//	dino := person{"Dino", "Flintstone", false, `}"}{`}
+//	barney := person{"Barney", "Rubble", true, "}{"}
+//	betty := person{"Betty", "Rubble", true, `}{"`}
+//
+//	//	gob.Register(fred)
+//
+//	var colType string = fmt.Sprintf("%T", fred)
+//	err = table.AppendCol(colName, colType)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetInt("i", lastRowIndex, 42)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetString("s", lastRowIndex, "My String")
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetBool("b", lastRowIndex, true)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastColIndex = table.ColCount() - 1
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	lastRowIndex = table.RowCount() - 1
+//	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	err = table.AppendRow()
+//	if err != nil {
+//		t.Error(err)
+//	}
+//
+//	//where(table)
+//
+//	var iface interface{}
+//	/*
+//	   	var br person
+//	   	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
+//	   	br = iface.(person)
+//	   //where(br.First, br.Human)
+//	   //	where(table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex).(person))
+//	*/
+//
+//	var ff person
+//	iface, err = table.GetCustomTypeVal("Flintstones", 0)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	ff = iface.(person)
+//	//where(ff.First)
+//
+//	//where(fred)
+//	encoded, err := EncodeCustomTypeVal(ff)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	decoded, err := DecodeCustomTypeVal(encoded)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	var fredDecoded person = decoded.(person)
+//	if fredDecoded != fred {
+//		t.Error(err)
+//	}
+//
+//	parsed, err := NewTableFromString(table.StringUnpadded())
+//	if fredDecoded != fred {
+//		t.Error(err)
+//	}
+//	//where(parsed)
+//
+//	// Struct format table.
+//	var stableString string = `[stable]
+//	i int = 42
+//	custom gotables.car = <nil>
+//	s string = "forty-two"`
+//
+//where("\n\t" + stableString)
+//	stable, err := NewTableFromString(stableString)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	//where(stable)
+//
+//where()
+//	parsed, err = NewTableFromString(stable.String())
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	//where(parsed)
+//
+//
+//where()
+//	type car struct {
+//		name           string
+//		Colour         string
+//		cylinders      int
+//		rangeKm        int
+//		litresPer100Km float32
+//	}
+//where()
+//	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
+//	err = parsed.SetCustomTypeVal("custom", 0, lexus)
+//	if err != nil {
+//		t.Error(err)
+//	}
+//	//where(parsed)
+//where()
+////os.Exit(44)
 
 	/*
 		var tests = []struct {
@@ -8461,4 +8630,43 @@ func customTypeDemo() {
 		panic(err)
 	}
 	_ = table
+}
+
+
+func TestIsValidCustomType(t *testing.T) {
+	var isValid bool
+
+	var tests = []struct {
+		candidate string
+		expected  bool
+	}{
+		{"abc123.xyz456",	true},
+		{"abc_123.xyz_456",	true},	// Though not good style to use underscores.
+		{"a.x",				true},
+		{"a1.x1",			true},
+		{"a.b.c",			true},
+		{"a.b.c.d",			true},
+		{"a.b.c.d.e",		true},
+		{".",				false},
+		{"1.",				false},
+		{"1.2",				false},
+		{".2",				false},
+		{"a1",				false},
+		{"1a",				false},
+		{"1a.a1",			false},
+		{"a.",				false},
+		{".a",				false},
+	}
+
+	for i, test := range tests {
+
+		isValid, _ = isValidCustomType(test.candidate)
+		if isValid != test.expected {
+			if test.expected == true {
+				t.Errorf("test[%d] expecting %q to be a VALID custom type but got: %t", i, test.candidate, isValid)
+			} else {
+				t.Errorf("test[%d] expecting %q to be an INvalid custom type but got: %t", i, test.candidate, isValid)
+			}
+		}
+	}
 }

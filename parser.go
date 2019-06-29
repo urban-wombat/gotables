@@ -129,7 +129,10 @@ var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 
-var customTypeRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
+// At least two names separated by a period, with possible subsequent period-name elements following.
+var customTypeRegexp *regexp.Regexp = regexp.MustCompile(`^([_a-zA-Z]+[[_a-zA-Z0-9]*\.[_a-zA-Z]+[[_a-zA-Z0-9]*)(\.[_a-zA-Z]+[[_a-zA-Z0-9]*)*$`)
+
+var customTypeStringRegexp *regexp.Regexp = regexp.MustCompile(`({{.*[^\\]"}})|(<nil>)`)
 var customTypeBase64PartRegexp *regexp.Regexp = regexp.MustCompile(`^{{.*}{"`)
 
 // Oct regular expression (for integral types)
@@ -250,7 +253,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 		if len(line) == 0 {
 			if expecting == _COL_TYPES {
-				return nil, fmt.Errorf("%s expecting col names to be followed by a line of col types", p.gotFilePos())
+				return nil, fmt.Errorf("%s expecting row of col names to be followed by a row of col types", p.gotFilePos())
 				// A blank line is okay after table name, col types or row values, but col names must always have col types.
 			}
 			expecting = _TABLE_NAME
@@ -283,40 +286,56 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				expecting = _COL_NAMES
 			}
 
-		case _COL_NAMES: // Also proxy for a line of a table struct in the form: name type = value
+		case _COL_NAMES: // Also proxy for first row of a table struct in the form: <name> <type> = <value>
 
 			// EITHER (1) read a line of a table struct OR (2) read col names of a tabular table.
 			var lineSplit []string = whiteRegexp.Split(line, _ALL_SUBSTRINGS)
 			const structNameIndex = 0
 			const structTypeIndex = 1
 			const structEqualsIndex = 2
-			const tokenCountForNameType = 2               // (a) name type
-			var isNameTypeStruct bool                     // (a) name type
-			const minTokenCountForNameTypeEqualsValue = 4 // (b) name type = value
-			var isNameTypeEqualsValueStruct bool          // (b) name type = value
+			var isNameAndTypeEqualsValueStruct bool          // (c) <name> <type> = <value>
 
 			// This is a recognition step.
-			// Determine whether this is a candidate struct of either:
-			// (a) name type
-			// (b) name type = value
+			// Determine whether this is a candidate struct of either:-
+			// (a) <name> <type>
+			// (b) <name> <type> =		// INVALID
+			// (c) <name> <type> = <value>
 
-			// Note: strings can mean len(lineSplit) is > 4 but still valid. So can't just test for exactly 4.
+			// Note: strings can mean len(lineSplit) > 4 but still valid. So can't just test for exactly 4.
 			var lenLineSplit int = len(lineSplit)
-			var looksLikeStructShape bool
-			if lenLineSplit != tokenCountForNameType && lenLineSplit < minTokenCountForNameTypeEqualsValue {
-				looksLikeStructShape = false
-			} else if lenLineSplit == 2 {
-				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
-				if secondTokenIsType {
-					isNameTypeStruct = true
-					looksLikeStructShape = true
-				}
-			} else { // lenLineSplit must be >= 4
-				secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
-				if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
-					isNameTypeEqualsValueStruct = true
-					looksLikeStructShape = true
-				}
+			var looksLikeStructShape bool	// i.e. NOT table shape
+
+			switch lenLineSplit {
+				case 1:
+					// <name>
+					looksLikeStructShape = false	// Looks like a table.
+				case 2:
+					// (a) <name> <type>
+					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+					if secondTokenIsType {
+						looksLikeStructShape = true
+					}
+				case 3:
+					// (b) <name> <type> =      // INVALID
+					if lineSplit[structEqualsIndex] == "=" {
+						return nil, fmt.Errorf("%s looks like struct but missing value after equals: %s %s %s",
+							p.gotFilePos(), lineSplit[0], lineSplit[1], lineSplit[2])
+					}
+					looksLikeStructShape = false
+				case 4:
+					// (c) <name> <type> = <value>
+					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+					if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
+						isNameAndTypeEqualsValueStruct = true
+						looksLikeStructShape = true
+					}
+				default:	// > 4
+					// (c) <name> <type> = <value>	// Note strings with whitespace can mean > 4
+					secondTokenIsType, _ := IsValidColType(lineSplit[structTypeIndex])
+					if secondTokenIsType && lineSplit[structEqualsIndex] == "=" {
+						isNameAndTypeEqualsValueStruct = true
+						looksLikeStructShape = true
+					}
 			}
 
 			if looksLikeStructShape {
@@ -331,12 +350,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
 					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("%s looks like struct but %s", p.gotFilePos(), err)
 				}
 				var colNameSlice []string = []string{colName}
 				if isValid, err = IsValidColType(colType); !isValid {
 					// return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("%s looks like struct but %s", p.gotFilePos(), err)
 				}
 				var colTypeSlice []string = []string{colType}
 
@@ -345,26 +364,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
-				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>|no-value
+				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>
 				if table.ColCount() == 1 { // The first struct item.
-					structHasRowData = isNameTypeEqualsValueStruct
+					structHasRowData = isNameAndTypeEqualsValueStruct
 				}
-
-				if structHasRowData && isNameTypeStruct {
-					return nil, fmt.Errorf("%s expecting: %s %s = <value> but found: %s %s",
-						p.gotFilePos(), colName, colType, lineSplit[0], lineSplit[1])
-				}
-
-				/* Unreachable because len(lineSplit) here can only be 2 or 4.
-				if !structHasRowData && len(lineSplit) > tokenCountForNameType {
-					// An approximate way to construct text for the error message. Spacing may be different.
-					var remaining string
-					for i := 3; i < len(lineSplit); i++ {
-						remaining += lineSplit[i] + " "
-					}
-					return nil, fmt.Errorf("%s expecting 0 values after = but found: %s", p.gotFilePos(), remaining)
-				}
-				*/
 
 				if structHasRowData {
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
@@ -382,14 +385,6 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						}
 					}
 
-					// Handle the first iteration (parse a line) through a struct, where the table has no rows.
-					// Zero rows or one row is needed for a struct table.
-					if table.RowCount() == 0 {
-						err = table.AppendRow()
-						if err != nil {
-							return nil, err
-						}
-					}
 					if debugging {
 						// where(fmt.Sprintf("table.RowCount() = %d\n", table.RowCount()))
 						// where(fmt.Sprintf("len(table.rows) = %d\n", len(table.rows)))
@@ -400,29 +395,23 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						return nil, err
 					}
 
+					// Using table.SetValByColIndex() is less efficient but the volume of structs is small.
 					var val interface{} = rowSliceOfStruct[0]
 					var colIndex int = len(table.rows[0]) - 1
 					const rowIndexAlwaysZero int = 0
-					/* NOTE: Reinstate function call when old model is removed.
-					   This (if called now) double-sets the value.
-					*/
 					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
 					if err != nil {
 						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 					}
 
-					// Still expecting _COL_NAMES which is where we find struct: name type = value
+					// Still expecting _COL_NAMES which is where we find struct: <name> <type> = <value>
 
 					// rowMapOfStruct is a variable of type tableRow which is a map: map[string]interface{}
 					// Look up the value by reference to the colName.
-					err = table.SetVal(colName, 0, val)
-					if err != nil {
-						return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
-					}
 				}
 			} else {
 				if tableShape == _STRUCT_SHAPE {
-					return nil, fmt.Errorf("%s expecting more struct lines ( name type ) or ( name type = value ) but found: %s",
+					return nil, fmt.Errorf("%s expecting more struct lines ( <name> <type> ) or ( <name> <type> = <value> ) but found: %s",
 						p.gotFilePos(), line)
 				}
 
@@ -620,7 +609,7 @@ func IsValidColType(colType string) (bool, error) {
 	if !contains {
 		validCustomType, _ := isValidCustomType(colType)
 		if !validCustomType {
-			msg := fmt.Sprintf("invalid col type: %s (allowed: custom types and most Go built-in types)", colType)
+			msg := fmt.Sprintf("invalid col type: %s (allowed: custom types and most Go built-in types, except complex)", colType)
 			err := errors.New(msg)
 			return false, err
 		}
@@ -630,10 +619,9 @@ func IsValidColType(colType string) (bool, error) {
 
 // This needs much tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
 func isValidCustomType(colType string) (bool, error) {
-	for _, c := range colType {
-		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '.' {
-			return false, fmt.Errorf("custom col types must contain only letters, numbers and periods: %s", colType)
-		}
+	var matches bool = customTypeRegexp.MatchString(colType)
+	if !matches {
+		return false, fmt.Errorf("custom col types must contain only letters, numbers and periods: %s", colType)
 	}
 
 	return true, nil
@@ -682,13 +670,6 @@ func isValidName(name string) (bool, error) {
 
 // Note: The same validity rules apply to both table names and col names.
 func IsValidColName(colName string) (bool, error) {
-
-	/*
-		result := colNameRegexp.MatchString(colName)
-		if !result {
-			return false, fmt.Errorf("invalid col name: %q (valid example: \"_Foo2Bar2\")", colName)
-		}
-	*/
 
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(colName)
@@ -1035,12 +1016,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			rowSlice[i] = float64Val
 		default:
-			rangeFound = customTypeRegexp.FindStringIndex(remaining)
+			rangeFound = customTypeStringRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			customType, err = DecodeCustomType(textFound)
+			customType, err = DecodeCustomTypeVal(textFound)
 			if err != nil {
 				return nil, fmt.Errorf("%s %v", p.gotFilePos(), err)
 			}
