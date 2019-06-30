@@ -8310,249 +8310,220 @@ func TestUnquote(t *testing.T) {
 
 //	Test Set and Get table cell in colName at rowIndex to newValue interface
 func TestSetAndGetCustomTypeVal(t *testing.T) {
-	//	var err error
-	//	var table *Table
-	//	var lastColIndex int
-	//	var lastRowIndex int
-	//
-	//	const colName string = "Flintstones"
-	//
-	//	table, err = NewTable("SetAndGet")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendCol("i", "int")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendCol("s", "string")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendCol("f", "float64")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendCol("b", "bool")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	type person struct {
-	//		First string
-	//		Last  string
-	//		Human bool
-	//		Misc  string
-	//	}
-	//
-	//	fred := person{"Fred", "Flintstone", true, `}"}`}
-	//	wilma := person{"Wilma", "Flintstone", true, `"}`}
-	//	dino := person{"Dino", "Flintstone", false, `}"}{`}
-	//	barney := person{"Barney", "Rubble", true, "}{"}
-	//	betty := person{"Betty", "Rubble", true, `}{"`}
-	//
-	//	//	gob.Register(fred)
-	//
-	//	var colType string = fmt.Sprintf("%T", fred)
-	//	err = table.AppendCol(colName, colType)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetInt("i", lastRowIndex, 42)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetString("s", lastRowIndex, "My String")
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetBool("b", lastRowIndex, true)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastColIndex = table.ColCount() - 1
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	lastRowIndex = table.RowCount() - 1
-	//	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	err = table.AppendRow()
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//
-	//	//where(table)
-	//
-	//	var iface interface{}
-	//	/*
-	//	   	var br person
-	//	   	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
-	//	   	br = iface.(person)
-	//	   //where(br.First, br.Human)
-	//	   //	where(table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex).(person))
-	//	*/
-	//
-	//	var ff person
-	//	iface, err = table.GetCustomTypeVal("Flintstones", 0)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	ff = iface.(person)
-	//	//where(ff.First)
-	//
-	//	//where(fred)
-	//	encoded, err := EncodeCustomTypeVal(ff)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	decoded, err := DecodeCustomTypeVal(encoded)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	var fredDecoded person = decoded.(person)
-	//	if fredDecoded != fred {
-	//		t.Error(err)
-	//	}
-	//
-	//	parsed, err := NewTableFromString(table.StringUnpadded())
-	//	if fredDecoded != fred {
-	//		t.Error(err)
-	//	}
-	//	//where(parsed)
-	//
-	//	// Struct format table.
-	//	var stableString string = `[stable]
-	//	i int = 42
-	//	custom gotables.car = <nil>
-	//	s string = "forty-two"`
-	//
-	//where("\n\t" + stableString)
-	//	stable, err := NewTableFromString(stableString)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	//where(stable)
-	//
-	//where()
-	//	parsed, err = NewTableFromString(stable.String())
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	//where(parsed)
-	//
-	//
-	//where()
-	//	type car struct {
-	//		name           string
-	//		Colour         string
-	//		cylinders      int
-	//		rangeKm        int
-	//		litresPer100Km float32
-	//	}
-	//where()
-	//	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
-	//	err = parsed.SetCustomTypeVal("custom", 0, lexus)
-	//	if err != nil {
-	//		t.Error(err)
-	//	}
-	//	//where(parsed)
-	//where()
-	////os.Exit(44)
+	var err error
+	var table *Table
+	var lastColIndex int
+	var lastRowIndex int
 
-	/*
-		var tests = []struct {
-			expected int64
-		}{
-			{-9223372036854775808},
-			{9223372036854775807},
-		}
+	const colName string = "Flintstones"
 
-		const rowIndex = 0
+	table, err = NewTable("SetAndGet")
+	if err != nil {
+		t.Error(err)
+	}
 
-		for _, test := range tests {
+	err = table.AppendCol("i", "int")
+	if err != nil {
+		t.Error(err)
+	}
 
-			err = table.SetIFace(colName, rowIndex, test.expected)
-			if err != nil {
-				t.Error(err)
-			}
+	err = table.AppendCol("s", "string")
+	if err != nil {
+		t.Error(err)
+	}
 
-			value, err := table.GetIFace(colName, rowIndex)
-			if err != nil {
-				t.Error(err)
-			}
+	err = table.AppendCol("f", "float64")
+	if err != nil {
+		t.Error(err)
+	}
 
-			if value != test.expected {
-				t.Errorf("expecting GetIFace() value %v, not %v", test.expected, value)
-			}
-		}
-	*/
+	err = table.AppendCol("b", "bool")
+	if err != nil {
+		t.Error(err)
+	}
+
+	type person struct {
+		First string
+		Last  string
+		Human bool
+		Misc  string
+	}
+
+	fred := person{"Fred", "Flintstone", true, `Some message`}
+	wilma := person{"Wilma", "Flintstone", true, `msg`}
+	dino := person{"Dino", "Flintstone", false, `msg`}
+	barney := person{"Barney", "Rubble", true, `msg`}
+	betty := person{"Betty", "Rubble", true, `msg`}
+
+	var colType string = fmt.Sprintf("%T", fred)
+	err = table.AppendCol(colName, colType)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetInt("i", lastRowIndex, 42)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetString("s", lastRowIndex, "My String")
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetBool("b", lastRowIndex, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastColIndex = table.ColCount() - 1
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = NewTableFromString(table.String())
+	if err != nil {
+		t.Error(err)
+	}
+
+	var iface interface{}
+	var br person
+	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
+	br = iface.(person)
+	if br.First != "Betty" {
+		t.Error(`br.First != "Betty"`)
+	}
+	if br.Human != true {
+		t.Error(`br.Human != true`)
+	}
+
+	var ff person
+	iface, err = table.GetCustomTypeVal("Flintstones", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	ff = iface.(person)
+	if br.First != "Betty" {
+		t.Error(`br.First != "Betty"`)
+	}
+	if br.Human != true {
+		t.Error(`br.Human != true`)
+	}
+
+	encoded, err := EncodeCustomTypeVal(ff)
+	if err != nil {
+		t.Error(err)
+	}
+	decoded, err := DecodeCustomTypeVal(encoded)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var fredDecoded person = decoded.(person)
+	if fredDecoded != fred {
+		t.Error(err)
+	}
+
+	parsed, err := NewTableFromString(table.StringUnpadded())
+	if fredDecoded != fred {
+		t.Error(err)
+	}
+
+	type car struct {
+		name           string
+		Colour         string
+		cylinders      int
+		rangeKm        int
+		litresPer100Km float32
+	}
+
+	// Struct format table.
+	var stableString string = `[stable]
+	MyCar gotables.car = <nil>
+	i int = 42
+	s string = "forty-two"
+	`
+
+	stable, err := NewTableFromString(stableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	parsed, err = NewTableFromString(stable.String())
+	if err != nil {
+		t.Error(err)
+	}
+
+	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
+	err = parsed.SetCustomTypeVal("MyCar", 0, lexus)
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestCustomTypeWithMethod(t *testing.T) {
