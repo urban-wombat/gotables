@@ -8524,6 +8524,16 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	err = parsed.SetCustomTypeVal("MyCar", 0, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = parsed.SetCustomTypeValByColIndex(0, 0, nil)
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestCustomTypeWithMethod(t *testing.T) {

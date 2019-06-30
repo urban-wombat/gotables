@@ -602,7 +602,13 @@ func (p *parser) getColTypes(line string) ([]string, error) {
 /*
 Returns true for those Go types that Table supports.
 
-Go types NOT supported: complex64 complex128
+gotables.Table supports:-
+    * Go types - except complex64 complex128
+	* []byte and []uint8
+	* Custom types - valid Go names separated by at least one period: <name>.<name>[.<name>]
+
+Custom type names are checked against custom type values when either SetCustomTypeVal() or SetCustomTypeValByColIndex()
+is called. But not when set to <nil>.
 */
 func IsValidColType(colType string) (bool, error) {
 	_, contains := globalColTypesMap[colType]

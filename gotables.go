@@ -3757,10 +3757,12 @@ func (table *Table) SetCustomTypeVal(colName string, rowIndex int, newVal interf
 		return err
 	}
 
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
-				util.FuncName(), table.Name(), colName, colType, valType, fmt.Sprintf("%#v", newVal))
+	if newVal != nil { // It's okay to set a custom value to nil.
+		if valType != colType {
+			if !isAlias(colType, valType) {
+				return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+					util.FuncName(), table.Name(), colName, colType, valType, fmt.Sprintf("%#v", newVal))
+			}
 		}
 	}
 
@@ -3769,7 +3771,7 @@ func (table *Table) SetCustomTypeVal(colName string, rowIndex int, newVal interf
 		return err
 	}
 
-	// Note: hasCol was checked by ColType() above. No need to call HasCell()
+	// Note: hasCol was checked by ColType() above.
 	hasRow, err := table.HasRow(rowIndex)
 	if !hasRow {
 		return err
@@ -3800,10 +3802,12 @@ func (table *Table) SetCustomTypeValByColIndex(colIndex int, rowIndex int, newVa
 
 	colType := table.colTypes[colIndex]
 
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
-				util.FuncName(), table.Name(), colIndex, colType, valType, fmt.Sprintf("%#v", newVal))
+	if newVal != nil { // It's okay to set a custom value to nil.
+		if valType != colType {
+			if !isAlias(colType, valType) {
+				return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+					util.FuncName(), table.Name(), colIndex, colType, valType, fmt.Sprintf("%#v", newVal))
+			}
 		}
 	}
 
