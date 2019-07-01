@@ -623,11 +623,11 @@ func IsValidColType(colType string) (bool, error) {
 	return true, nil
 }
 
-// This needs much tightening (e.g., periods should not be consecutive) but comparing the variable type will expose errors.
+// Custom types are valid Go names separated by at least one period: <name>.<name>[.<name>]
 func isValidCustomType(colType string) (bool, error) {
 	var matches bool = customTypeRegexp.MatchString(colType)
 	if !matches {
-		return false, fmt.Errorf("custom col types must contain only letters, numbers and periods: %s", colType)
+		return false, fmt.Errorf("custom col types are Go names separated by at least one period: <name>.<name>[.<name>]: %s", colType)
 	}
 
 	return true, nil

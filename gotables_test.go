@@ -8587,30 +8587,8 @@ func (table *Table) multiplyInt(factorCol1 string, factorCol2 string, productCol
 	return nil
 }
 
-// import "github.com/urban-wombat/gotables"
-
-type person struct {
-	first string
-	last  string
-}
-
-func customTypeDemo() {
-	var err error
-	var table *Table
-
-	var tableString string = `[MyTable]
-	age		person		heightCm
-	int		main.person	int
-	33		<nil>		160
-	`
-
-	table, err = NewTableFromString(tableString)
-	if err != nil {
-		panic(err)
-	}
-	_ = table
-}
-
+// Custom types are valid Go names separated by at least one period: <name>.<name>[.<name>]
+// See customTypeRegexp in parser.go
 func TestIsValidCustomType(t *testing.T) {
 	var isValid bool
 
@@ -8646,5 +8624,57 @@ func TestIsValidCustomType(t *testing.T) {
 				t.Errorf("test[%d] expecting %q to be an INvalid custom type but got: %t", i, test.candidate, isValid)
 			}
 		}
+	}
+}
+
+func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
+
+	type myType struct {
+		Name   string
+		Beatle bool
+		Age    int64
+	}
+
+	type myByte byte
+
+	var i int = 42
+	var s string = "Fred"
+	var f32 float32 = 66.7
+	var boo bool = true
+	var mine myType = myType{"Paul", true, 64}
+	var myb myByte = 'A'
+
+	var tests = []struct {
+		iFace            interface{}
+		expectedTypeName string
+	}{
+		{i, "int"},
+		{s, "string"},
+		{f32, "float32"},
+		{boo, "bool"},
+		{mine, "gotables.myType"},
+		{myb, "gotables.myByte"},
+	}
+
+	for testIndex, test := range tests {
+		encoded, err := EncodeCustomTypeVal(test.iFace)
+		if err != nil {
+			t.Error(err)
+		}
+
+		//where(fmt.Sprintf("test[%d] encoded type: %T  encoded value: %v", testIndex, encoded, encoded))
+
+		var decoded interface{}
+		decoded, err = DecodeCustomTypeVal(encoded)
+		if err != nil {
+			t.Error(err)
+		}
+
+		var receivedTypeName = fmt.Sprintf("%T", decoded)
+		if receivedTypeName != test.expectedTypeName {
+			t.Errorf("test[%d] expected type %s, not %s", testIndex, test.expectedTypeName, receivedTypeName)
+		}
+
+		//where(fmt.Sprintf("test[%d] decoded type: %T  decoded value: %v", testIndex, decoded, decoded))
 	}
 }

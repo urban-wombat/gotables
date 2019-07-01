@@ -3951,15 +3951,18 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	value is reconstructed.
 	The value is GOB-encoded and compressed to base64.
 
-	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
+	The {human-readable} part is for human-readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
 
-	Note: This applies only to the text version of a gotables Table (returned by Table.String())
+	Note: This encoding applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
 	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
 
+	Minor note: EncodeCustomTypeVal() and DecodeCustomTypeVal() can be used to encode Go built-in types.
+	But why would you want to?
+
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
-	( using methods gotables.Table.String() or gotables.Table.StringUnpadded() )
+	( using methods *gotables.Table.String() or *gotables.Table.StringUnpadded() )
 	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
 	as string, int and bool. If you wish to hand-generate a textual table
 	containing user-defined values, use
@@ -4008,12 +4011,15 @@ func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 	value is reconstructed.
 	The value is GOB-encoded and compressed to base64.
 
-	The {human-readable} part is for human readability only and is not interpreted (it is skipped).
+	The {human-readable} part is for human-readability only and is not interpreted (it is skipped).
 	The value is converted to its "%#v" format and quoted for safe parsing.
 
-	Note: This applies only to the text version of a gotables Table (returned by Table.String())
+	Note: This encoding applies only to the text version of a gotables Table (returned by Table.String())
 	and not to the in-memory *Table cells containing user-defined values, which contain the
 	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
+
+	Minor note: EncodeCustomTypeVal() and DecodeCustomTypeVal() can be used to encode Go built-in types.
+	But why would you want to?
 
 	Always check returned value is not nil before asserting the type:
 
