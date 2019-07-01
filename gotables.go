@@ -74,6 +74,10 @@ func init() {
 	//	log.SetOutput(os.Stderr)
 }
 
+func ReleaseVersionNumber() string {
+	return "v0.7.1-alpha"
+}
+
 var where = log.Print
 
 /*
