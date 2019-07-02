@@ -187,17 +187,18 @@ func NewTableSetFromString(s string) (*TableSet, error) {
 func NewTableFromString(s string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewTableFromString() %v", err)
 	}
 
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
-		return nil, fmt.Errorf("%s expecting string to contain 1 table but found %d table%s", util.FuncName(), tableCount, plural(tableCount))
+		return nil, fmt.Errorf("NewTableFromString() %s expecting string to contain 1 table but found %d table%s",
+			util.FuncName(), tableCount, plural(tableCount))
 	}
 
 	table, err := tableSet.TableByTableIndex(0)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewTableFromString() %v", err)
 	}
 
 	return table, nil
@@ -206,12 +207,12 @@ func NewTableFromString(s string) (*Table, error) {
 func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
 	}
 
 	table, err := tableSet.Table(tableName)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
 	}
 
 	return table, nil

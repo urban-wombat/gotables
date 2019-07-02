@@ -8654,6 +8654,8 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 		{boo, "bool"},
 		{mine, "gotables.myType"},
 		{myb, "gotables.myByte"},
+		{44,	"int"},
+		{45,	"int"},
 	}
 
 	for testIndex, test := range tests {
@@ -8676,5 +8678,7 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 		}
 
 		//where(fmt.Sprintf("test[%d] decoded type: %T  decoded value: %v", testIndex, decoded, decoded))
+
+		//where("\n")
 	}
 }
