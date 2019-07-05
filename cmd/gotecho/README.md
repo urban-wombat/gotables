@@ -11,3 +11,4 @@ or from struct to tabular
 
 Rotate tabular-to-struct is ignored if table has multiple rows, because struct allows only 0 or 1 "rows" of data
 
+For more information: `gotecho -h`
