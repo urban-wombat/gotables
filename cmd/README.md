@@ -12,7 +12,8 @@ For Go (golang) programmers:
 
 	Check the syntax of one or more `gotables` files
 
-* `gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]`
+* gotecho
+  - `gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]`
 
 	Echo a file of `gotables` to stdout, or just one table with -t \<this-table-only\>
 
@@ -20,6 +21,7 @@ For Go (golang) programmers:
 	or from struct to tabular
 
 	Rotate tabular-to-struct is ignored if table has multiple rows, because struct allows only 0 or 1 "rows" of data
+  - [gotecho details](https://github.com/urban-wombat/gotables/tree/master/cmd/gotecho)
 
 ### Conventional suffix for gotables files ...
 
