@@ -1,4 +1,4 @@
-Utility executables for gotables
+## Utility executables for gotables
 
 Each utility begins with the prefix *got* for `gotables`.
 
