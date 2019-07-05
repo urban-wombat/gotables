@@ -8,11 +8,14 @@ For Go (golang) programmers:
 
 ## Here are the utilities ...
 
-* `gotsyntax <files>`
+* `gotsyntax`
+  - `gotsyntax <files>`
 
 	Check the syntax of one or more `gotables` files
+	
+  - [gotsyntax details](https://github.com/urban-wombat/gotables/tree/master/cmd/gotsyntax)
 
-* gotecho
+* `gotecho`
   - `gotecho -f <gotables-file> [-t <this-table-only>] [-r <rotate-table>]`
 
 	Echo a file of `gotables` to stdout, or just one table with -t \<this-table-only\>
