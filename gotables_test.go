@@ -8645,7 +8645,7 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 	var myb myByte = 'A'
 
 	var tests = []struct {
-		iFace            interface{}
+		typeValue        interface{}
 		expectedTypeName string
 	}{
 		{i, "int"},
@@ -8654,12 +8654,15 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 		{boo, "bool"},
 		{mine, "gotables.myType"},
 		{myb, "gotables.myByte"},
-		{44,	"int"},
-		{45,	"int"},
+		{44, "int"},
+		{45, "int"},
 	}
 
 	for testIndex, test := range tests {
-		encoded, err := EncodeCustomTypeVal(test.iFace)
+
+		//where(fmt.Sprintf("test[%d]   value type: %T  uncoded value: %v", testIndex, test.typeValue, test.typeValue))
+
+		encoded, err := EncodeCustomTypeVal(test.typeValue)
 		if err != nil {
 			t.Error(err)
 		}
