@@ -442,7 +442,7 @@ type Table struct {
 	colNames    []string
 	colTypes    []string
 	colNamesMap map[string]int // To look up a colNames index from a col name.
-	rows        []tableRow     // new_model
+	rows        []tableRow
 	sortKeys    []sortKey
 	structShape bool
 }
@@ -452,7 +452,7 @@ type TableExported struct {
 	ColNames       []string
 	ColTypes       []string
 	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows           []tableRow     // new_model
+	Rows           []tableRow
 	SortKeys       []SortKeyExported
 	StructShape    bool
 }
