@@ -55,7 +55,7 @@ SOFTWARE.
 */
 
 const debugging bool = false
-const printcallers = false
+const printCaller = false
 const printstack bool = false
 const todo bool = false
 
@@ -604,7 +604,7 @@ func (table *Table) AppendRow() error {
 		}
 	}
 
-	//	if printcallers { util.PrintCaller() }
+	//	if printCaller { util.PrintCaller() }
 
 	/*
 		// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
@@ -698,6 +698,9 @@ func (table *Table) SetAllFloatCellsToNaN() error {
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
 func (table *Table) SetColCellsToZeroValue(colName string) error {
+	if printCaller {
+		util.PrintCaller()
+	}
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
@@ -710,13 +713,15 @@ func (table *Table) SetColCellsToZeroValue(colName string) error {
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
 func (table *Table) SetColCellsToZeroValueByColIndex(colIndex int) error {
+	if printCaller {
+		util.PrintCaller()
+	}
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
-	var err error
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
+		err := table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
 		if err != nil {
 			return err
 		}
@@ -1164,10 +1169,15 @@ func (table *Table) String() string {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
 		return ""
 	}
+
 	return table.StringPadded()
 }
 
 func (table *Table) StringPadded() string {
+	if printCaller {
+		util.PrintCaller()
+	}
+
 	var err error
 
 	if table == nil {
@@ -1653,7 +1663,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -1679,7 +1689,7 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -1741,7 +1751,7 @@ func (table *Table) HasCol(colName string) (bool, error) {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -1984,7 +1994,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2032,7 +2042,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2061,7 +2071,7 @@ func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2086,7 +2096,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 	var err error
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2137,10 +2147,6 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
-	}
-
-	if printcallers {
-		util.PrintCaller()
 	}
 
 	rowCount := len(table.rows)
@@ -2389,7 +2395,7 @@ func (table *Table) IsValidTable() (bool, error) {
 	var err error
 	var isValid bool
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2551,7 +2557,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -2670,7 +2676,7 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
 	}
 
-	if printcallers {
+	if printCaller {
 		util.PrintCaller()
 	}
 
@@ -3977,6 +3983,9 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	for user-defined types, and set them later.
 */
 func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
+	if printCaller {
+		util.PrintCaller()
+	}
 	if customType != nil {
 		// Created a GOB encoding of customType.
 		gobRegister(customType)
@@ -4066,6 +4075,9 @@ func DecodeCustomTypeVal(encoded string) (customType interface{}, err error) {
 
 // Avoid calling gob.Register() for types already registered.
 func gobRegister(val interface{}) {
+	if printCaller {
+		util.PrintCaller()
+	}
 	var typeName string = fmt.Sprintf("%T", val)
 	_, exists := gobRegistered[typeName]
 	if !exists {

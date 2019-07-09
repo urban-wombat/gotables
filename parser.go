@@ -227,7 +227,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 	var parserColNames []string
 	var parserColTypes []string
-	var rowSliceOfStruct tableRow // Needs to persist over multiple lines.
+	var rowSliceOfStructTable tableRow // Needs to persist over multiple lines.
 
 	unnamed := ""
 	tables, err := NewTableSet(unnamed)
@@ -390,13 +390,13 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						// where(fmt.Sprintf("len(table.rows) = %d\n", len(table.rows)))
 					}
 
-					rowSliceOfStruct, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
+					rowSliceOfStructTable, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
 					if err != nil {
 						return nil, err
 					}
 
 					// Using table.SetValByColIndex() is less efficient but the volume of structs is small.
-					var val interface{} = rowSliceOfStruct[0]
+					var val interface{} = rowSliceOfStructTable[0]
 					var colIndex int = len(table.rows[0]) - 1
 					const rowIndexAlwaysZero int = 0
 					err = table.SetValByColIndex(colIndex, rowIndexAlwaysZero, val)
@@ -640,8 +640,9 @@ Go types NOT supported: complex64 complex128
 */
 func IsNumericColType(colType string) (bool, error) {
 	_, contains := globalNumericColTypesMap[colType]
+
 	if !contains {
-		msg := fmt.Sprintf("Non-numeric col type: %s (Numeric types:", colType)
+		msg := fmt.Sprintf("non-numeric col type: %s (numeric types:", colType)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 		for typeName, _ := range globalNumericColTypesMap {
 			msg += fmt.Sprintf(" %s", typeName)
@@ -650,6 +651,7 @@ func IsNumericColType(colType string) (bool, error) {
 		err := errors.New(msg)
 		return false, err
 	}
+
 	return true, nil
 }
 
