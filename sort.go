@@ -1208,7 +1208,7 @@ func (table *Table) SortUnique() (tableUnique *Table, err error) {
 		return nil, err
 	}
 
-	// Merge() calls the merged table "merged". Rename it.
+	// Merge() names the merged table "merged". Rename it.
 	err = tableUnique.SetName(table.Name())
 	if err != nil {
 		return nil, err
