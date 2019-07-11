@@ -8201,24 +8201,24 @@ func ExampleGoFmtProgramString() {
 		`package main
 import "os"
 func main() {
-	i := 42
-	if i != 42 { os.Exit(1) }
+i := 42
+if i != 42 { os.Exit(1) }
 }`
 
-	goProgramString, err = util.GoFmtProgramString(goProgramString)
+	formattedGoProgramString, err := util.GoFmtProgramString(goProgramString)
 	if err != nil {
 		log.Println(err)
 	}
 
-	hasTabs := strings.Contains(goProgramString, "\t")
+	hasTabs := strings.Contains(formattedGoProgramString, "\t")
 	fmt.Printf("hasTabs = %t\n", hasTabs)
 
-	numTabs := strings.Count(goProgramString, "\t")
+	numTabs := strings.Count(formattedGoProgramString, "\t")
 	fmt.Printf("numTabs = %d\n", numTabs)
 
 	fmt.Println()
 
-	fmt.Println(goProgramString)
+	fmt.Println(formattedGoProgramString)
 
 	// Output:
 	// hasTabs = true
