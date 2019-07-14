@@ -3,8 +3,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/urban-wombat/gotables"
 	"os"
+
+	"github.com/urban-wombat/gotables"
+	"github.com/urban-wombat/util"
 )
 
 /*
@@ -87,6 +89,7 @@ func main() {
 // TODO: List exitVal meanings.
 func printUsage() {
 	fmt.Fprintf(os.Stderr, "usage: gotsyntax <gotables-files>\n")
+	fmt.Fprintf(os.Stderr, "%s\n", util.BuildTime())
 }
 
 func plural(items int) string {
