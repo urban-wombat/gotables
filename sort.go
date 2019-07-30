@@ -1115,8 +1115,9 @@ func SearchLast(n int, f func(int) bool) int {
 
 	Assume data is a zero-based array/slice of elements sorted in ascending order.
 	Each search function returns an index into data.
+
 	----------------------------------------------------------------------------------------------------------
-	Go library sort.Search()                   |  gotables.SearchLast()
+	Go library sort.Search()                  |  gotables.SearchLast()
 	----------------------------------------------------------------------------------------------------------
 	Index of >= search term.                  |  Index of <= search term.
 	Finds index of FIRST instance equal.      |  Finds index of LAST instance equal.
