@@ -1138,7 +1138,8 @@ func SearchLast(n int, f func(int) bool) int {
 
 		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
 
-		Strange, huh? Go library sort.Search() works the same way, except in the opposite (mirror image) direction.
+		Strange, huh? Go library sort.Search() works the same way, except in the
+		  opposite (mirror image) direction.
 		See https://golang.org/pkg/sort/#Search
 
 		(1) Binary search for x.
