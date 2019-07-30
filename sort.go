@@ -1116,9 +1116,9 @@ func SearchLast(n int, f func(int) bool) int {
 	Assume data is a zero-based array/slice of elements sorted in ascending order.
 	Each search function returns an index into data.
 
-	----------------------------------------------------------------------------------------------------------
+	-------------------------------------------------------------------------------------------
 	Go library sort.Search()                  |  gotables.SearchLast()
-	----------------------------------------------------------------------------------------------------------
+	------------------------------------------|------------------------------------------------
 	Index of >= search term.                  |  Index of <= search term.
 	Finds index of FIRST instance equal.      |  Finds index of LAST instance equal.
 	Multiples will be at and AFTER index.     |  Multiples will be at and BEFORE index.
@@ -1137,7 +1137,7 @@ func SearchLast(n int, f func(int) bool) int {
 	  index: 0 1  2  3  4  5  6  7            |    index: 0 1  2  3  4  5  6  7
 	  x: 10                                   |    x: 10
 	  sort.Search(x, func) = 2 (finds FIRST)  |    gotables.SearchLast(x, func) = 4 (finds LAST)
-	----------------------------------------------------------------------------------------------------------
+	------------------------------------------|------------------------------------------------
 
 	This binary search has two steps: (1) binary search for x, and (2) check if x was found.
 
