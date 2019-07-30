@@ -1052,28 +1052,28 @@ func search(n int, f func(int) bool) int {
 /*
 	gotables.SearchLast() mirrors the Go library function sort.Search()
 
-    	Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
-		Assume data is a zero-based array/slice of elements sorted in ascending order.
-		Each search function returns an index into data.
-		----------------------------------------------------------------------------------------------------------
-		Go library sort.Search()                         |  gotables.SearchLast()
-		----------------------------------------------------------------------------------------------------------
-		Index to greater than or equal to search term.   |  Index to less than or equal to search term.
-		Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
-		Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
-		if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
-		  is insert BEFORE index.                        |    is insert AFTER index.
-		Missing at high end of data returns              |  Missing at low end of data returns
-		  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
-		  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
-		  which would be an append to data array.        |    which would be an insert to before start of data array.
-		  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
-		Example: multiple search terms present           |  Example: multiple search terms present
-		  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
-		  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
-		  x: 10                                          |    x: 10
-		  sort.Search(x, func) = 2 (finds FIRST)         |    gotables.SearchLast(x, func) = 4 (finds LAST)
-		----------------------------------------------------------------------------------------------------------
+Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
+Assume data is a zero-based array/slice of elements sorted in ascending order.
+Each search function returns an index into data.
+----------------------------------------------------------------------------------------------------------
+Go library sort.Search()                         |  gotables.SearchLast()
+----------------------------------------------------------------------------------------------------------
+Index to greater than or equal to search term.   |  Index to less than or equal to search term.
+Finds index of FIRST instance equal.             |  Finds index of LAST instance equal.
+Multiple instances will be at and AFTER index.   |  Multiple instances will be at and BEFORE index.
+if term is missing from data, where it WOULD be  |  If term is missing from data, where it WOULD be
+  is insert BEFORE index.                        |    is insert AFTER index.
+Missing at high end of data returns              |  Missing at low end of data returns
+  index 1-greater than last element, len(data),  |    index 1-less than first element, -1,
+  which means it would insert BEFORE len(data),  |    which means it would insert AFTER -1 data,
+  which would be an append to data array.        |    which would be an insert to before start of data array.
+  Check index to avoid out of bounds errors.     |    Check index != -1 to avoid out of bounds errors.
+Example: multiple search terms present           |  Example: multiple search terms present
+  data: [4 8 10 10 10 20 23 29]                  |    data: [4 8 10 10 10 20 23 29]
+  index: 0 1  2  3  4  5  6  7                   |    index: 0 1  2  3  4  5  6  7
+  x: 10                                          |    x: 10
+  sort.Search(x, func) = 2 (finds FIRST)         |    gotables.SearchLast(x, func) = 4 (finds LAST)
+----------------------------------------------------------------------------------------------------------
 
 		This binary search has two steps: (1) binary search for x, and (2) check if x was found.
 
@@ -1108,9 +1108,10 @@ func SearchLast(n int, f func(int) bool) int {
 }
 
 /*
-gotables.SearchFirst() calls the Go library function sort.Search()
+	gotables.SearchFirst() calls the Go library function sort.Search()
+	which has search-first behavior.
 
-    Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
+	Comparison of sort.Search() and gotables.SearchLast() describing their mirrored relationship.
 
 	Assume data is a zero-based array/slice of elements sorted in ascending order.
 	Each search function returns an index into data.
@@ -1121,7 +1122,7 @@ gotables.SearchFirst() calls the Go library function sort.Search()
 	Finds index of FIRST instance equal.      |  Finds index of LAST instance equal.
 	Multiples will be at and AFTER index.     |  Multiples will be at and BEFORE index.
 	if term is missing from data,             |  If term is missing from data,
-	   where it WOULD be                       |    where it WOULD be
+	  where it WOULD be                       |    where it WOULD be
 	  is insert BEFORE index.                 |    is insert AFTER index.
 	Missing at high end of data returns:      |  Missing at low end of data returns:
 	  index 1-greater than last element,      |    index 1-less than first element, -1,
@@ -1136,17 +1137,17 @@ gotables.SearchFirst() calls the Go library function sort.Search()
 	  x: 10                                   |    x: 10
 	  sort.Search(x, func) = 2 (finds FIRST)  |    gotables.SearchLast(x, func) = 4 (finds LAST)
 	----------------------------------------------------------------------------------------------------------
-	
+
 	This binary search has two steps: (1) binary search for x, and (2) check if x was found.
-	
+
 	Strange, huh? Go library sort.Search() works the same way, except in the
 	  opposite (mirror image) direction.
 	See https://golang.org/pkg/sort/#Search
-	
+
 	(1) Binary search for x.
 	x := 23
 	i := gotables.SearchFirst(len(data), func(i int) bool { return data[i] >= x })
-	
+
 	(2) Check that x was found.
 	if i < len(data) && data[i] == x {
 		// x is present at data[i]
