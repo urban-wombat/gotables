@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/urban-wombat/gotables.svg?branch=master)](https://travis-ci.org/urban-wombat/gotables)
 
-# FlatBuffers
+See [gotables godoc](https://godoc.org/github.com/urban-wombat/gotables)
+
+# Gotables & FlatBuffers
 
 The focus of recent work is on support for Google `FlatBuffers`.
 If you don't want to get into the weeds of the FlatBuffers API, `gotables` will save you a lot of time.
