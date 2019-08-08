@@ -86,7 +86,7 @@ func printUsage() {
 		"                              Note: Rotate tabular-to-struct is ignored if table has multiple rows",
 		"         -u                   Unpadded table format (default is padded: numbers aligned right, strings left)",
 		"         -h                   Help",
-		util.BuildTime(),
+		util.BuildDateTime(),
 	}
 
 	var usageString string
