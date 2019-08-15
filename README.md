@@ -50,7 +50,7 @@ And events which are simple structs (or records) can be batched into tables for 
 
 https://github.com/urban-wombat/gotables/releases
 
-<a id="cli" /a>
+<a id="cli" />
 ## Command line utilities ...
 
 | CLI | Purpose |
