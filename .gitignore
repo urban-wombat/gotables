@@ -239,3 +239,6 @@ helpers.go.COMPARE
 cmd/gotecho/backticks.got
 cmd/gotecho/gotecho.a
 temp.got
+cmd/gotecho/cpu.pprof
+cmd/gotecho/mem.pprof
+*.pprof

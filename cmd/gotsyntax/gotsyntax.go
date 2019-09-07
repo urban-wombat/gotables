@@ -7,6 +7,8 @@ import (
 
 	"github.com/urban-wombat/gotables"
 	"github.com/urban-wombat/util"
+
+//	"github.com/pkg/profile"	// Only for when profiling.
 )
 
 /*
@@ -32,6 +34,12 @@ SOFTWARE.
 */
 
 func main() {
+
+	// defer profile.Start(profile.CPUProfile, profile.ProfilePath(".")).Stop()
+	// After running: $ go tool pprof -http=:8080 cpu.pprof
+	// defer profile.Start(profile.CPUProfile, profile.ProfilePath(".")).Stop()
+	// After running: $ go tool pprof -http=:8080 mem.pprof
+
 	var err error
 	var fileName string
 	var tables *gotables.TableSet
