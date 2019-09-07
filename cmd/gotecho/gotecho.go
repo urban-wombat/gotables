@@ -32,8 +32,7 @@ import (
 
 	"github.com/urban-wombat/gotables"
 	"github.com/urban-wombat/util"
-
-//	"github.com/pkg/profile"	// Only for when profiling.
+	//	"github.com/pkg/profile"	// Only for when profiling.
 )
 
 const pipeTimeout = 3 // seconds
