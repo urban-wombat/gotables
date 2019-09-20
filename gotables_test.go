@@ -6831,3 +6831,72 @@ func isGoKeyword(name string) bool {
 	_, exists := goKeywords[nameLower]
 	return exists
 }
+
+//// Note: Leading lowercase in planets is required for it to be recognised as an Example!
+//func ExampleGo_1_13_numeric_literals() {
+//	tableString :=
+//	`[int_literals]
+//	decimal	binary	octal	hex	single
+//	int		int		int		int	int
+//	10		0b1010	0o12	0xA	1
+//	10		0B1010	0O12	0XA 2
+//	10		ob1010	012		0xa	3
+//	`
+//
+///*
+//	[int8_literals]
+//	decimal	binary	octal	hex
+//	int8	int8	int8	int8
+//	10		0b1010	0o12	0xA
+//	10		0B1010	0O12	0XA
+//*/
+//
+//	tableSet, err := NewTableSetFromString(tableString)
+//	if err != nil {
+//		log.Println(err)
+//	}
+//
+//	fmt.Println(tableSet)
+//
+//	// XXX Output:
+//}
+//
+//func TestParseInt(t *testing.T) {
+//
+//	var tests = []struct {
+//		s string
+//		bitSize int
+//		expected int64
+//		expectedError error
+//	}{
+//		/*  0 */ {"10", 64, 10, nil},
+//		/*  1 */ {"0b1010", 64, 10, nil},
+//		/*  2 */ {"0B1010", 64, 10, nil},
+//		/*  3 */ {"0o12", 64, 10, nil},
+//		/*  4 */ {"0O12", 64, 10, nil},
+//		/*  5 */ {"012", 64, 10, nil},
+//		/*  6 */ {"0xA", 64, 10, nil},
+//		/*  7 */ {"0XA", 64, 10, nil},
+//		/*  8 */ {"0X", 64, 10, errors.New("hex missing digits")},
+//		/*  9 */ {"", 64, 10, errors.New("empty string")},
+//		/* 10 */ {"0B1012", 64, 10, errors.New("invalid bin digit: 2")},
+//		/* 11 */ {"0", 64, 0, nil},
+//		/* 11 */ {"00", 64, 0, nil},
+//	}
+//
+//	for testIndex, test := range tests {
+//
+//		result, err := parseInt(test.s, test.bitSize)
+//		if err != nil && test.expectedError == nil {
+//			t.Errorf("[%d] parseInt(%q) %v", testIndex, test.s, err)
+//		}
+//
+//		if result != test.expected && test.expectedError == nil {
+//			t.Errorf("[%d] parseInt(%q) expecting %d but got %d", testIndex, test.s, test.expected, result)
+//		}
+//
+//		if err == nil && test.expectedError != nil {
+//			t.Errorf("[%d] parseInt(%q) expecting error %v but got err == nil", testIndex, test.s, test.expectedError)
+//		}
+//	}
+//}
