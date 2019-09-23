@@ -17,11 +17,11 @@ import (
 	"log"
 	"os"
 	//	"path"
+	"math"
 	"path/filepath"
 	"regexp"
 	"runtime"
-	//	"runtime/debug"
-	"math"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"unicode"
@@ -51,6 +51,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// true means decimal int and also bin oct hex literals
+// false means decimal int literals only
+const go_1_13_number_literals = true
+
 func init() {
 	typeAliasMap = map[string]string{
 		"uint8":   "byte",
@@ -61,6 +65,35 @@ func init() {
 		"rune":    "int32",
 		//		"[]int32" : "[]rune",	// Proposed?
 	}
+
+	if go_1_13_number_literals {
+		// int
+		// Same as uint but adds minus (-) sign for decimals.
+		intRegexpString = `^((0[bB])[0-1]+|(0[oO])[0-7]+|(0[xX])[0-9A-Fa-f]+|[+-]?\d+)`
+		intRegexp = regexp.MustCompile(intRegexpString)
+
+		// uint
+		// Without ^ so we can use uintRegexpString in uintSliceRegexpString
+		//		uintRegexpString = `[+]?\b\d+\b|(^\b0[bB][01]+\b)|(^0[oO][0-7]+)|(^0[0-7]+)|(^0[xX]([09]|[A-Fa-f])+)`
+		//		uintRegexpString = `[+]?\b\d+\b|(\b0[bB][01]+\b)|(0[oO][0-7]+)|(0[0-7]+)|(0[xX]([09]|[A-Fa-f])+)`
+		//		uintRegexpString = `([+]?\b\d+\b)|(0[bB][01]+)|(0[oO][0-7]+)|(0[0-7]+)|(0[xX]([09]|[A-Fa-f])+)`
+		//		uintRegexpString = `([+]?\b\d+\b)|(0[bB][0-1]+)|(0[oO][0-7]+)|(0[xX][0-9A-Fa-f]+)`
+		uintRegexpString = `((0[bB])[0-1]+|(0[oO])[0-7]+|(0[xX])[0-9A-Fa-f]+|[+]?\d+)`
+	} else {
+		// int
+		intRegexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+
+		// uint
+		uintRegexpString = `[+]?\b\d+\b` // Without ^ so we can use uintRegexpString in uintSliceRegexpString
+	}
+	uintRegexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString)) // Prepend ^
+
+	// Handles: [] [num] [num num]
+	uintSliceRegexpString = fmt.Sprintf(`^\[(%s)*(\s%s)*\]`, uintRegexpString, uintRegexpString)
+	//where(fmt.Sprintf("uintSliceRegexpString: %q", uintSliceRegexpString))
+	uintSliceRegexp = regexp.MustCompile(uintSliceRegexpString)
+
+	//writeHeapDump()
 }
 
 var globalLineNum int
@@ -72,11 +105,11 @@ const _ALL_SUBSTRINGS = -1
 
 // Constants for strconv parse functions.
 const (
-	_DEC = 10
-	_BIN =  2
-	_OCT =  8
-	_HEX = 16
-	_BITS_8  =  8 // Bit width.
+	_DEC     = 10
+	_BIN     = 2
+	_OCT     = 8
+	_HEX     = 16
+	_BITS_8  = 8  // Bit width.
 	_BITS_16 = 16 // Bit width.
 	_BITS_32 = 32 // Bit width.
 	_BITS_64 = 64 // Bit width.
@@ -97,16 +130,24 @@ var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
 // var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
-var uintRegexpString string = `[+]?\b\d+\b`  // Without ^ so we can use uintRegexpString in uintSliceRegexpString
-var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString)) // Prepend ^
-var uintSliceRegexpString string = fmt.Sprintf(`^\[(%s)*([ ]%s)*\]`, uintRegexpString, uintRegexpString)
-var uintSliceRegexp *regexp.Regexp = regexp.MustCompile(uintSliceRegexpString)
+// var uintRegexpString string = `[+]?\b\d+\b`  // Without ^ so we can use uintRegexpString in uintSliceRegexpString
+// var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString)) // Prepend ^
+// var uintSliceRegexpString string = fmt.Sprintf(`^\[(%s)*([ ]%s)*\]`, uintRegexpString, uintRegexpString)
+// var uintSliceRegexp *regexp.Regexp = regexp.MustCompile(uintSliceRegexpString)
+// See init()
+var intRegexpString string
+var uintRegexpString string
+var uintRegexp *regexp.Regexp
+var uintSliceRegexpString string
+var uintSliceRegexp *regexp.Regexp
 
-var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+var intRegexp *regexp.Regexp
 
+// var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
 // Failed and pointless attempt to implement bin, oct and hex numeric formats.
-// Note: For octal with leading zero to work, regular decimal int does not allow a leading zero.
-// var intRegexp *regexp.Regexp = regexp.MustCompile(`(^[-+]?\b\[0-9]|([1-9][0-9]*)\b)|(^\b0[bB][01]+\b)|(^0[oO][0-7]+)|(^0[0-7]+)|(^0[xX]([09]|[A-Fa-f])+)`)
+// See init()
+//var intRegexp *regexp.Regexp =
+//	regexp.MustCompile(`^[-+]?\b\d+\b|(^\b0[bB][01]+\b)|(^0[oO][0-7]+)|(^0[0-7]+)|(^0[xX]([09]|[A-Fa-f])+)`)
 
 // Allow negative float numbers! 15/03/2017 Amazed that this was missed during initial testing!
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
@@ -776,7 +817,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_8)
+			//			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_8)
+			if go_1_13_number_literals {
+				uint64Val, err = parseUint(textFound, _BITS_8)
+			} else {
+				uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_8)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 				return nil, fmt.Errorf("#1 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -785,16 +831,26 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			rowSlice[i] = uint8Val
 		case "[]uint8":
 			// Go stores byte as uint8, so there's no need to process byte differently. ???
+			//where(fmt.Sprintf("remaining: %q", remaining))
 			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
+				//where("return nil")
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			//where(fmt.Sprintf("textFound: %q", textFound))
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
+			//where(fmt.Sprintf("sliceString: %q", sliceString))
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
-				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				//where("---")
+				//				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				if go_1_13_number_literals {
+					uint64Val, err = parseUint(sliceStringSplit[el], _BITS_8)
+				} else {
+					uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				}
 				if err != nil {
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 					return nil, fmt.Errorf("#2 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -813,7 +869,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			byteSliceVal = make([]uint8, len(sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
-				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				//				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				if go_1_13_number_literals {
+					uint64Val, err = parseUint(sliceStringSplit[el], _BITS_8)
+				} else {
+					uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
+				}
 				if err != nil {
 					rangeMsg := rangeForIntegerType(0, math.MaxUint8)
 					return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -827,7 +888,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_16)
+			//			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_16)
+			if go_1_13_number_literals {
+				uint64Val, err = parseUint(textFound, _BITS_16)
+			} else {
+				uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_16)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint16)
 				return nil, fmt.Errorf("#3 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -840,7 +906,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_32)
+			//			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_32)
+			if go_1_13_number_literals {
+				uint64Val, err = parseUint(textFound, _BITS_32)
+			} else {
+				uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_32)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint32)
 				return nil, fmt.Errorf("#4 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -853,7 +924,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_64)
+			//			uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_64)
+			if go_1_13_number_literals {
+				uint64Val, err = parseUint(textFound, _BITS_64)
+			} else {
+				uint64Val, err = strconv.ParseUint(textFound, _DEC, _BITS_64)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(0, math.MaxUint64)
 				return nil, fmt.Errorf("#5 %s(): %s %s for type %s %s", util.FuncName(), p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -866,7 +942,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
 			// uint and int are the same size.
-			uint64Val, err = strconv.ParseUint(textFound, _DEC, strconv.IntSize)
+			//			uint64Val, err = strconv.ParseUint(textFound, _DEC, strconv.IntSize)
+			if go_1_13_number_literals {
+				uint64Val, err = parseUint(textFound, strconv.IntSize)
+			} else {
+				uint64Val, err = strconv.ParseUint(textFound, _DEC, strconv.IntSize)
+			}
 			if err != nil {
 				var minVal int64
 				var maxVal uint64
@@ -893,7 +974,11 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DEC, strconv.IntSize)
+			if go_1_13_number_literals {
+				int64Val, err = parseInt(textFound, strconv.IntSize)
+			} else {
+				int64Val, err = strconv.ParseInt(textFound, _DEC, strconv.IntSize)
+			}
 			if err != nil {
 				var minVal int64
 				var maxVal uint64
@@ -920,7 +1005,13 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_8)
+			//			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_8)
+			//			int64Val, err = parseInt(textFound, _BITS_8)
+			if go_1_13_number_literals {
+				int64Val, err = parseInt(textFound, _BITS_8)
+			} else {
+				int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_8)
+			}
 			if err != nil {
 				// Example: data.got[55] strconv.ParseInt: parsing "-129": value out of range for type int8
 				rangeMsg := rangeForIntegerType(math.MinInt8, math.MaxInt8)
@@ -934,7 +1025,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_16)
+			//			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_16)
+			if go_1_13_number_literals {
+				int64Val, err = parseInt(textFound, _BITS_16)
+			} else {
+				int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_16)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(math.MinInt16, math.MaxInt16)
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -947,7 +1043,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_32)
+			//			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_32)
+			if go_1_13_number_literals {
+				int64Val, err = parseInt(textFound, _BITS_32)
+			} else {
+				int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_32)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(math.MinInt32, math.MaxInt32)
 				return nil, fmt.Errorf("%s %s for type %s%s ", p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -975,7 +1076,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_64)
+			// int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_64)
+			if go_1_13_number_literals {
+				int64Val, err = parseInt(textFound, _BITS_64)
+			} else {
+				int64Val, err = strconv.ParseInt(textFound, _DEC, _BITS_64)
+			}
 			if err != nil {
 				rangeMsg := rangeForIntegerType(math.MinInt64, math.MaxInt64)
 				return nil, fmt.Errorf("%s %s for type %s %s", p.gotFilePos(), err, colTypes[i], rangeMsg)
@@ -1029,7 +1135,8 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			*/
 		}
 		remaining = remaining[rangeFound[1]:]
-		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
+		//		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
+		remaining = strings.TrimLeft(remaining, " \t") // Remove leading whitespace.
 		colCount++
 	}
 
@@ -1156,9 +1263,8 @@ func parseRune(runeText string) (rune, error) {
 	return runeVal, nil
 }
 
-// Parse int strings with leading prefixes: 0b, 0o, 0x
+// Parse int strings with non-decimal literal prefixes: 0b, 0o, 0x
 func parseInt(s string, bitSize int) (int64Val int64, err error) {
-	// where(fmt.Sprintf("parseInt(%q)", s))
 	if len(s) == 0 {
 		return 0, fmt.Errorf("gotables.parseInt: parsing %q: invalid syntax", s)
 	}
@@ -1166,23 +1272,53 @@ func parseInt(s string, bitSize int) (int64Val int64, err error) {
 	if s[0] == '0' && len(s) >= 2 {
 		// May be BIN, OCT or HEX.
 		switch s[0:2] {
-			case "0b", "0B":
-				int64Val, err = strconv.ParseInt(s[2:], _BIN, bitSize)
-			case "0", "0o", "0O":
-				int64Val, err = strconv.ParseInt(s[2:], _OCT, bitSize)
-			case "0x", "0X":
-				int64Val, err = strconv.ParseInt(s[2:], _HEX, bitSize)
-			default:	// octal (with leading 0 only)
-				// where("octal (with leading 0 only)")
-				int64Val, err = strconv.ParseInt(s, _OCT, bitSize)
+		case "0b", "0B":
+			int64Val, err = strconv.ParseInt(s[2:], _BIN, bitSize)
+		case "0o", "0O":
+			int64Val, err = strconv.ParseInt(s[2:], _OCT, bitSize)
+		case "0x", "0X":
+			int64Val, err = strconv.ParseInt(s[2:], _HEX, bitSize)
+		default: // octal with leading 0 only: not leading 0o or 0O
+			int64Val, err = strconv.ParseInt(s, _OCT, bitSize)
 		}
 	} else {
-		// Plain int
-	// where("plain dec")
 		int64Val, err = strconv.ParseInt(s, _DEC, bitSize)
 	}
-	// where(int64Val)
-	// where()
 
 	return
+}
+
+// Parse uint strings with non-decimal literal prefixes: 0b, 0o, 0x
+func parseUint(s string, bitSize int) (uint64Val uint64, err error) {
+	if len(s) == 0 {
+		return 0, fmt.Errorf("gotables.parseUint: parsing %q: invalid syntax", s)
+	}
+
+	if s[0] == '0' && len(s) >= 2 {
+		// May be BIN, OCT or HEX.
+		switch s[0:2] {
+		case "0b", "0B":
+			uint64Val, err = strconv.ParseUint(s[2:], _BIN, bitSize)
+		case "0o", "0O":
+			uint64Val, err = strconv.ParseUint(s[2:], _OCT, bitSize)
+		case "0x", "0X":
+			uint64Val, err = strconv.ParseUint(s[2:], _HEX, bitSize)
+		default: // octal with leading 0 only: not leading 0o or 0O
+			uint64Val, err = strconv.ParseUint(s, _OCT, bitSize)
+		}
+	} else {
+		uint64Val, err = strconv.ParseUint(s, _DEC, bitSize)
+	}
+
+	return
+}
+
+func writeHeapDump() {
+	fmt.Printf("writing %s.heapdump", os.Args[0])
+	f, err := os.Create(os.Args[0] + ".heapdump")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	debug.WriteHeapDump(f.Fd())
 }

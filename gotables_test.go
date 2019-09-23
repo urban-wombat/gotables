@@ -2,6 +2,7 @@ package gotables
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -126,7 +127,7 @@ func TestNewTableFromString01(t *testing.T) {
 		[TableWithRow]
 		D	E	F
 		int	int	int
-		1	2	3
+		1	2	31
 
 		[TableWithRows]
 		G	H	I
@@ -201,7 +202,7 @@ func TestNewTableFromString03(t *testing.T) {
 		`[TableWithRow]
 		D	E	F
 		int	int	int
-		1	2	3
+		1	2	32
 
 		A	B	C
 	`)
@@ -215,7 +216,7 @@ func TestNewTableFromString04(t *testing.T) {
 		`[TableWithRow]
 		D	E	F
 		int	int	int
-		1	2	3
+		1	2	33
 
 		4	5	6
 		`)
@@ -546,11 +547,10 @@ func TestNewTableFromString13(t *testing.T) {
 // Testing table with slice of uint: []uint
 func TestNewTableFromString14(t *testing.T) {
 	var err error
-	s :=
-		`[TableX]
+	s := `[TableX]
 	i   x                   f           bb                  s       b
 	int []uint8             float64     []byte              string  byte
-	1   [10 11 12 13]       1           [90 81 72 63]       "one"   11
+	1   [10 11 12 13 14]    1           [90 81 72 63]       "one"   15
 	2   [20 21 22 23]       2           [90 81 72 63]       "two"   22
 	3   [30 31 32]          3           [90 81 72]          "three" 33
 	4   [40 41 42 43 44]    4           [90 81 72 63 255]   "four"  44
@@ -690,7 +690,7 @@ func TestNewTableFromString16(t *testing.T) {
 	s = `[Table]
 	i   x
 	int []uint8
-	1   [10 11 12 13]
+	1   [10 11 12 13 20]
 	2   [20 21 22 23]
 	3   [30 31 32]
 	4   [40 41 42 43 44]
@@ -6832,71 +6832,231 @@ func isGoKeyword(name string) bool {
 	return exists
 }
 
-//// Note: Leading lowercase in planets is required for it to be recognised as an Example!
-//func ExampleGo_1_13_numeric_literals() {
-//	tableString :=
-//	`[int_literals]
-//	decimal	binary	octal	hex	single
-//	int		int		int		int	int
-//	10		0b1010	0o12	0xA	1
-//	10		0B1010	0O12	0XA 2
-//	10		ob1010	012		0xa	3
-//	`
-//
-///*
-//	[int8_literals]
-//	decimal	binary	octal	hex
-//	int8	int8	int8	int8
-//	10		0b1010	0o12	0xA
-//	10		0B1010	0O12	0XA
-//*/
-//
-//	tableSet, err := NewTableSetFromString(tableString)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	fmt.Println(tableSet)
-//
-//	// XXX Output:
-//}
-//
-//func TestParseInt(t *testing.T) {
-//
-//	var tests = []struct {
-//		s string
-//		bitSize int
-//		expected int64
-//		expectedError error
-//	}{
-//		/*  0 */ {"10", 64, 10, nil},
-//		/*  1 */ {"0b1010", 64, 10, nil},
-//		/*  2 */ {"0B1010", 64, 10, nil},
-//		/*  3 */ {"0o12", 64, 10, nil},
-//		/*  4 */ {"0O12", 64, 10, nil},
-//		/*  5 */ {"012", 64, 10, nil},
-//		/*  6 */ {"0xA", 64, 10, nil},
-//		/*  7 */ {"0XA", 64, 10, nil},
-//		/*  8 */ {"0X", 64, 10, errors.New("hex missing digits")},
-//		/*  9 */ {"", 64, 10, errors.New("empty string")},
-//		/* 10 */ {"0B1012", 64, 10, errors.New("invalid bin digit: 2")},
-//		/* 11 */ {"0", 64, 0, nil},
-//		/* 11 */ {"00", 64, 0, nil},
-//	}
-//
-//	for testIndex, test := range tests {
-//
-//		result, err := parseInt(test.s, test.bitSize)
-//		if err != nil && test.expectedError == nil {
-//			t.Errorf("[%d] parseInt(%q) %v", testIndex, test.s, err)
-//		}
-//
-//		if result != test.expected && test.expectedError == nil {
-//			t.Errorf("[%d] parseInt(%q) expecting %d but got %d", testIndex, test.s, test.expected, result)
-//		}
-//
-//		if err == nil && test.expectedError != nil {
-//			t.Errorf("[%d] parseInt(%q) expecting error %v but got err == nil", testIndex, test.s, test.expectedError)
-//		}
-//	}
-//}
+/*
+// Note: Leading lowercase in planets is required for it to be recognised as an Example!
+func ExampleGo_1_13_numeric_literals() {
+	tableString :=
+	`[int_literals]
+	decimal	binary	octal	hex	single	zeros
+	int		int		int		int	int		int
+	10		0b1010	0o12	0xA	0		0
+	10		0B1010	0O12	0XA 1		00
+	10		0b1010	012		0xa	2		000
+	10		0B1010	0012	0xA	3		0000
+
+	[int8_literals]
+	decimal	binary	octal	hex		single	zeros
+	int8	int8	int8	int8	int8	int8
+	10		0b1010	0o12	0xA		0		0
+	10		0B1010	0O12	0XA 	1		00
+	10		0b1010	012		0xa		2		000
+	10		0B1010	0012	0xA		3		0000
+
+	[uint8_literals]
+	decimal	binary	octal	hex		single	zeros
+	uint8	uint8	uint8	uint8	uint8	uint8
+	10		0b1010	0o12	0xA		0		0
+	10		0B1010	0O12	0XA 	1		00
+	10		0b1010	012		0xa		2		000
+	10		0B1010	0012	0xA		3		0000
+	`
+
+	tableSet, err := NewTableSetFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(tableSet)
+
+	// Output:
+}
+*/
+
+func TestParseInt(t *testing.T) {
+
+	var tests = []struct {
+		s             string
+		bitSize       int
+		expected      int64
+		expectedError error
+	}{
+		/*  0 */ {"10", 64, 10, nil},
+		/*  1 */ {"0b1010", 64, 10, nil},
+		/*  2 */ {"0B1010", 64, 10, nil},
+		/*  3 */ {"0o12", 64, 10, nil},
+		/*  4 */ {"0O12", 64, 10, nil},
+		/*  5 */ {"012", 64, 10, nil},
+		/*  6 */ {"0xA", 64, 10, nil},
+		/*  7 */ {"0XA", 64, 10, nil},
+		/*  8 */ {"0X", 64, 10, errors.New("hex missing digits")},
+		/*  9 */ {"", 64, 10, errors.New("empty string")},
+		/* 10 */ {"0B1012", 64, 10, errors.New("invalid bin digit: 2")},
+		/* 11 */ {"0", 64, 0, nil},
+		/* 12 */ {"00", 64, 0, nil},
+		/* 13 */ {"000", 64, 0, nil},
+		/* 14 */ {"ob1010", 0, 0, errors.New("invalid prefix: ob")},
+		/* 15 */ {"oxa", 0, 0, errors.New("invalid prefix: ox")},
+	}
+
+	for testIndex, test := range tests {
+
+		result, err := parseInt(test.s, test.bitSize)
+		if err != nil && test.expectedError == nil {
+			t.Errorf("[%d] parseInt(%q) %v", testIndex, test.s, err)
+		}
+
+		if result != test.expected && test.expectedError == nil {
+			t.Errorf("[%d] parseInt(%q) expecting %d but got %d", testIndex, test.s, test.expected, result)
+		}
+
+		if err == nil && test.expectedError != nil {
+			t.Errorf("[%d] parseInt(%q) expecting error %v but got err == nil", testIndex, test.s, test.expectedError)
+		}
+	}
+}
+
+var globalTableSetStringIntDecimal string = `
+	[ints]
+	i	i8		i16		i32		i64		ui		ui8		ui16	ui32	ui64
+	int	int8	int16	int32	int64	uint	uint8	uint16	uint32	uint64
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	-10	-10		-10		-10		-10		10		10		10		10		10
+	`
+
+var globalTableSetStringIntNonDecimal string = `
+	[ints]
+	i		i8			i16			i32			i64			ui		ui8		ui16	ui32	ui64
+	int		int8		int16		int32		int64		uint	uint8	uint16	uint32	uint64
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	0b1010	0b1010		0b1010		0b1010		0b1010		0xA		0xA		0xA		0xA		0o12
+	`
+
+func BenchmarkNewTableSetFromStringIntDecimal_padded(b *testing.B) {
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = NewTableSetFromString(globalTableSetStringIntDecimal)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+
+func BenchmarkNewTableSetFromStringIntNonDecimal_padded(b *testing.B) {
+	if go_1_13_number_literals {
+		var err error
+		for i := 0; i < b.N; i++ {
+			_, err = NewTableSetFromString(globalTableSetStringIntNonDecimal)
+			if err != nil {
+				b.Error(err)
+			}
+		}
+	}
+}
+
+// Testing table with slice of uint: []uint with BIN, OCT and HEX
+func TestNewTableFromStringGo1_3NonDecimalLiterals(t *testing.T) {
+	if go_1_13_number_literals {
+		var err error
+		s :=
+			`[TableX]
+	i   x                   		f           bb                  	s       b
+	int []uint8             		float64     []byte              	string  byte
+	1   [0b1010 0o12 0B1010 0xA]    1           [0xa 0b1010 0o12 012]   "one"   11
+	2   [10 0o12 0b1010 0xA]       	2           [0Xa 0B1010 0o12 012]   "two"   22
+	3   [30]          				3           [90 81 72]          	"three" 33
+	4   []    						4           [90 81 72 63 255]   	"four"  44
+	4   [10]    					5           [90 81 72 63 255]   	"four"  44
+	`
+		table, err := NewTableFromString(s)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if isValid, err := table.IsValidTable(); !isValid {
+			t.Error(err)
+		}
+
+		s =
+			`[StructY]
+	i int = 42
+	bb []byte = [1 1 255]
+	u []uint8 = [2 2 255 2]
+	f float32 = 32
+	x []byte = []
+	y []uint8 = []
+	b byte = 55
+	`
+		table, err = NewTableFromString(s)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if isValid, err := table.IsValidTable(); !isValid {
+			t.Error(err)
+		}
+
+		err = table.AppendCol("bite", "[]byte")
+		if err != nil {
+			t.Error(err)
+		}
+		if isValid, err := table.IsValidTable(); !isValid {
+			t.Error(err)
+		}
+	}
+}
