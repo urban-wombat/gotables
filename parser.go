@@ -74,10 +74,6 @@ func init() {
 
 		// uint
 		// Without ^ so we can use uintRegexpString in uintSliceRegexpString
-		//		uintRegexpString = `[+]?\b\d+\b|(^\b0[bB][01]+\b)|(^0[oO][0-7]+)|(^0[0-7]+)|(^0[xX]([09]|[A-Fa-f])+)`
-		//		uintRegexpString = `[+]?\b\d+\b|(\b0[bB][01]+\b)|(0[oO][0-7]+)|(0[0-7]+)|(0[xX]([09]|[A-Fa-f])+)`
-		//		uintRegexpString = `([+]?\b\d+\b)|(0[bB][01]+)|(0[oO][0-7]+)|(0[0-7]+)|(0[xX]([09]|[A-Fa-f])+)`
-		//		uintRegexpString = `([+]?\b\d+\b)|(0[bB][0-1]+)|(0[oO][0-7]+)|(0[xX][0-9A-Fa-f]+)`
 		uintRegexpString = `((0[bB])[0-1]+|(0[oO])[0-7]+|(0[xX])[0-9A-Fa-f]+|[+]?\d+)`
 	} else {
 		// int
@@ -90,10 +86,7 @@ func init() {
 
 	// Handles: [] [num] [num num]
 	uintSliceRegexpString = fmt.Sprintf(`^\[(%s)*(\s%s)*\]`, uintRegexpString, uintRegexpString)
-	//where(fmt.Sprintf("uintSliceRegexpString: %q", uintSliceRegexpString))
 	uintSliceRegexp = regexp.MustCompile(uintSliceRegexpString)
-
-	//writeHeapDump()
 }
 
 var globalLineNum int
@@ -129,11 +122,6 @@ var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xuU].*)|([^']*))'`
 var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
-// var uintRegexp *regexp.Regexp = regexp.MustCompile(`^[+]?\b\d+\b`)
-// var uintRegexpString string = `[+]?\b\d+\b`  // Without ^ so we can use uintRegexpString in uintSliceRegexpString
-// var uintRegexp *regexp.Regexp = regexp.MustCompile(fmt.Sprintf(`^%s`, uintRegexpString)) // Prepend ^
-// var uintSliceRegexpString string = fmt.Sprintf(`^\[(%s)*([ ]%s)*\]`, uintRegexpString, uintRegexpString)
-// var uintSliceRegexp *regexp.Regexp = regexp.MustCompile(uintSliceRegexpString)
 // See init()
 var intRegexpString string
 var uintRegexpString string
@@ -143,18 +131,14 @@ var uintSliceRegexp *regexp.Regexp
 
 var intRegexp *regexp.Regexp
 
-// var intRegexp *regexp.Regexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
-// Failed and pointless attempt to implement bin, oct and hex numeric formats.
 // See init()
-//var intRegexp *regexp.Regexp =
-//	regexp.MustCompile(`^[-+]?\b\d+\b|(^\b0[bB][01]+\b)|(^0[oO][0-7]+)|(^0[0-7]+)|(^0[xX]([09]|[A-Fa-f])+)`)
 
 // Allow negative float numbers! 15/03/2017 Amazed that this was missed during initial testing!
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 // From Regular Expressions Cookbook.
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
-var namePattern = `^[a-zA-Z_][a-zA-Z0-9_]*$`
-var tableNamePattern = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
+var namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
+var tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)

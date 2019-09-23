@@ -7010,7 +7010,7 @@ func BenchmarkNewTableSetFromStringIntNonDecimal_padded(b *testing.B) {
 }
 
 // Testing table with slice of uint: []uint with BIN, OCT and HEX
-func TestNewTableFromStringGo1_3NonDecimalLiterals(t *testing.T) {
+func TestNewTableFromStringGo_1_3_NonDecimalLiterals(t *testing.T) {
 	if go_1_13_number_literals {
 		var err error
 		s :=
@@ -7057,6 +7057,64 @@ func TestNewTableFromStringGo1_3NonDecimalLiterals(t *testing.T) {
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
 			t.Error(err)
+		}
+
+		table, err = NewTableFromString(globalTableSetStringIntNonDecimal)
+		if err != nil {
+			t.Error(err)
+		}
+
+		table, err = NewTableFromString(globalTableSetStringIntDecimal)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+func TestParserGlobalVars(t *testing.T) {
+
+	const nameWidth = 30
+
+	var stringTests = []struct {
+		name string
+		global *string
+	}{
+		{ "runeRegexpString", &runeRegexpString, },
+		{ "intRegexpString", &intRegexpString, },
+		{ "uintRegexpString", &uintRegexpString, },
+		{ "uintSliceRegexpString", &uintSliceRegexpString, },
+		{ "namePattern", &namePattern },
+		{ "tableNamePattern", &tableNamePattern },
+	}
+
+	for testIndex, test := range stringTests {
+		if *test.global == "" {
+			t.Errorf("parser.go: global string test[%d] var %s string == \"\"", testIndex, test.name)
+			// fmt.Printf("[%2d] %-*s: %q\n", testIndex, nameWidth, test.name, *test.global)
+		}
+	}
+
+	var regexpTests = []struct {
+		name string
+		global *regexp.Regexp
+	}{
+		{ "stringRegexp", stringRegexp, },
+		{ "boolRegexp", boolRegexp, },
+		{ "runeRegexp", runeRegexp, },
+		{ "floatRegexp", floatRegexp, },
+		{ "tableNameRegexp", tableNameRegexp, },
+		{ "colNameRegexp", colNameRegexp, },
+		{ "whiteRegexp", whiteRegexp, },
+		{ "equalsRegexp", equalsRegexp, },
+		{ "customTypeRegexp", customTypeRegexp, },
+		{ "customTypeStringRegexp", customTypeStringRegexp, },
+		{ "customTypeBase64PartRegexp", customTypeBase64PartRegexp, },
+	}
+
+	for testIndex, test := range regexpTests {
+		if test.global == nil {
+			t.Errorf("parser.go: global regexp test[%d] var %s *regexp.Regexp == nil", testIndex, test.name)
+			// fmt.Printf("[%2d] %-*s: %v\n", testIndex, nameWidth, test.name, *test.global)
 		}
 	}
 }
