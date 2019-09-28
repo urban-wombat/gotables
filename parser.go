@@ -77,7 +77,9 @@ func init() {
 		uintRegexpString = `((0[bB])[0-1]+|(0[oO])[0-7]+|(0[xX])[0-9A-Fa-f]+|[+]?\d+)`
 	} else {
 		// int
-		intRegexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+		intRegexpString = `^[-+]?\b\d+\b`
+//		intRegexp = regexp.MustCompile(`^[-+]?\b\d+\b`)
+		intRegexp = regexp.MustCompile(intRegexpString)
 
 		// uint
 		uintRegexpString = `[+]?\b\d+\b` // Without ^ so we can use uintRegexpString in uintSliceRegexpString
