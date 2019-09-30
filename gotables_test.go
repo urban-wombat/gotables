@@ -6832,33 +6832,47 @@ func isGoKeyword(name string) bool {
 	return exists
 }
 
-/*
 // Note: Leading lowercase in planets is required for it to be recognised as an Example!
-func ExampleGo_1_13_numeric_literals() {
+func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	tableString :=
 	`[int_literals]
-	decimal	binary	octal	hex	single	zeros
-	int		int		int		int	int		int
-	10		0b1010	0o12	0xA	0		0
-	10		0B1010	0O12	0XA 1		00
-	10		0b1010	012		0xa	2		000
-	10		0B1010	0012	0xA	3		0000
+    decimal binary octal hex single zeros
+    int     int    int   int int    int
+    10      0b1010 0o12  0xA 0      0
+    10      0B1010 0O12  0XA 1      00
+    10      0b1010 012   0xa 2      000
+    10      0B1010 0012  0xA 3      0000
 
-	[int8_literals]
-	decimal	binary	octal	hex		single	zeros
-	int8	int8	int8	int8	int8	int8
-	10		0b1010	0o12	0xA		0		0
-	10		0B1010	0O12	0XA 	1		00
-	10		0b1010	012		0xa		2		000
-	10		0B1010	0012	0xA		3		0000
+    [int8_literals]
+    decimal binary octal hex  single zeros
+    int8    int8   int8  int8 int8   int8
+    10      0b1010 0o12  0xA  0      0
+    10      0B1010 0O12  0XA  1      00
+    10      0b1010 012   0xa  2      000
+    10      0B1010 0012  0xA  3      0000
 
-	[uint8_literals]
-	decimal	binary	octal	hex		single	zeros
-	uint8	uint8	uint8	uint8	uint8	uint8
-	10		0b1010	0o12	0xA		0		0
-	10		0B1010	0O12	0XA 	1		00
-	10		0b1010	012		0xa		2		000
-	10		0B1010	0012	0xA		3		0000
+    [uint8_literals]
+    decimal binary octal hex   single zeros
+    uint8   uint8  uint8 uint8 uint8  uint8
+    10      0b1010 0o12  0xA   0      0
+    10      0B1010 0O12  0XA   1      00
+    10      0b1010 012   0xa   2      000
+    10      0B1010 0012  0xA   3      0000
+
+    [any_literals]
+    dec int = 11
+    bin int = 0b1011
+    oct int = 0o13
+    hex int = 0xB
+
+    [slice_literals]
+    xx            bb
+    []uint8       []byte
+    [10 10 10 10] [10 10 10 10]
+    [10 10 10 10] [10 10 10 10]
+    [30]          [90 81 72]
+    []            []
+    [10]          [90 81 72 63 255]
 	`
 
 	tableSet, err := NewTableSetFromString(tableString)
@@ -6869,8 +6883,45 @@ func ExampleGo_1_13_numeric_literals() {
 	fmt.Println(tableSet)
 
 	// Output:
+	// [int_literals]
+	// decimal binary octal hex single zeros
+	//     int    int   int int    int   int
+	//      10     10    10  10      0     0
+	//      10     10    10  10      1     0
+	//      10     10    10  10      2     0
+	//      10     10    10  10      3     0
+	// 
+	// [int8_literals]
+	// decimal binary octal  hex single zeros
+	//    int8   int8  int8 int8   int8  int8
+	//      10     10    10   10      0     0
+	//      10     10    10   10      1     0
+	//      10     10    10   10      2     0
+	//      10     10    10   10      3     0
+	// 
+	// [uint8_literals]
+	// decimal binary octal   hex single zeros
+	//   uint8  uint8 uint8 uint8  uint8 uint8
+	//      10     10    10    10      0     0
+	//      10     10    10    10      1     0
+	//      10     10    10    10      2     0
+	//      10     10    10    10      3     0
+	// 
+	// [any_literals]
+	// dec int = 11
+	// bin int = 11
+	// oct int = 11
+	// hex int = 11
+	// 
+	// [slice_literals]
+	// xx            bb
+	// []uint8       []byte
+	// [10 10 10 10] [10 10 10 10]
+	// [10 10 10 10] [10 10 10 10]
+	// [30]          [90 81 72]
+	// []            []
+	// [10]          [90 81 72 63 255]
 }
-*/
 
 func TestParseInt(t *testing.T) {
 
