@@ -6835,7 +6835,7 @@ func isGoKeyword(name string) bool {
 // Note: Leading lowercase in planets is required for it to be recognised as an Example!
 func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	tableString :=
-	`[int_literals]
+		`[int_literals]
 	decimal binary octal hex single zeros
 	int     int    int   int int    int
 	10      0b1010 0o12  0xA 0      0
@@ -6890,7 +6890,7 @@ func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	//      10     10    10  10      1     0
 	//      10     10    10  10      2     0
 	//      10     10    10  10      3     0
-	// 
+	//
 	// [int8_literals]
 	// decimal binary octal  hex single zeros
 	//    int8   int8  int8 int8   int8  int8
@@ -6898,7 +6898,7 @@ func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	//      10     10    10   10      1     0
 	//      10     10    10   10      2     0
 	//      10     10    10   10      3     0
-	// 
+	//
 	// [uint8_literals]
 	// decimal binary octal   hex single zeros
 	//   uint8  uint8 uint8 uint8  uint8 uint8
@@ -6906,13 +6906,13 @@ func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	//      10     10    10    10      1     0
 	//      10     10    10    10      2     0
 	//      10     10    10    10      3     0
-	// 
+	//
 	// [any_literals]
 	// dec int = 11
 	// bin int = 11
 	// oct int = 11
 	// hex int = 11
-	// 
+	//
 	// [slice_literals]
 	// xx            bb
 	// []uint8       []byte
@@ -7127,15 +7127,15 @@ func TestParserGlobalVars(t *testing.T) {
 	const nameWidth = 30
 
 	var stringTests = []struct {
-		name string
+		name   string
 		global *string
 	}{
-		{ "runeRegexpString", &runeRegexpString, },
-		{ "intRegexpString", &intRegexpString, },
-		{ "uintRegexpString", &uintRegexpString, },
-		{ "uintSliceRegexpString", &uintSliceRegexpString, },
-		{ "namePattern", &namePattern },
-		{ "tableNamePattern", &tableNamePattern },
+		{"runeRegexpString", &runeRegexpString},
+		{"intRegexpString", &intRegexpString},
+		{"uintRegexpString", &uintRegexpString},
+		{"uintSliceRegexpString", &uintSliceRegexpString},
+		{"namePattern", &namePattern},
+		{"tableNamePattern", &tableNamePattern},
 	}
 
 	for testIndex, test := range stringTests {
@@ -7146,20 +7146,20 @@ func TestParserGlobalVars(t *testing.T) {
 	}
 
 	var regexpTests = []struct {
-		name string
+		name   string
 		global *regexp.Regexp
 	}{
-		{ "stringRegexp", stringRegexp, },
-		{ "boolRegexp", boolRegexp, },
-		{ "runeRegexp", runeRegexp, },
-		{ "floatRegexp", floatRegexp, },
-		{ "tableNameRegexp", tableNameRegexp, },
-		{ "colNameRegexp", colNameRegexp, },
-		{ "whiteRegexp", whiteRegexp, },
-		{ "equalsRegexp", equalsRegexp, },
-		{ "customTypeRegexp", customTypeRegexp, },
-		{ "customTypeStringRegexp", customTypeStringRegexp, },
-		{ "customTypeBase64PartRegexp", customTypeBase64PartRegexp, },
+		{"stringRegexp", stringRegexp},
+		{"boolRegexp", boolRegexp},
+		{"runeRegexp", runeRegexp},
+		{"floatRegexp", floatRegexp},
+		{"tableNameRegexp", tableNameRegexp},
+		{"colNameRegexp", colNameRegexp},
+		{"whiteRegexp", whiteRegexp},
+		{"equalsRegexp", equalsRegexp},
+		{"customTypeRegexp", customTypeRegexp},
+		{"customTypeStringRegexp", customTypeStringRegexp},
+		{"customTypeBase64PartRegexp", customTypeBase64PartRegexp},
 	}
 
 	for testIndex, test := range regexpTests {
