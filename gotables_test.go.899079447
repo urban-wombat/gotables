@@ -2798,7 +2798,7 @@ func ExampleTable_DeleteRows() {
 func ExampleTable_JoinColVals() {
 
 	tableString :=
-		`[commands]
+	`[commands]
 	command
 	string
 	"echo myfile"
@@ -2832,7 +2832,7 @@ func ExampleTable_JoinColVals() {
 func ExampleTable_JoinColValsByColIndex() {
 
 	tableString :=
-		`[commands]
+	`[commands]
 	command
 	string
 	"echo myfile"
@@ -3492,7 +3492,7 @@ func ExampleTableSet_String() {
 func ExampleTable_StringUnpadded() {
 	// Deliberately padded (by hand) for contrast.
 	s :=
-		`[sable_fur]
+	`[sable_fur]
 	  i s            f b          ff
 	int string float32 bool  float64
 	  1 "abc"     2.34 true    7.899
@@ -3527,7 +3527,7 @@ func ExampleTable_StringUnpadded() {
 func ExampleTableSet_StringUnpadded() {
 	// Deliberately padded (by hand) for contrast.
 	s :=
-		`[wombat_fur]
+	`[wombat_fur]
 	  i s            f b
 	int string float64 bool
 	  1 "abc"      2.3 true
@@ -3629,7 +3629,7 @@ func TestNewTableFromMetadata(t *testing.T) {
 
 func ExampleTable_SetRowFloatCellsToNaN() {
 	s :=
-		`[three_rows]
+	`[three_rows]
 	i    s      f       b     f2
 	int  string float32 bool  float64
 	0    "abc"  2.3     true  42.0
@@ -3672,7 +3672,7 @@ func ExampleTable_SetRowFloatCellsToNaN() {
 
 func ExampleTable_SetCellToZeroValue() {
 	s :=
-		`[three_rows]
+	`[three_rows]
 	i    s      f1      b     f2
 	int  string float32 bool  float64
 	0    "abc"  2.3     true  42.0
@@ -4093,7 +4093,7 @@ func ExampleTable_Merge() {
 func ExampleTable_GetTableAsCSV() {
 
 	tableString :=
-		`[ForCSV]
+	`[ForCSV]
 	first_name  last_name   username    i   f64     b       f32     commas  quotes    runes end
 	string      string      string      int float64 bool    float32 string  string    rune  string
 	"Rob"       "Pike"      "rob"       1   1.1     true    NaN     ",end"  "\"xyz\"" '本'  "end"
