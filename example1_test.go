@@ -21,8 +21,8 @@ func ExampleTable_Sort_complete() {
 	"Venus"     0.815      0.7     0     1 "very"
 	"Earth"     1.000      1.0     1     2 "elegant"
 	"Mars"      0.107      1.5     2     3 "mother"
-	"Jupiter" 318.000      5.2    67     4 "just"
-	"Saturn"   95.000     29.4    62     5 "sat"
+	"Jupiter" 318.000      5.2    79     4 "just"
+	"Saturn"   95.000     29.4    82     5 "sat"
 	"Uranus"   15.000     84.0    27     6 "upon"
 	"Neptune"  17.000    164.0    13     7 "nine ... porcupines"
 	`
@@ -172,8 +172,8 @@ func ExampleTable_Sort_complete() {
 	// "Venus"     0.815      0.7     0     1 "very"
 	// "Earth"     1.0        1.0     1     2 "elegant"
 	// "Mars"      0.107      1.5     2     3 "mother"
-	// "Jupiter" 318.0        5.2    67     4 "just"
-	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Jupiter" 318.0        5.2    79     4 "just"
+	// "Saturn"   95.0       29.4    82     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	//
@@ -189,11 +189,11 @@ func ExampleTable_Sort_complete() {
 	// name         mass distance moons index mnemonic
 	// string    float64  float64   int   int string
 	// "Earth"     1.0        1.0     1     2 "elegant"
-	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Jupiter" 318.0        5.2    79     4 "just"
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Mercury"   0.055      0.4     0     0 "my"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
-	// "Saturn"   95.0       29.4    62     5 "sat"
+	// "Saturn"   95.0       29.4    82     5 "sat"
 	// "Uranus"   15.0       84.0    27     6 "upon"
 	// "Venus"     0.815      0.7     0     1 "VERY"
 	//
@@ -208,8 +208,8 @@ func ExampleTable_Sort_complete() {
 	// "Mars"      0.107      1.5     2     3 "mother"
 	// "Neptune"  17.0      164.0    13     7 "nine ... porcupines"
 	// "Uranus"   15.0       84.0    27     6 "upon"
-	// "Saturn"   95.0       29.4    62     5 "sat"
-	// "Jupiter" 318.0        5.2    67     4 "just"
+	// "Jupiter" 318.0        5.2    79     4 "just"
+	// "Saturn"   95.0       29.4    82     5 "sat"
 	//
 	// 2 planets have 0 moons.
 	//
