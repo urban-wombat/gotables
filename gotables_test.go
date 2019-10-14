@@ -2,11 +2,13 @@ package gotables
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
+	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -7171,4 +7173,85 @@ func TestParserGlobalVars(t *testing.T) {
 			// fmt.Printf("[%2d] %-*s: %v\n", testIndex, nameWidth, test.name, *test.global)
 		}
 	}
+}
+
+func TestGetTableAsJSON(t *testing.T) {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       f32     t     b    ui    bb            uu8
+    int string float64 float32 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+    4   "xxxx" 5.9     9.9     true  44   3     []            []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var jsonString string
+	jsonString, err = table.getTableAsJSON()
+	if err != nil {
+		t.Error(err)
+	}
+	_ = jsonString
+
+/*
+	fmt.Println(jsonString)
+
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		t.Error(err)
+	}
+
+	out.WriteTo(os.Stdout)
+	fmt.Println()
+*/
+}
+
+func TestGetTableSetAsJSON(t *testing.T) {
+	var err error
+	var tableSet *TableSet
+
+	var tableSetString string = `
+	[TypesGalore]
+    i   s      f       f32     t     b    ui    bb            uu8
+    int string float64 float32 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+    4   "xxxx" 5.9     9.9     true  44   3     []            []
+
+	[AnotherTable]
+	fred int = 33
+	wilma int = 29
+    `
+	tableSet, err = NewTableSetFromString(tableSetString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableSet.SetName("MySet")
+
+	var jsonString string
+	jsonString, err = tableSet.GetTableSetAsJSON()
+	if err != nil {
+		t.Error(err)
+	}
+
+	fmt.Println(jsonString)
+
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		t.Error(err)
+	}
+
+	out.WriteTo(os.Stdout)
+	fmt.Println()
 }
