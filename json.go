@@ -2,12 +2,14 @@ package gotables
 
 import (
 	"bytes"
-//	"encoding/json"
+	//	"encoding/json"
 	"fmt"
 	"strings"
 )
 
-// Marshall gotables TableSet to JSON
+/*
+Marshall gotables TableSet to JSON
+*/
 func (table *Table) getTableAsJSON() (jsonString string, err error) {
 
 	var buf bytes.Buffer
@@ -28,33 +30,33 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 				return "", err
 			}
 			switch val.(type) {
-				case string:
-					buf.WriteString(`"` + val.(string) + `"`)
-				case int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
-					valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-					if err != nil {
-						where()
-						return "", err
-					}
-					buf.WriteString(valStr)
-				case bool:
-					valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-					if err != nil {
-						where()
-						return "", err
-					}
-					buf.WriteString(valStr)
-				case []byte:
-					valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-					if err != nil {
-						where()
-						return "", err
-					}
-					// Insert comma delimiters between slice elements.
-					valStr = strings.ReplaceAll(valStr, " ", ",")
-					buf.WriteString(valStr)
-				default:
-					buf.WriteString(`"TYPE UNKNOWN"`)
+			case string:
+				buf.WriteString(`"` + val.(string) + `"`)
+			case int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
+				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
+				if err != nil {
+					where()
+					return "", err
+				}
+				buf.WriteString(valStr)
+			case bool:
+				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
+				if err != nil {
+					where()
+					return "", err
+				}
+				buf.WriteString(valStr)
+			case []byte:
+				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
+				if err != nil {
+					where()
+					return "", err
+				}
+				// Insert comma delimiters between slice elements.
+				valStr = strings.ReplaceAll(valStr, " ", ",")
+				buf.WriteString(valStr)
+			default:
+				buf.WriteString(`"TYPE UNKNOWN"`)
 			}
 			if colIndex < len(table.colNames)-1 {
 				buf.WriteByte(',')
