@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-	"encoding/json"
+	//	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-	"os"
+	//	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -7200,18 +7200,18 @@ func TestGetTableAsJSON(t *testing.T) {
 	}
 	_ = jsonString
 
-/*
-	fmt.Println(jsonString)
+	/*
+		fmt.Println(jsonString)
 
-	var out bytes.Buffer
-	err = json.Indent(&out, []byte(jsonString), "", "\t")
-	if err != nil {
-		t.Error(err)
-	}
+		var out bytes.Buffer
+		err = json.Indent(&out, []byte(jsonString), "", "\t")
+		if err != nil {
+			t.Error(err)
+		}
 
-	out.WriteTo(os.Stdout)
-	fmt.Println()
-*/
+		out.WriteTo(os.Stdout)
+		fmt.Println()
+	*/
 }
 
 func TestGetTableSetAsJSON(t *testing.T) {
@@ -7243,15 +7243,18 @@ func TestGetTableSetAsJSON(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	_ = jsonString
 
-	fmt.Println(jsonString)
+	/*
+		fmt.Println(jsonString)
 
-	var out bytes.Buffer
-	err = json.Indent(&out, []byte(jsonString), "", "\t")
-	if err != nil {
-		t.Error(err)
-	}
+		var out bytes.Buffer
+		err = json.Indent(&out, []byte(jsonString), "", "\t")
+		if err != nil {
+			t.Error(err)
+		}
 
-	out.WriteTo(os.Stdout)
-	fmt.Println()
+		out.WriteTo(os.Stdout)
+		fmt.Println()
+	*/
 }
