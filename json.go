@@ -21,8 +21,7 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			buf.WriteByte('"')
 			buf.WriteString(table.colNames[colIndex])
-			buf.WriteByte('"')
-			buf.WriteByte(':')
+			buf.WriteString(`":`)
 			var val interface{}
 			val, err = table.GetValByColIndex(colIndex, rowIndex)
 			if err != nil {
@@ -101,9 +100,8 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonString string, err error) {
 			buf.WriteByte(',')
 		}
 	}
-	buf.WriteByte(']')
 
-	buf.WriteByte('}')
+	buf.WriteString(`]}`)
 
 	jsonString = buf.String()
 
