@@ -11,7 +11,7 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 
 	var buf bytes.Buffer
 
-	buf.WriteString(fmt.Sprintf(`{ "%s":`, table.tableName))
+	buf.WriteString(fmt.Sprintf(`{"%s":`, table.tableName))
 	buf.WriteByte('[')
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		buf.WriteByte('{')
@@ -77,7 +77,7 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonString string, err error) {
 
 	var buf bytes.Buffer
 
-	buf.WriteString(fmt.Sprintf(`{ "%s":`, tableSet.tableSetName))
+	buf.WriteString(fmt.Sprintf(`{"%s":`, tableSet.tableSetName))
 
 	buf.WriteByte('[')
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
@@ -102,6 +102,30 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonString string, err error) {
 	}
 
 	buf.WriteString(`]}`)
+
+	jsonString = buf.String()
+
+	return
+}
+
+func (table *Table) getTableMetadataAsJSON() (jsonString string, err error) {
+
+	var buf bytes.Buffer
+
+	buf.WriteString(fmt.Sprintf(`{"%s":`, table.tableName))
+	buf.WriteByte('[')
+	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		buf.WriteByte('{')
+		buf.WriteByte('"')
+		buf.WriteString(table.colNames[colIndex])
+		buf.WriteString(`":"`)
+		buf.WriteString(table.colTypes[colIndex])
+		buf.WriteString(`"}`)
+		if colIndex < len(table.colNames)-1 {
+			buf.WriteByte(',')
+		}
+	}
+	buf.WriteString("]}")
 
 	jsonString = buf.String()
 
