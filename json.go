@@ -131,3 +131,41 @@ func (table *Table) getTableMetadataAsJSON() (jsonString string, err error) {
 
 	return
 }
+
+/*
+	Marshall gotables TableSet metadata to JSON
+*/
+func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err error) {
+
+	var buf bytes.Buffer
+
+	buf.WriteString(fmt.Sprintf(`{"%s":`, tableSet.tableSetName))
+
+	buf.WriteByte('[')
+	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
+
+		var table *Table
+		table, err = tableSet.TableByTableIndex(tableIndex)
+		if err != nil {
+			return "", err
+		}
+
+		var jsonTableString string
+		jsonTableString, err = table.getTableMetadataAsJSON()
+		if err != nil {
+			return "", err
+		}
+
+		buf.WriteString(jsonTableString)
+
+		if tableIndex < len(tableSet.tables)-1 {
+			buf.WriteByte(',')
+		}
+	}
+
+	buf.WriteString(`]}`)
+
+	jsonString = buf.String()
+
+	return
+}
