@@ -7,9 +7,6 @@ import (
 	"strings"
 )
 
-/*
-Marshall gotables TableSet to JSON
-*/
 func (table *Table) getTableAsJSON() (jsonString string, err error) {
 
 	var buf bytes.Buffer
@@ -73,6 +70,9 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 	return
 }
 
+/*
+	Marshall gotables TableSet to JSON
+*/
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonString string, err error) {
 
 	var buf bytes.Buffer
