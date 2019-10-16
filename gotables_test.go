@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-	//	"encoding/json"
+//	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-	//	"os"
+//	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -7341,4 +7341,34 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 		out.WriteTo(os.Stdout)
 		fmt.Println()
 	*/
+}
+
+func TestnewTableFromJSON(t *testing.T) {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       f32     t     b    ui    bb            uu8
+    int string float64 float32 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+    4   "xxxx" 5.9     9.9     true  44   3     []            []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var jsonString string
+	jsonString, err = table.getTableMetadataAsJSON()
+	if err != nil {
+		t.Error(err)
+	}
+
+	table, err = newTableFromJSON(jsonString)
+	if err != nil {
+		t.Error(err)
+	}
 }
