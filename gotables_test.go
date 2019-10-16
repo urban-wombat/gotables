@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-	"encoding/json"
+	//	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-	"os"
+	//	"os"
 	"regexp"
 	"sort"
 	"strconv"
@@ -7200,7 +7200,7 @@ func TestGetTableAsJSON(t *testing.T) {
 	}
 	_ = jsonString
 
-/*
+	/*
 		fmt.Println(jsonString)
 
 		var out bytes.Buffer
@@ -7211,7 +7211,7 @@ func TestGetTableAsJSON(t *testing.T) {
 
 		out.WriteTo(os.Stdout)
 		fmt.Println()
-*/
+	*/
 }
 
 func TestGetTableSetAsJSON(t *testing.T) {
@@ -7284,7 +7284,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 	}
 	_ = jsonString
 
-/*
+	/*
 		fmt.Println(jsonString)
 
 		var out bytes.Buffer
@@ -7295,7 +7295,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 
 		out.WriteTo(os.Stdout)
 		fmt.Println()
-*/
+	*/
 }
 
 func TestGetTableSetMetadataAsJSON(t *testing.T) {
@@ -7327,8 +7327,9 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-//	_ = jsonString
+	_ = jsonString
 
+	/*
 		fmt.Println(jsonString)
 
 		var out bytes.Buffer
@@ -7339,4 +7340,5 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 
 		out.WriteTo(os.Stdout)
 		fmt.Println()
+	*/
 }
