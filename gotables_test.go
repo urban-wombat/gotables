@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-//	"encoding/json"
+	//	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-//	"os"
+	//	"os"
 	"regexp"
 	"sort"
 	"strconv"
