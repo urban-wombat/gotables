@@ -60,23 +60,23 @@ func TestRenameTable(t *testing.T) {
 
 		table, err = NewTable(setupName)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.RenameTable(test.input)
 		if (err == nil) != test.succeeds {
-			t.Errorf("Error renaming to %q: %s", test.output, err)
+			t.Fatalf("Error renaming to %q: %s", test.output, err)
 		}
 
 		var tableName string = table.Name()
 		if tableName != test.output {
-			t.Errorf("Expected %q, not %q", test.output, tableName)
+			t.Fatalf("Expected %q, not %q", test.output, tableName)
 		}
 
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -104,14 +104,14 @@ func TestTableSetRenameTable(t *testing.T) {
 	for i, test := range tests {
 		tableSet, err := NewTableSetFromString(`[Wilma]`)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		err = tableSet.RenameTable(test.renameFrom, test.renameTo)
 		if (err == nil) != test.succeeds {
-			t.Errorf("test[%d]: Error renaming from %q to %q: %v", i, test.renameFrom, test.renameTo, err)
+			t.Fatalf("test[%d]: Error renaming from %q to %q: %v", i, test.renameFrom, test.renameTo, err)
 		}
 		if isValid, err := tableSet.IsValidTableSet(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -141,7 +141,7 @@ func TestNewTableFromString01(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -160,26 +160,26 @@ func TestNewTableFromString01(t *testing.T) {
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
 		if err != nil {
-			t.Errorf("[%d] %v", i, err)
+			t.Fatalf("[%d] %v", i, err)
 		}
 		if (err == nil) != test.succeeds {
-			t.Errorf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
+			t.Fatalf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
 		}
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -195,7 +195,7 @@ func TestNewTableFromString02(t *testing.T) {
 		[EmptyTable2]
 	`)
 	if err == nil {
-		t.Errorf("Should return a syntax error. Table should have both names AND types.")
+		t.Fatalf("Should return a syntax error. Table should have both names AND types.")
 	}
 }
 
@@ -209,7 +209,7 @@ func TestNewTableFromString03(t *testing.T) {
 		A	B	C
 	`)
 	if err == nil {
-		t.Errorf("Should return a syntax error. Col names should not follow blank lines.")
+		t.Fatalf("Should return a syntax error. Col names should not follow blank lines.")
 	}
 }
 
@@ -223,7 +223,7 @@ func TestNewTableFromString04(t *testing.T) {
 		4	5	6
 		`)
 	if err == nil {
-		t.Errorf("Should return a syntax error. Col values should not follow blank lines.")
+		t.Fatalf("Should return a syntax error. Col values should not follow blank lines.")
 	}
 }
 
@@ -233,7 +233,7 @@ func TestNewTableFromString05(t *testing.T) {
 		
 		`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -248,24 +248,24 @@ func TestNewTableFromString05(t *testing.T) {
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
 		if err != nil {
-			t.Errorf("[%d] %v", i, err)
+			t.Fatalf("[%d] %v", i, err)
 		}
 		if (err == nil) != test.succeeds {
-			t.Errorf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
+			t.Fatalf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
 		}
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -279,10 +279,10 @@ func TestNewTableFromString06(t *testing.T) {
 
 		`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -297,28 +297,28 @@ func TestNewTableFromString06(t *testing.T) {
 	for i, test := range tests {
 		table, err := tableSet.Table(test.tableName)
 		if err != nil {
-			t.Errorf("[%d] %v", i, err)
+			t.Fatalf("[%d] %v", i, err)
 		}
 		if (err == nil) != test.succeeds {
-			t.Errorf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
+			t.Fatalf("test[%d]: err == %v but expecting succeeds == %t", i, err, test.succeeds)
 		}
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 		if isValid, err := tableSet.IsValidTableSet(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -334,7 +334,7 @@ func TestNewTableFromString07(t *testing.T) {
 
 	`)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -350,7 +350,7 @@ func TestNewTableFromString08(t *testing.T) {
 
 		`)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -378,17 +378,17 @@ func TestNewTableFromString09(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -402,7 +402,7 @@ func TestNewTableFromString10(t *testing.T) {
 		j int
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -418,17 +418,17 @@ func TestNewTableFromString10(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -443,7 +443,7 @@ func TestNewTableFromString11(t *testing.T) {
 		s string = "ABC"
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -459,17 +459,17 @@ func TestNewTableFromString11(t *testing.T) {
 
 		colCount := table.ColCount()
 		if colCount != test.colCount {
-			t.Errorf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
+			t.Fatalf("test[%d]: expecting [%s] colCount %d, not %d\n", i, test.tableName, test.colCount, colCount)
 		}
 
 		rowCount := table.RowCount()
 		if rowCount != test.rowCount {
-			t.Errorf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
+			t.Fatalf("test[%d]: expecting [%s] rowCount %d, not %d\n", i, test.tableName, test.rowCount, rowCount)
 		}
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -484,7 +484,7 @@ func TestNewTableFromString12(t *testing.T) {
 		s string =
 	`)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -502,7 +502,7 @@ func TestNewTableFromString13(t *testing.T) {
 		[0 1 255 3 4 1 5]
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Should fail: uint8 -1
@@ -513,7 +513,7 @@ func TestNewTableFromString13(t *testing.T) {
 		[0 -1 255 3 4]
 	`)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Should fail: uint8 256
@@ -524,7 +524,7 @@ func TestNewTableFromString13(t *testing.T) {
 		[0 1 256 3 4 2 6]
 	`)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = NewTableFromString(
@@ -541,7 +541,7 @@ func TestNewTableFromString13(t *testing.T) {
 	`)
 	// Invalid uint 256
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -559,11 +559,11 @@ func TestNewTableFromString14(t *testing.T) {
 	`
 	table, err := NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s =
@@ -578,19 +578,19 @@ func TestNewTableFromString14(t *testing.T) {
 	`
 	table, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol("bite", "[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -608,30 +608,30 @@ func TestNewTableFromString14(t *testing.T) {
 //
 //		table, err := NewTableFromString(s)
 //		if err != nil {
-//			t.Error(err)
+//			t.Fatal(err)
 //		}
 //
-//		if isValid, err := table.IsValidTable(); !isValid { t.Error(err) }
+//		if isValid, err := table.IsValidTable(); !isValid { t.Fatal(err) }
 //
 //	/*
 //		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 //			s, err := table.GetString("s", rowIndex)
 //			if err != nil {
-//				t.Error(err)
+//				t.Fatal(err)
 //			}
 //
 //			chars, err := table.GetByteSlice("chars", rowIndex)
 //			if err != nil {
-//				t.Error(err)
+//				t.Fatal(err)
 //			}
 //
 //			if len(s) != len(chars) {
-//				t.Errorf("len(%q)=%d != len(%v)=%d", s, len(s), chars, len(chars))
+//				t.Fatalf("len(%q)=%d != len(%v)=%d", s, len(s), chars, len(chars))
 //			}
 //
 //			for i := 0; i < table.RowCount(); i++ {
 //				if s[i] != chars[i] {
-//					t.Errorf("s[%d] != chars[%d]: '%c' != %d", i, i, s[i], chars[i])
+//					t.Fatalf("s[%d] != chars[%d]: '%c' != %d", i, i, s[i], chars[i])
 //				}
 //			}
 //		}
@@ -650,7 +650,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -659,7 +659,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -668,7 +668,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -677,7 +677,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -686,7 +686,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -699,7 +699,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -711,7 +711,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -720,7 +720,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -729,7 +729,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -738,7 +738,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -748,7 +748,7 @@ func TestNewTableFromString16(t *testing.T) {
 	// :3: looks like struct but invalid col name: float32 (cannot use Go type as col name)
 	_, err = NewTableFromString(s)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -757,12 +757,12 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -772,7 +772,7 @@ func TestNewTableFromString16(t *testing.T) {
 	// looks like struct but missing value after equals: x abc123.xyz456 =
 	_, err = NewTableFromString(s)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -781,7 +781,7 @@ func TestNewTableFromString16(t *testing.T) {
 	// looks like struct but missing value after equals: x y =
 	_, err = NewTableFromString(s)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -789,7 +789,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	s = `[Table]
@@ -797,7 +797,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -842,7 +842,7 @@ func TestRound(t *testing.T) {
 	for i, test := range tests {
 		rounded := util.Round(test.val, test.places)
 		if rounded != test.rounded {
-			t.Errorf("test[%d]: expecting %f, not %f", i, test.rounded, rounded)
+			t.Fatalf("test[%d]: expecting %f, not %f", i, test.rounded, rounded)
 		}
 	}
 }
@@ -876,7 +876,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 	table, err = NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Note: Tests are collected inside code blocks for human readability.
@@ -885,7 +885,7 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("bVal", "bool")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		// After first col has been appended.
@@ -894,52 +894,52 @@ func TestSetAndGetFunctions(t *testing.T) {
 	if table.RowCount() == 0 {
 		err = table.AppendRow()
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		expected := true
 		err = table.SetBool("bVal", rowIndex, expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		bVal, err = table.GetBool("bVal", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if bVal != expected {
-			t.Errorf("expecting GetBool(bVal) value %t, not %t\n", expected, bVal)
+			t.Fatalf("expecting GetBool(bVal) value %t, not %t\n", expected, bVal)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		expected = false
 		err = table.SetBoolByColIndex(colIndex, rowIndex, expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		bVal, err = table.GetBoolByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if bVal != expected {
-			t.Errorf("expecting GetBoolByColIndex() value %t, not %t\n", expected, bVal)
+			t.Fatalf("expecting GetBoolByColIndex() value %t, not %t\n", expected, bVal)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 
@@ -947,35 +947,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("f32Val", "float32")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetFloat32("f32Val", rowIndex, 55.1)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		f32Val, err = table.GetFloat32("f32Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if f32Val != 55.1 {
-			t.Errorf("expecting GetFloat32() value %f, not %f\n", 55.1, f32Val)
+			t.Fatalf("expecting GetFloat32() value %f, not %f\n", 55.1, f32Val)
 		}
 
 		err = table.SetFloat32ByColIndex(colIndex, rowIndex, 66.1)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		f32Val, err = table.GetFloat32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if f32Val != 66.1 {
-			t.Errorf("expecting GetFloat32ByColIndex() value %f, not %f\n", 66.1, f32Val)
+			t.Fatalf("expecting GetFloat32ByColIndex() value %f, not %f\n", 66.1, f32Val)
 		}
 	}
 
@@ -983,35 +983,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("f64Val", "float64")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetFloat64("f64Val", rowIndex, 88.1)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		f64Val, err = table.GetFloat64("f64Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if f64Val != 88.1 {
-			t.Errorf("expecting GetFloat64() value %f, not %f\n", 88.1, f64Val)
+			t.Fatalf("expecting GetFloat64() value %f, not %f\n", 88.1, f64Val)
 		}
 
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, 77.1)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		f64Val, err = table.GetFloat64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if f64Val != 77.1 {
-			t.Errorf("expecting GetFloat64ByColIndex() value %f, not %f\n", 77.1, f64Val)
+			t.Fatalf("expecting GetFloat64ByColIndex() value %f, not %f\n", 77.1, f64Val)
 		}
 	}
 
@@ -1019,35 +1019,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("iVal", "int")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetInt("iVal", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		iVal, err = table.GetInt("iVal", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if iVal != 55 {
-			t.Errorf("expecting GetInt() value %d, not %d\n", 55, iVal)
+			t.Fatalf("expecting GetInt() value %d, not %d\n", 55, iVal)
 		}
 
 		err = table.SetIntByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		iVal, err = table.GetIntByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if iVal != 66 {
-			t.Errorf("expecting GetIntByColIndex() value %d, not %d\n", 66, iVal)
+			t.Fatalf("expecting GetIntByColIndex() value %d, not %d\n", 66, iVal)
 		}
 	}
 
@@ -1055,35 +1055,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("i16Val", "int16")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetInt16("i16Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i16Val, err = table.GetInt16("i16Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i16Val != 55 {
-			t.Errorf("expecting GetInt16() value %d, not %d\n", 55, i16Val)
+			t.Fatalf("expecting GetInt16() value %d, not %d\n", 55, i16Val)
 		}
 
 		err = table.SetInt16ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i16Val, err = table.GetInt16ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i16Val != 66 {
-			t.Errorf("expecting GetInt16ByColIndex() value %d, not %d\n", 66, i16Val)
+			t.Fatalf("expecting GetInt16ByColIndex() value %d, not %d\n", 66, i16Val)
 		}
 	}
 
@@ -1091,35 +1091,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("i32Val", "int32")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetInt32("i32Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i32Val, err = table.GetInt32("i32Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i32Val != 55 {
-			t.Errorf("expecting GetInt32() value %d, not %d\n", 55, i32Val)
+			t.Fatalf("expecting GetInt32() value %d, not %d\n", 55, i32Val)
 		}
 
 		err = table.SetInt32ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i32Val, err = table.GetInt32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i32Val != 66 {
-			t.Errorf("expecting GetInt32ByColIndex() value %d, not %d\n", 66, i32Val)
+			t.Fatalf("expecting GetInt32ByColIndex() value %d, not %d\n", 66, i32Val)
 		}
 	}
 
@@ -1127,35 +1127,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("i64Val", "int64")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetInt64("i64Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i64Val, err = table.GetInt64("i64Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i64Val != 55 {
-			t.Errorf("expecting GetInt64() value %d, not %d\n", 55, i64Val)
+			t.Fatalf("expecting GetInt64() value %d, not %d\n", 55, i64Val)
 		}
 
 		err = table.SetInt64ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i64Val, err = table.GetInt64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i64Val != 66 {
-			t.Errorf("expecting GetInt64ByColIndex() value %d, not %d\n", 66, i64Val)
+			t.Fatalf("expecting GetInt64ByColIndex() value %d, not %d\n", 66, i64Val)
 		}
 	}
 
@@ -1163,35 +1163,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("i8Val", "int8")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetInt8("i8Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i8Val, err = table.GetInt8("i8Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i8Val != 55 {
-			t.Errorf("expecting GetInt8() value %d, not %d\n", 55, i8Val)
+			t.Fatalf("expecting GetInt8() value %d, not %d\n", 55, i8Val)
 		}
 
 		err = table.SetInt8ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		i8Val, err = table.GetInt8ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if i8Val != 66 {
-			t.Errorf("expecting GetInt8ByColIndex() value %d, not %d\n", 66, i8Val)
+			t.Fatalf("expecting GetInt8ByColIndex() value %d, not %d\n", 66, i8Val)
 		}
 	}
 
@@ -1199,35 +1199,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("uiVal", "uint")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetUint("uiVal", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		uiVal, err = table.GetUint("uiVal", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if uiVal != 55 {
-			t.Errorf("expecting GetUint() value %d, not %d\n", 55, uiVal)
+			t.Fatalf("expecting GetUint() value %d, not %d\n", 55, uiVal)
 		}
 
 		err = table.SetUintByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		uiVal, err = table.GetUintByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if uiVal != 66 {
-			t.Errorf("expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
+			t.Fatalf("expecting GetUintByColIndex() value %d, not %d\n", 66, uiVal)
 		}
 	}
 
@@ -1235,35 +1235,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("ui16Val", "uint16")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetUint16("ui16Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui16Val, err = table.GetUint16("ui16Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui16Val != 55 {
-			t.Errorf("expecting GetUint16() value %d, not %d\n", 55, ui16Val)
+			t.Fatalf("expecting GetUint16() value %d, not %d\n", 55, ui16Val)
 		}
 
 		err = table.SetUint16ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui16Val, err = table.GetUint16ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui16Val != 66 {
-			t.Errorf("expecting GetUint16ByColIndex() value %d, not %d\n", 66, ui16Val)
+			t.Fatalf("expecting GetUint16ByColIndex() value %d, not %d\n", 66, ui16Val)
 		}
 	}
 
@@ -1271,35 +1271,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("ui32Val", "uint32")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetUint32("ui32Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui32Val, err = table.GetUint32("ui32Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui32Val != 55 {
-			t.Errorf("expecting GetUint32() value %d, not %d\n", 55, ui32Val)
+			t.Fatalf("expecting GetUint32() value %d, not %d\n", 55, ui32Val)
 		}
 
 		err = table.SetUint32ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui32Val, err = table.GetUint32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui32Val != 66 {
-			t.Errorf("expecting GetUint32ByColIndex() value %d, not %d\n", 66, ui32Val)
+			t.Fatalf("expecting GetUint32ByColIndex() value %d, not %d\n", 66, ui32Val)
 		}
 	}
 
@@ -1307,35 +1307,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("ui64Val", "uint64")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetUint64("ui64Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui64Val, err = table.GetUint64("ui64Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui64Val != 55 {
-			t.Errorf("expecting GetUint64() value %d, not %d\n", 55, ui64Val)
+			t.Fatalf("expecting GetUint64() value %d, not %d\n", 55, ui64Val)
 		}
 
 		err = table.SetUint64ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui64Val, err = table.GetUint64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui64Val != 66 {
-			t.Errorf("expecting GetUint64ByColIndex() value %d, not %d\n", 66, ui64Val)
+			t.Fatalf("expecting GetUint64ByColIndex() value %d, not %d\n", 66, ui64Val)
 		}
 	}
 
@@ -1343,35 +1343,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("ui8Val", "uint8")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetUint8("ui8Val", rowIndex, 55)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui8Val, err = table.GetUint8("ui8Val", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui8Val != 55 {
-			t.Errorf("expecting GetUint8() value %d, not %d\n", 55, ui8Val)
+			t.Fatalf("expecting GetUint8() value %d, not %d\n", 55, ui8Val)
 		}
 
 		err = table.SetUint8ByColIndex(colIndex, rowIndex, 66)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui8Val, err = table.GetUint8ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if ui8Val != 66 {
-			t.Errorf("expecting GetUint8ByColIndex() value %d, not %d\n", 66, ui8Val)
+			t.Fatalf("expecting GetUint8ByColIndex() value %d, not %d\n", 66, ui8Val)
 		}
 	}
 
@@ -1379,35 +1379,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("ui8Slice", "[]uint8")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetByteSlice("ui8Slice", rowIndex, []uint8{0, 1, 2})
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui8Slice, err = table.GetByteSlice("ui8Slice", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if !bytes.Equal(ui8Slice, []uint8{0, 1, 2}) { // Slices not equal.
-			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []uint8{0, 1, 2}, ui8Slice)
+			t.Fatalf("expecting GetByteSlice() value %d, not %d\n", []uint8{0, 1, 2}, ui8Slice)
 		}
 
 		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []uint8{2, 4, 6})
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		ui8Slice, err = table.GetByteSliceByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if !bytes.Equal(ui8Slice, []uint8{2, 4, 6}) { // Slices not equal.
-			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []uint8{2, 4, 6}, ui8Slice)
+			t.Fatalf("expecting GetByteSliceByColIndex() value %d, not %d\n", []uint8{2, 4, 6}, ui8Slice)
 		}
 	}
 
@@ -1415,35 +1415,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("byteVal", "byte")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetByte("byteVal", rowIndex, 56)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		byteVal, err = table.GetByte("byteVal", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if byteVal != 56 {
-			t.Errorf("expecting GetByte() value %d, not %d\n", 56, byteVal)
+			t.Fatalf("expecting GetByte() value %d, not %d\n", 56, byteVal)
 		}
 
 		err = table.SetByteByColIndex(colIndex, rowIndex, 67)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		byteVal, err = table.GetByteByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if byteVal != 67 {
-			t.Errorf("expecting GetByteByColIndex() value %d, not %d\n", 67, byteVal)
+			t.Fatalf("expecting GetByteByColIndex() value %d, not %d\n", 67, byteVal)
 		}
 	}
 
@@ -1451,35 +1451,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("byteSlice", "[]byte")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetByteSlice("byteSlice", rowIndex, []byte{4, 5, 6})
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		byteSlice, err = table.GetByteSlice("byteSlice", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if !bytes.Equal(byteSlice, []byte{4, 5, 6}) { // Slices not equal.
-			t.Errorf("expecting GetByteSlice() value %d, not %d\n", []byte{4, 5, 6}, byteSlice)
+			t.Fatalf("expecting GetByteSlice() value %d, not %d\n", []byte{4, 5, 6}, byteSlice)
 		}
 
 		err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{7, 8, 9})
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		byteSlice, err = table.GetByteSliceByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if !bytes.Equal(byteSlice, []byte{7, 8, 9}) { // Slices not equal.
-			t.Errorf("expecting GetByteSliceByColIndex() value %d, not %d\n", []byte{7, 8, 9}, byteSlice)
+			t.Fatalf("expecting GetByteSliceByColIndex() value %d, not %d\n", []byte{7, 8, 9}, byteSlice)
 		}
 	}
 
@@ -1487,35 +1487,35 @@ func TestSetAndGetFunctions(t *testing.T) {
 
 		err = table.AppendCol("sVal", "string")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		colIndex += 1
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.SetString("sVal", rowIndex, "55")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		sVal, err = table.GetString("sVal", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if sVal != "55" {
-			t.Errorf("expecting GetString() value %q, not %q\n", "55", sVal)
+			t.Fatalf("expecting GetString() value %q, not %q\n", "55", sVal)
 		}
 
 		err = table.SetStringByColIndex(colIndex, rowIndex, "66")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		sVal, err = table.GetStringByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if sVal != "66" {
-			t.Errorf("expecting GetStringByColIndex() value %q, not %q\n", "66", sVal)
+			t.Fatalf("expecting GetStringByColIndex() value %q, not %q\n", "66", sVal)
 		}
 	}
 
@@ -1525,14 +1525,14 @@ func TestSetAndGetFunctions(t *testing.T) {
 	var expected bool = true
 	err = table.SetStructShape(expected)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	shape, err = table.IsStructShape()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if shape != expected {
-		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
+		t.Fatalf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
 	}
 
 	//	fmt.Println(table)
@@ -1540,17 +1540,17 @@ func TestSetAndGetFunctions(t *testing.T) {
 	expected = false
 	err = table.SetStructShape(expected)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	shape, err = table.IsStructShape()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if shape != expected {
-		t.Errorf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
+		t.Fatalf("expecting [%s].IsStructShape() value %t, not %t\n", table.Name(), expected, shape)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1573,7 +1573,7 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 		uintMaxVal = math.MaxUint64
 	default:
 		msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-		t.Errorf(msg)
+		t.Fatalf(msg)
 	}
 
 	var tests = []struct {
@@ -1795,9 +1795,9 @@ func TestSetIntegerMinAndMax(t *testing.T) {
 		if err == nil != test.valid {
 			switch test.valid {
 			case true:
-				t.Errorf("test[%d]: %v", i, err)
+				t.Fatalf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
+				t.Fatalf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -1858,7 +1858,7 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 		)
 	default:
 		msg := fmt.Sprintf("CHECK int or uint ON THIS SYSTEM: Unknown int size: %d bits", intBits)
-		t.Errorf(msg)
+		t.Fatalf(msg)
 	}
 
 	for i, test := range tests {
@@ -1866,9 +1866,9 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 		if err == nil != test.valid {
 			switch test.valid {
 			case true:
-				t.Errorf("test[%d]: %v", i, err)
+				t.Fatalf("test[%d]: %v", i, err)
 			case false:
-				t.Errorf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
+				t.Fatalf("test[%d]: NewTableSetFromString(): expecting this input to fail with a range error: %s", i, test.input)
 			}
 		}
 	}
@@ -2097,19 +2097,19 @@ func TestIsNumericColType(t *testing.T) {
 
 	table, err := tableSet.Table("table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 
 		colName, err := table.ColName(colIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		colType, err := table.ColTypeByColIndex(colIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		isNumeric, _ := IsNumericColType(colType)
@@ -2117,16 +2117,16 @@ func TestIsNumericColType(t *testing.T) {
 		hasPrefixT := strings.HasPrefix(colName, "T_")
 		hasPrefixF := strings.HasPrefix(colName, "F_")
 		if !hasPrefixT && !hasPrefixF {
-			t.Errorf("expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName)
+			t.Fatalf("expecting col name %s to have prefix \"T_\" or \"F_\" but found: %q", colName, colName)
 		}
 
 		if isNumeric != hasPrefixT {
 			err := fmt.Errorf("col %s type %s unexpected IsNumeric: %t", colName, colType, isNumeric)
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -2154,46 +2154,46 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table, err := tableSet.Table("my_table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	rowCount := table.RowCount()
 	if rowCount != 0 {
-		t.Errorf("expecting row count of 0, not: %d", rowCount)
+		t.Fatalf("expecting row count of 0, not: %d", rowCount)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	rowCount = table.RowCount()
 	if rowCount != 1 {
-		t.Errorf("expecting row count of 1, not: %d", rowCount)
+		t.Fatalf("expecting row count of 1, not: %d", rowCount)
 	}
 
 	err = table.DeleteRow(0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	rowCount = table.RowCount()
 	if rowCount != 0 {
-		t.Errorf("expecting row count of 0, not: %d", rowCount)
+		t.Fatalf("expecting row count of 0, not: %d", rowCount)
 	}
 }
 
@@ -2223,70 +2223,70 @@ func TestColCount(t *testing.T) {
 
 	table, err := tableSet.Table("table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	const initialColCount = 14
 
 	colCount := table.ColCount()
 	if colCount != initialColCount {
-		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
+		t.Fatalf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 
 	err = table.AppendCol("ExtraCol", "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount)
+		t.Fatalf("expecting col count of %d, not: %d", initialColCount+1, colCount)
 	}
 
 	lastCol := colCount - 1
 	err = table.DeleteColByColIndex(lastCol)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
+		t.Fatalf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 
 	err = table.AppendCol("AnotherCol", "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	colCount = table.ColCount()
 	if colCount != initialColCount+1 {
-		t.Errorf("expecting col count of %d, not: %d", initialColCount+1, colCount)
+		t.Fatalf("expecting col count of %d, not: %d", initialColCount+1, colCount)
 	}
 
 	err = table.DeleteCol("AnotherCol")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	colCount = table.ColCount()
 	if colCount != initialColCount {
-		t.Errorf("expecting col count of %d, not: %d", initialColCount, colCount)
+		t.Fatalf("expecting col count of %d, not: %d", initialColCount, colCount)
 	}
 }
 
@@ -2316,27 +2316,27 @@ func TestDeleteCol(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table, err := tableSet.Table("table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.DeleteCol("T_uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -2361,7 +2361,7 @@ func TestDeleteRow(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	initialRowCount := table.RowCount()
@@ -2370,15 +2370,15 @@ func TestDeleteRow(t *testing.T) {
 
 	err = table.DeleteRow(deleteRow)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	rowCount := table.RowCount()
 	if rowCount != initialRowCount-1 {
-		t.Errorf("expecting 1 row less than %d after DeleteRow(%d) but found %d", initialRowCount, deleteRow, rowCount)
+		t.Fatalf("expecting 1 row less than %d after DeleteRow(%d) but found %d", initialRowCount, deleteRow, rowCount)
 	}
 
 	// fmt.Println(table)
@@ -2386,10 +2386,10 @@ func TestDeleteRow(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if item == deleteRow {
-			t.Errorf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow)
+			t.Fatalf("expecting to NOT find item %d after DeleteRow(%d) but found %d", deleteRow, deleteRow, deleteRow)
 		}
 	}
 }
@@ -2415,7 +2415,7 @@ func TestDeleteRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	initialRowCount := table.RowCount()
@@ -2423,28 +2423,28 @@ func TestDeleteRows(t *testing.T) {
 	// Test invalid row index range: first greater than last
 	err = table.DeleteRows(5, 4)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Test invalid row index range: first below zero
 	err = table.DeleteRows(-1, 4)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Test invalid row index range: last above initialRowCount-1
 	err = table.DeleteRows(0, initialRowCount)
 	if err == nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var first int
@@ -2458,25 +2458,25 @@ func TestDeleteRows(t *testing.T) {
 	items = last - first + 1
 	err = table.DeleteRows(first, last)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
+		t.Fatalf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		var item int
 		item, err = table.GetInt("item", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if item == first {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 	}
 
@@ -2486,7 +2486,7 @@ func TestDeleteRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	first = 4
@@ -2494,28 +2494,28 @@ func TestDeleteRows(t *testing.T) {
 	items = last - first + 1
 	err = table.DeleteRows(first, last)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
+		t.Fatalf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		var item int
 		item, err = table.GetInt("item", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if item == first {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 
@@ -2525,7 +2525,7 @@ func TestDeleteRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	first = 6
@@ -2533,28 +2533,28 @@ func TestDeleteRows(t *testing.T) {
 	items = last - first + 1
 	err = table.DeleteRows(first, last)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
+		t.Fatalf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		var item int
 		item, err = table.GetInt("item", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if item == first {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 
@@ -2564,7 +2564,7 @@ func TestDeleteRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	first = 0
@@ -2572,27 +2572,27 @@ func TestDeleteRows(t *testing.T) {
 	items = last - first + 1
 	err = table.DeleteRows(first, last)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// fmt.Println(table)
 	rowCount = table.RowCount()
 	if rowCount != initialRowCount-items {
-		t.Errorf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
+		t.Fatalf("expecting %d row less than %d after DeleteRows(%d, %d) but found %d", items, initialRowCount, first, last, rowCount)
 	}
 	for i := 0; i < table.RowCount(); i++ {
 		item, err := table.GetInt("item", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if item == first {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", first, first, last, first)
 		}
 		if item == last {
-			t.Errorf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
+			t.Fatalf("expecting to NOT find item %d after DeleteRows(%d, %d) but found %d", last, first, last, last)
 		}
 	}
 }
@@ -2877,10 +2877,10 @@ func TestGetValAsString(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var expecting string
@@ -2889,37 +2889,37 @@ func TestGetValAsString(t *testing.T) {
 	expecting = "Fred"
 	found, err = table.GetValAsString("s", 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if found != expecting {
-		t.Errorf("expecting %s but found: %s", expecting, found)
+		t.Fatalf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "true"
 	found, err = table.GetValAsString("t", 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if found != expecting {
-		t.Errorf("expecting %s but found: %s", expecting, found)
+		t.Fatalf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "23"
 	found, err = table.GetValAsString("i", 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if found != expecting {
-		t.Errorf("expecting %s but found: %s", expecting, found)
+		t.Fatalf("expecting %s but found: %s", expecting, found)
 	}
 
 	expecting = "55.5"
 	found, err = table.GetValAsString("f", 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if found != expecting {
-		t.Errorf("expecting %s but found: %s", expecting, found)
+		t.Fatalf("expecting %s but found: %s", expecting, found)
 	}
 }
 
@@ -2936,20 +2936,20 @@ func TestTableSet_FileName(t *testing.T) {
 	actualFileName := util.FuncNameNoParens() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableSet, err := NewTableSetFromFile(actualFileName)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	fileName := tableSet.FileName()
 	if fileName != actualFileName {
-		t.Errorf("Expecting FileName() = %q but found %q", actualFileName, fileName)
+		t.Fatalf("Expecting FileName() = %q but found %q", actualFileName, fileName)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -2957,22 +2957,22 @@ func TestTableSet_SetName(t *testing.T) {
 	expected := ""
 	tableSet, err := NewTableSet(expected)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableSetName := tableSet.Name()
 	if tableSetName != expected {
-		t.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName)
+		t.Fatalf("Expecting tableSetName = %q but found %q", expected, tableSetName)
 	}
 
 	expected = "Musk"
 	tableSet.SetName(expected)
 	tableSetName = tableSet.Name()
 	if tableSetName != expected {
-		t.Errorf("Expecting tableSetName = %q but found %q", expected, tableSetName)
+		t.Fatalf("Expecting tableSetName = %q but found %q", expected, tableSetName)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -2980,24 +2980,24 @@ func TestTable_SetName(t *testing.T) {
 	expected := "InitialName"
 	table, err := NewTable(expected)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableName := table.Name()
 	if tableName != expected {
-		t.Errorf("Expecting tableName = %q but found %q", expected, tableName)
+		t.Fatalf("Expecting tableName = %q but found %q", expected, tableName)
 	}
 
 	expected = "Elon"
 	if err = table.SetName(expected); err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	tableName = table.Name()
 	if tableName != expected {
-		t.Errorf("Expecting tableName = %q but found %q", expected, tableName)
+		t.Fatalf("Expecting tableName = %q but found %q", expected, tableName)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -3019,7 +3019,7 @@ func TestMissingValueForType(t *testing.T) {
 	for _, test := range tests {
 		_, hasMissing := missingValueForType(test.typeName)
 		if hasMissing != test.expected {
-			t.Errorf("Expecting missingValueForType(%q) = %t but found %t", test.typeName, test.expected, hasMissing)
+			t.Fatalf("Expecting missingValueForType(%q) = %t but found %t", test.typeName, test.expected, hasMissing)
 		}
 	}
 }
@@ -3059,7 +3059,7 @@ func TestPreNumberOf(t *testing.T) {
 
 		preNumber := preNumberOf(test.sNumber)
 		if preNumber != test.expected {
-			t.Errorf("Expecting preNumberOf(%q) = %d but found %d", test.sNumber, test.expected, preNumber)
+			t.Fatalf("Expecting preNumberOf(%q) = %d but found %d", test.sNumber, test.expected, preNumber)
 		}
 	}
 }
@@ -3099,7 +3099,7 @@ func TestPointsOf(t *testing.T) {
 
 		points := pointsOf(test.sNumber)
 		if points != test.expected {
-			t.Errorf("Expecting pointsOf(%q) = %d but found %d", test.sNumber, test.expected, points)
+			t.Fatalf("Expecting pointsOf(%q) = %d but found %d", test.sNumber, test.expected, points)
 		}
 	}
 }
@@ -3139,7 +3139,7 @@ func TestPrecisionOf(t *testing.T) {
 
 		precision := precisionOf(test.sNumber)
 		if precision != test.expected {
-			t.Errorf("Expecting precisionOf(%q) = %d but found %d", test.sNumber, test.expected, precision)
+			t.Fatalf("Expecting precisionOf(%q) = %d but found %d", test.sNumber, test.expected, precision)
 		}
 	}
 }
@@ -3164,7 +3164,7 @@ func TestPadTrailingZeros(t *testing.T) {
 
 		trimmed := padTrailingZeros(test.trailing)
 		if trimmed != test.expected {
-			t.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
+			t.Fatalf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
 		}
 	}
 }
@@ -3189,7 +3189,7 @@ func TestTrimTrailingZeros(t *testing.T) {
 
 		trimmed := trimTrailingZeros(test.trailing)
 		if trimmed != test.expected {
-			t.Errorf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
+			t.Fatalf("Expecting TrimTrailingZeros(%q) = %q but found %q", test.trailing, test.expected, trimmed)
 		}
 	}
 }
@@ -3210,10 +3210,10 @@ func TestIsColTypeByColIndex(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err) // We're not testing this function.
+		t.Fatal(err) // We're not testing this function.
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -3243,11 +3243,11 @@ func TestIsColTypeByColIndex(t *testing.T) {
 		isColType, _ := table.IsColTypeByColIndex(test.colIndex, test.colType)
 		// Ignore err. Returns err if col type is false.
 		if isColType != test.expected {
-			t.Errorf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t", test.colIndex, test.colType, test.expected, isColType)
+			t.Fatalf("Expecting table.IsColTypeByColIndex(%d, %q) = %t but found %t", test.colIndex, test.colType, test.expected, isColType)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -3267,10 +3267,10 @@ func TestIsColType(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err) // We're not testing this function.
+		t.Fatal(err) // We're not testing this function.
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -3300,11 +3300,11 @@ func TestIsColType(t *testing.T) {
 		isColType, _ := table.IsColType(test.colName, test.colType)
 		// Ignore err. Returns err if col type is false.
 		if isColType != test.expected {
-			t.Errorf("Expecting table.IsColType(%s, %q) = %t but found %t", test.colName, test.colType, test.expected, isColType)
+			t.Fatalf("Expecting table.IsColType(%s, %q) = %t but found %t", test.colName, test.colType, test.expected, isColType)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -3596,36 +3596,36 @@ func TestNewTableFromMetadata(t *testing.T) {
 		table, err = NewTableFromMetadata("Moviegoers", test.colNames, test.colTypes)
 		if (err == nil) != test.expected {
 			if err != nil {
-				t.Error(err)
+				t.Fatal(err)
 			} else {
-				t.Errorf("Expecting fail: NewTableFromMetadata(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes)
+				t.Fatalf("Expecting fail: NewTableFromMetadata(\"Moviegoers\", %v, %v)", test.colNames, test.colTypes)
 			}
 		}
 
 		_, err = table.IsValidTable()
 		if (err == nil) != test.expected {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.AppendRows(1)
 		if (err == nil) != test.expected {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if table != nil {
 			rowCount := table.RowCount()
 			if (rowCount == 1) != test.expected {
-				t.Error(err)
+				t.Fatal(err)
 			}
 		}
 
 		_, err = table.IsValidRow(0)
 		if (err == nil) != test.expected {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -3784,16 +3784,16 @@ func TestTable_RenameCol(t *testing.T) {
 		// Reinstate table for each test. For cognitive simplicity.
 		table, err := NewTableFromString(tableString)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.RenameCol(test.from, test.to)
 		if (err == nil) != test.expected {
-			t.Errorf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
+			t.Fatalf("Expecting table.RenameCol(%q, %q) %s but found err = %v",
 				test.from, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -3822,7 +3822,7 @@ func TestPlural(t *testing.T) {
 
 		var result string = plural(test.in)
 		if result != test.expected {
-			t.Errorf("Expecting plural(%d) = %q but found: %q", test.in, test.expected, result)
+			t.Fatalf("Expecting plural(%d) = %q but found: %q", test.in, test.expected, result)
 		}
 	}
 }
@@ -3839,7 +3839,7 @@ func TestIsValidCellValue(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -3866,11 +3866,11 @@ func TestIsValidCellValue(t *testing.T) {
 
 		result, err := table.IsValidCellValue(test.col, test.val)
 		if result != test.expecting {
-			t.Errorf("Expecting IsValidCellValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
+			t.Fatalf("Expecting IsValidCellValue(%q, %v) = %t but found: %t, err: %v", test.col, test.val, test.expecting, result, err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -3952,7 +3952,7 @@ func TestTable_Equals(t *testing.T) {
 
 	_, err = table1.Equals(table2)
 	if err == nil {
-		t.Errorf("Expecting an error calling Equals() on nil table")
+		t.Fatalf("Expecting an error calling Equals() on nil table")
 	}
 	//	fmt.Println(err)
 
@@ -3965,12 +3965,12 @@ func TestTable_Equals(t *testing.T) {
     `
 	table1, err = NewTableFromString(t1string)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = table1.Equals(table2)
 	if err == nil {
-		t.Errorf("Expecting an error calling Equals() with nil table")
+		t.Fatalf("Expecting an error calling Equals() with nil table")
 	}
 	//	fmt.Println(err)
 
@@ -3983,21 +3983,21 @@ func TestTable_Equals(t *testing.T) {
     `
 	table2, err = NewTableFromString(t2string)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	equals, err := table1.Equals(table2)
 	if !equals {
-		t.Errorf("Expecting table1.Equals(table2) = true but found %t", equals)
+		t.Fatalf("Expecting table1.Equals(table2) = true but found %t", equals)
 	}
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table1.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table2.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -4192,32 +4192,32 @@ func TestTable_Copy(t *testing.T) {
 
 		table, err := NewTableFromString(test.tableString)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		tableCopy, err := table.Copy(test.copyRows)
 		if err != nil {
-			t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
+			t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 		}
 		if isValid, err := tableCopy.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if test.copyRows {
 			// Expecting same rowCount in each.
 			_, err = tableCopy.Equals(table)
 			if err != nil {
-				t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
+				t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 			}
 		} else {
 			// Expecting zero rowCount in tableCopy.
 			// Need to delete rowCount in source table for Equals to compare empty with empty.
 			err = table.DeleteRowsAll()
 			if err != nil {
-				t.Errorf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
+				t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 			}
 		}
 	}
@@ -4238,37 +4238,37 @@ func TestGetColInfoAsSlices(t *testing.T) {
 		j int64 = 99
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colNames []string
 	var colTypes []string
 	colNames, colTypes, err = table.GetColInfoAsSlices()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		colName, err := table.ColName(colIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		colType, err := table.ColTypeByColIndex(colIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if colNames[colIndex] != colName {
-			t.Errorf("expecting colName %s at colNames[%d], not %s", colName, colIndex, colNames[colIndex])
+			t.Fatalf("expecting colName %s at colNames[%d], not %s", colName, colIndex, colNames[colIndex])
 		}
 
 		if colTypes[colIndex] != colType {
-			t.Errorf("expecting colType %s at colTypes[%d], not %s", colType, colIndex, colTypes[colIndex])
+			t.Fatalf("expecting colType %s at colTypes[%d], not %s", colType, colIndex, colTypes[colIndex])
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -4284,22 +4284,22 @@ func TestTableSet_TableIndex(t *testing.T) {
 		[Table3]
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Get table index.
 	tableName := "Table2"
 	tableIndex, err := tableSet.TableIndex(tableName)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	expecting := 2
 	if tableIndex != expecting {
-		t.Errorf("expecting tableIndex %d from tableSet.TableIndex(%q), not %d", expecting, tableName, tableIndex)
+		t.Fatalf("expecting tableIndex %d from tableSet.TableIndex(%q), not %d", expecting, tableName, tableIndex)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -4315,43 +4315,43 @@ func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
 		[Table3]
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableCount := tableSet.TableCount()
 	expecting := 4
 	if tableCount != expecting {
-		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
 	tableName := "Table2"
 	_, err = tableSet.Table(tableName)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Delete table.
 	tableIndex := 2
 	err = tableSet.DeleteTableByTableIndex(tableIndex)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableCount = tableSet.TableCount()
 	expecting = 3
 	if tableCount != expecting {
-		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
 	_, err = tableSet.Table(tableName)
 	if err == nil {
-		t.Errorf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
+		t.Fatalf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
 	}
 }
 
@@ -4367,42 +4367,42 @@ func TestTableSet_DeleteTable(t *testing.T) {
 		[Table3]
 	`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableCount := tableSet.TableCount()
 	expecting := 4
 	if tableCount != expecting {
-		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
 	tableName := "Table2"
 	_, err = tableSet.Table(tableName)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Delete table.
 	err = tableSet.DeleteTable(tableName)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := tableSet.IsValidTableSet(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableCount = tableSet.TableCount()
 	expecting = 3
 	if tableCount != expecting {
-		t.Errorf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
+		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
 	_, err = tableSet.Table(tableName)
 	if err == nil {
-		t.Errorf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
+		t.Fatalf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
 	}
 }
 
@@ -4431,38 +4431,38 @@ func TestTable_AppendRow(t *testing.T) {
 
 	table, err := NewTableFromString(allTypesZeroVals)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	rowCount := table.RowCount()
 	expecting := 1
 	if rowCount != expecting {
-		t.Errorf("expecting table.RowCount() = %d, not %d", expecting, rowCount)
+		t.Fatalf("expecting table.RowCount() = %d, not %d", expecting, rowCount)
 	}
 
 	// All cells in new row should be zero values.
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 		var rowIndex int = 0
 		expecting, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		rowIndex = 1
 		value, err := table.GetValByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		// invalid operation: value.([]uint8) != expecting.([]uint8) (slice can only be compared to nil)
@@ -4470,16 +4470,16 @@ func TestTable_AppendRow(t *testing.T) {
 		switch colType {
 		case "[]uint8":
 			if equals := bytes.Equal(value.([]uint8), expecting.([]uint8)); !equals {
-				t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				t.Fatalf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
 			}
 		case "[]byte":
 			// Note: case "[]byte" seems to be never reached.
 			if equals := bytes.Equal(value.([]byte), expecting.([]byte)); !equals {
-				t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				t.Fatalf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
 			}
 		default:
 			if value != expecting {
-				t.Errorf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
+				t.Fatalf("expecting table.GetValByColIndex(%d, %d) = %v, not %v", colIndex, 1, expecting, value)
 			}
 		}
 	}
@@ -4496,7 +4496,7 @@ func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 
 	err := nilTableSet.WriteFile("", 0644)
 	if err == nil {
-		t.Errorf("expecting error tableSet is <nil>, but no error was returned")
+		t.Fatalf("expecting error tableSet is <nil>, but no error was returned")
 	}
 }
 
@@ -4519,13 +4519,13 @@ func TestByteSliceEquals(t *testing.T) {
 		// This test helps confirm the logic is correct. But perhaps look at bytes.Equal() code.
 		equals, _ = Uint8SliceEquals(test.slice1, test.slice2)
 		if equals != test.succeeds {
-			t.Errorf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+			t.Fatalf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
 
 		// This is the official comparison function. Need to replace my hand-coded functions.
 		equals = bytes.Equal(test.slice1, test.slice2)
 		if equals != test.succeeds {
-			t.Errorf("test[%d]: bytes.Equal(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+			t.Fatalf("test[%d]: bytes.Equal(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
 	}
 }
@@ -4547,10 +4547,10 @@ func TestIsValidTableName(t *testing.T) {
 		validity, err := IsValidTableName(test.name)
 		if validity != test.validity {
 			if validity {
-				t.Errorf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t",
+				t.Fatalf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t",
 					i, test.name, validity, test.validity)
 			} else {
-				t.Errorf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t (%v)",
+				t.Fatalf("test[%d]: IsValidTable(%q): validity=%t but expecting validity=%t (%v)",
 					i, test.name, validity, test.validity, err)
 			}
 		}
@@ -4622,14 +4622,14 @@ func TestRune(t *testing.T) {
 		// where(fmt.Sprintf("*** test[%d]", i))
 
 		if test.index != i {
-			t.Errorf("test[%d]: index %d should be %d not %d", i, test.index, i, test.index)
+			t.Fatalf("test[%d]: index %d should be %d not %d", i, test.index, i, test.index)
 		}
 
 		// Basic sanity test of literals used in the tests.
 		if test.runeVal != IGNORE_RUNE {
 			validity := utf8.ValidRune(test.runeVal)
 			if validity != test.validity {
-				t.Errorf("test[%d]: invalid rune: '%c'", i, test.runeVal)
+				t.Fatalf("test[%d]: invalid rune: '%c'", i, test.runeVal)
 			}
 		}
 
@@ -4640,7 +4640,7 @@ func TestRune(t *testing.T) {
 		if matched != test.validity {
 			if test.validity {
 				// We will not expect runeRegexp to reject invalid rune literals. Leave that to DecodeRuneInString()
-				t.Errorf("test[%d/%d]: runeRegexp match %s failed on string: %s", i, len(tests)-1, runeRegexp, test.stringVal)
+				t.Fatalf("test[%d/%d]: runeRegexp match %s failed on string: %s", i, len(tests)-1, runeRegexp, test.stringVal)
 			}
 		} else {
 			//			fmt.Printf("test[%d]: runeRegexp SUCCEEDED on string: %s\n", i, test.stringVal)
@@ -4655,12 +4655,12 @@ func TestRune(t *testing.T) {
 		// where(fmt.Sprintf("AFTER  trim:%s", test.stringVal))
 		rune2, err := parseRune(test.stringVal)
 		if err != nil {
-			t.Errorf("test[%d]: %v", i, err)
+			t.Fatalf("test[%d]: %v", i, err)
 		}
 
 		validRune := utf8.ValidRune(rune2)
 		if !validRune {
-			t.Errorf("test[%d]: invalid rune: '%c'", i, test.runeVal)
+			t.Fatalf("test[%d]: invalid rune: '%c'", i, test.runeVal)
 		}
 
 		if test.runeVal != IGNORE_RUNE {
@@ -4672,7 +4672,7 @@ func TestRune(t *testing.T) {
 					}
 				*/
 				size := utf8.RuneLen(rune2)
-				t.Errorf("test[%d/%d]: expecting rune %q %d but got %q %d size=%d Decode failed on string %q len=%d",
+				t.Fatalf("test[%d/%d]: expecting rune %q %d but got %q %d size=%d Decode failed on string %q len=%d",
 					i, len(tests)-1, test.int32Val, test.int32Val, rune2, rune2, size, test.stringVal, len(test.stringVal))
 			}
 		}
@@ -4721,34 +4721,34 @@ func TestRuneTable(t *testing.T) {
 
 	table, err := NewTableFromString(runes)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	for i := 0; i < table.RowCount(); i++ {
 		var code rune
 		code, err = table.GetRune("code", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		var glyph rune
 		glyph, err = table.GetRune("glyph", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if glyph != code {
-			t.Errorf("table [%s] row %d: code %d != glyph %c (U+%04X) %d", table.Name(), i, code, glyph, glyph, glyph)
+			t.Fatalf("table [%s] row %d: code %d != glyph %c (U+%04X) %d", table.Name(), i, code, glyph, glyph, glyph)
 		}
 
 		var dec int
 		dec, err = table.GetInt("dec", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if int(code) != dec {
-			t.Errorf("code %d != dec %d", int32(code), dec)
+			t.Fatalf("code %d != dec %d", int32(code), dec)
 		}
 	}
 
@@ -4765,7 +4765,7 @@ func TestRuneStruct(t *testing.T) {
 
 	_, err := NewTableFromString(runes)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	fmt.Printf("%v", table)
@@ -4805,41 +4805,41 @@ func TestManyUnicodes(t *testing.T) {
 		`
 		table, err = NewTableFromString(tableString)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	} else {
 		// where(fmt.Sprintf("skip = %t", skip))
 		table, err = NewTableFromFile("rune_test.got")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 
 	/*
 		err = table.SetSortKeys("decimal")
-		if err != nil { t.Error(err) }
+		if err != nil { t.Fatal(err) }
 
 		err = table.Sort()
-		if err != nil { t.Error(err) }
+		if err != nil { t.Fatal(err) }
 	*/
 
 	for i := 0; i < table.RowCount(); i++ {
 		var glyph rune
 		glyph, err = table.GetRune("glyph", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		var code rune
 		code, err = table.GetRune("code", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		var decimal int32
 		decimal, err = table.GetInt32("decimal", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		var specialChars = "\a\b\f\n\r\t\v"
@@ -4849,27 +4849,27 @@ func TestManyUnicodes(t *testing.T) {
 			// Printable characters: glyphs are set to themselves (and not '0').
 			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
 			if glyph == '0' && decimal != 48 {
-				t.Errorf("row[%d]: glyph %q int32(glyph) %d == '0'", i, glyph, int32(glyph))
+				t.Fatalf("row[%d]: glyph %q int32(glyph) %d == '0'", i, glyph, int32(glyph))
 			}
 
 			if int32(code) != int32(glyph) {
-				t.Errorf("row[%d]: glyph %q int32(glyph) %d != code %d U+0%X", i, glyph, glyph, int32(code), code)
+				t.Fatalf("row[%d]: glyph %q int32(glyph) %d != code %d U+0%X", i, glyph, glyph, int32(code), code)
 			}
 
 			// Allows for decimal being 0 where decimal wasn't present in the Wikipedia entry
 			if int32(code) != decimal && decimal != 0 {
-				t.Errorf("row[%d]: int32(code) %d != decimal %d", i, int32(code), decimal)
+				t.Fatalf("row[%d]: int32(code) %d != decimal %d", i, int32(code), decimal)
 			}
 
 			// Allows for decimal being 0 where decimal wasn't present in the Wikipedia entry
 			if int32(glyph) != decimal && decimal != 0 {
-				t.Errorf("row[%d]: glyph %q int32(glyph) %d != decimal %d", i, glyph, int32(glyph), decimal)
+				t.Fatalf("row[%d]: glyph %q int32(glyph) %d != decimal %d", i, glyph, int32(glyph), decimal)
 			}
 		} else {
 			// where(fmt.Sprintf("row[%d]: decimal = %d", i, decimal))
 			// Non-printing characters. Should be set to '0'.
 			if glyph != '0' {
-				t.Errorf("row[%d]: glyph %q int32(glyph) %d != 0", i, glyph, int32(glyph))
+				t.Fatalf("row[%d]: glyph %q int32(glyph) %d != 0", i, glyph, int32(glyph))
 			}
 		}
 	}
@@ -5330,68 +5330,68 @@ func TestSetVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// Test data type / col type mismatch.
 	err = table.SetVal("i", 0, 23.4)
 	if err == nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 
 	// Test data type / col type mismatch.
 	err = table.SetVal("b", 0, []uint8{22})
 	if err == nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 
 	// Test byte <> uint8 alias in both directions.
 	err = table.SetVal("b", 0, uint8(2))
 	if err != nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 	err = table.SetVal("ui", 0, byte(2))
 	if err != nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 
 	// Test []byte <> []uint8 alias in both directions.
 	err = table.SetVal("bb", 0, []uint8{2})
 	if err != nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 	err = table.SetVal("uu8", 0, []byte{2})
 	if err != nil {
-		t.Error("SetVal() Expecting type error")
+		t.Fatal("SetVal() Expecting type error")
 	}
 
 	// Test col missing.
 	err = table.SetVal("MISSING_COL", 0, 23.4)
 	if err == nil {
-		t.Error("SetVal() Expecting col does not exist error")
+		t.Fatal("SetVal() Expecting col does not exist error")
 	}
 
 	// Test row missing.
 	err = table.SetVal("t", 3, false)
 	if err == nil {
-		t.Error("SetVal() Expecting row index out of range error")
+		t.Fatal("SetVal() Expecting row index out of range error")
 	}
 	err = table.SetVal("f", -1, 3.3)
 	if err == nil {
-		t.Error("SetVal() Expecting row index out of range error")
+		t.Fatal("SetVal() Expecting row index out of range error")
 	}
 
 	// Test col missing.
 	err = table.SetValByColIndex(8, 2, false)
 	if err == nil {
-		t.Error("SetValByColIndex() Expecting col index does not exist error")
+		t.Fatal("SetValByColIndex() Expecting col index does not exist error")
 	}
 	err = table.SetValByColIndex(-1, 1, 3.3)
 	if err == nil {
-		t.Error("SetValByColIndex() Expecting col index does not exist error")
+		t.Fatal("SetValByColIndex() Expecting col index does not exist error")
 	}
 }
 
@@ -5409,10 +5409,10 @@ func TestGetVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var val interface{}
@@ -5420,10 +5420,10 @@ func TestGetVal(t *testing.T) {
 	// Test get of valid value.
 	val, err = table.GetVal("i", 2)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if val.(int) != 3 {
-		t.Errorf("GetVal() expecting 3, not %v", val)
+		t.Fatalf("GetVal() expecting 3, not %v", val)
 	}
 
 	// Note: data type mismatch is impossible. It gets what it gets.
@@ -5431,27 +5431,27 @@ func TestGetVal(t *testing.T) {
 	// Test col missing.
 	_, err = table.GetVal("MISSING_COL", 0)
 	if err == nil {
-		t.Error("GetVal() Expecting col does not exist error")
+		t.Fatal("GetVal() Expecting col does not exist error")
 	}
 
 	// Test row missing.
 	_, err = table.GetVal("t", 3)
 	if err == nil {
-		t.Error("GetVal() Expecting row index out of range error")
+		t.Fatal("GetVal() Expecting row index out of range error")
 	}
 	_, err = table.GetVal("f", -1)
 	if err == nil {
-		t.Error("GetVal() Expecting row index out of range error")
+		t.Fatal("GetVal() Expecting row index out of range error")
 	}
 
 	// Test col missing.
 	_, err = table.GetValByColIndex(8, 2)
 	if err == nil {
-		t.Error("GetValByColIndex() Expecting col index does not exist error")
+		t.Fatal("GetValByColIndex() Expecting col index does not exist error")
 	}
 	_, err = table.GetValByColIndex(-1, 1)
 	if err == nil {
-		t.Error("GetValByColIndex() Expecting col index does not exist error")
+		t.Fatal("GetValByColIndex() Expecting col index does not exist error")
 	}
 }
 
@@ -5570,15 +5570,15 @@ func TestGetBoolVal(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	colNames, _, err := table.GetColInfoAsSlices()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	for _, colName := range colNames {
@@ -5586,11 +5586,11 @@ func TestGetBoolVal(t *testing.T) {
 			_, err := table.GetBool(colName, rowIndex)
 			if colName == "t" {
 				if err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				}
 			} else {
 				if err == nil {
-					t.Errorf("Expecting GetBool(%q, %d) to fail on non-bool col %q", colName, rowIndex, colName)
+					t.Fatalf("Expecting GetBool(%q, %d) to fail on non-bool col %q", colName, rowIndex, colName)
 				}
 			}
 		}
@@ -5621,10 +5621,10 @@ func TestHasRow(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -5640,7 +5640,7 @@ func TestHasRow(t *testing.T) {
 	for _, test := range tests {
 		hasRow, _ := table.HasRow(test.row)
 		if hasRow != test.expecting {
-			t.Errorf("expecting table.HasRow(%d) = %v, not %v", test.row, test.expecting, hasRow)
+			t.Fatalf("expecting table.HasRow(%d) = %v, not %v", test.row, test.expecting, hasRow)
 		}
 	}
 }
@@ -5830,10 +5830,10 @@ func TestNewTableReorderCols(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -5853,10 +5853,10 @@ func TestNewTableReorderCols(t *testing.T) {
 	for i, test := range tests {
 		_, err := table.NewTableReorderCols(test.newColsOrderNames...)
 		if err == nil != test.valid {
-			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
+			t.Fatalf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -5874,10 +5874,10 @@ func TestReorderCols(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -5897,10 +5897,10 @@ func TestReorderCols(t *testing.T) {
 	for i, test := range tests {
 		err := table.ReorderCols(test.newColsOrderNames...)
 		if err == nil != test.valid {
-			t.Errorf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
+			t.Fatalf("test[%d]: newColsOrderNames: %v (%v)", i, test.newColsOrderNames, err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -5918,10 +5918,10 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -5942,10 +5942,10 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
 	for i, test := range tests {
 		_, err := table.NewTableReorderColsByColIndex(test.newColsOrderIndices...)
 		if err == nil != test.valid {
-			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
+			t.Fatalf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -5963,10 +5963,10 @@ func TestReorderColsByColIndex(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -5987,10 +5987,10 @@ func TestReorderColsByColIndex(t *testing.T) {
 	for i, test := range tests {
 		err := table.ReorderColsByColIndex(test.newColsOrderIndices...)
 		if err == nil != test.valid {
-			t.Errorf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
+			t.Fatalf("test[%d]: newColsOrderIndices %v %t: %v", i, test.newColsOrderIndices, test.valid, err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -6185,11 +6185,11 @@ func TestTable_SwapColsByColIndex(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -6205,27 +6205,27 @@ func TestTable_SwapColsByColIndex(t *testing.T) {
 	for i, test := range tests {
 		err := table.SwapColsByColIndex(test.swapCols[0], test.swapCols[1])
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		colNames := table.getColNames()
 		if !stringSliceEquals(colNames, test.colNames) {
-			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+			t.Fatalf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
 		}
 
 		colTypes := table.getColTypes()
 		if !stringSliceEquals(colTypes, test.colTypes) {
-			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+			t.Fatalf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
 		}
 
 		// Return table to original data for next iteration.
 		table, err = NewTableFromString(tableString)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -6243,11 +6243,11 @@ func TestTable_SwapCols(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -6263,27 +6263,27 @@ func TestTable_SwapCols(t *testing.T) {
 	for i, test := range tests {
 		err := table.SwapCols(test.swapCols[0], test.swapCols[1])
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		colNames := table.getColNames()
 		if !stringSliceEquals(colNames, test.colNames) {
-			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
+			t.Fatalf("test[%d]: table.SwapColsByColIndex(%v) swapped colNames %v != expected %v", i, test.swapCols, colNames, test.colNames)
 		}
 
 		colTypes := table.getColTypes()
 		if !stringSliceEquals(colTypes, test.colTypes) {
-			t.Errorf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
+			t.Fatalf("test[%d]: table.SwapColsByColIndex(%v) swapped colTypes %v != expected %v", i, test.swapCols, colTypes, test.colTypes)
 		}
 
 		// Return table to original data for next iteration.
 		table, err = NewTableFromString(tableString)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -6391,17 +6391,17 @@ func TestUnquote(t *testing.T) {
 		var unquoted string
 		unquoted, err := strconv.Unquote(test.quoted)
 		if err != nil {
-			t.Errorf("strconv.Unquote(%q) error: %v", test.quoted, err)
+			t.Fatalf("strconv.Unquote(%q) error: %v", test.quoted, err)
 		}
 
 		// Check for len() error.
 		if len(unquoted) != len(test.expected) {
-			t.Errorf("len(unquoted)=%d != len(test.expected)=%d", len(unquoted), len(test.expected))
+			t.Fatalf("len(unquoted)=%d != len(test.expected)=%d", len(unquoted), len(test.expected))
 		}
 
 		for j := 0; j < min(len(unquoted), len(test.expected)); j++ { // min() in case of len() error above.
 			if unquoted[j] != test.expected[j] {
-				t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.expected[j], unquoted[j])
+				t.Fatalf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.expected[j], unquoted[j])
 			}
 		}
 
@@ -6414,10 +6414,10 @@ func TestUnquote(t *testing.T) {
 		for j := 1; j < min(len(quoted)-1, len(test.quoted)); j++ { // min() in case of len() error above.
 			if quoted[j] != test.quoted[j] {
 				if test.quoted[j] >= printable && quoted[j] >= printable {
-					t.Errorf("test[%d]: expecting quoted[%d] = %d '%c', not %d '%c'",
+					t.Fatalf("test[%d]: expecting quoted[%d] = %d '%c', not %d '%c'",
 						i, j, test.quoted[j], test.quoted[j], quoted[j], quoted[j])
 				} else {
-					t.Errorf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.quoted[j], quoted[j])
+					t.Fatalf("test[%d]: expecting quoted[%d] = %d, not %d", i, j, test.quoted[j], quoted[j])
 				}
 			}
 		}
@@ -6435,27 +6435,27 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 
 	table, err = NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol("i", "int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol("s", "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol("f", "float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol("b", "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	type person struct {
@@ -6474,97 +6474,97 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	var colType string = fmt.Sprintf("%T", fred)
 	err = table.AppendCol(colName, colType)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetInt("i", lastRowIndex, 42)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetString("s", lastRowIndex, "My String")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetBool("b", lastRowIndex, true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastColIndex = table.ColCount() - 1
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	lastRowIndex = table.RowCount() - 1
 	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = NewTableFromString(table.String())
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var iface interface{}
@@ -6572,42 +6572,42 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
 	br = iface.(person)
 	if br.First != "Betty" {
-		t.Error(`br.First != "Betty"`)
+		t.Fatal(`br.First != "Betty"`)
 	}
 	if br.Human != true {
-		t.Error(`br.Human != true`)
+		t.Fatal(`br.Human != true`)
 	}
 
 	var ff person
 	iface, err = table.GetCustomTypeVal("Flintstones", 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	ff = iface.(person)
 	if br.First != "Betty" {
-		t.Error(`br.First != "Betty"`)
+		t.Fatal(`br.First != "Betty"`)
 	}
 	if br.Human != true {
-		t.Error(`br.Human != true`)
+		t.Fatal(`br.Human != true`)
 	}
 
 	encoded, err := EncodeCustomTypeVal(ff)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	decoded, err := DecodeCustomTypeVal(encoded)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var fredDecoded person = decoded.(person)
 	if fredDecoded != fred {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	parsed, err := NewTableFromString(table.StringUnpadded())
 	if fredDecoded != fred {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	type car struct {
@@ -6627,28 +6627,28 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 
 	stable, err := NewTableFromString(stableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	parsed, err = NewTableFromString(stable.String())
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
 	err = parsed.SetCustomTypeVal("MyCar", 0, lexus)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = parsed.SetCustomTypeVal("MyCar", 0, nil)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = parsed.SetCustomTypeValByColIndex(0, 0, nil)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -6665,7 +6665,7 @@ func TestCustomTypeWithMethod(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	where(table)
@@ -6673,7 +6673,7 @@ func TestCustomTypeWithMethod(t *testing.T) {
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 		err = table.multiplyInt("i", "j", "k", rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 
@@ -6735,9 +6735,9 @@ func TestIsValidCustomType(t *testing.T) {
 		isValid, _ = isValidCustomType(test.candidate)
 		if isValid != test.expected {
 			if test.expected == true {
-				t.Errorf("test[%d] expecting %q to be a VALID custom type but got: %t", i, test.candidate, isValid)
+				t.Fatalf("test[%d] expecting %q to be a VALID custom type but got: %t", i, test.candidate, isValid)
 			} else {
-				t.Errorf("test[%d] expecting %q to be an INvalid custom type but got: %t", i, test.candidate, isValid)
+				t.Fatalf("test[%d] expecting %q to be an INvalid custom type but got: %t", i, test.candidate, isValid)
 			}
 		}
 	}
@@ -6780,7 +6780,7 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 
 		encoded, err := EncodeCustomTypeVal(test.typeValue)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		//where(fmt.Sprintf("test[%d] encoded type: %T  encoded value: %v", testIndex, encoded, encoded))
@@ -6788,12 +6788,12 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 		var decoded interface{}
 		decoded, err = DecodeCustomTypeVal(encoded)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		var receivedTypeName = fmt.Sprintf("%T", decoded)
 		if receivedTypeName != test.expectedTypeName {
-			t.Errorf("test[%d] expected type %s, not %s", testIndex, test.expectedTypeName, receivedTypeName)
+			t.Fatalf("test[%d] expected type %s, not %s", testIndex, test.expectedTypeName, receivedTypeName)
 		}
 
 		//where(fmt.Sprintf("test[%d] decoded type: %T  decoded value: %v", testIndex, decoded, decoded))
@@ -6958,15 +6958,15 @@ func TestParseInt(t *testing.T) {
 
 		result, err := parseInt(test.s, test.bitSize)
 		if err != nil && test.expectedError == nil {
-			t.Errorf("[%d] parseInt(%q) %v", testIndex, test.s, err)
+			t.Fatalf("[%d] parseInt(%q) %v", testIndex, test.s, err)
 		}
 
 		if result != test.expected && test.expectedError == nil {
-			t.Errorf("[%d] parseInt(%q) expecting %d but got %d", testIndex, test.s, test.expected, result)
+			t.Fatalf("[%d] parseInt(%q) expecting %d but got %d", testIndex, test.s, test.expected, result)
 		}
 
 		if err == nil && test.expectedError != nil {
-			t.Errorf("[%d] parseInt(%q) expecting error %v but got err == nil", testIndex, test.s, test.expectedError)
+			t.Fatalf("[%d] parseInt(%q) expecting error %v but got err == nil", testIndex, test.s, test.expectedError)
 		}
 	}
 }
@@ -7081,11 +7081,11 @@ func TestNewTableFromStringGo_1_3_NonDecimalLiterals(t *testing.T) {
 	`
 		table, err := NewTableFromString(s)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		s =
@@ -7100,29 +7100,29 @@ func TestNewTableFromStringGo_1_3_NonDecimalLiterals(t *testing.T) {
 	`
 		table, err = NewTableFromString(s)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		err = table.AppendCol("bite", "[]byte")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if isValid, err := table.IsValidTable(); !isValid {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		table, err = NewTableFromString(globalTableSetStringIntNonDecimal)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		table, err = NewTableFromString(globalTableSetStringIntDecimal)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 	}
 }
@@ -7145,7 +7145,7 @@ func TestParserGlobalVars(t *testing.T) {
 
 	for testIndex, test := range stringTests {
 		if *test.global == "" {
-			t.Errorf("parser.go: global string test[%d] var %s string == \"\"", testIndex, test.name)
+			t.Fatalf("parser.go: global string test[%d] var %s string == \"\"", testIndex, test.name)
 			// fmt.Printf("[%2d] %-*s: %q\n", testIndex, nameWidth, test.name, *test.global)
 		}
 	}
@@ -7169,7 +7169,7 @@ func TestParserGlobalVars(t *testing.T) {
 
 	for testIndex, test := range regexpTests {
 		if test.global == nil {
-			t.Errorf("parser.go: global regexp test[%d] var %s *regexp.Regexp == nil", testIndex, test.name)
+			t.Fatalf("parser.go: global regexp test[%d] var %s *regexp.Regexp == nil", testIndex, test.name)
 			// fmt.Printf("[%2d] %-*s: %v\n", testIndex, nameWidth, test.name, *test.global)
 		}
 	}
@@ -7190,13 +7190,13 @@ func TestGetTableAsJSON(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var jsonString string
 	jsonString, err = table.getTableAsJSON()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	_ = jsonString
 
@@ -7206,7 +7206,7 @@ func TestGetTableAsJSON(t *testing.T) {
 		var out bytes.Buffer
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		out.WriteTo(os.Stdout)
@@ -7233,7 +7233,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
     `
 	tableSet, err = NewTableSetFromString(tableSetString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableSet.SetName("MySet")
@@ -7241,7 +7241,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
 	var jsonString string
 	jsonString, err = tableSet.GetTableSetAsJSON()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	_ = jsonString
 
@@ -7251,7 +7251,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
 		var out bytes.Buffer
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		out.WriteTo(os.Stdout)
@@ -7274,13 +7274,13 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var jsonString string
 	jsonString, err = table.getTableMetadataAsJSON()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	_ = jsonString
 
@@ -7290,7 +7290,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 		var out bytes.Buffer
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		out.WriteTo(os.Stdout)
@@ -7317,7 +7317,7 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
     `
 	tableSet, err = NewTableSetFromString(tableSetString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	tableSet.SetName("MySet")
@@ -7325,7 +7325,7 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 	var jsonString string
 	jsonString, err = tableSet.GetTableSetMetadataAsJSON()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	_ = jsonString
 
@@ -7335,7 +7335,7 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 		var out bytes.Buffer
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		out.WriteTo(os.Stdout)
@@ -7355,20 +7355,21 @@ func TestNewTableFromJSON(t *testing.T) {
     2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
     3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
     4   "xxxx" 5.9     9.9     true  44   3     []            []
+    5   "yyyy" 6.9    10.9     false 55   4     [0]            [1]
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var jsonString string
 	jsonString, err = table.getTableMetadataAsJSON()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table, err = newTableFromJSON(jsonString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
