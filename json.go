@@ -5,8 +5,11 @@ import (
 	_ "encoding/json"
 	"fmt"
 	_ "io"
-	"strings"
+	"regexp"
+	_ "strings"
 )
+
+var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
 func (table *Table) getTableAsJSON() (jsonString string, err error) {
 
@@ -50,7 +53,8 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 					return "", err
 				}
 				// Insert comma delimiters between slice elements.
-				valStr = strings.ReplaceAll(valStr, " ", ",")
+//				valStr = strings.ReplaceAll(valStr, " ", ",")	// New in Go 1.11?
+				valStr = replaceSpaces.ReplaceAllString(valStr, " ")
 				buf.WriteString(valStr)
 			default:
 				buf.WriteString(`"TYPE UNKNOWN"`)
