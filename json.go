@@ -172,27 +172,27 @@ func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err er
 }
 
 func newTableFromJSON(jsonString string) (table *Table, err error) {
-/*
-	dec := json.NewDecoder(strings.NewReader(jsonString))
-	fmt.Printf("dec type %T\n", dec)
+	/*
+		dec := json.NewDecoder(strings.NewReader(jsonString))
+		fmt.Printf("dec type %T\n", dec)
 
-	for {
-		token, err := dec.Token()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
+		for {
+			token, err := dec.Token()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				return nil, err
+			}
 
-		fmt.Printf("%T: %v", token, token)
+			fmt.Printf("%T: %v", token, token)
 
-		if dec.More() {
-			fmt.Printf(" (more)")
+			if dec.More() {
+				fmt.Printf(" (more)")
+			}
+			fmt.Printf("\n")
 		}
-		fmt.Printf("\n")
-	}
-*/
+	*/
 
 	return nil, nil
 }
