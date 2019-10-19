@@ -5649,7 +5649,7 @@ func ExampleTable_NewTableReorderColsByColIndex() {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore1]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5672,14 +5672,14 @@ func ExampleTable_NewTableReorderColsByColIndex() {
 	fmt.Println(reorderedTable)
 
 	// Output:
-	// [TypesGalore]
+	// [TypesGalore1]
 	//   i s            f t        b    ui bb            uu8
 	// int string float64 bool  byte uint8 []byte        []uint8
 	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
 	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
 	//
-	// [TypesGalore]
+	// [TypesGalore1]
 	// uu8        bb               ui    b t           f s        i
 	// []uint8    []byte        uint8 byte bool  float64 string int
 	// [15 16 17] [11 12 13 14]     0   11 true      2.3 "abc"    1
@@ -5691,7 +5691,7 @@ func ExampleTable_ReorderColsByColIndex() {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore2]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5714,7 +5714,7 @@ func ExampleTable_ReorderColsByColIndex() {
 	fmt.Println(table)
 
 	// Output:
-	// [TypesGalore]
+	// [TypesGalore2]
 	//    b bb                  f   i s      t        ui uu8
 	// byte []byte        float64 int string bool  uint8 []uint8
 	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
@@ -5726,7 +5726,7 @@ func ExampleTable_NewTableReorderCols() {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore3]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5753,14 +5753,14 @@ func ExampleTable_NewTableReorderCols() {
 	fmt.Println(reorderedTable)
 
 	// Output:
-	// [TypesGalore]
+	// [TypesGalore3]
 	//   i s            f t        b    ui bb            uu8
 	// int string float64 bool  byte uint8 []byte        []uint8
 	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
 	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
 	//
-	// [TypesGalore]
+	// [TypesGalore3]
 	//    b bb                  f   i s      t        ui uu8
 	// byte []byte        float64 int string bool  uint8 []uint8
 	//   11 [11 12 13 14]     2.3   1 "abc"  true      0 [15 16 17]
@@ -5772,7 +5772,7 @@ func ExampleTable_ReorderCols() {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore4]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5802,14 +5802,14 @@ func ExampleTable_ReorderCols() {
 	fmt.Println(table)
 
 	// Output:
-	// [TypesGalore]
+	// [TypesGalore4]
 	//   i s            f t        b    ui bb            uu8
 	// int string float64 bool  byte uint8 []byte        []uint8
 	//   1 "abc"      2.3 true    11     0 [11 12 13 14] [15 16 17]
 	//   2 "xyz"      4.5 false   22     1 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33     2 [33 34 35 36] [37 38 39]
 	//
-	// [TypesGalore]
+	// [TypesGalore4]
 	// uu8           ui t     s        i       f bb               b
 	// []uint8    uint8 bool  string int float64 []byte        byte
 	// [15 16 17]     0 true  "abc"    1     2.3 [11 12 13 14]   11
@@ -5821,7 +5821,7 @@ func TestNewTableReorderCols(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore5]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5865,7 +5865,7 @@ func TestReorderCols(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore6]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5909,7 +5909,7 @@ func TestNewTableReorderColsByColIndex(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore7]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -5954,7 +5954,7 @@ func TestReorderColsByColIndex(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore8]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -6176,7 +6176,7 @@ func TestTable_SwapColsByColIndex(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore9]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -6234,7 +6234,7 @@ func TestTable_SwapCols(t *testing.T) {
 	var err error
 	var table *Table
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore10]
     i   s      f       t     b    ui    bb            uu8
     int string float64 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     true  11   0     [11 12 13 14] [15 16 17]
@@ -7180,7 +7180,7 @@ func TestGetTableAsJSON(t *testing.T) {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore11]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -7219,7 +7219,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
 	var tableSet *TableSet
 
 	var tableSetString string = `
-	[TypesGalore]
+	[TypesGalore12]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -7264,7 +7264,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore13]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -7303,7 +7303,7 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 	var tableSet *TableSet
 
 	var tableSetString string = `
-	[TypesGalore]
+	[TypesGalore14]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -7343,12 +7343,12 @@ func TestGetTableSetMetadataAsJSON(t *testing.T) {
 	*/
 }
 
-func TestnewTableFromJSON(t *testing.T) {
+func TestNewTableFromJSON(t *testing.T) {
 	var err error
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore15]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]

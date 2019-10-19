@@ -2,9 +2,9 @@ package gotables
 
 import (
 	"bytes"
-	"encoding/json"
+	_ "encoding/json"
 	"fmt"
-	"io"
+	_ "io"
 	"strings"
 )
 
@@ -172,6 +172,7 @@ func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err er
 }
 
 func newTableFromJSON(jsonString string) (table *Table, err error) {
+/*
 	dec := json.NewDecoder(strings.NewReader(jsonString))
 	fmt.Printf("dec type %T\n", dec)
 
@@ -191,6 +192,7 @@ func newTableFromJSON(jsonString string) (table *Table, err error) {
 		}
 		fmt.Printf("\n")
 	}
+*/
 
 	return nil, nil
 }
