@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-	_"encoding/json"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-	_ "os"
+	"os"
 	"reflect"
 	"regexp"
 	"sort"
@@ -7384,32 +7384,32 @@ func BenchmarkSprintfType(b *testing.B) {
 		if err != nil {
 			t.Fatal(err)
 		}
-	/*
-	var buf bytes.Buffer
-	err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
-	if err != nil {
-		t.Fatal(err)
-	}
-	buf.WriteTo(os.Stdout)
-	*/
+
+		var buf bytes.Buffer
+		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
+		if err != nil {
+			t.Fatal(err)
+		}
+		buf.WriteTo(os.Stdout)
 	
 		var jsonString string
+/*
 		jsonString, err = table.getTableAsJSON()
 		if err != nil {
 			t.Fatal(err)
 		}
-	/*
-	err = json.Indent(&buf, []byte(jsonString), "", "\t")
-	if err != nil {
-		t.Fatal(err)
-	}
-	buf.WriteTo(os.Stdout)
-	*/
-	
+
+		err = json.Indent(&buf, []byte(jsonString), "", "\t")
+		if err != nil {
+			t.Fatal(err)
+		}
+		buf.WriteTo(os.Stdout)
+*/
+
 		table, err = newTableFromJSON(jsonMetadataString, jsonString)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-//fmt.Printf("\n%v\n", table)
+fmt.Printf("\n\n%v\n", table)
 	}

@@ -175,6 +175,7 @@ func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err er
 func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Table, err error) {
 
 	// Create empty table from metadata.
+	// Note: To preserve column order, we cannot use JSON marshalling into a map.
 
 	dec := json.NewDecoder(strings.NewReader(jsonMetadataString))
 
@@ -183,34 +184,37 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 	// Skip opening brace
 	token, err = dec.Token()
 	if err == io.EOF {
-		return nil, fmt.Errorf("newTableFromJSON() unexpected EOF")
+		return nil, fmt.Errorf("newTableFromJSON(): unexpected EOF")
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 	}
 
 	// Get table name
 	token, err = dec.Token()
 	if err == io.EOF {
-		return nil, fmt.Errorf("newTableFromJSON() unexpected EOF")
+		return nil, fmt.Errorf("newTableFromJSON(): unexpected EOF")
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 	}
+
+	// Get the table name.
 	switch token.(type) {
 		case string:	// As expected
 			table, err = NewTable(token.(string))
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 			}
-			err = table.SetStructShape(true)
+			err = table.SetStructShape(true)	// For readability
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 			}
 		default:
-			return nil, fmt.Errorf("newTableFromJSON() expecting table name but found: %v", reflect.TypeOf(token))
+			return nil, fmt.Errorf("newTableFromJSON(): expecting table name but found: %v", reflect.TypeOf(token))
 	}
 
+	// Simple parsing flags and values.
 	var colNameNext bool = false
 	var colName string
 	var colTypeNext bool = false
@@ -220,10 +224,10 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 	for {
 		token, err = dec.Token()
 		if err == io.EOF {
-			return nil, fmt.Errorf("newTableFromJSON() unexpected EOF")
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected EOF")
 		}
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 		}
 
 		switch token.(type) {
@@ -234,16 +238,18 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 						colNameNext = true
 						prevDelim = 123	// Opening brace
 					case 125:	// Closing brace
-						if prevDelim == 125 {	// End of metadata object
+						if prevDelim == 125 {	// Closing brace: end of JSON metadata object
+							// Table metadata is now completely initialised
 							return table, nil
 						}
+						// We now have a colName-plus-colType pair. Add this col to table.
 						err = table.AppendCol(colName, colType)
 						if err != nil {
-							return nil, err
+							return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 						}
-						prevDelim = 125	// Closing brace
-					case '[':
-					case ']':
+						prevDelim = 125	// Closing brace: end of col
+					case '[':	// Ignore slice signifiers in type names
+					case ']':	// Ignore slice signifiers in type names
 				}
 			case string:
 				if colNameNext {
@@ -254,16 +260,23 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 					colType = token.(string)
 					colTypeNext = false
 				} else {
-					return nil, fmt.Errorf("newTableFromJSON() expecting colName or colType")
+					return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
 				}
 			case bool:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 			case float64:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 			case json.Number:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 			case nil:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 			default:
 				fmt.Printf("unknown json token type %T value %v\n", token, token)
 		}
 	}
+
+
+	// Append row of data from JSON.
 
 	return table, nil
 }
