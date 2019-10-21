@@ -50,7 +50,7 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 					return "", err
 				}
 				// Insert comma delimiters between slice elements.
-//				valStr = strings.ReplaceAll(valStr, " ", ",")	// New in Go 1.11?
+				//				valStr = strings.ReplaceAll(valStr, " ", ",")	// New in Go 1.11?
 				valStr = replaceSpaces.ReplaceAllString(valStr, ",")
 				buf.WriteString(valStr)
 			default:
@@ -60,7 +60,7 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 				buf.WriteByte(',')
 			}
 		}
-		buf.WriteByte(125)	// Closing brace
+		buf.WriteByte(125) // Closing brace
 		if rowIndex < len(table.rows)-1 {
 			buf.WriteByte(',')
 		}
@@ -174,6 +174,14 @@ func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err er
 
 func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Table, err error) {
 
+	if jsonMetadataString == "" {
+		return nil, fmt.Errorf("newTableFromJSON(): jsonMetadataString is empty")
+	}
+
+	if jsonString == "" {
+		return nil, fmt.Errorf("newTableFromJSON(): jsonString is empty")
+	}
+
 	// Create empty table from metadata.
 	// Note: To preserve column order, we cannot use JSON marshalling into a map.
 
@@ -200,18 +208,20 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 	}
 
 	// Get the table name.
+	var tableName string
 	switch token.(type) {
-		case string:	// As expected
-			table, err = NewTable(token.(string))
-			if err != nil {
-				return nil, fmt.Errorf("newTableFromJSON(): %v", err)
-			}
-			err = table.SetStructShape(true)	// For readability
-			if err != nil {
-				return nil, fmt.Errorf("newTableFromJSON(): %v", err)
-			}
-		default:
-			return nil, fmt.Errorf("newTableFromJSON(): expecting table name but found: %v", reflect.TypeOf(token))
+	case string: // As expected
+		tableName = token.(string)
+		table, err = NewTable(tableName)
+		if err != nil {
+			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
+		}
+		err = table.SetStructShape(true) // For readability
+		if err != nil {
+			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
+		}
+	default:
+		return nil, fmt.Errorf("newTableFromJSON(): expecting table name but found: %v", reflect.TypeOf(token))
 	}
 
 	// Simple parsing flags and values.
@@ -221,6 +231,7 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 	var colType string
 	var prevDelim rune
 
+Loop:
 	for {
 		token, err = dec.Token()
 		if err == io.EOF {
@@ -231,52 +242,124 @@ func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 		}
 
 		switch token.(type) {
-			case json.Delim:
-				delim := token.(json.Delim)
-				switch delim {
-					case 123: // Opening brace
-						colNameNext = true
-						prevDelim = 123	// Opening brace
-					case 125:	// Closing brace
-						if prevDelim == 125 {	// Closing brace: end of JSON metadata object
-							// Table metadata is now completely initialised
-							return table, nil
-						}
-						// We now have a colName-plus-colType pair. Add this col to table.
-						err = table.AppendCol(colName, colType)
-						if err != nil {
-							return nil, fmt.Errorf("newTableFromJSON(): %v", err)
-						}
-						prevDelim = 125	// Closing brace: end of col
-					case '[':	// Ignore slice signifiers in type names
-					case ']':	// Ignore slice signifiers in type names
+		case json.Delim:
+			delim := token.(json.Delim)
+			switch delim {
+			case 123: // Opening brace
+				colNameNext = true
+				prevDelim = 123 // Opening brace
+			case 125: // Closing brace
+				if prevDelim == 125 { // Closing brace: end of JSON metadata object
+					// Table metadata is now completely initialised. Now do the rows of data.
+					//							return table, nil
+					break Loop
 				}
-			case string:
-				if colNameNext {
-					colName = token.(string)
-					colNameNext = false
-					colTypeNext = true
-				} else if colTypeNext {
-					colType = token.(string)
-					colTypeNext = false
-				} else {
-					return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
+				// We now have a colName-plus-colType pair. Add this col to table.
+				err = table.AppendCol(colName, colType)
+				if err != nil {
+					return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 				}
-			case bool:
-				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-			case float64:
-				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-			case json.Number:
-				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-			case nil:
-				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-			default:
-				fmt.Printf("unknown json token type %T value %v\n", token, token)
+				prevDelim = 125 // Closing brace: end of col
+			case '[': // Ignore slice signifiers in type names
+			case ']': // Ignore slice signifiers in type names
+			}
+		case string:
+			if colNameNext {
+				colName = token.(string)
+				colNameNext = false
+				colTypeNext = true
+			} else if colTypeNext {
+				colType = token.(string)
+				colTypeNext = false
+			} else {
+				return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
+			}
+		case bool:
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+		case float64:
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+		case json.Number:
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+		case nil:
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+		default:
+			fmt.Printf("unknown json token type %T value %v\n", token, token)
 		}
 	}
 
 
-	// Append row of data from JSON.
+	// Append row of table data from JSON.
+	// Note: Here we use a map for rows of data now that we have already preserved col order.
+	//       Unmarshal does all the parsing for us.
+
+	var unmarshalled interface{}
+	err = json.Unmarshal([]byte(jsonString), &unmarshalled)
+	if err != nil {
+		return nil, fmt.Errorf("newTableFromJSON(): %v", err)
+	}
+
+	var tableMap map[string]interface{} = unmarshalled.(map[string]interface{})
+	var rowsInterface []interface{} = tableMap[tableName].([]interface{})
+
+	for rowIndex, row := range rowsInterface {
+		table.AppendRow()
+		var rowMap map[string]interface{} = row.(map[string]interface{})
+		for colName, val := range rowMap {
+			var colIndex = table.colNamesMap[colName]
+			var colType string = table.colTypes[colIndex]
+			switch val.(type) {
+			case string:
+				err = table.SetString(colName, rowIndex, val.(string))
+			case float64:
+				switch colType {
+					case "int":
+						err = table.SetInt(colName, rowIndex, int(val.(float64)))
+					case "uint":
+						err = table.SetUint(colName, rowIndex, uint(val.(float64)))
+					case "byte":
+						err = table.SetByte(colName, rowIndex, byte(val.(float64)))
+					case "int8":
+						err = table.SetInt8(colName, rowIndex, int8(val.(float64)))
+					case "int16":
+						err = table.SetInt16(colName, rowIndex, int16(val.(float64)))
+					case "int32":
+						err = table.SetInt32(colName, rowIndex, int32(val.(float64)))
+					case "int64":
+						err = table.SetInt64(colName, rowIndex, int64(val.(float64)))
+					case "uint8":
+						err = table.SetUint8(colName, rowIndex, uint8(val.(float64)))
+					case "uint16":
+						err = table.SetUint16(colName, rowIndex, uint16(val.(float64)))
+					case "uint32":
+						err = table.SetUint32(colName, rowIndex, uint32(val.(float64)))
+					case "uint64":
+						err = table.SetUint64(colName, rowIndex, uint64(val.(float64)))
+					case "float32":
+						err = table.SetFloat32(colName, rowIndex, float32(val.(float64)))
+					case "float64":
+						err = table.SetFloat64(colName, rowIndex, float64(val.(float64)))
+				}
+			case bool:
+					err = table.SetBool(colName, rowIndex, val.(bool))
+			case []interface{}:	// This cell is a slice
+				var interfaceSlice []interface{} = val.([]interface{})
+				var byteSlice []byte = []byte{}
+				for _, sliceVal := range interfaceSlice {
+					byteSlice = append(byteSlice, byte(sliceVal.(float64)))
+				}
+				err = table.SetByteSlice(colName, rowIndex, byteSlice)
+			case nil:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected nil value")
+			default:
+				return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(val))
+			}
+
+			// Single error handler for all the table.Set...() calls.
+			if err != nil {
+				return nil, fmt.Errorf("newTableFromJSON(): %v", err)
+			}
+		}
+	}
 
 	return table, nil
 }

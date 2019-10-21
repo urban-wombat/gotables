@@ -2,13 +2,13 @@ package gotables
 
 import (
 	"bytes"
-	"encoding/json"
+	_ "encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
-	"os"
+	_ "os"
 	"reflect"
 	"regexp"
 	"sort"
@@ -7385,20 +7385,22 @@ func BenchmarkSprintfType(b *testing.B) {
 			t.Fatal(err)
 		}
 
+/*
 		var buf bytes.Buffer
 		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
+*/
 	
 		var jsonString string
-/*
 		jsonString, err = table.getTableAsJSON()
 		if err != nil {
 			t.Fatal(err)
 		}
 
+/*
 		err = json.Indent(&buf, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -7411,5 +7413,5 @@ func BenchmarkSprintfType(b *testing.B) {
 			t.Fatal(err)
 		}
 
-fmt.Printf("\n\n%v\n", table)
+		// fmt.Printf("\n\n%v\n", table)
 	}
