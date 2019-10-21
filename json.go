@@ -73,39 +73,60 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 }
 
 /*
-	Marshall gotables TableSet to JSON
-*/
-func (tableSet *TableSet) GetTableSetAsJSON() (jsonString string, err error) {
+	Marshal gotables TableSet to JSON
 
+	The TableSet is returned as two parallel slices of JSON:-
+		1. A slices of metadata strings: tableName, colNames and colTypes.
+		2. A slices of data strings: rows of data corresponding to the metadata.
+
+	Each slice element of metadata corresponds with (matches) each element of row data.
+*/
+func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonDataStrings []string, err error) {
+
+/*
 	var buf bytes.Buffer
 
 	buf.WriteString(fmt.Sprintf(`{"%s":`, tableSet.tableSetName))
 
 	buf.WriteByte('[')
+*/
+
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
 
 		var table *Table
 		table, err = tableSet.TableByTableIndex(tableIndex)
 		if err != nil {
-			return "", err
+			return nil, nil, err
 		}
 
-		var jsonTableString string
-		jsonTableString, err = table.getTableAsJSON()
+		var jsonMetadataString string
+		jsonMetadataString, err = table.getTableMetadataAsJSON()
 		if err != nil {
-			return "", err
+			return nil, nil, err
 		}
+		jsonMetadataStrings = append(jsonMetadataStrings, jsonMetadataString)
 
+		var jsonDataString string
+		jsonDataString, err = table.getTableAsJSON()
+		if err != nil {
+			return nil, nil, err
+		}
+		jsonDataStrings = append(jsonDataStrings, jsonDataString)
+
+/*
 		buf.WriteString(jsonTableString)
 
 		if tableIndex < len(tableSet.tables)-1 {
 			buf.WriteByte(',')
 		}
+*/
 	}
 
+/*
 	buf.WriteString(`]}`)
 
 	jsonString = buf.String()
+*/
 
 	return
 }
@@ -135,7 +156,7 @@ func (table *Table) getTableMetadataAsJSON() (jsonString string, err error) {
 }
 
 /*
-	Marshall gotables TableSet metadata to JSON
+	Marshal gotables TableSet metadata to JSON
 */
 func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err error) {
 
@@ -191,8 +212,10 @@ func NewTableFromJSON(jsonMetadataString string, jsonString string) (table *Tabl
 		return nil, fmt.Errorf("newTableFromJSON(): jsonString is empty")
 	}
 
+
 	// Create empty table from metadata.
 	// Note: To preserve column order, we cannot use JSON marshalling into a map.
+	// (Note: It may be that order IS in fact preserved. Try using Unmarshal() into map.)
 
 	dec := json.NewDecoder(strings.NewReader(jsonMetadataString))
 
