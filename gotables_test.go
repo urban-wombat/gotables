@@ -7408,7 +7408,7 @@ func BenchmarkSprintfType(b *testing.B) {
 		buf.WriteTo(os.Stdout)
 */
 
-		table, err = newTableFromJSON(jsonMetadataString, jsonString)
+		table, err = NewTableFromJSON(jsonMetadataString, jsonString)
 		if err != nil {
 			t.Fatal(err)
 		}

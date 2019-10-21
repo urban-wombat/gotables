@@ -172,7 +172,16 @@ func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err er
 	return
 }
 
-func newTableFromJSON(jsonMetadataString string, jsonString string) (table *Table, err error) {
+/*
+	Unmarshal a document of JSON metadata and a document of JSON data to a *gotables.Table
+
+	Two JSON documents are required:-
+		1. JSON metadata which contains the tableName, colNames and colTypes.
+		2. JSON data which contains zero or more rows of data that map to the metadata.
+
+	The two documents must match: the metadata must match the corresponding data.
+*/
+func NewTableFromJSON(jsonMetadataString string, jsonString string) (table *Table, err error) {
 
 	if jsonMetadataString == "" {
 		return nil, fmt.Errorf("newTableFromJSON(): jsonMetadataString is empty")
@@ -287,7 +296,6 @@ Loop:
 		}
 	}
 
-
 	// Append row of table data from JSON.
 	// Note: Here we use a map for rows of data now that we have already preserved col order.
 	//       Unmarshal does all the parsing for us.
@@ -312,36 +320,36 @@ Loop:
 				err = table.SetString(colName, rowIndex, val.(string))
 			case float64:
 				switch colType {
-					case "int":
-						err = table.SetInt(colName, rowIndex, int(val.(float64)))
-					case "uint":
-						err = table.SetUint(colName, rowIndex, uint(val.(float64)))
-					case "byte":
-						err = table.SetByte(colName, rowIndex, byte(val.(float64)))
-					case "int8":
-						err = table.SetInt8(colName, rowIndex, int8(val.(float64)))
-					case "int16":
-						err = table.SetInt16(colName, rowIndex, int16(val.(float64)))
-					case "int32":
-						err = table.SetInt32(colName, rowIndex, int32(val.(float64)))
-					case "int64":
-						err = table.SetInt64(colName, rowIndex, int64(val.(float64)))
-					case "uint8":
-						err = table.SetUint8(colName, rowIndex, uint8(val.(float64)))
-					case "uint16":
-						err = table.SetUint16(colName, rowIndex, uint16(val.(float64)))
-					case "uint32":
-						err = table.SetUint32(colName, rowIndex, uint32(val.(float64)))
-					case "uint64":
-						err = table.SetUint64(colName, rowIndex, uint64(val.(float64)))
-					case "float32":
-						err = table.SetFloat32(colName, rowIndex, float32(val.(float64)))
-					case "float64":
-						err = table.SetFloat64(colName, rowIndex, float64(val.(float64)))
+				case "int":
+					err = table.SetInt(colName, rowIndex, int(val.(float64)))
+				case "uint":
+					err = table.SetUint(colName, rowIndex, uint(val.(float64)))
+				case "byte":
+					err = table.SetByte(colName, rowIndex, byte(val.(float64)))
+				case "int8":
+					err = table.SetInt8(colName, rowIndex, int8(val.(float64)))
+				case "int16":
+					err = table.SetInt16(colName, rowIndex, int16(val.(float64)))
+				case "int32":
+					err = table.SetInt32(colName, rowIndex, int32(val.(float64)))
+				case "int64":
+					err = table.SetInt64(colName, rowIndex, int64(val.(float64)))
+				case "uint8":
+					err = table.SetUint8(colName, rowIndex, uint8(val.(float64)))
+				case "uint16":
+					err = table.SetUint16(colName, rowIndex, uint16(val.(float64)))
+				case "uint32":
+					err = table.SetUint32(colName, rowIndex, uint32(val.(float64)))
+				case "uint64":
+					err = table.SetUint64(colName, rowIndex, uint64(val.(float64)))
+				case "float32":
+					err = table.SetFloat32(colName, rowIndex, float32(val.(float64)))
+				case "float64":
+					err = table.SetFloat64(colName, rowIndex, float64(val.(float64)))
 				}
 			case bool:
-					err = table.SetBool(colName, rowIndex, val.(bool))
-			case []interface{}:	// This cell is a slice
+				err = table.SetBool(colName, rowIndex, val.(bool))
+			case []interface{}: // This cell is a slice
 				var interfaceSlice []interface{} = val.([]interface{})
 				var byteSlice []byte = []byte{}
 				for _, sliceVal := range interfaceSlice {
@@ -362,4 +370,17 @@ Loop:
 	}
 
 	return table, nil
+}
+
+/*
+	Unmarshal a slice of JSON metadata documents and a slice of JSON data documents to a *gotables.TableSet
+
+	Two JSON documents are required:-
+		1. A slice of JSON metadata which contains the tableName, colNames and colTypes.
+		2. A slice of JSON data which contains zero or more rows of data that map to the metadata.
+
+	The two slices must be parallel: each element of metadata must match the corresponding element of data.
+*/
+func NewTableSetFromJSON(jsonMetadataString []string, jsonString []string) (tableSet *TableSet, err error) {
+	return nil, nil
 }
