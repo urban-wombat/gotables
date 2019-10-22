@@ -110,7 +110,7 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 
 	Note: The table must have at least 1 col defined (zero rows are okay).
 */
-func (table *Table) GetTableMetadataAsJSON() (jsonString string, err error) {
+func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err error) {
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
@@ -140,7 +140,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonString string, err error) {
 	buf.WriteByte(']')
 	buf.WriteByte(125)	// Closing brace
 
-	jsonString = buf.String()
+	jsonMetadataString = buf.String()
 
 	return
 }
@@ -195,14 +195,14 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jso
 
 	The two documents must match: the metadata must match the corresponding data.
 */
-func NewTableFromJSON(jsonMetadataString string, jsonString string) (table *Table, err error) {
+func NewTableFromJSON(jsonMetadataString string, jsonDataString string) (table *Table, err error) {
 
 	if jsonMetadataString == "" {
 		return nil, fmt.Errorf("newTableFromJSON(): jsonMetadataString is empty")
 	}
 
-	if jsonString == "" {
-		return nil, fmt.Errorf("newTableFromJSON(): jsonString is empty")
+	if jsonDataString == "" {
+		return nil, fmt.Errorf("newTableFromJSON(): jsonDataString is empty")
 	}
 
 
@@ -317,7 +317,7 @@ Loop:
 	//       Unmarshal does all the parsing for us.
 
 	var unmarshalled interface{}
-	err = json.Unmarshal([]byte(jsonString), &unmarshalled)
+	err = json.Unmarshal([]byte(jsonDataString), &unmarshalled)
 	if err != nil {
 		return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 	}
