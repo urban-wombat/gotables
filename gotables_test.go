@@ -7811,3 +7811,110 @@ func TestAllJSONZeroMetadata(t *testing.T) {
 		t.Fatalf("expecting error (cannot marshal json metadata from a table with zero columns) but got err == nil")
 	}
 }
+
+func ExampleNewTableFromJSON() {
+	var err error
+
+	tableString :=
+	`[MyTable]
+	i    u    f
+	int  uint float32
+	1    2    3.3
+	4    5    6.6
+	`
+	table1, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table1)
+
+	var jsonMetadata string
+	var jsonData string
+	var buf bytes.Buffer
+
+	jsonMetadata, err = table1.GetTableMetadataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = json.Indent(&buf, []byte(jsonMetadata), "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	buf.WriteTo(os.Stdout)
+
+	fmt.Println()
+	fmt.Println()
+
+	jsonData, err = table1.GetTableDataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = json.Indent(&buf, []byte(jsonData), "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	buf.WriteTo(os.Stdout)
+
+	fmt.Println()
+	fmt.Println()
+
+	table2, err := NewTableFromJSON(jsonMetadata, jsonData)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table2)
+
+	equals, err := table2.Equals(table1)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+
+	// Output:
+	// [MyTable]
+	//   i    u       f
+	// int uint float32
+	//   1    2     3.3
+	//   4    5     6.6
+	//
+	// {
+	//   "MyTable": [
+	//     {
+	//       "i": "int"
+	//     },
+	//     {
+	//       "u": "uint"
+	//     },
+	//     {
+	//       "f": "float32"
+	//     }
+	//   ]
+	// }
+	//
+	// {
+	//   "MyTable": [
+	//     {
+	//       "i": 1,
+	//       "u": 2,
+	//       "f": 3.3
+	//     },
+	//     {
+	//       "i": 4,
+	//       "u": 5,
+	//       "f": 6.6
+	//     }
+	//   ]
+	// }
+	//
+	// [MyTable]
+	//   i    u       f
+	// int uint float32
+	//   1    2     3.3
+	//   4    5     6.6
+	//
+	// table2.Equals(table1) == true
+}
