@@ -8,11 +8,32 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+
+	"github.com/urban-wombat/util"
 )
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
-func (table *Table) getTableAsJSON() (jsonString string, err error) {
+/*
+	Marshal json from the rows of data in this table.
+
+	A *gotables.Table is composed of metadata and data:-
+		1. Metadata:-
+			* Table name
+			* Column names
+			* Column types
+		2. Data:
+			* Rows of data
+
+	To generate json metadata and data:-
+		1. Meta: call method table.GetTableMetadataAsJSON()
+		2. Data: call method table.GetTableDataAsJSON()
+*/
+func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
+
+	if table == nil {
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
+	}
 
 	var buf bytes.Buffer
 
@@ -67,6 +88,58 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 	}
 	buf.WriteString("]}")
 
+	jsonDataString = buf.String()
+
+	return
+}
+
+/*
+	Marshal json from the metadata in this table.
+
+	A *gotables.Table is composed of metadata and data:-
+		1. Metadata:-
+			* Table name
+			* Column names
+			* Column types
+		2. Data:
+			* Rows of data
+
+	To generate json metadata and data:-
+		1. Meta: call method table.GetTableMetadataAsJSON()
+		2. Data: call method table.GetTableDataAsJSON()
+
+	Note: The table must have at least 1 col defined (zero rows are okay).
+*/
+func (table *Table) GetTableMetadataAsJSON() (jsonString string, err error) {
+
+	if table == nil {
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
+	}
+
+	if table.ColCount() == 0 {
+		return "", fmt.Errorf("in table [%s]: cannot marshal json metadata from a table with zero columns", table.Name())
+	}
+
+	var buf bytes.Buffer
+
+	buf.WriteByte(123)	// Opening brace
+	buf.WriteString(fmt.Sprintf(`"%s":`, table.tableName))
+	buf.WriteByte('[')
+	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		buf.WriteByte(123) // Opening brace
+		buf.WriteByte('"')
+		buf.WriteString(table.colNames[colIndex])
+		buf.WriteString(`":"`)
+		buf.WriteString(table.colTypes[colIndex])
+		buf.WriteByte('"')
+		buf.WriteByte(125)	// Closing brace
+		if colIndex < len(table.colNames)-1 {
+			buf.WriteByte(',')
+		}
+	}
+	buf.WriteByte(']')
+	buf.WriteByte(125)	// Closing brace
+
 	jsonString = buf.String()
 
 	return
@@ -76,20 +149,16 @@ func (table *Table) getTableAsJSON() (jsonString string, err error) {
 	Marshal gotables TableSet to JSON
 
 	The TableSet is returned as two parallel slices of JSON:-
-		1. A slices of metadata strings: tableName, colNames and colTypes.
-		2. A slices of data strings: rows of data corresponding to the metadata.
+		1. A slice of metadata strings: tableName, colNames and colTypes
+		2. A slice of data strings: rows of data corresponding to the metadata
 
 	Each slice element of metadata corresponds with (matches) each element of row data.
 */
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonDataStrings []string, err error) {
 
-/*
-	var buf bytes.Buffer
-
-	buf.WriteString(fmt.Sprintf(`{"%s":`, tableSet.tableSetName))
-
-	buf.WriteByte('[')
-*/
+	if tableSet == nil {
+		return nil, nil, fmt.Errorf("%s ERROR: tableSet.%s tableSet is <nil>", util.FuncSource(), util.FuncName())
+	}
 
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
 
@@ -100,95 +169,19 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jso
 		}
 
 		var jsonMetadataString string
-		jsonMetadataString, err = table.getTableMetadataAsJSON()
+		jsonMetadataString, err = table.GetTableMetadataAsJSON()
 		if err != nil {
 			return nil, nil, err
 		}
 		jsonMetadataStrings = append(jsonMetadataStrings, jsonMetadataString)
 
 		var jsonDataString string
-		jsonDataString, err = table.getTableAsJSON()
+		jsonDataString, err = table.GetTableDataAsJSON()
 		if err != nil {
 			return nil, nil, err
 		}
 		jsonDataStrings = append(jsonDataStrings, jsonDataString)
-
-/*
-		buf.WriteString(jsonTableString)
-
-		if tableIndex < len(tableSet.tables)-1 {
-			buf.WriteByte(',')
-		}
-*/
 	}
-
-/*
-	buf.WriteString(`]}`)
-
-	jsonString = buf.String()
-*/
-
-	return
-}
-
-func (table *Table) getTableMetadataAsJSON() (jsonString string, err error) {
-
-	var buf bytes.Buffer
-
-	buf.WriteString(fmt.Sprintf(`{"%s":`, table.tableName))
-	buf.WriteByte('[')
-	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-		buf.WriteByte(123) // Opening brace
-		buf.WriteByte('"')
-		buf.WriteString(table.colNames[colIndex])
-		buf.WriteString(`":"`)
-		buf.WriteString(table.colTypes[colIndex])
-		buf.WriteString(`"}`)
-		if colIndex < len(table.colNames)-1 {
-			buf.WriteByte(',')
-		}
-	}
-	buf.WriteString("]}")
-
-	jsonString = buf.String()
-
-	return
-}
-
-/*
-	Marshal gotables TableSet metadata to JSON
-*/
-func (tableSet *TableSet) GetTableSetMetadataAsJSON() (jsonString string, err error) {
-
-	var buf bytes.Buffer
-
-	buf.WriteString(fmt.Sprintf(`{"%s":`, tableSet.tableSetName))
-
-	buf.WriteByte('[')
-	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-
-		var table *Table
-		table, err = tableSet.TableByTableIndex(tableIndex)
-		if err != nil {
-			return "", err
-		}
-
-		var jsonTableString string
-		jsonTableString, err = table.getTableMetadataAsJSON()
-		if err != nil {
-			return "", err
-		}
-
-		buf.WriteString(jsonTableString)
-
-		if tableIndex < len(tableSet.tables)-1 {
-			buf.WriteByte(',')
-		}
-	}
-
-	buf.WriteString(`]}`)
-
-	jsonString = buf.String()
 
 	return
 }
@@ -404,6 +397,37 @@ Loop:
 
 	The two slices must be parallel: each element of metadata must match the corresponding element of data.
 */
-func NewTableSetFromJSON(jsonMetadataString []string, jsonString []string) (tableSet *TableSet, err error) {
-	return nil, nil
+func NewTableSetFromJSON(jsonMetadataStrings []string, jsonDataStrings []string) (tableSet *TableSet, err error) {
+
+	if jsonMetadataStrings == nil {
+		return nil, fmt.Errorf("jsonMetadataStrings == nil")
+	}
+
+	if jsonDataStrings == nil {
+		return nil, fmt.Errorf("jsonDataStrings == nil")
+	}
+
+	if len(jsonMetadataStrings) != len(jsonDataStrings) {
+		return nil, fmt.Errorf("len(jsonMetadataStrings) %d != len(jsonDataStrings) %d",
+			len(jsonMetadataStrings), len(jsonDataStrings))
+	}
+
+	tableSet, err = NewTableSet("")
+	if err != nil {
+		return nil, err
+	}
+
+	for tableIndex := 0; tableIndex < len(jsonMetadataStrings); tableIndex++ {
+		table, err := NewTableFromJSON(jsonMetadataStrings[tableIndex], jsonDataStrings[tableIndex])
+		if err != nil {
+			return nil, err
+		}
+
+		err = tableSet.AppendTable(table)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return
 }

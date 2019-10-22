@@ -609,8 +609,7 @@ func (table *Table) AppendRow() error {
 	/*
 		// This is an interesting consideration. It sounds right, but it might make things less flexible unnecessarily.
 		if table.ColCount() == 0 {
-			err = fmt.Errorf("in table [%s]: cannot add rows to a table that has no columns", table.Name())
-			return err
+			return fmt.Errorf("in table [%s]: cannot add rows to a table that has no columns", table.Name())
 		}
 	*/
 
