@@ -7974,9 +7974,6 @@ func ExampleNewTableSetFromJSON() {
 	fmt.Println(tableSet2)
 
 	equals, err := tableSet2.Equals(tableSet1)
-	if err != nil {
-		log.Println(err)
-	}
 
 	fmt.Printf("table2.Equals(table1) == %t\n", equals)
 
