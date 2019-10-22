@@ -6059,7 +6059,7 @@ func ExampleReverse() {
 	// "Sun"     333333.0        0.0     0     0 ""
 }
 
-func ExampleShuffleDeterministic() {
+func ExampleTable_ShuffleDeterministic() {
 	var err error
 	var table *Table
 
@@ -6122,7 +6122,7 @@ func ExampleShuffleDeterministic() {
 	// "Saturn"      95.0        9.5    82     6 "sat"
 }
 
-func ExampleShuffleRandom() {
+func ExampleTable_ShuffleRandom() {
 	var err error
 	var table *Table
 
@@ -7915,6 +7915,133 @@ func ExampleNewTableFromJSON() {
 	// int uint float32
 	//   1    2     3.3
 	//   4    5     6.6
+	//
+	// table2.Equals(table1) == true
+}
+
+func ExampleNewTableSetFromJSON() {
+	var err error
+
+	tableSetString :=
+	`[MyTable]
+	x int = 1
+	y int = 2
+	z int = 3
+
+	[YourTable]
+	a float32 = 1
+	b float32 = 2
+	c float32 = 3
+	`
+	tableSet1, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(tableSet1)
+
+	var jsonMetadataSlice []string
+	var jsonDataSlice []string
+	var buf bytes.Buffer
+
+	jsonMetadataSlice, jsonDataSlice, err = tableSet1.GetTableSetAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	for i := 0; i < len(jsonMetadataSlice); i++ {
+		err = json.Indent(&buf, []byte(jsonMetadataSlice[i]), "", "  ")
+		if err != nil {
+			log.Println(err)
+		}
+		buf.WriteTo(os.Stdout)
+	
+		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
+		if err != nil {
+			log.Println(err)
+		}
+		buf.WriteTo(os.Stdout)
+	}
+
+	fmt.Println()
+	fmt.Println()
+
+	tableSet2, err := NewTableSetFromJSON(jsonMetadataSlice, jsonDataSlice)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(tableSet2)
+
+	equals, err := tableSet2.Equals(tableSet1)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+
+	// Output:
+	// [MyTable]
+	// x int = 1
+	// y int = 2
+	// z int = 3
+	//
+	// [YourTable]
+	// a float32 = 1
+	// b float32 = 2
+	// c float32 = 3
+	//
+	// {
+	//   "MyTable": [
+	//     {
+	//       "x": "int"
+	//     },
+	//     {
+	//       "y": "int"
+	//     },
+	//     {
+	//       "z": "int"
+	//     }
+	//   ]
+	// }{
+	//   "MyTable": [
+	//     {
+	//       "x": 1,
+	//       "y": 2,
+	//       "z": 3
+	//     }
+	//   ]
+	// }{
+	//   "YourTable": [
+	//     {
+	//       "a": "float32"
+	//     },
+	//     {
+	//       "b": "float32"
+	//     },
+	//     {
+	//       "c": "float32"
+	//     }
+	//   ]
+	// }{
+	//   "YourTable": [
+	//     {
+	//       "a": 1,
+	//       "b": 2,
+	//       "c": 3
+	//     }
+	//   ]
+	// }
+	//
+	// [MyTable]
+	// x int = 1
+	// y int = 2
+	// z int = 3
+	//
+	// [YourTable]
+	// a float32 = 1
+	// b float32 = 2
+	// c float32 = 3
 	//
 	// table2.Equals(table1) == true
 }
