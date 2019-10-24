@@ -7136,12 +7136,12 @@ func TestParserGlobalVars(t *testing.T) {
 		name   string
 		global *string
 	}{
-//		{"runeRegexpString", &runeRegexpString},			// now a const
+		//		{"runeRegexpString", &runeRegexpString},			// now a const
 		{"intRegexpString", &intRegexpString},
 		{"uintRegexpString", &uintRegexpString},
 		{"uintSliceRegexpString", &uintSliceRegexpString},
-//		{"namePattern", &namePattern},						// now a const
-//		{"tableNamePattern", &tableNamePattern},			// now a const
+		//		{"namePattern", &namePattern},						// now a const
+		//		{"tableNamePattern", &tableNamePattern},			// now a const
 	}
 
 	for testIndex, test := range stringTests {
@@ -7248,10 +7248,10 @@ func TestGetTableSetAsJSON(t *testing.T) {
 	_ = jsonMetadataString
 	_ = jsonDataString
 
-/*
-	fmt.Println(jsonMetadataString)
-	fmt.Println(jsonDataString)
-*/
+	/*
+		fmt.Println(jsonMetadataString)
+		fmt.Println(jsonDataString)
+	*/
 
 	/*
 		var out bytes.Buffer
@@ -7364,6 +7364,9 @@ func BenchmarkSprintfType(b *testing.B) {
 }
 
 func TestNewTableFromJSON(t *testing.T) {
+
+	const verbose = false
+
 	var err error
 	var table1 *Table // Input table
 	var table2 *Table // Output table
@@ -7383,20 +7386,24 @@ func TestNewTableFromJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if verbose {
+		fmt.Printf("\n\n%v\n", table1)
+	}
+
 	var jsonMetadataString string
 	jsonMetadataString, err = table1.GetTableMetadataAsJSON()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	/*
+	if verbose {
 		var buf bytes.Buffer
 		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	*/
+	}
 
 	var jsonString string
 	jsonString, err = table1.GetTableDataAsJSON()
@@ -7404,13 +7411,14 @@ func TestNewTableFromJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	/*
+	if verbose {
+		var buf bytes.Buffer
 		err = json.Indent(&buf, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	*/
+	}
 
 	table2, err = NewTableFromJSON(jsonMetadataString, jsonString)
 	if err != nil {
@@ -7422,7 +7430,9 @@ func TestNewTableFromJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// fmt.Printf("\n\n%v\n", table)
+	if verbose {
+		fmt.Printf("\n\n%v\n", table2)
+	}
 }
 
 func TestNewTableSetFromJSON(t *testing.T) {
@@ -7482,7 +7492,7 @@ func TestAllJSON(t *testing.T) {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -7512,7 +7522,7 @@ func TestAllJSON(t *testing.T) {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7528,7 +7538,7 @@ func TestAllJSON(t *testing.T) {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7549,7 +7559,7 @@ func TestAllJSON(t *testing.T) {
 	}
 
 	tableSetString :=
-	`[MyTable]
+		`[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -7584,14 +7594,14 @@ func TestAllJSON(t *testing.T) {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
-		
+
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
 		}
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7618,7 +7628,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	x int
 	y int
 	z int
@@ -7648,7 +7658,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7664,7 +7674,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7685,7 +7695,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 	}
 
 	tableSetString :=
-	`[MyTable]
+		`[MyTable]
 	x int
 	y int
 	z int
@@ -7720,14 +7730,14 @@ func TestAllJSONZeroRows(t *testing.T) {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
-		
+
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
 		}
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
@@ -7756,7 +7766,7 @@ func TestAllJSONZeroMetadata(t *testing.T) {
 	var err error
 
 	tableString :=
-	`[MyTable]`
+		`[MyTable]`
 	table1, err := NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
@@ -7786,13 +7796,13 @@ func TestAllJSONZeroMetadata(t *testing.T) {
 			t.Fatal(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		fmt.Println()
 		fmt.Println()
 	}
 
 	tableSetString :=
-	`[MyTable]
+		`[MyTable]
 
 	[YourTable]
 	`
@@ -7816,7 +7826,7 @@ func ExampleNewTableFromJSON() {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	i    u    f
 	int  uint float32
 	1    2    3.3
@@ -7923,7 +7933,7 @@ func ExampleNewTableSetFromJSON() {
 	var err error
 
 	tableSetString :=
-	`[MyTable]
+		`[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -7955,7 +7965,7 @@ func ExampleNewTableSetFromJSON() {
 			log.Println(err)
 		}
 		buf.WriteTo(os.Stdout)
-	
+
 		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
 		if err != nil {
 			log.Println(err)

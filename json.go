@@ -122,7 +122,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 
 	var buf bytes.Buffer
 
-	buf.WriteByte(123)	// Opening brace
+	buf.WriteByte(123) // Opening brace
 	buf.WriteString(fmt.Sprintf(`"%s":`, table.tableName))
 	buf.WriteByte('[')
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -132,13 +132,13 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 		buf.WriteString(`":"`)
 		buf.WriteString(table.colTypes[colIndex])
 		buf.WriteByte('"')
-		buf.WriteByte(125)	// Closing brace
+		buf.WriteByte(125) // Closing brace
 		if colIndex < len(table.colNames)-1 {
 			buf.WriteByte(',')
 		}
 	}
 	buf.WriteByte(']')
-	buf.WriteByte(125)	// Closing brace
+	buf.WriteByte(125) // Closing brace
 
 	jsonMetadataString = buf.String()
 
@@ -205,10 +205,8 @@ func NewTableFromJSON(jsonMetadataString string, jsonDataString string) (table *
 		return nil, fmt.Errorf("newTableFromJSON(): jsonDataString is empty")
 	}
 
-
 	// Create empty table from metadata.
 	// Note: To preserve column order, we cannot use JSON marshalling into a map.
-	// (Note: It may be that order IS in fact preserved. Try using Unmarshal() into map.)
 
 	dec := json.NewDecoder(strings.NewReader(jsonMetadataString))
 
@@ -233,11 +231,11 @@ func NewTableFromJSON(jsonMetadataString string, jsonDataString string) (table *
 	}
 
 	// Get the table name.
-	var tableName string
+	var metadataTableName string
 	switch token.(type) {
 	case string: // As expected
-		tableName = token.(string)
-		table, err = NewTable(tableName)
+		metadataTableName = token.(string)
+		table, err = NewTable(metadataTableName)
 		if err != nil {
 			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 		}
@@ -323,7 +321,18 @@ Loop:
 	}
 
 	var tableMap map[string]interface{} = unmarshalled.(map[string]interface{})
-	var rowsInterface []interface{} = tableMap[tableName].([]interface{})
+
+	// Check that this JSON data (rows) object table name matches the JSON metadata object table name.
+	var dataTableName string
+	for dataTableName, _ = range tableMap {
+		// There should be only one key, and it should be the table name.
+	}
+	if dataTableName != metadataTableName {
+		return nil, fmt.Errorf("newTableFromJSON(): unexpected JSON metadataTableName %q != JSON dataTableName %q",
+			metadataTableName, dataTableName)
+	}
+
+	var rowsInterface []interface{} = tableMap[dataTableName].([]interface{})
 
 	for rowIndex, row := range rowsInterface {
 		table.AppendRow()
