@@ -56,7 +56,7 @@ SOFTWARE.
 const go_1_13_number_literals = true
 
 func init() {
-	typeAliasMap = map[string]string{
+typeAliasMap = map[string]string{
 		"uint8":   "byte",
 		"byte":    "uint8",
 		"[]uint8": "[]byte",
@@ -93,7 +93,7 @@ func init() {
 
 var globalLineNum int
 
-var globalErrorLimit int = 10
+const globalErrorLimit int = 10
 var globalErrorCount int
 
 const _ALL_SUBSTRINGS = -1
@@ -120,7 +120,7 @@ var boolRegexp *regexp.Regexp = regexp.MustCompile(`^\b(true|false)\b`)
 
 // Note: (\\') successfully parses '\'' It needs to go before ([^']*)
 //             This may not be terribly efficient, awaiting a more specific regular expresssion.
-var runeRegexpString string = `'((\\n)|(\\')|([^']\\[xuU].*)|([^']*))'`
+const runeRegexpString string = `'((\\n)|(\\')|([^']\\[xuU].*)|([^']*))'`
 var runeRegexp *regexp.Regexp = regexp.MustCompile(runeRegexpString)
 
 // Covers all unsigned integrals, including byte.
@@ -139,8 +139,8 @@ var intRegexp *regexp.Regexp
 // var floatRegexp		*regexp.Regexp = regexp.MustCompile(`(^[-+]?(\b[0-9]+\.([0-9]+\b)?|\b\.[0-9]+\b))|([Nn][Aa][Nn])|(\b[-+]?\d+\b)`)
 // From Regular Expressions Cookbook.
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
-var namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
-var tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
+const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
+const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)

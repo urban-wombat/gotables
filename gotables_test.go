@@ -7136,12 +7136,12 @@ func TestParserGlobalVars(t *testing.T) {
 		name   string
 		global *string
 	}{
-		{"runeRegexpString", &runeRegexpString},
+//		{"runeRegexpString", &runeRegexpString},			// now a const
 		{"intRegexpString", &intRegexpString},
 		{"uintRegexpString", &uintRegexpString},
 		{"uintSliceRegexpString", &uintSliceRegexpString},
-		{"namePattern", &namePattern},
-		{"tableNamePattern", &tableNamePattern},
+//		{"namePattern", &namePattern},						// now a const
+//		{"tableNamePattern", &tableNamePattern},			// now a const
 	}
 
 	for testIndex, test := range stringTests {
