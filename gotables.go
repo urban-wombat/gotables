@@ -3992,8 +3992,9 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	and not to the in-memory *Table cells containing user-defined values, which contain the
 	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
 
-	Minor note: EncodeCustomTypeVal() and DecodeCustomTypeVal() can be used to encode Go built-in types.
-	But why would you want to?
+	Minor note: With EncodeCustomTypeVal() and DecodeCustomTypeVal() you CAN encode Go built-in types,
+	such as int, string and float64, but you don't need to, since they are already implemented directly
+	in gotables.
 
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods *gotables.Table.String() or *gotables.Table.StringUnpadded() )
@@ -4055,8 +4056,9 @@ func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 	and not to the in-memory *Table cells containing user-defined values, which contain the
 	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
 
-	Minor note: EncodeCustomTypeVal() and DecodeCustomTypeVal() can be used to encode Go built-in types.
-	But why would you want to?
+	Minor note: With EncodeCustomTypeVal() and DecodeCustomTypeVal() you CAN encode Go built-in types,
+	such as int, string and float64, but you don't need to, since they are already implemented directly
+	in gotables.
 
 	Always check returned value is not nil before asserting the type:
 
