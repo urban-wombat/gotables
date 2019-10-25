@@ -3996,6 +3996,8 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	such as int, string and float64, but you don't need to, since they are already implemented directly
 	in gotables.
 
+	Playground example: https://play.golang.org/p/8lqxzLMlZjE
+
 	Whilst it's easy to generate a string (textual table) from a gotables.Table
 	( using methods *gotables.Table.String() or *gotables.Table.StringUnpadded() )
 	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
@@ -4059,6 +4061,8 @@ func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 	Minor note: With EncodeCustomTypeVal() and DecodeCustomTypeVal() you CAN encode Go built-in types,
 	such as int, string and float64, but you don't need to, since they are already implemented directly
 	in gotables.
+
+	Playground example: https://play.golang.org/p/8lqxzLMlZjE
 
 	Always check returned value is not nil before asserting the type:
 
