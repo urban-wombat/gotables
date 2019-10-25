@@ -3157,12 +3157,12 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 
 	To copy some but not all rows, use NewTableFromRows()
 */
-func (table *Table) Copy(copyRows bool) (*Table, error) {
+func (table *Table) Copy(copyRowsAlso bool) (*Table, error) {
 	var err error
 	var tableCopy *Table
 	const firstRow = 0
 	var lastRow int = 0
-	if copyRows {
+	if copyRowsAlso {
 		lastRow = table.RowCount() - 1
 	}
 
@@ -3176,7 +3176,7 @@ func (table *Table) Copy(copyRows bool) (*Table, error) {
 		return nil, err
 	}
 
-	if copyRows {
+	if copyRowsAlso {
 		if table.RowCount() > 0 {
 			err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)
 			if err != nil {
@@ -3191,7 +3191,7 @@ func (table *Table) Copy(copyRows bool) (*Table, error) {
 /*
 	Create a copy of TableSet, with or without copying table rows of data.
 */
-func (tableSet *TableSet) Copy(copyRows bool) (*TableSet, error) {
+func (tableSet *TableSet) Copy(copyRowsAlso bool) (*TableSet, error) {
 	var err error
 	var tableSetCopy *TableSet
 
@@ -3207,7 +3207,7 @@ func (tableSet *TableSet) Copy(copyRows bool) (*TableSet, error) {
 			return nil, err
 		}
 
-		tableCopy, err := table.Copy(copyRows)
+		tableCopy, err := table.Copy(copyRowsAlso)
 		if err != nil {
 			return nil, err
 		}
