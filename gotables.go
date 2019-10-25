@@ -4008,16 +4008,16 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	If you wish to create a text table by hand, you can use <nil> values as place-holders
 	for user-defined types, and set them later.
 */
-func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
+func EncodeCustomTypeVal(customTypeVal interface{}) (encoded string, err error) {
 	if printCaller {
 		util.PrintCaller()
 	}
-	if customType != nil {
-		// Created a GOB encoding of customType.
-		gobRegister(customType)
+	if customTypeVal != nil {
+		// Created a GOB encoding of customTypeVal.
+		gobRegister(customTypeVal)
 		var buffer bytes.Buffer // To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(&customType) // Use ADDRESS of interface, or it will be concrete type.
+		err = encoder.Encode(&customTypeVal) // Use ADDRESS of interface, or it will be concrete type.
 		if err != nil {
 			return "", err
 		}
@@ -4026,9 +4026,9 @@ func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 		// Compress to printable characters.
 		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
 
-		// Create quoted string representation of customType, for humans to read, not for parsing.
+		// Create quoted string representation of customTypeVal, for humans to read, not for parsing.
 		// It is quoted to ensure a regexp match for the end will not find something in the middle.
-		unQuotedValString := fmt.Sprintf("%#v", customType)
+		unQuotedValString := fmt.Sprintf("%#v", customTypeVal)
 		quotedValString := fmt.Sprintf("%q", unQuotedValString)
 
 		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
@@ -4072,7 +4072,7 @@ func EncodeCustomTypeVal(customType interface{}) (encoded string, err error) {
 			myVal = val.(MyType)
 		}
 */
-func DecodeCustomTypeVal(encoded string) (customType interface{}, err error) {
+func DecodeCustomTypeVal(encoded string) (customTypeVal interface{}, err error) {
 	if encoded == "<nil>" {
 		return nil, nil
 	} else {
@@ -4093,12 +4093,12 @@ func DecodeCustomTypeVal(encoded string) (customType interface{}, err error) {
 		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
 		var decoder *gob.Decoder = gob.NewDecoder(buffer)
 		//		var interfaceOut interface{}
-		err = decoder.Decode(&customType)
+		err = decoder.Decode(&customTypeVal)
 		if err != nil {
 			return nil, err
 		}
 
-		return customType, nil
+		return customTypeVal, nil
 	}
 }
 
