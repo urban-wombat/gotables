@@ -157,7 +157,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonDataStrings []string, err error) {
 
 	if tableSet == nil {
-		return nil, nil, fmt.Errorf("%s ERROR: tableSet.%s tableSet is <nil>", util.FuncSource(), util.FuncName())
+		return nil, nil, fmt.Errorf("%s %s tableSet is <nil>", util.FuncSource(), util.FuncName())
 	}
 
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
@@ -206,10 +206,15 @@ func NewTableFromJSON(jsonMetadataString string, jsonDataString string) (table *
 	}
 
 	// Create empty table from metadata.
-	// Note: To preserve column order, we cannot use JSON marshalling into a map.
+	/* Note: To preserve column order, we do NOT use JSON marshalling into a map,
+	   because iterating over a map returns values in random order.
+	   Instead, we use the json decoder. (The data rows (later in this function)
+	   ARE decoded using a map.)
+	   Actually, the jsonMetadataString is an array, so it probably WOULD work.
+	   TODO: Use a map to decode jsonMetadataString
+	*/
 
 	dec := json.NewDecoder(strings.NewReader(jsonMetadataString))
-
 	var token json.Token
 
 	// Skip opening brace
@@ -310,9 +315,12 @@ Loop:
 		}
 	}
 
+
 	// Append row of table data from JSON.
-	// Note: Here we use a map for rows of data now that we have already preserved col order.
-	//       Unmarshal does all the parsing for us.
+	/*
+	   Note: Here we use a map for rows of data now that we have already preserved col order.
+	   Unmarshal does all the parsing for us.
+	*/
 
 	var unmarshalled interface{}
 	err = json.Unmarshal([]byte(jsonDataString), &unmarshalled)
@@ -323,6 +331,7 @@ Loop:
 	var tableMap map[string]interface{} = unmarshalled.(map[string]interface{})
 
 	// Check that this JSON data (rows) object table name matches the JSON metadata object table name.
+	// (Could have simply used metadataTableName as the key to a lookup.)
 	var dataTableName string
 	for dataTableName, _ = range tableMap {
 		// There should be only one key, and it should be the table name.
@@ -333,6 +342,7 @@ Loop:
 	}
 
 	var rowsInterface []interface{} = tableMap[dataTableName].([]interface{})
+//where(rowsInterface)
 
 	for rowIndex, row := range rowsInterface {
 		table.AppendRow()

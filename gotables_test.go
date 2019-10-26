@@ -7375,11 +7375,11 @@ func TestNewTableFromJSON(t *testing.T) {
 		[TypesGalore15]
 	    i   s      f       f32     t     b    ui    bb            uu8
 	    int string float64 float32 bool  byte uint8 []byte        []uint8
-	    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
-	    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
-	    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
-	    4   "xxxx" 5.9     9.9     true  44   3     []            []
-	    5   "yyyy" 6.9    10.9     false 55   4     [0]           [2]
+	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+	    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+	    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+	    3   "xxxx" 5.9     9.9     true  44   3     []            []
+	    4   "yyyy" 6.9    10.9     false 55   4     [0]           [2]
 	    `
 	table1, err = NewTableFromString(tableString)
 	if err != nil {
@@ -7428,6 +7428,18 @@ func TestNewTableFromJSON(t *testing.T) {
 	_, err = table1.Equals(table2)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	// Does table.Equals() check row order?
+	for rowIndex := 0; rowIndex < table2.RowCount(); rowIndex++ {
+		i, err := table2.GetInt("i", rowIndex)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if i != rowIndex {
+			t.Fatalf("expecting decoded table rows in order, but found row %d at rowIndex %d", i, rowIndex)
+		}
 	}
 
 	if verbose {
