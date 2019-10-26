@@ -2647,7 +2647,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		// Is a user-defined interface value.
 		var customVal string
 		if interfaceType == nil {
-			customVal = "<nil>"
+			customVal = "nil"
 		} else {
 			customVal, err = EncodeCustomTypeVal(interfaceType)
 			if err != nil {
@@ -4037,7 +4037,8 @@ func EncodeCustomTypeVal(customTypeVal interface{}) (encoded string, err error) 
 		return encoded, nil
 	}
 
-	encoded = "<nil>"
+	encoded = "nil"
+
 	return
 }
 
@@ -4073,7 +4074,7 @@ func EncodeCustomTypeVal(customTypeVal interface{}) (encoded string, err error) 
 		}
 */
 func DecodeCustomTypeVal(encoded string) (customTypeVal interface{}, err error) {
-	if encoded == "<nil>" {
+	if encoded == "nil" {
 		return nil, nil
 	} else {
 

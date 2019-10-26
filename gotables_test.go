@@ -6621,7 +6621,7 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 
 	// Struct format table.
 	var stableString string = `[stable]
-	MyCar gotables.car = <nil>
+	MyCar gotables.car = nil
 	i int = 42
 	s string = "forty-two"
 	`
