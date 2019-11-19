@@ -6,9 +6,7 @@ package gotables
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/csv"
-	"encoding/gob"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -55,11 +53,9 @@ SOFTWARE.
 */
 
 const debugging bool = false
-const printCaller = true
+const printCaller = false
 const printstack bool = false
 const todo bool = false
-
-var gobRegistered map[interface{}]bool = map[interface{}]bool{}
 
 func init() {
 	/*
@@ -1045,19 +1041,9 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				default:
-					// Is a user-defined interface value.
-					var iFaceVal interface{} = row[colIndex]
-					var customTypeName = table.colTypes[colIndex]
-					iFaceValString, err := EncodeCustomTypeVal(customTypeName, iFaceVal)
-					if err != nil {
-						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
-						return ""
-					}
-					buf.WriteString(fmt.Sprintf("%s", iFaceValString))
-					/*
-						log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-						return ""
-					*/
+					log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n",
+						util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+					return ""
 				}
 
 				horizontalSep = string(horizontalSeparator)
@@ -1180,8 +1166,6 @@ func (table *Table) StringPadded() string {
 		util.PrintCaller()
 	}
 
-	var err error
-
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
 		return ""
@@ -1268,7 +1252,6 @@ func (table *Table) StringPadded() string {
 			var i64Val int64
 			var f32Val float32
 			var f64Val float64
-			var iFaceVal interface{}
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
@@ -1332,21 +1315,9 @@ func (table *Table) StringPadded() string {
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
-				// Is a user-defined interface value.
-				var customTypeName = table.colTypes[colIndex]
-				iFaceVal = row[colIndex]
-				s, err = EncodeCustomTypeVal(customTypeName, iFaceVal)
-				if err != nil {	// Note: double logging here for extra detail.
-					log.Printf("#2 %s ERROR IN %s: EncodeCustomTypeVal(%q, ...)\n",
-						util.FuncSource(), util.FuncName(), customTypeName)
-					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
-					return ""
-				}
 				setWidths(s, colIndex, prenum, points, precis, width)
-				/*
-					log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-					return ""
-				*/
+				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
 
@@ -1576,11 +1547,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 	}
 
 	if isValidColType, err := IsValidColType(colType); !isValidColType {
-		if isValidCustomType, _ := isValidCustomType(colType); isValidCustomType {
-			// Do nothing. Just accept it as-is. Unsatisfactory: A solution in the parser would be better.
-		} else {
-			return err
-		}
+		return err
 	}
 
 	// Make sure this col name doesn't already exist.
@@ -2523,29 +2490,6 @@ func (tableSet *TableSet) IsValidTableSet() (bool, error) {
 	return true, nil
 }
 
-//
-///*
-//Round is a custom implementation for rounding values.
-//
-//Round up if fraction is >= 0.5 otherwise round down.
-//
-//From: https://medium.com/@edoardo849/mercato-how-to-build-an-effective-web-scraper-with-golang-e2918d279f49#.istjzw4nl
-//*/
-//func Round(val float64, places int) (rounded float64) {
-//	const roundOn = 0.5 // Round up if fraction is >= 0.5 otherwise round down.
-//	var round float64
-//	pow := math.Pow(10, float64(places))
-//	digit := pow * val
-//	_, frac := math.Modf(digit) // Modf(f) returns integer and fractional floating-point numbers that sum to f
-//	if frac >= roundOn {
-//		round = math.Ceil(digit)
-//	} else {
-//		round = math.Floor(digit)
-//	}
-//	rounded = round / pow
-//	return
-//}
-
 /* Type to encode:
 type Table struct {
 	tableName   string
@@ -2650,19 +2594,8 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
-		// Is a user-defined interface value.
-		var customTypeName string = table.colTypes[colIndex]
-		var encodedCustomTypeVal string
-		encodedCustomTypeVal, err = EncodeCustomTypeVal(customTypeName, interfaceType)
-		if err != nil {
-			log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
-			return "", err
-		}
-		buf.WriteString(fmt.Sprintf("%s", encodedCustomTypeVal))
-		/*
-			err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
-			return "", err
-		*/
+		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
+		return "", err
 	}
 
 	s = buf.String()
@@ -3775,389 +3708,4 @@ func (table *Table) ShuffleRandom() error {
 	})
 
 	return nil
-}
-
-/*	Set table cell in colName at rowIndex to newVal interface{}
-
-	For storage of user-defined types in a table.
-*/
-func (table *Table) SetCustomTypeVal(colName string, rowIndex int, newVal interface{}) error {
-	var err error
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
-	}
-
-	var valType string = fmt.Sprintf("%T", newVal)
-
-	colType, err := table.ColType(colName)
-	if err != nil {
-		return err
-	}
-
-	if newVal != nil { // It's okay to set a custom value to nil.
-		if valType != colType {
-			if !isAlias(colType, valType) {
-				return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
-					util.FuncName(), table.Name(), colName, colType, valType, fmt.Sprintf("%#v", newVal))
-			}
-		}
-	}
-
-	colIndex, err := table.ColIndex(colName)
-	if err != nil {
-		return err
-	}
-
-	// Note: hasCol was checked by ColType() above.
-	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return err
-	}
-
-	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
-	table.rows[rowIndex][colIndex] = newVal
-
-	return nil
-}
-
-/*	Set table cell in colIndex at rowIndex to newVal interface{}
-
-	For storage of user-defined types in a table.
-*/
-func (table *Table) SetCustomTypeValByColIndex(colIndex int, rowIndex int, newVal interface{}) error {
-
-	// See: Set<type>ByColIndex() functions
-
-	var err error
-
-	if table == nil {
-		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
-	}
-
-	var valType string = fmt.Sprintf("%T", newVal)
-
-	colType := table.colTypes[colIndex]
-
-	if newVal != nil { // It's okay to set a custom value to nil.
-		if valType != colType {
-			if !isAlias(colType, valType) {
-				return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
-					util.FuncName(), table.Name(), colIndex, colType, valType, fmt.Sprintf("%#v", newVal))
-			}
-		}
-	}
-
-	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
-	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return err
-	}
-
-	// Set the newVal
-	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
-	table.rows[rowIndex][colIndex] = newVal
-
-	return nil
-}
-
-/*	Get interface table cell from colIndex at rowIndex
-
-	For storage of user-defined types in a table.
-	Retrieve to an interface{} type and then assert to your type.
-
-	Like its non-MustGet alternative but panics on error.
-*/
-func (table *Table) GetCustomTypeValByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
-	val, err := table.GetCustomTypeValByColIndex(colIndex, rowIndex)
-	if err != nil {
-		panic(err)
-	}
-	return val
-}
-
-/*	Get interface table cell from colIndex at rowIndex
-
-	For storage of user-defined types in a table.
-	Retrieve to an interface{} type and then assert to your type.
-*/
-func (table *Table) GetCustomTypeValByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
-
-	if table == nil {
-		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
-		return
-	}
-
-	colType, err := table.ColTypeByColIndex(colIndex)
-	if err != nil {
-		return val, err
-	}
-
-	// Note: hasCol was checked by ColType() above. No need to call HasCell()
-	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return val, err
-	}
-
-	// Get the val
-	// Note: This essentially inlines GetVal(): an average 25% speedup.
-	val = table.rows[rowIndex][colIndex]
-
-	var valType string = fmt.Sprintf("%T", val)
-
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				util.FuncName(), table.Name(), colIndex, colType)
-		}
-	}
-
-	return
-}
-
-/*	Get interface table cell from colName at rowIndex
-
-	For storage of user-defined types in a table.
-	Retrieve to an interface{} type and then assert to your type.
-
-	Like its non-MustGet alternative but panics on error.
-*/
-func (table *Table) GetCustomTypeValMustGet(colName string, rowIndex int) (val interface{}) {
-	val, err := table.GetCustomTypeVal(colName, rowIndex)
-	if err != nil {
-		panic(err)
-	}
-	return val
-}
-
-/*	Get interface table cell from colName at rowIndex
-
-	For storage of user-defined types in a table.
-	Retrieve to an interface{} type and then assert to your type.
-*/
-func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interface{}, err error) {
-
-	// See: Get<type>() functions
-
-	if table == nil {
-		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
-	}
-
-	colType, err := table.ColType(colName)
-	if err != nil {
-		return val, err
-	}
-
-	colIndex, err := table.ColIndex(colName)
-	if err != nil {
-		return val, err
-	}
-
-	// Note: hasCol was checked by ColType() above. No need to call HasCell()
-	hasRow, err := table.HasRow(rowIndex)
-	if !hasRow {
-		return val, err
-	}
-
-	// Get the val
-	// Note: This essentially inlines GetVal(): an average 15% speedup.
-	val = table.rows[rowIndex][colIndex]
-	if val == nil {
-		return
-	}
-
-	var valType string = fmt.Sprintf("%T", val)
-
-	if valType != colType {
-		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				util.FuncName(), table.Name(), colName, colType)
-		}
-	}
-
-	return
-}
-
-/*	Encode a value of a user-defined type as an encoded string that is safe for parsing as a table cell.
-
-	The string consists of a contiguous pair of strings in curley braces:
-		{{machine-readable}{human-readable}}
-	that form a cell in a string representation of a gotables.Table.
-
-	The {machine-readable} part contains the machine-decodable text from which the original
-	value is reconstructed.
-	The value is GOB-encoded and compressed to base64.
-
-	The {human-readable} part is for human-readability only and is not interpreted (it is skipped).
-	The value is converted to its "%#v" format and quoted for safe parsing.
-
-	Note: This encoding applies only to the text version of a gotables Table (returned by Table.String())
-	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
-
-	Minor note: With EncodeCustomTypeVal() and DecodeCustomTypeVal() you CAN encode Go built-in types,
-	such as int, string and float64, but you don't need to, since they are already implemented directly
-	in gotables.
-
-	Playground example: https://play.golang.org/p/8lqxzLMlZjE
-
-	Whilst it's easy to generate a string (textual table) from a gotables.Table
-	( using methods *gotables.Table.String() or *gotables.Table.StringUnpadded() )
-	it's not possible to generate individual user-defined values by hand, unlike simple Go types such
-	as string, int and bool. If you wish to hand-generate a textual table
-	containing user-defined values, use
-	EncodeCustomTypeVal() to convert your user-defined values to strings.
-
-	If you wish to create a text table by hand, you can use <nil> values as place-holders
-	for user-defined types, and set them later.
-*/
-func EncodeCustomTypeVal(customTypeName string, customTypeVal interface{}) (encoded string, err error) {
-	if printCaller {
-		util.PrintCaller()
-	}
-
-	if isValid, err := IsValidColType(customTypeName); !isValid {
-		return "", err
-	}
-
-	if customTypeVal != nil {
-		// Created a GOB encoding of customTypeVal.
-//		gobRegister(customTypeVal)
-where(fmt.Sprintf("gobRegisterName(customTypeName: %q, customTypeVal: %v)", customTypeName, customTypeVal))
-		gobRegisterName(customTypeName, customTypeVal)
-		// gob.Register(customTypeVal)
-		var buffer bytes.Buffer // To receive GOB encoding.
-		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(&customTypeVal) // Use ADDRESS of interface, or it will be concrete type.
-		if err != nil {
-			return "", err
-		}
-		var gobEncodedBytes []byte = buffer.Bytes() // GOB encoding as bytes.
-
-		// Compress to printable characters.
-		base64String := base64.StdEncoding.EncodeToString([]byte(gobEncodedBytes))
-
-		// Create quoted string representation of customTypeVal, for humans to read, not for parsing.
-		// It is quoted to ensure a regexp match for the end will not find something in the middle.
-		unQuotedValString := fmt.Sprintf("%#v", customTypeVal)
-		quotedValString := fmt.Sprintf("%q", unQuotedValString)
-
-		// Enclose GOB encoding and human-readable in contiguous square-brackets for parsing.
-		encoded = fmt.Sprintf("{{%s}{%s}}", base64String, quotedValString)
-
-		return encoded, nil
-	}
-
-	encoded = "nil"
-
-	return
-}
-
-/*	Parse a value of a user-defined type from an encoded string.
-
-	The string consists of a contiguous pair of strings in curley braces:
-		{{machine-readable}{human-readable}}
-	that form a cell in a string representation of a gotables.Table.
-
-	The {machine-readable} part contains the machine-decodable text from which the original
-	value is reconstructed.
-	The value is GOB-encoded and compressed to base64.
-
-	The {human-readable} part is for human-readability only and is not interpreted (it is skipped).
-	The value is converted to its "%#v" format and quoted for safe parsing.
-
-	Note: This encoding applies only to the text version of a gotables Table (returned by Table.String())
-	and not to the in-memory *Table cells containing user-defined values, which contain the
-	actual values you can set or get via SetCustomTypeVal() and GetCustomTypeVal().
-
-	Minor note: With EncodeCustomTypeVal() and DecodeCustomTypeVal() you CAN encode Go built-in types,
-	such as int, string and float64, but you don't need to, since they are already implemented directly
-	in gotables.
-
-	Playground example: https://play.golang.org/p/8lqxzLMlZjE
-
-	Always check returned value is not nil before asserting the type:
-
-		var myVal MyType
-		val, err := DecodeCustomTypeVal(encodedString)
-		if val != nil {
-			myVal = val.(MyType)
-		}
-*/
-func DecodeCustomTypeVal(encoded string) (customTypeVal interface{}, err error) {
-	if encoded == "nil" {
-		return nil, nil
-	} else {
-
-		// Get the first part of the text [first-part][second-part] that double-encodes the value.
-		// This skips/ignores the human-readable second part.
-		var base64Encoded string = customTypeBase64PartRegexp.FindString(encoded)
-
-		base64Encoded = encoded[2 : len(base64Encoded)-3] // Strip off leading [[ and trailing ]["
-
-		// Decode/uncompress the base64 string back to GOB-encoded.
-		var gobEncodedBytes []byte
-		gobEncodedBytes, err = base64.StdEncoding.DecodeString(base64Encoded)
-		if err != nil {
-			return nil, err
-		}
-
-		var buffer *bytes.Buffer = bytes.NewBuffer(gobEncodedBytes)
-		var decoder *gob.Decoder = gob.NewDecoder(buffer)
-		//		var interfaceOut interface{}
-		err = decoder.Decode(&customTypeVal)
-		if err != nil {
-			return nil, err
-		}
-
-		return customTypeVal, nil
-	}
-}
-
-//	// Avoid calling gob.Register() for types already registered.
-//	func gobRegister(val interface{}) {
-//		if printCaller {
-//			util.PrintCaller()
-//		}
-//		var typeName string = fmt.Sprintf("%T", val)
-//	where("gobRegister")
-//	where(typeName)
-//		_, exists := gobRegistered[typeName]
-//	where(fmt.Sprintf("exists = %t", exists))
-//		if !exists {
-//			// This registers the concrete type of val.
-//	where(fmt.Sprintf("type: %T value: %v", val, val))
-//			gob.Register(val)
-//	
-//			// This stores the concrete type-name of val e.g. "gotables.person".
-//			// Storing val stores only the specific instance of val, which means
-//			// the type would be registered per instance and not per type.
-//			gobRegistered[typeName] = true
-//		}
-//	}
-
-// Avoid calling gob.Register() for types already registered.
-func gobRegisterName(typeName string, typeVal interface{}) {
-	if printCaller {
-		util.PrintCaller()
-	}
-where(fmt.Sprintf("gobRegisterName(%q, %#v)", typeName, typeVal))
-where(typeName)
-where(fmt.Sprintf("%T", typeVal))
-where(typeVal)
-	_, exists := gobRegistered[typeName]
-where(fmt.Sprintf("exists = %t", exists))
-	if !exists {
-		// This registers the concrete type of val.
-where(fmt.Sprintf("type: %T value: %v", typeVal, typeVal))
-		gob.RegisterName(typeName, typeVal)
-
-		// This stores the concrete type-name of val e.g. "gotables.person".
-		// Storing val stores only the specific instance of val, which means
-		// the type would be registered per instance and not per type.
-		gobRegistered[typeName] = true
-	}
-where(reflect.TypeOf(typeVal))
-where(fmt.Sprintf("%T", reflect.TypeOf(typeVal)))
-gob.RegisterName(typeName, typeVal)
 }
