@@ -46,7 +46,7 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]byte"
@@ -89,7 +89,7 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]uint8"
@@ -132,7 +132,7 @@ func (table *Table) SetBool(colName string, rowIndex int, newVal bool) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "bool"
@@ -175,7 +175,7 @@ func (table *Table) SetByte(colName string, rowIndex int, newVal byte) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "byte"
@@ -218,7 +218,7 @@ func (table *Table) SetFloat32(colName string, rowIndex int, newVal float32) err
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float32"
@@ -261,7 +261,7 @@ func (table *Table) SetFloat64(colName string, rowIndex int, newVal float64) err
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float64"
@@ -304,7 +304,7 @@ func (table *Table) SetInt(colName string, rowIndex int, newVal int) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int"
@@ -347,7 +347,7 @@ func (table *Table) SetInt16(colName string, rowIndex int, newVal int16) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int16"
@@ -390,7 +390,7 @@ func (table *Table) SetInt32(colName string, rowIndex int, newVal int32) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int32"
@@ -433,7 +433,7 @@ func (table *Table) SetInt64(colName string, rowIndex int, newVal int64) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int64"
@@ -476,7 +476,7 @@ func (table *Table) SetInt8(colName string, rowIndex int, newVal int8) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int8"
@@ -519,7 +519,7 @@ func (table *Table) SetRune(colName string, rowIndex int, newVal rune) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "rune"
@@ -562,7 +562,7 @@ func (table *Table) SetString(colName string, rowIndex int, newVal string) error
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "string"
@@ -605,7 +605,7 @@ func (table *Table) SetUint(colName string, rowIndex int, newVal uint) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint"
@@ -648,7 +648,7 @@ func (table *Table) SetUint16(colName string, rowIndex int, newVal uint16) error
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint16"
@@ -691,7 +691,7 @@ func (table *Table) SetUint32(colName string, rowIndex int, newVal uint32) error
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint32"
@@ -734,7 +734,7 @@ func (table *Table) SetUint64(colName string, rowIndex int, newVal uint64) error
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint64"
@@ -777,7 +777,7 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint8"
@@ -824,7 +824,7 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]byte"
@@ -863,7 +863,7 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]uint8"
@@ -902,7 +902,7 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) e
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "bool"
@@ -941,7 +941,7 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) e
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "byte"
@@ -980,7 +980,7 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal floa
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float32"
@@ -1019,7 +1019,7 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal floa
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float64"
@@ -1058,7 +1058,7 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) err
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int"
@@ -1097,7 +1097,7 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16)
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int16"
@@ -1136,7 +1136,7 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32)
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int32"
@@ -1175,7 +1175,7 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64)
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int64"
@@ -1214,7 +1214,7 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) e
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int8"
@@ -1253,7 +1253,7 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) e
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "rune"
@@ -1292,7 +1292,7 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal strin
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "string"
@@ -1331,7 +1331,7 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) e
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint"
@@ -1370,7 +1370,7 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint1
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint16"
@@ -1409,7 +1409,7 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint3
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint32"
@@ -1448,7 +1448,7 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint6
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint64"
@@ -1487,7 +1487,7 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint8"
@@ -1528,7 +1528,7 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]byte"
@@ -1569,7 +1569,7 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "[]uint8"
@@ -1610,7 +1610,7 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "bool"
@@ -1651,7 +1651,7 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "byte"
@@ -1692,7 +1692,7 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float32"
@@ -1733,7 +1733,7 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "float64"
@@ -1774,7 +1774,7 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int"
@@ -1815,7 +1815,7 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int16"
@@ -1856,7 +1856,7 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int32"
@@ -1897,7 +1897,7 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int64"
@@ -1938,7 +1938,7 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "int8"
@@ -1979,7 +1979,7 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "rune"
@@ -2020,7 +2020,7 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "string"
@@ -2061,7 +2061,7 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint"
@@ -2102,7 +2102,7 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint16"
@@ -2143,7 +2143,7 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint32"
@@ -2184,7 +2184,7 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint64"
@@ -2225,7 +2225,7 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	const valType string = "uint8"
@@ -2486,7 +2486,7 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2523,7 +2523,7 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2560,7 +2560,7 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2597,7 +2597,7 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2634,7 +2634,7 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2671,7 +2671,7 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2708,7 +2708,7 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2745,7 +2745,7 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2782,7 +2782,7 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2819,7 +2819,7 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2856,7 +2856,7 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2893,7 +2893,7 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2930,7 +2930,7 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -2967,7 +2967,7 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -3004,7 +3004,7 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -3041,7 +3041,7 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -3078,7 +3078,7 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -3115,7 +3115,7 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 	// See: Get<type>ByColIndex() functions
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 

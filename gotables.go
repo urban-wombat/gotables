@@ -55,7 +55,7 @@ SOFTWARE.
 */
 
 const debugging bool = false
-const printCaller = false
+const printCaller = true
 const printstack bool = false
 const todo bool = false
 
@@ -71,12 +71,14 @@ func init() {
 		}
 	*/
 	log.SetFlags(log.Lshortfile)
-	//	log.SetOutput(os.Stderr)
+	// log.SetOutput(os.Stderr)
 }
 
+/*
 func releaseVersionNumber() string {
 	return "v0.7.1-alpha"
 }
+*/
 
 var where = log.Print
 
@@ -1045,7 +1047,8 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				default:
 					// Is a user-defined interface value.
 					var iFaceVal interface{} = row[colIndex]
-					iFaceValString, err := EncodeCustomTypeVal(iFaceVal)
+					var customTypeName = table.colTypes[colIndex]
+					iFaceValString, err := EncodeCustomTypeVal(customTypeName, iFaceVal)
 					if err != nil {
 						log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 						return ""
@@ -1330,9 +1333,12 @@ func (table *Table) StringPadded() string {
 				setWidths(s, colIndex, prenum, points, precis, width)
 			default:
 				// Is a user-defined interface value.
+				var customTypeName = table.colTypes[colIndex]
 				iFaceVal = row[colIndex]
-				s, err = EncodeCustomTypeVal(iFaceVal)
-				if err != nil {
+				s, err = EncodeCustomTypeVal(customTypeName, iFaceVal)
+				if err != nil {	// Note: double logging here for extra detail.
+					log.Printf("#2 %s ERROR IN %s: EncodeCustomTypeVal(%q, ...)\n",
+						util.FuncSource(), util.FuncName(), customTypeName)
 					log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
 					return ""
 				}
@@ -2645,17 +2651,14 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	default:
 		// Is a user-defined interface value.
-		var customVal string
-		if interfaceType == nil {
-			customVal = "nil"
-		} else {
-			customVal, err = EncodeCustomTypeVal(interfaceType)
-			if err != nil {
-				log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
-				return "", err
-			}
+		var customTypeName string = table.colTypes[colIndex]
+		var encodedCustomTypeVal string
+		encodedCustomTypeVal, err = EncodeCustomTypeVal(customTypeName, interfaceType)
+		if err != nil {
+			log.Printf("#2 %s ERROR IN %s: %v\n", util.FuncSource(), util.FuncName(), err)
+			return "", err
 		}
-		buf.WriteString(fmt.Sprintf("%s", customVal))
+		buf.WriteString(fmt.Sprintf("%s", encodedCustomTypeVal))
 		/*
 			err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 			return "", err
@@ -3781,7 +3784,7 @@ func (table *Table) ShuffleRandom() error {
 func (table *Table) SetCustomTypeVal(colName string, rowIndex int, newVal interface{}) error {
 	var err error
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	var valType string = fmt.Sprintf("%T", newVal)
@@ -3829,7 +3832,7 @@ func (table *Table) SetCustomTypeValByColIndex(colIndex int, rowIndex int, newVa
 	var err error
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	var valType string = fmt.Sprintf("%T", newVal)
@@ -3881,7 +3884,7 @@ func (table *Table) GetCustomTypeValByColIndexMustGet(colIndex int, rowIndex int
 func (table *Table) GetCustomTypeValByColIndex(colIndex int, rowIndex int) (val interface{}, err error) {
 
 	if table == nil {
-		err = fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 		return
 	}
 
@@ -3937,7 +3940,7 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	// See: Get<type>() functions
 
 	if table == nil {
-		return val, fmt.Errorf("table.%s(): table is <nil>", util.FuncName())
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
 	}
 
 	colType, err := table.ColType(colName)
@@ -4008,13 +4011,21 @@ func (table *Table) GetCustomTypeVal(colName string, rowIndex int) (val interfac
 	If you wish to create a text table by hand, you can use <nil> values as place-holders
 	for user-defined types, and set them later.
 */
-func EncodeCustomTypeVal(customTypeVal interface{}) (encoded string, err error) {
+func EncodeCustomTypeVal(customTypeName string, customTypeVal interface{}) (encoded string, err error) {
 	if printCaller {
 		util.PrintCaller()
 	}
+
+	if isValid, err := IsValidColType(customTypeName); !isValid {
+		return "", err
+	}
+
 	if customTypeVal != nil {
 		// Created a GOB encoding of customTypeVal.
-		gobRegister(customTypeVal)
+//		gobRegister(customTypeVal)
+where(fmt.Sprintf("gobRegisterName(customTypeName: %q, customTypeVal: %v)", customTypeName, customTypeVal))
+		gobRegisterName(customTypeName, customTypeVal)
+		// gob.Register(customTypeVal)
 		var buffer bytes.Buffer // To receive GOB encoding.
 		var encoder *gob.Encoder = gob.NewEncoder(&buffer)
 		err = encoder.Encode(&customTypeVal) // Use ADDRESS of interface, or it will be concrete type.
@@ -4103,20 +4114,50 @@ func DecodeCustomTypeVal(encoded string) (customTypeVal interface{}, err error) 
 	}
 }
 
+//	// Avoid calling gob.Register() for types already registered.
+//	func gobRegister(val interface{}) {
+//		if printCaller {
+//			util.PrintCaller()
+//		}
+//		var typeName string = fmt.Sprintf("%T", val)
+//	where("gobRegister")
+//	where(typeName)
+//		_, exists := gobRegistered[typeName]
+//	where(fmt.Sprintf("exists = %t", exists))
+//		if !exists {
+//			// This registers the concrete type of val.
+//	where(fmt.Sprintf("type: %T value: %v", val, val))
+//			gob.Register(val)
+//	
+//			// This stores the concrete type-name of val e.g. "gotables.person".
+//			// Storing val stores only the specific instance of val, which means
+//			// the type would be registered per instance and not per type.
+//			gobRegistered[typeName] = true
+//		}
+//	}
+
 // Avoid calling gob.Register() for types already registered.
-func gobRegister(val interface{}) {
+func gobRegisterName(typeName string, typeVal interface{}) {
 	if printCaller {
 		util.PrintCaller()
 	}
-	var typeName string = fmt.Sprintf("%T", val)
+where(fmt.Sprintf("gobRegisterName(%q, %#v)", typeName, typeVal))
+where(typeName)
+where(fmt.Sprintf("%T", typeVal))
+where(typeVal)
 	_, exists := gobRegistered[typeName]
+where(fmt.Sprintf("exists = %t", exists))
 	if !exists {
 		// This registers the concrete type of val.
-		gob.Register(val)
+where(fmt.Sprintf("type: %T value: %v", typeVal, typeVal))
+		gob.RegisterName(typeName, typeVal)
 
 		// This stores the concrete type-name of val e.g. "gotables.person".
 		// Storing val stores only the specific instance of val, which means
 		// the type would be registered per instance and not per type.
 		gobRegistered[typeName] = true
 	}
+where(reflect.TypeOf(typeVal))
+where(fmt.Sprintf("%T", reflect.TypeOf(typeVal)))
+gob.RegisterName(typeName, typeVal)
 }

@@ -47,17 +47,17 @@ func TestSetAndGetByteSlice(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -73,16 +73,16 @@ func TestSetAndGetByteSlice(t *testing.T) {
 
 		err = table.SetByteSlice(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetByteSlice(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if !bytes.Equal(value, test.expected) {
-			t.Errorf("expecting GetByteSlice() bytes %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetByteSlice() bytes %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -96,17 +96,17 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -122,16 +122,16 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 
 		err = table.SetUint8Slice(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint8Slice(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if !bytes.Equal(value, test.expected) {
-			t.Errorf("expecting GetUint8Slice() bytes %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint8Slice() bytes %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -145,17 +145,17 @@ func TestSetAndGetBool(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -171,16 +171,16 @@ func TestSetAndGetBool(t *testing.T) {
 
 		err = table.SetBool(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetBool(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetBool() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetBool() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -194,17 +194,17 @@ func TestSetAndGetByte(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -220,16 +220,16 @@ func TestSetAndGetByte(t *testing.T) {
 
 		err = table.SetByte(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetByte(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetByte() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetByte() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -243,17 +243,17 @@ func TestSetAndGetFloat32(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -269,16 +269,16 @@ func TestSetAndGetFloat32(t *testing.T) {
 
 		err = table.SetFloat32(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetFloat32(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetFloat32() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetFloat32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -292,17 +292,17 @@ func TestSetAndGetFloat64(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -318,16 +318,16 @@ func TestSetAndGetFloat64(t *testing.T) {
 
 		err = table.SetFloat64(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetFloat64(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetFloat64() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetFloat64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -341,17 +341,17 @@ func TestSetAndGetInt(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -367,16 +367,16 @@ func TestSetAndGetInt(t *testing.T) {
 
 		err = table.SetInt(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -390,17 +390,17 @@ func TestSetAndGetInt16(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -416,16 +416,16 @@ func TestSetAndGetInt16(t *testing.T) {
 
 		err = table.SetInt16(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt16(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt16() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt16() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -439,17 +439,17 @@ func TestSetAndGetInt32(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -465,16 +465,16 @@ func TestSetAndGetInt32(t *testing.T) {
 
 		err = table.SetInt32(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt32(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt32() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -488,17 +488,17 @@ func TestSetAndGetInt64(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -514,16 +514,16 @@ func TestSetAndGetInt64(t *testing.T) {
 
 		err = table.SetInt64(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt64(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt64() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -537,17 +537,17 @@ func TestSetAndGetInt8(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -563,16 +563,16 @@ func TestSetAndGetInt8(t *testing.T) {
 
 		err = table.SetInt8(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt8(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt8() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt8() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -586,17 +586,17 @@ func TestSetAndGetRune(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -612,16 +612,16 @@ func TestSetAndGetRune(t *testing.T) {
 
 		err = table.SetRune(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetRune(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetRune() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetRune() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -635,17 +635,17 @@ func TestSetAndGetString(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -661,16 +661,16 @@ func TestSetAndGetString(t *testing.T) {
 
 		err = table.SetString(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetString(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetString() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetString() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -684,17 +684,17 @@ func TestSetAndGetUint(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -710,16 +710,16 @@ func TestSetAndGetUint(t *testing.T) {
 
 		err = table.SetUint(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -733,17 +733,17 @@ func TestSetAndGetUint16(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -759,16 +759,16 @@ func TestSetAndGetUint16(t *testing.T) {
 
 		err = table.SetUint16(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint16(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint16() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint16() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -782,17 +782,17 @@ func TestSetAndGetUint32(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -808,16 +808,16 @@ func TestSetAndGetUint32(t *testing.T) {
 
 		err = table.SetUint32(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint32(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint32() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint32() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -831,17 +831,17 @@ func TestSetAndGetUint64(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -857,16 +857,16 @@ func TestSetAndGetUint64(t *testing.T) {
 
 		err = table.SetUint64(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint64(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint64() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint64() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -880,17 +880,17 @@ func TestSetAndGetUint8(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -906,16 +906,16 @@ func TestSetAndGetUint8(t *testing.T) {
 
 		err = table.SetUint8(colName, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint8(colName, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint8() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint8() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -933,17 +933,17 @@ func TestHelperSetAndGetByteSliceByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -959,16 +959,16 @@ func TestHelperSetAndGetByteSliceByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetByteSliceByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetByteSliceByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if !bytes.Equal(value, test.expected) {
-			t.Errorf("expecting GetByteSliceByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetByteSliceByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -982,17 +982,17 @@ func TestHelperSetAndGetUint8SliceByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1008,16 +1008,16 @@ func TestHelperSetAndGetUint8SliceByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUint8SliceByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint8SliceByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if !bytes.Equal(value, test.expected) {
-			t.Errorf("expecting GetUint8SliceByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint8SliceByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1031,17 +1031,17 @@ func TestHelperSetAndGetBoolByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1057,16 +1057,16 @@ func TestHelperSetAndGetBoolByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetBoolByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetBoolByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetBoolByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetBoolByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1080,17 +1080,17 @@ func TestHelperSetAndGetByteByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1106,16 +1106,16 @@ func TestHelperSetAndGetByteByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetByteByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetByteByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetByteByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetByteByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1129,17 +1129,17 @@ func TestHelperSetAndGetFloat32ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1155,16 +1155,16 @@ func TestHelperSetAndGetFloat32ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetFloat32ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetFloat32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetFloat32ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetFloat32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1178,17 +1178,17 @@ func TestHelperSetAndGetFloat64ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1204,16 +1204,16 @@ func TestHelperSetAndGetFloat64ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetFloat64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetFloat64ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetFloat64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1227,17 +1227,17 @@ func TestHelperSetAndGetIntByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1253,16 +1253,16 @@ func TestHelperSetAndGetIntByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetIntByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetIntByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetIntByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetIntByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1276,17 +1276,17 @@ func TestHelperSetAndGetInt16ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1302,16 +1302,16 @@ func TestHelperSetAndGetInt16ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetInt16ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt16ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt16ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt16ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1325,17 +1325,17 @@ func TestHelperSetAndGetInt32ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1351,16 +1351,16 @@ func TestHelperSetAndGetInt32ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetInt32ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt32ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1374,17 +1374,17 @@ func TestHelperSetAndGetInt64ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1400,16 +1400,16 @@ func TestHelperSetAndGetInt64ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetInt64ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt64ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1423,17 +1423,17 @@ func TestHelperSetAndGetInt8ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1449,16 +1449,16 @@ func TestHelperSetAndGetInt8ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetInt8ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetInt8ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetInt8ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetInt8ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1472,17 +1472,17 @@ func TestHelperSetAndGetRuneByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1498,16 +1498,16 @@ func TestHelperSetAndGetRuneByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetRuneByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetRuneByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetRuneByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetRuneByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1521,17 +1521,17 @@ func TestHelperSetAndGetStringByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1547,16 +1547,16 @@ func TestHelperSetAndGetStringByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetStringByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetStringByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetStringByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetStringByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1570,17 +1570,17 @@ func TestHelperSetAndGetUintByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1596,16 +1596,16 @@ func TestHelperSetAndGetUintByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUintByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUintByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUintByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUintByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1619,17 +1619,17 @@ func TestHelperSetAndGetUint16ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1645,16 +1645,16 @@ func TestHelperSetAndGetUint16ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUint16ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint16ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint16ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint16ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1668,17 +1668,17 @@ func TestHelperSetAndGetUint32ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1694,16 +1694,16 @@ func TestHelperSetAndGetUint32ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUint32ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint32ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint32ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint32ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1717,17 +1717,17 @@ func TestHelperSetAndGetUint64ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1743,16 +1743,16 @@ func TestHelperSetAndGetUint64ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUint64ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint64ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint64ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint64ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -1766,17 +1766,17 @@ func TestHelperSetAndGetUint8ByColIndex(t *testing.T) {
 
 	table, err := NewTable("SetAndGet")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendCol(colName, "uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.AppendRow()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1792,16 +1792,16 @@ func TestHelperSetAndGetUint8ByColIndex(t *testing.T) {
 	for _, test := range tests {
 		err = table.SetUint8ByColIndex(colIndex, rowIndex, test.expected)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		value, err := table.GetUint8ByColIndex(colIndex, rowIndex)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if value != test.expected {
-			t.Errorf("expecting GetUint8ByColIndex() value %v, not %v", test.expected, value)
+			t.Fatalf("expecting GetUint8ByColIndex() value %v, not %v", test.expected, value)
 		}
 	}
 }
@@ -5234,18 +5234,18 @@ func TestGetByteSliceMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5255,31 +5255,31 @@ func TestGetByteSliceMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetByteSlice(colName, 0, expecting.([]byte))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got []byte
 	got = table.GetByteSliceMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
 	matches, err = Uint8SliceEquals(expecting.([]byte), got)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	where(table)
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetByteSliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetByteSliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5288,7 +5288,7 @@ func TestGetByteSliceMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetByteSliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetByteSliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5306,18 +5306,18 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5327,31 +5327,31 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint8Slice(colName, 0, expecting.([]uint8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got []uint8
 	got = table.GetUint8SliceMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
 	matches, err = Uint8SliceEquals(expecting.([]uint8), got)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	where(table)
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint8SliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUint8SliceMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5360,7 +5360,7 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint8SliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUint8SliceMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5378,18 +5378,18 @@ func TestGetBoolMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5399,18 +5399,18 @@ func TestGetBoolMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetBool(colName, 0, expecting.(bool))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got bool
 	got = table.GetBoolMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5420,7 +5420,7 @@ func TestGetBoolMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetBoolMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetBoolMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5429,7 +5429,7 @@ func TestGetBoolMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetBoolMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetBoolMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5447,18 +5447,18 @@ func TestGetByteMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5468,18 +5468,18 @@ func TestGetByteMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetByte(colName, 0, expecting.(byte))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got byte
 	got = table.GetByteMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5489,7 +5489,7 @@ func TestGetByteMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetByteMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetByteMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5498,7 +5498,7 @@ func TestGetByteMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetByteMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetByteMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5516,18 +5516,18 @@ func TestGetFloat32MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5537,18 +5537,18 @@ func TestGetFloat32MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetFloat32(colName, 0, expecting.(float32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got float32
 	got = table.GetFloat32MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5558,7 +5558,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetFloat32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetFloat32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5567,7 +5567,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetFloat32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetFloat32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5585,18 +5585,18 @@ func TestGetFloat64MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5606,18 +5606,18 @@ func TestGetFloat64MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetFloat64(colName, 0, expecting.(float64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got float64
 	got = table.GetFloat64MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5627,7 +5627,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetFloat64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetFloat64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5636,7 +5636,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetFloat64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetFloat64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5654,18 +5654,18 @@ func TestGetIntMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5675,18 +5675,18 @@ func TestGetIntMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt(colName, 0, expecting.(int))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int
 	got = table.GetIntMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5696,7 +5696,7 @@ func TestGetIntMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetIntMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetIntMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5705,7 +5705,7 @@ func TestGetIntMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetIntMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetIntMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5723,18 +5723,18 @@ func TestGetInt16MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5744,18 +5744,18 @@ func TestGetInt16MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt16(colName, 0, expecting.(int16))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int16
 	got = table.GetInt16MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5765,7 +5765,7 @@ func TestGetInt16MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetInt16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5774,7 +5774,7 @@ func TestGetInt16MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetInt16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5792,18 +5792,18 @@ func TestGetInt32MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5813,18 +5813,18 @@ func TestGetInt32MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt32(colName, 0, expecting.(int32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int32
 	got = table.GetInt32MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5834,7 +5834,7 @@ func TestGetInt32MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetInt32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5843,7 +5843,7 @@ func TestGetInt32MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetInt32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5861,18 +5861,18 @@ func TestGetInt64MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5882,18 +5882,18 @@ func TestGetInt64MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt64(colName, 0, expecting.(int64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int64
 	got = table.GetInt64MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5903,7 +5903,7 @@ func TestGetInt64MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetInt64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5912,7 +5912,7 @@ func TestGetInt64MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetInt64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5930,18 +5930,18 @@ func TestGetInt8MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -5951,18 +5951,18 @@ func TestGetInt8MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt8(colName, 0, expecting.(int8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int8
 	got = table.GetInt8MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -5972,7 +5972,7 @@ func TestGetInt8MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetInt8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -5981,7 +5981,7 @@ func TestGetInt8MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetInt8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -5999,18 +5999,18 @@ func TestGetRuneMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6020,18 +6020,18 @@ func TestGetRuneMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetRune(colName, 0, expecting.(rune))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got rune
 	got = table.GetRuneMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6041,7 +6041,7 @@ func TestGetRuneMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetRuneMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetRuneMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6050,7 +6050,7 @@ func TestGetRuneMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetRuneMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetRuneMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6068,18 +6068,18 @@ func TestGetStringMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6089,18 +6089,18 @@ func TestGetStringMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetString(colName, 0, expecting.(string))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got string
 	got = table.GetStringMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6110,7 +6110,7 @@ func TestGetStringMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetStringMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetStringMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6119,7 +6119,7 @@ func TestGetStringMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetStringMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetStringMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6137,18 +6137,18 @@ func TestGetUintMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6158,18 +6158,18 @@ func TestGetUintMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint(colName, 0, expecting.(uint))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint
 	got = table.GetUintMustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6179,7 +6179,7 @@ func TestGetUintMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUintMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUintMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6188,7 +6188,7 @@ func TestGetUintMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUintMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUintMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6206,18 +6206,18 @@ func TestGetUint16MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6227,18 +6227,18 @@ func TestGetUint16MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint16(colName, 0, expecting.(uint16))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint16
 	got = table.GetUint16MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6248,7 +6248,7 @@ func TestGetUint16MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUint16MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6257,7 +6257,7 @@ func TestGetUint16MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUint16MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6275,18 +6275,18 @@ func TestGetUint32MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6296,18 +6296,18 @@ func TestGetUint32MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint32(colName, 0, expecting.(uint32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint32
 	got = table.GetUint32MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6317,7 +6317,7 @@ func TestGetUint32MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUint32MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6326,7 +6326,7 @@ func TestGetUint32MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUint32MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6344,18 +6344,18 @@ func TestGetUint64MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6365,18 +6365,18 @@ func TestGetUint64MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint64(colName, 0, expecting.(uint64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint64
 	got = table.GetUint64MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6386,7 +6386,7 @@ func TestGetUint64MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUint64MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6395,7 +6395,7 @@ func TestGetUint64MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUint64MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6413,18 +6413,18 @@ func TestGetUint8MustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	err = table.AppendCol(colName, "uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6434,18 +6434,18 @@ func TestGetUint8MustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint8(colName, 0, expecting.(uint8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint8
 	got = table.GetUint8MustGet(colName, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6455,7 +6455,7 @@ func TestGetUint8MustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+		t.Fatalf("func TestGetUint8MustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6464,7 +6464,7 @@ func TestGetUint8MustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+			t.Fatalf("func TestGetUint8MustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
 		}
 	}()
 
@@ -6482,19 +6482,19 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6504,31 +6504,31 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("[]byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetByteSliceByColIndex(colIndex, 0, expecting.([]byte))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got []byte
 	got = table.GetByteSliceByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
 	matches, err = Uint8SliceEquals(expecting.([]byte), got)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	where(table)
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetByteSliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetByteSliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6537,7 +6537,7 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetByteSliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetByteSliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6555,19 +6555,19 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6577,31 +6577,31 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("[]uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint8SliceByColIndex(colIndex, 0, expecting.([]uint8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got []uint8
 	got = table.GetUint8SliceByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
 	matches, err = Uint8SliceEquals(expecting.([]uint8), got)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	//	where(table)
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint8SliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUint8SliceByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6610,7 +6610,7 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint8SliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUint8SliceByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6628,19 +6628,19 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6650,18 +6650,18 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("bool")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetBoolByColIndex(colIndex, 0, expecting.(bool))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got bool
 	got = table.GetBoolByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6671,7 +6671,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetBoolByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetBoolByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6680,7 +6680,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetBoolByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetBoolByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6698,19 +6698,19 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6720,18 +6720,18 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("byte")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetByteByColIndex(colIndex, 0, expecting.(byte))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got byte
 	got = table.GetByteByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6741,7 +6741,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetByteByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetByteByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6750,7 +6750,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetByteByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetByteByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6768,19 +6768,19 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6790,18 +6790,18 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("float32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetFloat32ByColIndex(colIndex, 0, expecting.(float32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got float32
 	got = table.GetFloat32ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6811,7 +6811,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetFloat32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetFloat32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6820,7 +6820,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetFloat32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetFloat32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6838,19 +6838,19 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6860,18 +6860,18 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("float64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetFloat64ByColIndex(colIndex, 0, expecting.(float64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got float64
 	got = table.GetFloat64ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6881,7 +6881,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetFloat64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetFloat64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6890,7 +6890,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetFloat64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetFloat64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6908,19 +6908,19 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -6930,18 +6930,18 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetIntByColIndex(colIndex, 0, expecting.(int))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int
 	got = table.GetIntByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -6951,7 +6951,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetIntByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetIntByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -6960,7 +6960,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetIntByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetIntByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -6978,19 +6978,19 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7000,18 +7000,18 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt16ByColIndex(colIndex, 0, expecting.(int16))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int16
 	got = table.GetInt16ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7021,7 +7021,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetInt16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7030,7 +7030,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetInt16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7048,19 +7048,19 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7070,18 +7070,18 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt32ByColIndex(colIndex, 0, expecting.(int32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int32
 	got = table.GetInt32ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7091,7 +7091,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetInt32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7100,7 +7100,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetInt32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7118,19 +7118,19 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7140,18 +7140,18 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt64ByColIndex(colIndex, 0, expecting.(int64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int64
 	got = table.GetInt64ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7161,7 +7161,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetInt64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7170,7 +7170,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetInt64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7188,19 +7188,19 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7210,18 +7210,18 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("int8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetInt8ByColIndex(colIndex, 0, expecting.(int8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got int8
 	got = table.GetInt8ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7231,7 +7231,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetInt8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetInt8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7240,7 +7240,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetInt8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetInt8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7258,19 +7258,19 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7280,18 +7280,18 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("rune")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetRuneByColIndex(colIndex, 0, expecting.(rune))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got rune
 	got = table.GetRuneByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7301,7 +7301,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetRuneByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetRuneByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7310,7 +7310,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetRuneByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetRuneByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7328,19 +7328,19 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7350,18 +7350,18 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("string")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStringByColIndex(colIndex, 0, expecting.(string))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got string
 	got = table.GetStringByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7371,7 +7371,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetStringByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetStringByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7380,7 +7380,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetStringByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetStringByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7398,19 +7398,19 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7420,18 +7420,18 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUintByColIndex(colIndex, 0, expecting.(uint))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint
 	got = table.GetUintByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7441,7 +7441,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUintByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUintByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7450,7 +7450,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUintByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUintByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7468,19 +7468,19 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7490,18 +7490,18 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint16")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint16ByColIndex(colIndex, 0, expecting.(uint16))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint16
 	got = table.GetUint16ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7511,7 +7511,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUint16ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7520,7 +7520,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUint16ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7538,19 +7538,19 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7560,18 +7560,18 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint32")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint32ByColIndex(colIndex, 0, expecting.(uint32))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint32
 	got = table.GetUint32ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7581,7 +7581,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUint32ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7590,7 +7590,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUint32ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7608,19 +7608,19 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7630,18 +7630,18 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint64")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint64ByColIndex(colIndex, 0, expecting.(uint64))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint64
 	got = table.GetUint64ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7651,7 +7651,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUint64ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7660,7 +7660,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUint64ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 
@@ -7678,19 +7678,19 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 
 	table, err = NewTable("Table")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetStructShape(true)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var colName string = "MyCol"
 	var colIndex int = 0
 	err = table.AppendCol(colName, "uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	table.AppendRows(1)
@@ -7700,18 +7700,18 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	var expecting interface{}
 	expecting, err = nonZeroValue("uint8")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetUint8ByColIndex(colIndex, 0, expecting.(uint8))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var got uint8
 	got = table.GetUint8ByColIndexMustGet(colIndex, 0)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var matches bool
@@ -7721,7 +7721,7 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	//	where(fmt.Sprintf("got == expecting = %t", matches))
 
 	if !matches {
-		t.Errorf("func TestGetUint8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+		t.Fatalf("func TestGetUint8ByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
 	}
 
 	// Test that the method panics with an invalid argument.
@@ -7730,7 +7730,7 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("func TestGetUint8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+			t.Fatalf("func TestGetUint8ByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
 		}
 	}()
 

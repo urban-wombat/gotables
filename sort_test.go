@@ -274,15 +274,15 @@ func TestTable_Sort(t *testing.T) {
 
 	table, err := NewTable("HasZeroSortKeys")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.Sort()
 	if err == nil {
-		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
+		t.Fatalf("Expecting table.Sort() err because of 0 sort keys")
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -290,15 +290,15 @@ func TestTable_SortSimple(t *testing.T) {
 
 	table, err := NewTable("HasZeroSortKeys")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.Sort()
 	if err == nil {
-		t.Errorf("Expecting table.Sort() err because of 0 sort keys")
+		t.Fatalf("Expecting table.Sort() err because of 0 sort keys")
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -321,42 +321,42 @@ func TestSearch(t *testing.T) {
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = table.Search()
 	if err == nil {
-		t.Errorf("Expecting table.Search() err because of 0 sort keys")
+		t.Fatalf("Expecting table.Search() err because of 0 sort keys")
 	}
 
 	// Clear sort keys (if any) by calling with empty argument list.
 	err = table.SetSortKeys() // Note: sort keys count 0
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user") // Note: sort keys count 1
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = table.Search() // Note: 0 search values passed to Search()
 	if err == nil {
-		t.Errorf("Expecting searchValues count 0 != sort keys count 1")
+		t.Fatalf("Expecting searchValues count 0 != sort keys count 1")
 	}
 
 	_, err = table.Search("glenda")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -562,17 +562,17 @@ func TestTable_Search_1key(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by name.
 	err = table.SetSortKeys("name")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var searchValue string
@@ -583,15 +583,15 @@ func TestTable_Search_1key(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		searchValue, err = table.GetString("name", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		expecting = i
 		rowIndex, err = table.Search(searchValue)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if rowIndex != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 
@@ -606,14 +606,14 @@ func TestTable_Search_1key(t *testing.T) {
 		expecting = -1
 		rowIndex, err = table.Search(searchValue)
 		if err == nil {
-			t.Errorf("Expecting an error with Search(%v)", searchValue)
+			t.Fatalf("Expecting an error with Search(%v)", searchValue)
 		}
 		if rowIndex != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -637,21 +637,21 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by name - in reverse order.
 	err = table.SetSortKeys("name")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.SetSortKeysReverse("name")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var searchValue string
@@ -662,17 +662,17 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		searchValue, err = table.GetString("name", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		expecting = i
 
 		rowIndex, err = table.Search(searchValue)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		if rowIndex != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 	//	log.Printf("%q expecting %d found %d", searchValue, expecting, rowIndex)
@@ -689,14 +689,14 @@ func TestTable_Search_1key_reverse(t *testing.T) {
 
 		rowIndex, err = table.Search(searchValue)
 		if err == nil {
-			t.Errorf("Expecting an error with Search(%v)", searchValue)
+			t.Fatalf("Expecting an error with Search(%v)", searchValue)
 		}
 		if rowIndex != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValue, expecting, rowIndex)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -717,17 +717,17 @@ func TestTable_Search_2keys(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var searchValues []interface{} = make([]interface{}, 2)
@@ -738,19 +738,19 @@ func TestTable_Search_2keys(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		searchValues[0], err = table.GetString("user", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		searchValues[1], err = table.GetInt("lines", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		expecting = i
 		found, err = table.Search(searchValues...)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if found != expecting {
-			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 	//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
@@ -766,11 +766,11 @@ func TestTable_Search_2keys(t *testing.T) {
 		expecting = -1
 		found, _ = table.Search(searchValues...)
 		if found != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -791,21 +791,21 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.SetSortKeysReverse("lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	// fmt.Printf("here:\n%s", table)
 
@@ -817,19 +817,19 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		searchValues[0], err = table.GetString("user", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		searchValues[1], err = table.GetInt("lines", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		expecting = i
 		found, err = table.Search(searchValues...)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if found != expecting {
-			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 	//	log.Printf("%q expecting %d found %d", searchValues, expecting, found)
@@ -845,11 +845,11 @@ func TestTable_Search_2keys_reverse2nd(t *testing.T) {
 		expecting = -1
 		found, _ = table.Search(searchValues...)
 		if found != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -870,20 +870,20 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.SetSortKeysReverse("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var searchValues []interface{} = make([]interface{}, 2)
@@ -894,19 +894,19 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 	for i := 0; i < table.RowCount(); i++ {
 		searchValues[0], err = table.GetString("user", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		searchValues[1], err = table.GetInt("lines", i)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		expecting = i
 		found, err = table.Search(searchValues...)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 		if found != expecting {
-			t.Errorf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%v) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 
@@ -921,14 +921,14 @@ func TestTable_Search_2keys_reverseBoth(t *testing.T) {
 		expecting = -1
 		found, err = table.Search(searchValues...)
 		if err == nil {
-			t.Errorf("Expecting an error with Search(%v)", searchValues)
+			t.Fatalf("Expecting an error with Search(%v)", searchValues)
 		}
 		if found != expecting {
-			t.Errorf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
+			t.Fatalf("Expecting Search(%q) = %d but found: %d", searchValues, expecting, found)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1019,22 +1019,22 @@ func TestTable_SortKeyCount(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by user and lines.
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	expecting := 2
 	count := table.SortKeyCount()
 	if count != expecting {
-		t.Errorf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
+		t.Fatalf("Expecting table.SortKeyCount() = %d but found %d", expecting, count)
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1055,18 +1055,18 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	`
 	fromTable, err := NewTableFromString(fromTableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// First let's sort the table by user and lines.
 	err = fromTable.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = fromTable.SetSortKeysReverse("lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	toTableString :=
@@ -1076,39 +1076,39 @@ func TestTable_SetSortKeysFromTable(t *testing.T) {
 	`
 	toTable, err := NewTableFromString(toTableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = toTable.SetSortKeysFromTable(fromTable)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	keysTable1, err := fromTable.GetSortKeysAsTable()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	keysTable2, err := toTable.GetSortKeysAsTable()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	expecting := true
 
 	equals, err := keysTable1.Equals(keysTable2)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if equals != expecting {
-		t.Errorf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
+		t.Fatalf("Expecting table1.Equals(table2) = %t but found %t", expecting, equals)
 	}
 	if isValid, err := keysTable1.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if isValid, err := keysTable2.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1200,7 +1200,7 @@ func Test_Search(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s()\n", util.FuncName())
+		// fmt.Printf("%s\n", util.FuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
@@ -1217,7 +1217,7 @@ func Test_Search(t *testing.T) {
 				if slice[index] != searchFor {
 					// Have we found at the very least A right element, or if it is missing, an element less than it.
 					if slice[index] < searchFor {
-						t.Error(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d or more than %d, but found %d",
+						t.Fatal(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d or more than %d, but found %d",
 							i, index, searchFor, searchFor, slice[index]))
 					} else {
 						// fmt.Printf("%d is missing but would be at index %d (insert before %d)\n", searchFor, index, index)
@@ -1227,7 +1227,7 @@ func Test_Search(t *testing.T) {
 
 			if index > 0 && slice[index-1] == searchFor {
 				// Have we found THE right element.
-				t.Error(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d to be lowest index, but found slice[%d-1] = %d lower",
+				t.Fatal(fmt.Sprintf("test[%d] Expecting Search() slice[%d] = %d to be lowest index, but found slice[%d-1] = %d lower",
 					i, index, searchFor, index, slice[index-1]))
 			}
 		}
@@ -1266,7 +1266,7 @@ func TestSearchLast(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s()\n", util.FuncName())
+		// fmt.Printf("%s\n", util.FuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
@@ -1283,7 +1283,7 @@ func TestSearchLast(t *testing.T) {
 				if slice[index] != searchFor {
 					// Have we found at the very least A right element, or if it is missing, an element less than it.
 					if slice[index] > searchFor {
-						t.Error(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
+						t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d or less than %d, but found %d",
 							i, index, searchFor, searchFor, slice[index]))
 					} else {
 						// fmt.Printf("%d is missing but would be at index %d (insert after %d)\n", searchFor, index, index)
@@ -1293,7 +1293,7 @@ func TestSearchLast(t *testing.T) {
 
 			if index < elements-1 && slice[index+1] == searchFor {
 				// Have we found THE right element.
-				t.Error(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d to be greatest index, but found slice[%d+1] = %d greater",
+				t.Fatal(fmt.Sprintf("test[%d] Expecting SearchLast() slice[%d] = %d to be greatest index, but found slice[%d+1] = %d greater",
 					i, index, searchFor, index, slice[index+1]))
 			}
 		}
@@ -1432,16 +1432,16 @@ func TestTable_SearchFirst_by_user(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1460,11 +1460,11 @@ func TestTable_SearchFirst_by_user(t *testing.T) {
 	for _, test := range tests {
 		found, err := table.SearchFirst(test.searchValue)
 		if found != test.expecting {
-			t.Errorf("Expecting SearchFirst(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
+			t.Fatalf("Expecting SearchFirst(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1485,16 +1485,16 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1513,11 +1513,11 @@ func TestTable_SearchLast_by_user(t *testing.T) {
 	for _, test := range tests {
 		found, err := table.SearchLast(test.searchValue)
 		if found != test.expecting {
-			t.Errorf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
+			t.Fatalf("Expecting SearchLast(%q) = %d but found: %d, err: %v", test.searchValue, test.expecting, found, err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1538,16 +1538,16 @@ func TestTable_SearchRange_by_user(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	var tests = []struct {
@@ -1567,12 +1567,12 @@ func TestTable_SearchRange_by_user(t *testing.T) {
 	for _, test := range tests {
 		foundFirst, foundLast, err := table.SearchRange(test.searchValue)
 		if foundFirst != test.expectingFirst || foundLast != test.expectingLast {
-			t.Errorf("Expecting SearchRange(%q) = %d, %d but found: %d, %d err: %v",
+			t.Fatalf("Expecting SearchRange(%q) = %d, %d but found: %d, %d err: %v",
 				test.searchValue, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1600,16 +1600,16 @@ func TestTable_SearchRange_by_user_lines(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// To eye-ball errors.
@@ -1640,13 +1640,13 @@ func TestTable_SearchRange_by_user_lines(t *testing.T) {
 	for _, test := range tests {
 		foundFirst, foundLast, err := table.SearchRange(test.searchName, test.searchLines)
 		if foundFirst != test.expectingFirst || foundLast != test.expectingLast {
-			t.Errorf("Expecting SearchRange(%q, %d) = %d, %d but found: %d, %d err: %v",
+			t.Fatalf("Expecting SearchRange(%q, %d) = %d, %d but found: %d, %d err: %v",
 				test.searchName, test.searchLines, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
 			fmt.Println(table)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 
@@ -1674,20 +1674,20 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 	`
 	table, err := NewTableFromString(tableString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	err = table.SetSortKeys("user", "lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.SetSortKeysReverse("lines")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	err = table.Sort()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// To eye-ball errors.
@@ -1716,13 +1716,13 @@ func TestTable_SearchRange_by_user_lines_reverse_lines(t *testing.T) {
 	for _, test := range tests {
 		foundFirst, foundLast, err := table.SearchRange(test.searchName, test.searchLines)
 		if foundFirst != test.expectingFirst || foundLast != test.expectingLast {
-			t.Errorf("Expecting SearchRange(%q, %d) = %d, %d but found: %d, %d err: %v",
+			t.Fatalf("Expecting SearchRange(%q, %d) = %d, %d but found: %d, %d err: %v",
 				test.searchName, test.searchLines, test.expectingFirst, test.expectingLast, foundFirst, foundLast, err)
 			fmt.Println(table)
 		}
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
-		t.Error(err)
+		t.Fatal(err)
 	}
 }
 

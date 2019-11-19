@@ -104,6 +104,7 @@ func TestTableSetRenameTable(t *testing.T) {
 
 	for i, test := range tests {
 		tableSet, err := NewTableSetFromString(`[Wilma]`)
+		where(fmt.Sprintf("TTTTTTTT Wilma: i = %d, err = %v", i, err))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -660,6 +661,7 @@ func TestNewTableFromString16(t *testing.T) {
 	`
 	_, err = NewTableFromString(s)
 	if err != nil {
+		//panic(err)
 		t.Fatal(err)
 	}
 
@@ -812,6 +814,7 @@ func ExampleNewTableSet() {
 	name := tableSet.Name()
 	fmt.Println(tableCount)
 	fmt.Println(name)
+
 	// Output:
 	// 0
 	// MyTableSet
@@ -823,6 +826,7 @@ func ExampleRound() {
 
 	rounded := util.Round(numberToRound, places)
 	fmt.Println(rounded)
+
 	// Output:
 	// 12.33
 }
@@ -1821,39 +1825,39 @@ func TestSetIntegerMinAndMaxMachineDependent(t *testing.T) {
 	switch intBits {
 	case 32: // NOTE: This will be executed on 32-bit machines ONLY.
 		tests = append(tests, testCase{`
-					[uint]
-					i uint = 4294967296`,
+			[uint]
+			i uint = 4294967296`,
 			false,
 		},
 		)
 		tests = append(tests, testCase{`
-					[int]
-					i int = -2147483649`,
+			[int]
+			i int = -2147483649`,
 			false,
 		},
 		)
 		tests = append(tests, testCase{`
-					[int]
-					i int = 2147483648`,
+			[int]
+			i int = 2147483648`,
 			false,
 		},
 		)
 	case 64: // NOTE: This will be executed on 32-bit machines ONLY.
 		tests = append(tests, testCase{`
-					[uint]
-					i uint = 18446744073709551616`,
+			[uint]
+			i uint = 18446744073709551616`,
 			false,
 		},
 		)
 		tests = append(tests, testCase{`
-					[int]
-					i int = -9223372036854775809`,
+			[int]
+			i int = -9223372036854775809`,
 			false,
 		},
 		)
 		tests = append(tests, testCase{`
-					[int]
-					i int = 9223372036854775808`,
+			[int]
+			i int = 9223372036854775808`,
 			false,
 		},
 		)
@@ -6473,6 +6477,7 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	betty := person{"Betty", "Rubble", true, `msg`}
 
 	var colType string = fmt.Sprintf("%T", fred)
+	where(fmt.Sprintf("colType of fred is %s", colType))
 	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
@@ -6592,13 +6597,17 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 		t.Fatal(`br.Human != true`)
 	}
 
-	encoded, err := EncodeCustomTypeVal(ff)
+	encoded, err := EncodeCustomTypeVal("gotables.person", ff)
 	if err != nil {
 		t.Fatal(err)
 	}
 	decoded, err := DecodeCustomTypeVal(encoded)
 	if err != nil {
 		t.Fatal(err)
+	}
+	where(encoded)
+	if decoded != ff {
+		t.Fatalf("decoded != encoded: %v != %v", decoded, ff)
 	}
 
 	var fredDecoded person = decoded.(person)
@@ -6653,6 +6662,7 @@ func TestSetAndGetCustomTypeVal(t *testing.T) {
 	}
 }
 
+/*
 func TestCustomTypeWithMethod(t *testing.T) {
 	var err error
 
@@ -6680,6 +6690,7 @@ func TestCustomTypeWithMethod(t *testing.T) {
 
 	//	where(table)
 }
+*/
 
 func (table *Table) multiplyInt(factorCol1 string, factorCol2 string, productCol string, row int) (err error) {
 	var factor1, factor2, product int
@@ -6760,29 +6771,48 @@ func TestEncodeCustomTypeValAndDecodeCustomTypeVal(t *testing.T) {
 	var boo bool = true
 	var mine myType = myType{"Paul", true, 64}
 	var myb myByte = 'A'
+	var iptr *int = &i
+	var jptr *int = nil
 
 	var tests = []struct {
 		typeValue        interface{}
 		expectedTypeName string
+		valid            bool
 	}{
-		{i, "int"},
-		{s, "string"},
-		{f32, "float32"},
-		{boo, "bool"},
-		{mine, "gotables.myType"},
-		{myb, "gotables.myByte"},
-		{44, "int"},
-		{45, "int"},
+		{i, "int", true}, // 0
+		{s, "string", true}, // 1
+		{f32, "float32", true}, // 2
+		{boo, "bool", true}, // 3
+		{mine, "gotables.myType", true}, // 4
+		{myb, "gotables.myByte", true}, // 5
+		{44, "int", true}, // 6
+		{45, "int", true}, // 7
+		{iptr, "*int", false}, // 8
+		{jptr, "*int", false}, // 9
 	}
 
 	for testIndex, test := range tests {
 
-		//where(fmt.Sprintf("test[%d]   value type: %T  uncoded value: %v", testIndex, test.typeValue, test.typeValue))
+		fmt.Println()
+		where(fmt.Sprintf("test[%d]   value type: %T  uncoded value: %v", testIndex, test.typeValue, test.typeValue))
 
-		encoded, err := EncodeCustomTypeVal(test.typeValue)
-		if err != nil {
-			t.Fatal(err)
+		var typeName string = fmt.Sprintf("%T", test.typeValue)
+		where(fmt.Sprintf("test[%d] typeName: %q  test.typeValue: %v", testIndex, typeName, test.typeValue))
+		encoded, err := EncodeCustomTypeVal(typeName, test.typeValue)
+		if err != nil && test.valid {
+			t.Fatalf("test[%d] EncodeCustomTypeVal(%q, ...) expecting no error but got err: %v", testIndex, typeName, err)
 		}
+
+		if err == nil && !test.valid {
+			t.Fatalf("test[%d] EncodeCustomTypeVal(%q, ...) expecting error but got err == nil", testIndex, typeName)
+		}
+
+		if err != nil && !test.valid {
+			// As expected: not-nil return for not-valid type. Don't process this.
+			continue
+		}
+
+		where("\n" + encoded + "\n")
 
 		//where(fmt.Sprintf("test[%d] encoded type: %T  encoded value: %v", testIndex, encoded, encoded))
 
@@ -8063,4 +8093,344 @@ func ExampleNewTableSetFromJSON() {
 	// c float32 = 3
 	//
 	// table2.Equals(table1) == true
+}
+
+func ExampleNewTableFromString_customType() {
+	var err error
+
+	var tableString string = `[MyTable]
+	age	name		my_person
+	int	string		gotables.person
+	30	"Fred"		nil
+	28	"Wilma"		nil
+	3	"Bam Bam"	nil
+	8	"Dino"		nil
+	`
+
+	// The string above used to generate the table is written by hand.
+	// The Go built-in types int and string are simple to hand-code.
+	// But custom (user-defined) types are impossible to code by hand,
+	// so we initialise them here with their nil value: nil
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+	//where()
+	//where(table)
+
+	// The entire table could have been constructed programatically,
+	// but using a string representation makes it simpler to see what's going on.
+
+	fmt.Println(table)
+
+	// Define a custom type. Go gives it a package name of gotables.person
+	type person struct {
+		First string
+		Last  string
+		Human bool
+	}
+
+	err = table.SetCustomTypeVal("my_person", 0, person{"Fred", "Flintstone", true})
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = table.SetCustomTypeVal("my_person", 1, person{"Wilma", "Flintstone", true})
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = table.SetCustomTypeVal("my_person", 2, person{"Bam Bam", "Flintstone", true})
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = table.SetCustomTypeVal("my_person", 3, person{"Dino", "Flintstone", false})
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table)
+
+	fmt.Println(table.GetCustomTypeValMustGet("my_person", 2)) // Bam Bam
+
+	// Output:
+	// [MyTable]
+	// age name      my_person
+	// int string    gotables.person
+	//  30 "Fred"    nil
+	//  28 "Wilma"   nil
+	//   3 "Bam Bam" nil
+	//   8 "Dino"    nil
+	//
+	// [MyTable]
+	// age name      my_person
+	// int string    gotables.person
+	//  30 "Fred"    {{QxAAD2dvdGFibGVzLnBlcnNvbv+BAwEBBnBlcnNvbgH/ggABAwEFRmlyc3QBDAABBExhc3QBDAABBUh1bWFuAQIAAAAY/4IVAQRGcmVkAQpGbGludHN0b25lAQEA}{"gotables.person{First:\"Fred\", Last:\"Flintstone\", Human:true}"}}
+	//  28 "Wilma"   {{QxAAD2dvdGFibGVzLnBlcnNvbv+BAwEBBnBlcnNvbgH/ggABAwEFRmlyc3QBDAABBExhc3QBDAABBUh1bWFuAQIAAAAZ/4IWAQVXaWxtYQEKRmxpbnRzdG9uZQEBAA==}{"gotables.person{First:\"Wilma\", Last:\"Flintstone\", Human:true}"}}
+	//   3 "Bam Bam" {{QxAAD2dvdGFibGVzLnBlcnNvbv+BAwEBBnBlcnNvbgH/ggABAwEFRmlyc3QBDAABBExhc3QBDAABBUh1bWFuAQIAAAAb/4IYAQdCYW0gQmFtAQpGbGludHN0b25lAQEA}{"gotables.person{First:\"Bam Bam\", Last:\"Flintstone\", Human:true}"}}
+	//   8 "Dino"    {{QxAAD2dvdGFibGVzLnBlcnNvbv+BAwEBBnBlcnNvbgH/ggABAwEFRmlyc3QBDAABBExhc3QBDAABBUh1bWFuAQIAAAAW/4ITAQREaW5vAQpGbGludHN0b25lAA==}{"gotables.person{First:\"Dino\", Last:\"Flintstone\", Human:false}"}}
+	//
+	// {Bam Bam Flintstone true}
+}
+
+//	Test Set and Get table cell in colName at rowIndex to newValue interface
+func TestCustomTypeVal(t *testing.T) {
+	var err error
+	var table *Table
+	var lastColIndex int
+	var lastRowIndex int
+
+where(table)
+	const colName string = "Flintstones"
+
+where(table)
+	table, err = NewTable("SetAndGet")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendCol("i", "int")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendCol("s", "string")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendCol("f", "float64")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendCol("b", "bool")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	type person struct {
+		First string
+		Last  string
+		Human bool
+		Misc  string
+	}
+
+where(table)
+	fred := person{"Fred", "Flintstone", true, `Some message`}
+	wilma := person{"Wilma", "Flintstone", true, `msg`}
+	dino := person{"Dino", "Flintstone", false, `msg`}
+	barney := person{"Barney", "Rubble", true, `msg`}
+	betty := person{"Betty", "Rubble", true, `msg`}
+
+where(table)
+	var colType string = fmt.Sprintf("%T", fred)
+	where(fmt.Sprintf("colType of fred is %s", colType))
+	err = table.AppendCol(colName, colType)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetInt("i", lastRowIndex, 42)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetString("s", lastRowIndex, "My String")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetFloat64("f", lastRowIndex, 1234.5678)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetBool("b", lastRowIndex, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastColIndex = table.ColCount() - 1
+	lastRowIndex = table.RowCount() - 1
+where(fmt.Sprintf("SetCustomTypeValByColIndex(lastColIndex=%d, lastRowIndex=%d, customVal=%v", lastColIndex, lastRowIndex, fred))
+	err = table.SetCustomTypeValByColIndex(lastColIndex, lastRowIndex, fred)
+where(err)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, wilma)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, dino)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, barney)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	lastRowIndex = table.RowCount() - 1
+	err = table.SetCustomTypeVal(colName, lastRowIndex, betty)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(table)
+	_, err = NewTableFromString(table.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var iface interface{}
+	var br person
+	iface = table.GetCustomTypeValByColIndexMustGet(lastColIndex, lastRowIndex)
+	br = iface.(person)
+	if br.First != "Betty" {
+		t.Fatal(`br.First != "Betty"`)
+	}
+	if br.Human != true {
+		t.Fatal(`br.Human != true`)
+	}
+
+	var ff person
+	iface, err = table.GetCustomTypeVal("Flintstones", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ff = iface.(person)
+	if br.First != "Betty" {
+		t.Fatal(`br.First != "Betty"`)
+	}
+	if br.Human != true {
+		t.Fatal(`br.Human != true`)
+	}
+
+	encoded, err := EncodeCustomTypeVal("gotables.person", ff)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded, err := DecodeCustomTypeVal(encoded)
+	if err != nil {
+		t.Fatal(err)
+	}
+	where(encoded)
+	if decoded != ff {
+		t.Fatalf("decoded != encoded: %v != %v", decoded, ff)
+	}
+
+	var fredDecoded person = decoded.(person)
+	if fredDecoded != fred {
+		t.Fatal(err)
+	}
+
+	parsed, err := NewTableFromString(table.StringUnpadded())
+	if fredDecoded != fred {
+		t.Fatal(err)
+	}
+
+	type car struct {
+		name           string
+		Colour         string
+		cylinders      int
+		rangeKm        int
+		litresPer100Km float32
+	}
+
+	// Struct format table.
+	var stableString string = `[stable]
+	MyCar gotables.car = nil
+	i int = 42
+	s string = "forty-two"
+	`
+
+	stable, err := NewTableFromString(stableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	parsed, err = NewTableFromString(stable.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var lexus = car{"Lexus", "silver", 4, 900, 6.2}
+	err = parsed.SetCustomTypeVal("MyCar", 0, lexus)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = parsed.SetCustomTypeVal("MyCar", 0, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = parsed.SetCustomTypeValByColIndex(0, 0, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
