@@ -3238,7 +3238,13 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 	return -1, err
 }
 
-// Compare slice1 with slice2
+/*
+	Compare slice1 with slice2
+
+	Note: This function may be unnecessary.
+
+	See: bytes.Compare()
+*/
 func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
 	// UNUSED BUT retain this to repurpose as a slice comparison for other types.
 	// Confirm logic by looking at bytes.Equal() code.
