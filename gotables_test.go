@@ -4478,22 +4478,30 @@ func TestByteSliceEquals(t *testing.T) {
 		slice2   []byte
 		succeeds bool
 	}{
-		{[]byte{1, 2, 3}, []byte{1, 2, 3}, true},
-		{nil, []byte{1, 2, 3}, false},
-		{[]byte{1, 2, 3}, nil, false},
-		{nil, nil, true},
-		{[]byte{4,5,6,7}, []byte{4,5,6}, false},
-		{[]byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, true},
-		{[]byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'}, false},
+		/* 0 */ {[]byte{1, 2, 3}, []byte{1, 2, 3}, true},
+		/* 1 */ {nil, []byte{1, 2, 3}, false},
+		/* 2 */ {[]byte{1, 2, 3}, nil, false},
+		/* 3 */ {nil, nil, true},
+		/* 4 */ {[]byte{4,5,6,7}, []byte{4,5,6}, false},
+		/* 5 */ {[]byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, true},
+		/* 6 */ {[]byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'}, false},
+		/* 7 */ {[]byte{4,5,6,7}, []byte{4,5,6,8}, false},
 	}
 
 	var equals bool
 
 	for i, test := range tests {
-		equals, _ = Uint8SliceEquals(test.slice1, test.slice2)
+		equals, err := Uint8SliceEquals(test.slice1, test.slice2)
 		if equals != test.succeeds {
 			t.Fatalf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
+
+		_ = err
+		/* Output error messages
+			if err != nil {
+				fmt.Printf("test[%d]: Uint8SliceEquals(): %v\n", i, err)
+			}
+		*/
 	}
 
 	for i, test := range tests {
