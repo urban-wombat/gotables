@@ -4482,21 +4482,34 @@ func TestByteSliceEquals(t *testing.T) {
 		{nil, []byte{1, 2, 3}, false},
 		{[]byte{1, 2, 3}, nil, false},
 		{nil, nil, true},
+		{[]byte{4,5,6,7}, []byte{4,5,6}, false},
+		{[]byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, true},
+		{[]byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'}, false},
 	}
 
 	var equals bool
+
 	for i, test := range tests {
-		// UNUSED BUT retain Uint8SliceEquals to repurpose as a slice comparison for other types.
-		// This test helps confirm the logic is correct. But perhaps look at bytes.Equal() code.
 		equals, _ = Uint8SliceEquals(test.slice1, test.slice2)
 		if equals != test.succeeds {
 			t.Fatalf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
+	}
 
-		// This is the official comparison function. Need to replace my hand-coded functions.
+	for i, test := range tests {
+		// This is the official Equal function. Confirms validity. It doesn't tell you which element was unequal.
 		equals = bytes.Equal(test.slice1, test.slice2)
 		if equals != test.succeeds {
 			t.Fatalf("test[%d]: bytes.Equal(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+		}
+	}
+
+	for i, test := range tests {
+		// This is the official Compare function. Confirms validity. It doesn't tell you which element was unequal.
+		var comparison int = bytes.Compare(test.slice1, test.slice2)
+		equals = comparison == 0
+		if equals != test.succeeds {
+			t.Fatalf("test[%d]: bytes.Compare(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
 		}
 	}
 }

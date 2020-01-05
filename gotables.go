@@ -3239,21 +3239,17 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 }
 
 /*
-	Compare slice1 with slice2
+	Returns whether slice1 is equal to slice2.
 
-	Note: This function may be unnecessary.
+	Error information: in what way the slices are unequal.
 
-	See: bytes.Compare()
+	See: bytes.Equal() for the builtin alternative function.
+
+	See: bytes.Compare() for the builtin comparison function.
 */
 func Uint8SliceEquals(slice1, slice2 []uint8) (bool, error) {
-	// UNUSED BUT retain this to repurpose as a slice comparison for other types.
-	// Confirm logic by looking at bytes.Equal() code.
 	if slice1 == nil && slice2 != nil {
 		return false, fmt.Errorf("slice1 == <nil> && slice2 != <nil>")
-	}
-
-	if slice1 != nil && slice2 == nil {
-		return false, fmt.Errorf("slice1 != <nil> && slice2 == <nil>")
 	}
 
 	if len(slice1) != len(slice2) {
