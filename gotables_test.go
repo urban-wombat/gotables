@@ -4474,18 +4474,19 @@ func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 func TestByteSliceEquals(t *testing.T) {
 
 	var tests = []struct {
+		index    int	// To simplify locating test case in tests.
+		succeeds bool
 		slice1   []byte
 		slice2   []byte
-		succeeds bool
 	}{
-		/* 0 */ {[]byte{1, 2, 3}, []byte{1, 2, 3}, true},
-		/* 1 */ {nil, []byte{1, 2, 3}, false},
-		/* 2 */ {[]byte{1, 2, 3}, nil, false},
-		/* 3 */ {nil, nil, true},
-		/* 4 */ {[]byte{4,5,6,7}, []byte{4,5,6}, false},
-		/* 5 */ {[]byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, true},
-		/* 6 */ {[]byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'}, false},
-		/* 7 */ {[]byte{4,5,6,7}, []byte{4,5,6,8}, false},
+		{0, true,  []byte{1, 2, 3}, []byte{1, 2, 3} },
+		{1, false, nil, []byte{1, 2, 3} },
+		{2, false, []byte{1, 2, 3}, nil },
+		{3, true,  nil, nil },
+		{4, false, []byte{4,5,6,7}, []byte{4,5,6} },
+		{5, true,  []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'} },
+		{6, false, []byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'} },
+		{7, false, []byte{4,5,6,7}, []byte{4,5,6,8} },
 	}
 
 	var equals bool
@@ -4494,6 +4495,11 @@ func TestByteSliceEquals(t *testing.T) {
 		equals, err := Uint8SliceEquals(test.slice1, test.slice2)
 		if equals != test.succeeds {
 			t.Fatalf("test[%d]: Uint8SliceEquals(): equals == %t but expecting succeeds == %t", i, equals, test.succeeds)
+		}
+
+		// Check index is correct.
+		if test.index != i {
+			t.Fatalf("test[%d]: test.index == %d but expecting index == %d", i, test.index, i)
 		}
 
 		_ = err
