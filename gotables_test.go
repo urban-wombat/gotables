@@ -4458,8 +4458,7 @@ func TestTable_AppendRow(t *testing.T) {
 }
 
 /*
-	Seems pointless trying to test for err!=nil in functions.
-	If there is more than one possible return, no specific error return is tested.
+	Surprisingly, Go actually executes the method on a nil object, and allows test of nil in the method.
 */
 func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 
@@ -4469,6 +4468,8 @@ func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expecting error tableSet is <nil>, but no error was returned")
 	}
+
+	// fmt.Println(err)
 }
 
 func TestByteSliceEquals(t *testing.T) {
