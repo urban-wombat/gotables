@@ -270,7 +270,7 @@ func ExampleTable_SetSortKeys() {
 	//     2 "user"     "string" false
 }
 
-func TestTable_Sort(t *testing.T) {
+func TestTable_SortZeroKeys(t *testing.T) {
 
 	table, err := NewTable("HasZeroSortKeys")
 	if err != nil {
@@ -282,6 +282,89 @@ func TestTable_Sort(t *testing.T) {
 		t.Fatalf("Expecting table.Sort() err because of 0 sort keys")
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
+		t.Fatal(err)
+	}
+}
+
+/*
+	Test Sort() in two modes:-
+		(1) Sort by columns specified in argument list.
+		(2) Sort by columns specified in table sort keys.
+*/
+func TestTable_Sort(t *testing.T) {
+
+	unsortedString := `
+	[table]
+	i	b		s
+	int	bool	string
+	1	true	"Z"
+	2	false	"Y"
+	3	true	"X"
+	4	false	"W"
+	5	true	"V"
+	6	false	"U"
+	`
+	table, err := NewTableFromString(unsortedString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// fmt.Printf("%v\n", table)
+
+	sortedString := `
+	[table]
+	  i b     s
+	int bool  string
+	  6 false "U"
+	  4 false "W"
+	  2 false "Y"
+	  5 true  "V"
+	  3 true  "X"
+	  1 true  "Z"
+	`
+	tableSorted, err := NewTableFromString(sortedString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// (1) Sort by columns specified in argument list.
+
+	err = table.Sort("b", "s")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// fmt.Printf("%v\n", table)
+	if equals, err := table.Equals(tableSorted); !equals {
+		t.Fatal(err)
+	}
+
+
+	// Set sort keys to zero before the next test case.
+
+	err = table.SetSortKeys()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if table.SortKeyCount() != 0 {
+		t.Fatalf("expecting SortKeyCount() to be zero because we just now cleared the keys")
+	}
+
+
+	// (2) Sort by columns specified in table sort keys.
+
+	err = table.SetSortKeys("b", "s")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.Sort()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// fmt.Printf("%v\n", table)
+	if equals, err := table.Equals(tableSorted); !equals {
 		t.Fatal(err)
 	}
 }

@@ -462,18 +462,40 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 }
 
 /*
-	Sort this table by this table's currently-set sort keys.
+	table.Sort() has 2 modes:-
 
-	To see the currently-set sort keys use GetSortKeysAsTable()
+	(1) With args: Sort this table by 1 or more column names provided as arguments, OR
+
+	(2) Zero args: Sort this table by this table's currently-set sort keys.
+
+	(To see the currently-set sort keys use GetSortKeysAsTable())
+
+	Note: mode (1) sorts in ascending-order-only.
+
+	To sort one or more columns (keys) in reverse-order (e.g. key2 in this example):
+
+	table.SetSortKeys("key1", "key2", "key3")
+
+	table.SetSortKeysReverse("key2")
+
+	table.Sort()
 */
-func (table *Table) Sort() error {
+func (table *Table) Sort(sortCols ...string) error {
 
 	if table == nil {
 		return fmt.Errorf("table.%s table is <nil>", util.FuncName())
 	}
 
+	if len(sortCols) > 0 {
+		err := table.SetSortKeys(sortCols...)
+		if err != nil {
+			return err
+		}
+	}
+
 	if len(table.sortKeys) == 0 {
-		return fmt.Errorf("%s cannot sort table that has 0 sort keys - use SetSortKeys()", util.FuncName())
+		return fmt.Errorf("%s cannot sort table that has 0 sort keys - use SetSortKeys() or Sort(keys []string)",
+			util.FuncName())
 	}
 
 	table.sortByKeys(table.sortKeys)
