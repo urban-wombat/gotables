@@ -57,7 +57,7 @@ var compareFuncs = map[string]compareFunc{
 type sortKey struct {
 	colName  string
 	colType  string
-	reverse  bool
+	reverse  bool	// true for descending sort/search
 	sortFunc compareFunc
 }
 
@@ -73,6 +73,16 @@ func (key sortKey) String() string {
 	return fmt.Sprintf("{colName:%q,colType:%q,reverse:%t}", key.colName, key.colType, key.reverse)
 }
 
+/*
+	SortKeys is a slice of sortKey which facilitates multi-key ascending/descending sorting and searching.
+
+		type sortKey struct {
+			colName  string
+			colType  string
+			reverse  bool	// true for descending sort/search
+			sortFunc compareFunc
+		}
+*/
 type SortKeys []sortKey
 
 func (keys SortKeys) String() string {
@@ -464,21 +474,19 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 /*
 	table.Sort() has 2 modes:-
 
-	(1) With args: Sort this table by 1 or more column names provided as arguments, OR
+	Mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
 
-	(2) Zero args: Sort this table by this table's currently-set sort keys.
+	Mode (2) Zero args: Sort this table by this table's currently-set sort keys.
 
-	(To see the currently-set sort keys use GetSortKeysAsTable())
+	Mode (1) limitation: sorts in ascending order only.
 
-	Note: mode (1) sorts in ascending-order-only.
+	To sort one or more columns (keys) in reverse-order ("key2" in this example):
 
-	To sort one or more columns (keys) in reverse-order (e.g. key2 in this example):
+		table.SetSortKeys("key1", "key2", "key3")
+		table.SetSortKeysReverse("key2")
+		table.Sort()
 
-	table.SetSortKeys("key1", "key2", "key3")
-
-	table.SetSortKeysReverse("key2")
-
-	table.Sort()
+	To see the currently-set sort keys use table.GetSortKeysAsTable()
 */
 func (table *Table) Sort(sortCols ...string) error {
 
