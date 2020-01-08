@@ -310,7 +310,7 @@ func TestTable_Sort(t *testing.T) {
 	}
 	// fmt.Printf("%v\n", table)
 
-	sortedString := `
+	expectedString := `
 	[table]
 	  i b     s
 	int bool  string
@@ -321,7 +321,7 @@ func TestTable_Sort(t *testing.T) {
 	  3 true  "X"
 	  1 true  "Z"
 	`
-	tableSorted, err := NewTableFromString(sortedString)
+	expectedTable, err := NewTableFromString(expectedString)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -334,7 +334,7 @@ func TestTable_Sort(t *testing.T) {
 	}
 
 	// fmt.Printf("%v\n", table)
-	if equals, err := table.Equals(tableSorted); !equals {
+	if equals, err := table.Equals(expectedTable); !equals {
 		t.Fatal(err)
 	}
 
@@ -364,7 +364,98 @@ func TestTable_Sort(t *testing.T) {
 	}
 
 	// fmt.Printf("%v\n", table)
-	if equals, err := table.Equals(tableSorted); !equals {
+	if equals, err := table.Equals(expectedTable); !equals {
+		t.Fatal(err)
+	}
+}
+
+/*
+	Test SortUnique() in two modes:-
+		(1) Sort unique by columns specified in argument list.
+		(2) Sort unique by columns specified in table sort keys.
+*/
+func TestTable_SortUnique(t *testing.T) {
+
+	unsortedString := `
+	[table]
+	KeyCol number   s
+	int float32 string
+	2   0       "two point two"
+	2   2.2     ""
+	1   1.1     "one point one"
+	3   3.3     "three point three"
+	3   3.3     ""
+	3   NaN     "three point three"
+	4   0.0     "neither zero nor same X"
+	4   NaN     "neither zero nor same Y"
+	4   4.4     "neither zero nor same Z"
+	4   NaN     "neither zero nor same A"
+	5   NaN     "minus 5"
+	5   -0      "minus 5"
+	5   -5      "minus 5"
+	`
+	table, err := NewTableFromString(unsortedString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// fmt.Printf("%v\n", table)
+
+	expectedString := `
+	[table]
+	KeyCol number   s
+	int float32 string
+     1     1.1 "one point one"
+     2     2.2 "two point two"
+     3     3.3 "three point three"
+     4     4.4 "neither zero nor same A"
+     5    -5.0 "minus 5"
+	`
+	expectedTable, err := NewTableFromString(expectedString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// (1) Sort by columns specified in argument list.
+
+	// fmt.Println(table)
+	tableUnique, err := table.SortUnique("KeyCol")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// fmt.Printf("%v\n", table)
+	if equals, err := tableUnique.Equals(expectedTable); !equals {
+		// fmt.Println(tableUnique)
+		t.Fatal(err)
+	}
+
+
+	// Set sort keys to zero before the next test case.
+
+	err = table.SetSortKeys()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if table.SortKeyCount() != 0 {
+		t.Fatalf("expecting SortKeyCount() to be zero because we just now cleared the keys")
+	}
+
+
+	// (2) Sort by columns specified in table sort keys.
+
+	err = table.SetSortKeys("KeyCol")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tableUnique, err = table.SortUnique()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// fmt.Printf("%v\n", tableUnique)
+	if equals, err := tableUnique.Equals(expectedTable); !equals {
 		t.Fatal(err)
 	}
 }

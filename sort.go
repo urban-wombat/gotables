@@ -495,6 +495,7 @@ func (table *Table) Sort(sortCols ...string) error {
 	}
 
 	if len(sortCols) > 0 {
+		// Mode (1)
 		err := table.SetSortKeys(sortCols...)
 		if err != nil {
 			return err
@@ -512,6 +513,8 @@ func (table *Table) Sort(sortCols ...string) error {
 }
 
 /*
+	Note: table.SortSimple() is now redundant, because table.Sort() now accepts sort col arguments.
+
 	Sort by one or more columns ascending-only.
 
 	1. All column keys are set to ascending order.
@@ -1227,36 +1230,64 @@ func (table *Table) SearchRange(searchValues ...interface{}) (firstRow int, last
 }
 
 /*
-	Sort this table UNIQUE by this table's currently-set sort keys.
+	Sort this table unique by this table's currently-set sort keys.
+
 	Non-key column cell values are not used for uniqueness but are evaluated and merged.
+	Zero-value non-key cells will be replaced by available non-zero-value cells which
+	match the same (possibly composite) key. If more than one non-zero-value cell is
+	matches a key, any of those non-zero-values may be used, and is non-deterministic
+	and no more stable than Go sort() which is not guaranteed to be stable.
 
-	To see the currently-set sort keys use GetSortKeysAsTable()
+	table.SortUnique() has 2 modes:-
 
-	Note: the sorted table is returned, not sorted in place.
+	Mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
 
-	SortUnique() uses table.Merge() which resolves missing or conflicting cell values.
+	Mode (2) Zero args: Sort this table by this table's currently-set sort keys.
+
+	Mode (1) limitation: sorts in ascending order only.
+
+	To sort one or more columns (keys) in reverse-order ("key2" in this example):
+
+		table.SetSortKeys("key1", "key2", "key3")
+		table.SetSortKeysReverse("key2")
+		table.SortUnique()
+
+	To see the currently-set sort keys use table.GetSortKeysAsTable()
+
+	Note: The table is not sorted in-place. The returned table is new.
+
+	Note: SortUnique() uses table.Merge() which resolves missing or conflicting cell values.
 */
-func (table *Table) SortUnique() (tableUnique *Table, err error) {
+func (inputTable *Table) SortUnique(sortCols ...string) (newTableUnique *Table, err error) {
 
-	if table == nil {
-		return nil, fmt.Errorf("table.%s table is <nil>", util.FuncName())
+	if inputTable == nil {
+		return nil, fmt.Errorf("inputTable.%s table is <nil>", util.FuncName())
 	}
 
-	if len(table.sortKeys) == 0 {
+	if len(sortCols) > 0 {
+		// Mode (1)
+		err := inputTable.SetSortKeys(sortCols...)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if len(inputTable.sortKeys) == 0 {
 		return nil, fmt.Errorf("%s cannot sort table that has 0 sort keys - use SetSortKeys()", util.FuncName())
 	}
 
+	// Merge inputTable with itself.
 	// Merge() eliminates duplicates (based on keys) and fills in zero and missing values where available.
-	tableUnique, err = table.Merge(table)
+	newTableUnique, err = inputTable.Merge(inputTable)
 	if err != nil {
 		return nil, err
 	}
 
 	// Merge() names the merged table "merged". Rename it.
-	err = tableUnique.SetName(table.Name())
+	err = newTableUnique.SetName(inputTable.Name())
 	if err != nil {
 		return nil, err
 	}
 
-	return tableUnique, nil
+	return newTableUnique, nil
 }
