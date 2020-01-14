@@ -52,14 +52,8 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 			}
 			switch val.(type) {
 			case string:
-				buf.WriteString(`"` + val.(string) + `"`)
-			case int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
-				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-				if err != nil {
-					return "", err
-				}
-				buf.WriteString(valStr)
-			case bool:
+				buf.WriteString(`"` + val.(string) + `"`)	// May be faster as 3 writes?
+			case bool, int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
 				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return "", err
