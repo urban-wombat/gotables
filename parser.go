@@ -222,6 +222,7 @@ const structTypeIndex = 1
 const structEqualsIndex = 2
 
 type _TableSection string
+
 const (
 	_TABLE_NAME _TableSection = "_TABLE_NAME"
 	_COL_NAMES  _TableSection = "_COL_NAMES"
@@ -230,6 +231,7 @@ const (
 )
 
 type _TableShape string
+
 const (
 	_TABLE_SHAPE     _TableShape = "_TABLE_SHAPE"
 	_STRUCT_SHAPE    _TableShape = "_STRUCT_SHAPE"
@@ -256,7 +258,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
 
-	var table *Table	// Reused with each new table.
+	var table *Table // Reused with each new table.
 
 	// Has to be initialised with each call to parseString() because
 	// the first thing we always expect is a table name.
@@ -357,12 +359,12 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 				}
 
-/*
-				// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>
-				if table.ColCount() == 1 { // The first struct item.
-					structHasRowData = isNameAndTypeEqualsValueStruct
-				}
-*/
+				/*
+					// Set this only once (for each table). Base on the first "col", which is <name> <type> = <value>
+					if table.ColCount() == 1 { // The first struct item.
+						structHasRowData = isNameAndTypeEqualsValueStruct
+					}
+				*/
 
 				if structHasRowData {
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
@@ -466,9 +468,9 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					p.gotFilePos(), lenColTypes, plural(lenColTypes), lenRowSlice)
 			}
 
-			default:
-				return nil, fmt.Errorf("%s expecting table name, col names or type names but found: %s",
-					p.gotFilePos(), expecting)
+		default:
+			return nil, fmt.Errorf("%s expecting table name, col names or type names but found: %s",
+				p.gotFilePos(), expecting)
 		}
 
 		if readError == io.EOF {
@@ -557,7 +559,7 @@ func getTableShape(p *parser, line string, lineSplit []string, tableShapeIn _Tab
 		}
 	}
 
-	return "", false,  errors.New("ERROR: 'unreachable' code!")
+	return "", false, errors.New("ERROR: 'unreachable' code!")
 }
 
 func (p *parser) parseFile(inputFileName string) (*TableSet, error) {

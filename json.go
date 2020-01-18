@@ -52,7 +52,7 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 			}
 			switch val.(type) {
 			case string:
-				buf.WriteString(`"` + val.(string) + `"`)	// May be faster as 3 writes?
+				buf.WriteString(`"` + val.(string) + `"`) // May be faster as 3 writes?
 			case bool, int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
 				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
 				if err != nil {
@@ -305,7 +305,6 @@ Loop:
 		}
 	}
 
-
 	// Append row of table data from JSON.
 	/*
 	   Note: Here we use a map for rows of data now that we have already preserved col order.
@@ -332,7 +331,7 @@ Loop:
 	}
 
 	var rowsInterface []interface{} = tableMap[dataTableName].([]interface{})
-//where(rowsInterface)
+	//where(rowsInterface)
 
 	for rowIndex, row := range rowsInterface {
 		table.AppendRow()

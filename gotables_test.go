@@ -4472,19 +4472,19 @@ func TestTableSet_WriteFile_NilTableSet(t *testing.T) {
 func TestByteSliceEquals(t *testing.T) {
 
 	var tests = []struct {
-		index    int	// To simplify locating test case in tests.
+		index    int // To simplify locating test case in tests.
 		succeeds bool
 		slice1   []byte
 		slice2   []byte
 	}{
-		{0, true,  []byte{1, 2, 3}, []byte{1, 2, 3} },
-		{1, false, nil, []byte{1, 2, 3} },
-		{2, false, []byte{1, 2, 3}, nil },
-		{3, true,  nil, nil },
-		{4, false, []byte{4,5,6,7}, []byte{4,5,6} },
-		{5, true,  []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'} },
-		{6, false, []byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'} },
-		{7, false, []byte{4,5,6,7}, []byte{4,5,6,8} },
+		{0, true, []byte{1, 2, 3}, []byte{1, 2, 3}},
+		{1, false, nil, []byte{1, 2, 3}},
+		{2, false, []byte{1, 2, 3}, nil},
+		{3, true, nil, nil},
+		{4, false, []byte{4, 5, 6, 7}, []byte{4, 5, 6}},
+		{5, true, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}, []byte{'A', 'N', 'M', 'O', 'P', 'Q'}},
+		{6, false, []byte{'a', 'g', 't', 'e', 'q', 'm'}, []byte{'A', 'n', 'M', 'o', 'p', 'Q'}},
+		{7, false, []byte{4, 5, 6, 7}, []byte{4, 5, 6, 8}},
 	}
 
 	var equals bool
@@ -4502,9 +4502,9 @@ func TestByteSliceEquals(t *testing.T) {
 
 		_ = err
 		/* Output error messages
-			if err != nil {
-				fmt.Printf("test[%d]: Uint8SliceEquals(): %v\n", i, err)
-			}
+		if err != nil {
+			fmt.Printf("test[%d]: Uint8SliceEquals(): %v\n", i, err)
+		}
 		*/
 	}
 
@@ -6812,11 +6812,11 @@ func TestParserGlobalVars(t *testing.T) {
 		}
 	}
 }
-	
-	// reflect.TypeOf(val) is MUCH faster than fmt.Sprintf("%T", val)
-	func BenchmarkSprintfType(b *testing.B) {
-		var val interface{}
-		for i := 0; i < b.N; i++ {
-			_ = fmt.Sprintf("%T", val)
-		}
+
+// reflect.TypeOf(val) is MUCH faster than fmt.Sprintf("%T", val)
+func BenchmarkSprintfType(b *testing.B) {
+	var val interface{}
+	for i := 0; i < b.N; i++ {
+		_ = fmt.Sprintf("%T", val)
 	}
+}

@@ -195,7 +195,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 //		fmt.Println(jsonString)
 //
 //		var out bytes.Buffer
-		// For readability.
+// For readability.
 //		err = json.Indent(&out, []byte(jsonString), "", "\t")
 //		if err != nil {
 //			t.Fatal(err)
@@ -1030,7 +1030,7 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	var err error
 
 	tableSetString :=
-	`[MyTable]
+		`[MyTable]
 	x	y	z
 	int	int	int
 

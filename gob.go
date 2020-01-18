@@ -1,4 +1,3 @@
 package gotables
 
-import (
-)
+import ()

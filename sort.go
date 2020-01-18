@@ -57,7 +57,7 @@ var compareFuncs = map[string]compareFunc{
 type sortKey struct {
 	colName  string
 	colType  string
-	reverse  bool	// true for descending sort/search
+	reverse  bool // true for descending sort/search
 	sortFunc compareFunc
 }
 

@@ -338,7 +338,6 @@ func TestTable_Sort(t *testing.T) {
 		t.Fatal(err)
 	}
 
-
 	// Set sort keys to zero before the next test case.
 
 	err = table.SetSortKeys()
@@ -349,7 +348,6 @@ func TestTable_Sort(t *testing.T) {
 	if table.SortKeyCount() != 0 {
 		t.Fatalf("expecting SortKeyCount() to be zero because we just now cleared the keys")
 	}
-
 
 	// (2) Sort by columns specified in table sort keys.
 
@@ -429,7 +427,6 @@ func TestTable_SortUnique(t *testing.T) {
 		t.Fatal(err)
 	}
 
-
 	// Set sort keys to zero before the next test case.
 
 	err = table.SetSortKeys()
@@ -440,7 +437,6 @@ func TestTable_SortUnique(t *testing.T) {
 	if table.SortKeyCount() != 0 {
 		t.Fatalf("expecting SortKeyCount() to be zero because we just now cleared the keys")
 	}
-
 
 	// (2) Sort by columns specified in table sort keys.
 
