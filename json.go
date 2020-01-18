@@ -238,10 +238,6 @@ func NewTableFromJSON(jsonMetadataString string, jsonDataString string) (table *
 		if err != nil {
 			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
 		}
-		err = table.SetStructShape(true) // For readability
-		if err != nil {
-			return nil, fmt.Errorf("newTableFromJSON(): %v", err)
-		}
 	default:
 		return nil, fmt.Errorf("newTableFromJSON(): expecting table name but found: %v", reflect.TypeOf(token))
 	}
