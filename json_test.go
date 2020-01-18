@@ -60,6 +60,7 @@ func TestGetTableDataAsJSON(t *testing.T) {
 		fmt.Println(jsonString)
 
 		var out bytes.Buffer
+		// For readability.
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -110,6 +111,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
 
 	/*
 		var out bytes.Buffer
+		// For readability.
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -149,6 +151,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 		fmt.Println(jsonString)
 
 		var out bytes.Buffer
+		// For readability.
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -192,6 +195,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 //		fmt.Println(jsonString)
 //
 //		var out bytes.Buffer
+		// For readability.
 //		err = json.Indent(&out, []byte(jsonString), "", "\t")
 //		if err != nil {
 //			t.Fatal(err)
@@ -237,6 +241,7 @@ func TestNewTableFromJSON(t *testing.T) {
 
 	if verbose {
 		var buf bytes.Buffer
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -252,6 +257,7 @@ func TestNewTableFromJSON(t *testing.T) {
 
 	if verbose {
 		var buf bytes.Buffer
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -319,6 +325,7 @@ func TestNewTableSetFromJSON(t *testing.T) {
 
 	/*
 		var buf bytes.Buffer
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -368,6 +375,7 @@ func TestAllJSON(t *testing.T) {
 	}
 
 	if verbose {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonMetadata), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -384,6 +392,7 @@ func TestAllJSON(t *testing.T) {
 	}
 
 	if verbose {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonData), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -440,12 +449,14 @@ func TestAllJSON(t *testing.T) {
 
 	if verbose {
 		for i := 0; i < len(jsonMetadataSlice); i++ {
+			// For readability.
 			err = json.Indent(&buf, []byte(jsonMetadataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
 
+			// For readability.
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
@@ -504,6 +515,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 	}
 
 	if verbose {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonMetadata), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -520,6 +532,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 	}
 
 	if verbose {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonData), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -576,12 +589,14 @@ func TestAllJSONZeroRows(t *testing.T) {
 
 	if verbose {
 		for i := 0; i < len(jsonMetadataSlice); i++ {
+			// For readability.
 			err = json.Indent(&buf, []byte(jsonMetadataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
 			buf.WriteTo(os.Stdout)
 
+			// For readability.
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
@@ -642,6 +657,7 @@ func TestAllJSONZeroMetadata(t *testing.T) {
 	}
 
 	if verbose {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonData), "", "\t")
 		if err != nil {
 			t.Fatal(err)
@@ -699,6 +715,7 @@ func ExampleNewTableFromJSON() {
 		log.Println(err)
 	}
 
+	// For readability.
 	err = json.Indent(&buf, []byte(jsonMetadata), "", "  ")
 	if err != nil {
 		log.Println(err)
@@ -713,6 +730,7 @@ func ExampleNewTableFromJSON() {
 		log.Println(err)
 	}
 
+	// For readability.
 	err = json.Indent(&buf, []byte(jsonData), "", "  ")
 	if err != nil {
 		log.Println(err)
@@ -780,6 +798,103 @@ func ExampleNewTableFromJSON() {
 	// table2.Equals(table1) == true
 }
 
+/*
+	It is permitted to have zero rows.
+
+	There must always be columns defined -- name(s) and type(s).
+*/
+func ExampleNewTableFromJSON_zeroRows() {
+	var err error
+
+	tableString :=
+		`[MyTable]
+	i    u    f
+	int  uint float32
+	`
+	table1, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table1)
+
+	var jsonMetadata string
+	var jsonData string
+	var buf bytes.Buffer
+
+	jsonMetadata, err = table1.GetTableMetadataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	// For readability.
+	err = json.Indent(&buf, []byte(jsonMetadata), "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	buf.WriteTo(os.Stdout)
+
+	fmt.Println()
+	fmt.Println()
+
+	jsonData, err = table1.GetTableDataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	// For readability.
+	err = json.Indent(&buf, []byte(jsonData), "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	buf.WriteTo(os.Stdout)
+
+	fmt.Println()
+	fmt.Println()
+
+	table2, err := NewTableFromJSON(jsonMetadata, jsonData)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table2)
+
+	equals, err := table2.Equals(table1)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+
+	// Output:
+	// [MyTable]
+	//   i    u       f
+	// int uint float32
+	//
+	// {
+	//   "MyTable": [
+	//     {
+	//       "i": "int"
+	//     },
+	//     {
+	//       "u": "uint"
+	//     },
+	//     {
+	//       "f": "float32"
+	//     }
+	//   ]
+	// }
+	//
+	// {
+	//   "MyTable": []
+	// }
+	//
+	// [MyTable]
+	//   i    u       f
+	// int uint float32
+	//
+	// table2.Equals(table1) == true
+}
+
 func ExampleNewTableSetFromJSON() {
 	var err error
 
@@ -811,12 +926,14 @@ func ExampleNewTableSetFromJSON() {
 	}
 
 	for i := 0; i < len(jsonMetadataSlice); i++ {
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonMetadataSlice[i]), "", "  ")
 		if err != nil {
 			log.Println(err)
 		}
 		buf.WriteTo(os.Stdout)
 
+		// For readability.
 		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
 		if err != nil {
 			log.Println(err)
@@ -892,14 +1009,127 @@ func ExampleNewTableSetFromJSON() {
 	// }
 	//
 	// [MyTable]
-	// x int = 1
-	// y int = 2
-	// z int = 3
+	//   x   y   z
+	// int int int
+	//   1   2   3
 	//
 	// [YourTable]
-	// a float32 = 1
-	// b float32 = 2
-	// c float32 = 3
+	//       a       b       c
+	// float32 float32 float32
+	//       1       2       3
+	//
+	// table2.Equals(table1) == true
+}
+
+/*
+	It is permitted to have zero rows.
+
+	There must always be columns defined -- name(s) and type(s).
+*/
+func ExampleNewTableSetFromJSON_zeroRows() {
+	var err error
+
+	tableSetString :=
+	`[MyTable]
+	x	y	z
+	int	int	int
+
+	[YourTable]
+	a		b		c
+	float32	float32	float32
+	`
+	tableSet1, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(tableSet1)
+
+	var jsonMetadataSlice []string
+	var jsonDataSlice []string
+	var buf bytes.Buffer
+
+	jsonMetadataSlice, jsonDataSlice, err = tableSet1.GetTableSetAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	for i := 0; i < len(jsonMetadataSlice); i++ {
+		// For readability.
+		err = json.Indent(&buf, []byte(jsonMetadataSlice[i]), "", "  ")
+		if err != nil {
+			log.Println(err)
+		}
+		buf.WriteTo(os.Stdout)
+
+		// For readability.
+		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
+		if err != nil {
+			log.Println(err)
+		}
+		buf.WriteTo(os.Stdout)
+	}
+
+	fmt.Println()
+	fmt.Println()
+
+	tableSet2, err := NewTableSetFromJSON(jsonMetadataSlice, jsonDataSlice)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(tableSet2)
+
+	equals, err := tableSet2.Equals(tableSet1)
+
+	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+
+	// Output:
+	// [MyTable]
+	//   x   y   z
+	// int int int
+	//
+	// [YourTable]
+	//       a       b       c
+	// float32 float32 float32
+	//
+	// {
+	//   "MyTable": [
+	//     {
+	//       "x": "int"
+	//     },
+	//     {
+	//       "y": "int"
+	//     },
+	//     {
+	//       "z": "int"
+	//     }
+	//   ]
+	// }{
+	//   "MyTable": []
+	// }{
+	//   "YourTable": [
+	//     {
+	//       "a": "float32"
+	//     },
+	//     {
+	//       "b": "float32"
+	//     },
+	//     {
+	//       "c": "float32"
+	//     }
+	//   ]
+	// }{
+	//   "YourTable": []
+	// }
+	//
+	// [MyTable]
+	//   x   y   z
+	// int int int
+	//
+	// [YourTable]
+	//       a       b       c
+	// float32 float32 float32
 	//
 	// table2.Equals(table1) == true
 }
