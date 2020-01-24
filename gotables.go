@@ -900,6 +900,7 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 
 /*
 Return a missing value for a type. The only types that have a good enough missing value are float32 and float64 with NaN.
+NaN really actually is a value.
 */
 func missingValueForType(typeName string) (missingValue interface{}, hasMissing bool) {
 	switch typeName {
@@ -990,6 +991,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				var i64Val int64
 				var f32Val float32
 				var f64Val float64
+				var tableVal Table
 				buf.WriteString(horizontalSep)
 				switch table.colTypes[colIndex] {
 				case "string":
@@ -1040,6 +1042,13 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				case "float64":
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+				case "table":
+					tableVal = row[colIndex].(Table)
+					var tableName string = tableVal.Name()
+					// Write table name as [table_name].
+					buf.WriteByte(91) // Opening square bracket.
+					buf.WriteString(tableName)
+					buf.WriteByte(93) // Closing square bracket.
 				default:
 					log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n",
 						util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
@@ -1111,9 +1120,9 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					}
 					// Convert back to float so we can format it again in light of the maximum precision in the column.
 					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
-					// TODO: Remove this panic.
 					if err != nil {
-						panic(err)
+						_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s\n", util.FuncSource(), util.FuncName(), err))
+						return ""
 					}
 					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], bits)
 					//					width[col] = max(width[col], len(toWrite))
@@ -1198,12 +1207,6 @@ func (table *Table) StringPadded() string {
 	points := make([]int, colCount)
 	precis := make([]int, colCount)
 
-	/*
-		// Special case to align decimal points in float32 and float64.
-		widthBeforePoint := make([]int, colCount)
-		widthAfterPoint := make([]int, colCount)
-	*/
-
 	matrix := make([][]string, colCount)
 	for colIndex := 0; colIndex < colCount; colIndex++ {
 		matrix[colIndex] = make([]string, rowCountPlus2)
@@ -1252,6 +1255,7 @@ func (table *Table) StringPadded() string {
 			var i64Val int64
 			var f32Val float32
 			var f64Val float64
+			var tableVal Table
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
@@ -1314,6 +1318,9 @@ func (table *Table) StringPadded() string {
 				f64Val = row[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				setWidths(s, colIndex, prenum, points, precis, width)
+			case "table":
+				tableVal = row[colIndex].(Table)
+				s = fmt.Sprintf("[%s]", tableVal.Name())
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
@@ -2527,6 +2534,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var i64Val int64
 	var f32Val float32
 	var f64Val float64
+	var tableVal Table
 
 	var interfaceType interface{}
 	var err error
@@ -2593,6 +2601,13 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "float64":
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
+	case "table":
+		tableVal = interfaceType.(Table)
+		var tableName string = tableVal.Name()
+		// Write table name as [table_name].
+		buf.WriteByte(91) // Opening square bracket.
+		buf.WriteString(tableName)
+		buf.WriteByte(93) // Closing square bracket.
 	default:
 		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
 		return "", err
@@ -2812,6 +2827,9 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 		typeOfCol = reflect.TypeOf(float32(0))
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
+	case "table":
+		tableVal, _ := NewTable("anyName")
+		typeOfCol = reflect.TypeOf(tableVal)
 	default:
 		err = fmt.Errorf("%s ERROR IN %s(%q): unknown type: %s", util.FuncSource(), util.FuncName(), colType, table.colTypes[colIndex])
 		return nil, err
@@ -3331,6 +3349,8 @@ func zeroValue(typeName string) (interface{}, error) {
 		return uint8(0), nil
 	case "byte":
 		return byte(0), nil
+	case "table":
+		return "[]", nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.

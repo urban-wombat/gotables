@@ -294,7 +294,7 @@ func TestTable_SortZeroKeys(t *testing.T) {
 func TestTable_Sort(t *testing.T) {
 
 	unsortedString := `
-	[table]
+	[tbl]
 	i	b		s
 	int	bool	string
 	1	true	"Z"
@@ -311,7 +311,7 @@ func TestTable_Sort(t *testing.T) {
 	// fmt.Printf("%v\n", table)
 
 	expectedString := `
-	[table]
+	[tbl]
 	  i b     s
 	int bool  string
 	  6 false "U"
@@ -375,7 +375,7 @@ func TestTable_Sort(t *testing.T) {
 func TestTable_SortUnique(t *testing.T) {
 
 	unsortedString := `
-	[table]
+	[tbl]
 	KeyCol number   s
 	int float32 string
 	2   0       "two point two"
@@ -399,7 +399,7 @@ func TestTable_SortUnique(t *testing.T) {
 	// fmt.Printf("%v\n", table)
 
 	expectedString := `
-	[table]
+	[tbl]
 	KeyCol number   s
 	int float32 string
      1     1.1 "one point one"

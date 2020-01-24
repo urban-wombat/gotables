@@ -2038,7 +2038,7 @@ func BenchmarkNewTableSetFromFile(b *testing.B) {
 
 func TestIsNumericColType(t *testing.T) {
 	tableString := `
-    [table]
+    [tbl]
 	F_bool    bool
 	F_string  string
 	F__byte   []byte
@@ -2063,7 +2063,7 @@ func TestIsNumericColType(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("table")
+	table, err := tableSet.Table("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2167,7 +2167,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 
 func TestColCount(t *testing.T) {
 	tableString := `
-    [table]
+    [tbl]
 	F_bool bool
 	F_string string
 	T_float32 float32
@@ -2189,7 +2189,7 @@ func TestColCount(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("table")
+	table, err := tableSet.Table("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2262,7 +2262,7 @@ func TestDeleteCol(t *testing.T) {
 	// Note: the table must have at least 1 row of data to fully
 	//       test DeleteCol(). Column of row cells must be deleted too.
 	tableString := `
-    [table]
+    [tbl]
 	F_bool bool = true
 	F_string string = "yes"
 	T_float32 float32 = 33.3
@@ -2287,7 +2287,7 @@ func TestDeleteCol(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("table")
+	table, err := tableSet.Table("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2310,7 +2310,7 @@ func TestDeleteCol(t *testing.T) {
 
 func TestDeleteRow(t *testing.T) {
 	tableString := `
-	[table]
+	[tbl]
 	item
 	int
 	0
@@ -2836,7 +2836,7 @@ func ExampleTable_JoinColValsByColIndex() {
 
 func TestGetValAsString(t *testing.T) {
 	tableString := `
-	[table]
+	[tbl]
 	s string = "Fred"
 	t bool = true
 	i int = 23
@@ -2893,7 +2893,7 @@ func TestGetValAsString(t *testing.T) {
 
 func TestTableSet_FileName(t *testing.T) {
 	tableString := `
-		[table]
+		[tbl]
 		s string = "Fred"
 		t bool = true
 		i int = 23

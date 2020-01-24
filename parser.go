@@ -199,6 +199,8 @@ var globalColTypesMap = map[string]int{
 	"uint32":  0,
 	"uint64":  0,
 	"uint8":   0,
+	"complex": 0,	// Not yet implemented.
+	"table":   0,
 }
 
 var globalNumericColTypesMap = map[string]int{
@@ -215,6 +217,7 @@ var globalNumericColTypesMap = map[string]int{
 	"uint64":  0,
 	"uint8":   0,
 	"byte":    0,
+	"complex": 0,	// Not yet implemented.
 }
 
 const structNameIndex = 0
@@ -763,14 +766,6 @@ func IsValidTableName(tableName string) (bool, error) {
 		return false, errors.New("invalid table name has zero length")
 	}
 
-	/*
-		// Same regular expression as table name without square brackets.
-		result := colNameRegexp.MatchString(tableName)
-		if !result {
-			return false, fmt.Errorf("invalid table name: %q (valid example: \"_Foo1Bar2\")", tableName)
-		}
-	*/
-
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(tableName)
 	if !isValid {
@@ -779,7 +774,7 @@ func IsValidTableName(tableName string) (bool, error) {
 
 	_, contains := globalColTypesMap[tableName]
 	if contains {
-		return false, fmt.Errorf("invalid table name: %s (cannot use Go types as table names)", tableName)
+		return false, fmt.Errorf("invalid table name: %s (cannot use a Go type or 'table' as a table name)", tableName)
 	}
 
 	return true, nil
@@ -812,6 +807,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 	var int64Val int64
 	var float32Val float32
 	var float64Val float64
+	var tableVal *Table
 
 	for i = 0; i < lenColTypes; i++ {
 		if len(remaining) == 0 { // End of line
@@ -1149,6 +1145,21 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowSlice[i] = float64Val
+		case "table":
+			rangeFound = tableNameRegexp.FindStringIndex(remaining)
+			if rangeFound == nil {
+				return nil, fmt.Errorf("%s expecting a valid place-holder value of [%s] but found: %s",
+					p.gotFilePos(), colTypes[i], remaining)
+			}
+			textFound = remaining[rangeFound[0]:rangeFound[1]]
+			// tableNameRegexp matches to [name] therefore Trim() will work safely.
+			var tableName string = strings.Trim(textFound, "[]")
+			tableVal, err = NewTable(tableName)
+			if err != nil {
+				return nil, fmt.Errorf("%s expecting a valid table name in the form [name] but found: %s",
+					p.gotFilePos(), remaining)
+			}
+			rowSlice[i] = tableVal
 		default:
 			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
