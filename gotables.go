@@ -991,7 +991,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				var i64Val int64
 				var f32Val float32
 				var f64Val float64
-				var tableVal Table
+				var tableVal *Table
 				buf.WriteString(horizontalSep)
 				switch table.colTypes[colIndex] {
 				case "string":
@@ -1043,7 +1043,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 				case "table":
-					tableVal = row[colIndex].(Table)
+					tableVal = row[colIndex].(*Table)
 					var tableName string = tableVal.Name()
 					// Write table name as [table_name].
 					buf.WriteByte(91) // Opening square bracket.
@@ -1255,7 +1255,7 @@ func (table *Table) StringPadded() string {
 			var i64Val int64
 			var f32Val float32
 			var f64Val float64
-			var tableVal Table
+			var tableVal *Table
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
@@ -1319,7 +1319,7 @@ func (table *Table) StringPadded() string {
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				setWidths(s, colIndex, prenum, points, precis, width)
 			case "table":
-				tableVal = row[colIndex].(Table)
+				tableVal = row[colIndex].(*Table)
 				s = fmt.Sprintf("[%s]", tableVal.Name())
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
@@ -2534,7 +2534,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var i64Val int64
 	var f32Val float32
 	var f64Val float64
-	var tableVal Table
+	var tableVal *Table
 
 	var interfaceType interface{}
 	var err error
@@ -2602,7 +2602,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	case "table":
-		tableVal = interfaceType.(Table)
+		tableVal = interfaceType.(*Table)
 		var tableName string = tableVal.Name()
 		// Write table name as [table_name].
 		buf.WriteByte(91) // Opening square bracket.

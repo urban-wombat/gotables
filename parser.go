@@ -56,6 +56,7 @@ SOFTWARE.
 const go_1_13_number_literals = true
 
 func init() {
+	// Note: map items need to go both ways.
 	typeAliasMap = map[string]string{
 		"uint8":   "byte",
 		"byte":    "uint8",
@@ -64,6 +65,8 @@ func init() {
 		"int32":   "rune",
 		"rune":    "int32",
 		//		"[]int32" : "[]rune",	// Proposed?
+		"table":   "*gotables.Table",
+		"*gotables.Table": "table",
 	}
 
 	if go_1_13_number_literals {
@@ -858,21 +861,15 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			rowSlice[i] = uint8Val
 		case "[]uint8":
 			// Go stores byte as uint8, so there's no need to process byte differently. ???
-			//where(fmt.Sprintf("remaining: %q", remaining))
 			rangeFound = uintSliceRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				//where("return nil")
 				return nil, fmt.Errorf("%s expecting a valid value of type %s but found: %s", p.gotFilePos(), colTypes[i], remaining)
 			}
 			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			//where(fmt.Sprintf("textFound: %q", textFound))
 			var sliceString string = textFound[1 : len(textFound)-1] // Strip off leading and trailing [] slice delimiters.
-			//where(fmt.Sprintf("sliceString: %q", sliceString))
 			var sliceStringSplit []string = splitSliceString(sliceString)
 			uint8SliceVal = make([]uint8, len(sliceStringSplit))
 			for el := 0; el < len(sliceStringSplit); el++ {
-				//where("---")
-				//				uint64Val, err = strconv.ParseUint(sliceStringSplit[el], _DEC, _BITS_8)
 				if go_1_13_number_literals {
 					uint64Val, err = parseUint(sliceStringSplit[el], _BITS_8)
 				} else {
@@ -1141,7 +1138,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 				return nil, fmt.Errorf("%s %s for type %s", p.gotFilePos(), err, colTypes[i])
 			}
 			if math.IsNaN(float64Val) && textFound != "NaN" {
-				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s ",
+				return nil, fmt.Errorf("%s col %s: expecting NaN as Not-a-Number for type %s but found: %s",
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowSlice[i] = float64Val
