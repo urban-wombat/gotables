@@ -260,6 +260,7 @@ Returns a set of parsable tables with format right-aligned (numbers) as a string
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 	return tableSet.StringPadded()
@@ -268,6 +269,7 @@ func (tableSet *TableSet) String() string {
 func (tableSet *TableSet) StringPadded() string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 	var verticalSep string = ""
@@ -291,6 +293,7 @@ func (tableSet *TableSet) StringPadded() string {
 func (tableSet *TableSet) StringUnpadded() string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -302,6 +305,7 @@ func (tableSet *TableSet) StringUnpadded() string {
 func (tableSet *TableSet) _String(horizontalSeparator byte) string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -324,6 +328,7 @@ func (tableSet *TableSet) _String(horizontalSeparator byte) string {
 func (tableSet *TableSet) Name() string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -333,6 +338,7 @@ func (tableSet *TableSet) Name() string {
 func (tableSet *TableSet) SetName(tableSetName string) {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return
 	}
 
@@ -343,6 +349,7 @@ func (tableSet *TableSet) SetName(tableSetName string) {
 func (tableSet *TableSet) FileName() string {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -352,6 +359,7 @@ func (tableSet *TableSet) FileName() string {
 func (tableSet *TableSet) SetFileName(fileName string) {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return
 	}
 
@@ -361,6 +369,7 @@ func (tableSet *TableSet) SetFileName(fileName string) {
 func (tableSet *TableSet) TableCount() int {
 	if tableSet == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return -1
 	}
 
@@ -458,6 +467,7 @@ type TableExported struct {
 func (table *Table) getColTypes() []string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return nil
 	}
 	return table.colTypes
@@ -916,6 +926,7 @@ func (table *Table) StringUnpadded() string {
 
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -929,6 +940,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 	const tabForTabwriter = '\t'
@@ -1122,6 +1134,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
 					if err != nil {
 						_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s\n", util.FuncSource(), util.FuncName(), err))
+						util.PrintCaller()
 						return ""
 					}
 					toWrite = strconv.FormatFloat(float64Val, 'f', precis[col], bits)
@@ -1164,6 +1177,7 @@ Return a parsable table as a string with numbers format aligned right.
 func (table *Table) String() string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -1177,6 +1191,7 @@ func (table *Table) StringPadded() string {
 
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 
@@ -1320,7 +1335,11 @@ func (table *Table) StringPadded() string {
 				setWidths(s, colIndex, prenum, points, precis, width)
 			case "table":
 				tableVal = row[colIndex].(*Table)
-				s = fmt.Sprintf("[%s]", tableVal.Name())
+				if tableVal != nil {
+					s = fmt.Sprintf("[%s]", tableVal.Name())
+				} else {
+					s = "[]"
+				}
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", util.FuncSource(), util.FuncName(), table.colTypes[colIndex])
@@ -1365,6 +1384,7 @@ func (table *Table) StringPadded() string {
 func printStruct(table *Table) string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 	}
 
 	var err error
@@ -1380,6 +1400,7 @@ func printStruct(table *Table) string {
 			asString, err = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
 			if err != nil {
 				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: %s: %s\n", util.FuncSource(), util.FuncName(), err))
+				util.PrintCaller()
 			}
 
 			switch table.colTypes[colIndex] {
@@ -1924,6 +1945,7 @@ func (table *Table) lastRowIndex() (int, error) {
 func (table *Table) Name() string {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return ""
 	}
 	return table.tableName
@@ -1932,6 +1954,7 @@ func (table *Table) Name() string {
 func (table *Table) ColCount() int {
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", util.FuncSource(), util.FuncName()))
+		util.PrintCaller()
 		return -1
 	}
 
@@ -2603,7 +2626,12 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
 	case "table":
 		tableVal = interfaceType.(*Table)
-		var tableName string = tableVal.Name()
+		var tableName string
+		if tableVal != nil {
+			tableName = tableVal.Name()
+		} else {
+			tableName = ""	// Square brackets applied below.
+		}
 		// Write table name as [table_name].
 		buf.WriteByte(91) // Opening square bracket.
 		buf.WriteString(tableName)

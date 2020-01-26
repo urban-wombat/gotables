@@ -33,8 +33,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Note: Leading lowercase in table is required for it to be recognised as an Example!
-func ExampleNewTableFromString_table() {
+// Note: Leading lowercase in 'cellTableInStruct' is required for it to be recognised as an Example!
+func ExampleNewTableFromString_cellTableInStruct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
@@ -73,4 +73,52 @@ func ExampleNewTableFromString_table() {
 	// MyBool MyString                                                        MyInt myTable
 	// bool   string                                                            int table
 	// true   "The answer to life, the universe and everything is forty-two."    42 [cellTable]
+}
+
+// Note: Leading lowercase in table is required for it to be recognised as an Example!
+func ExampleNewTableFromString_cellTableInStructSetToNil() {
+	// A table literal. Sometimes easier than constructing a table programmatically.
+	tableString := `[MyTable]
+		MyBool bool = true
+		MyString string = "The answer to life, the universe and everything is forty-two."
+		MyInt int = 42
+		myTable table = [cellTable]
+		`
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var nilTable *Table = nil
+	err = table.SetVal("myTable", 0, nilTable)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Print the table in its original struct shape.
+	fmt.Println(table)
+
+	// Now change its shape to tabular.
+	err = table.SetStructShape(false)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// The table is now printed as a single row of data.
+	fmt.Println(table)
+
+	// Note: The struct/tabular shape is for readability and has no impact on its internal structure.
+
+	// Output:
+	// [MyTable]
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything is forty-two."
+	// MyInt int = 42
+	// myTable table = []
+	//
+	// [MyTable]
+	// MyBool MyString                                                        MyInt myTable
+	// bool   string                                                            int table
+	// true   "The answer to life, the universe and everything is forty-two."    42 []
 }
