@@ -65,8 +65,8 @@ func init() {
 		"int32":   "rune",
 		"rune":    "int32",
 		//		"[]int32" : "[]rune",	// Proposed?
-		"table":   "*gotables.Table",
-		"*gotables.Table": "table",
+		"*Table":   "*gotables.Table",
+		"*gotables.Table": "*Table",
 	}
 
 	if go_1_13_number_literals {
@@ -203,7 +203,7 @@ var globalColTypesMap = map[string]int{
 	"uint64":  0,
 	"uint8":   0,
 	"complex": 0,	// Not yet implemented.
-	"table":   0,
+	"*Table":   0,
 }
 
 var globalNumericColTypesMap = map[string]int{
@@ -777,7 +777,7 @@ func IsValidTableName(tableName string) (bool, error) {
 
 	_, contains := globalColTypesMap[tableName]
 	if contains {
-		return false, fmt.Errorf("invalid table name: %s (cannot use a Go type or 'table' as a table name)", tableName)
+		return false, fmt.Errorf("invalid table name: %s (cannot use a Go type or '*Table' as a table name)", tableName)
 	}
 
 	return true, nil
@@ -1142,7 +1142,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowSlice[i] = float64Val
-		case "table":
+		case "*Table":
 			rangeFound = tableNameRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				return nil, fmt.Errorf("%s expecting a valid place-holder value of [%s] but found: %s",
@@ -1158,7 +1158,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			}
 			rowSlice[i] = tableVal
 		default:
-			log.Printf("Unreachable code in getRowCol()") // Need to define another type?
+			log.Printf("Managed to reach unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
 		}
 		remaining = remaining[rangeFound[1]:]

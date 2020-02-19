@@ -40,7 +40,7 @@ func ExampleNewTableFromString_cellTableInStruct() {
 		MyBool bool = true
 		MyString string = "The answer to life, the universe and everything is forty-two."
 		MyInt int = 42
-		myTable table = [cellTable]
+		MyTable *Table = [CellTable]
 		`
 
 	table, err := NewTableFromString(tableString)
@@ -67,12 +67,12 @@ func ExampleNewTableFromString_cellTableInStruct() {
 	// MyBool bool = true
 	// MyString string = "The answer to life, the universe and everything is forty-two."
 	// MyInt int = 42
-	// myTable table = [cellTable]
+	// MyTable *Table = [CellTable]
 	//
 	// [MyTable]
-	// MyBool MyString                                                        MyInt myTable
-	// bool   string                                                            int table
-	// true   "The answer to life, the universe and everything is forty-two."    42 [cellTable]
+	// MyBool MyString                                                        MyInt MyTable
+	// bool   string                                                            int *Table
+	// true   "The answer to life, the universe and everything is forty-two."    42 [CellTable]
 }
 
 // Note: Leading lowercase in table is required for it to be recognised as an Example!
@@ -82,7 +82,7 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 		MyBool bool = true
 		MyString string = "The answer to life, the universe and everything is forty-two."
 		MyInt int = 42
-		myTable table = [cellTable]
+		MyTable *Table = [CellTable]
 		`
 
 	table, err := NewTableFromString(tableString)
@@ -91,7 +91,7 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	}
 
 	var nilTable *Table = nil
-	err = table.SetVal("myTable", 0, nilTable)
+	err = table.SetVal("MyTable", 0, nilTable)
 	if err != nil {
 		log.Println(err)
 	}
@@ -115,10 +115,10 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	// MyBool bool = true
 	// MyString string = "The answer to life, the universe and everything is forty-two."
 	// MyInt int = 42
-	// myTable table = []
+	// MyTable *Table = []
 	//
 	// [MyTable]
-	// MyBool MyString                                                        MyInt myTable
-	// bool   string                                                            int table
+	// MyBool MyString                                                        MyInt MyTable
+	// bool   string                                                            int *Table
 	// true   "The answer to life, the universe and everything is forty-two."    42 []
 }

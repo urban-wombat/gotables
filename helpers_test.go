@@ -13,7 +13,7 @@ import (
 )
 
 /*
-Copyright (c) 2017-2019 Malcolm Gorman
+Copyright (c) 2017-2020 Malcolm Gorman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ SOFTWARE.
 */
 
 //	-----------------------------------------------------------------------
-//	next group: TestSet<type>() TestGet<type>() functions for each of 18 types.
+//	next group: TestSet<type>() TestGet<type>() functions for each of 19 types.
 //	-----------------------------------------------------------------------
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []byte
@@ -920,8 +920,57 @@ func TestSetAndGetUint8(t *testing.T) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue *Table
+func TestSetAndGetTable(t *testing.T) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const rowIndex = 0
+
+	for _, test := range tests {
+
+		err = table.SetTable(colName, rowIndex, test.expected)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		value, err := table.GetTable(colName, rowIndex)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if value != test.expected {
+			t.Fatalf("expecting GetTable() value %v, not %v", test.expected, value)
+		}
+	}
+}
+
 //	--------------------------------------------------------------------------------
-//	next group: TestSet<type>ByColIndex() TestGet<type>ByColIndex() functions for each of 18 types.
+//	next group: TestSet<type>ByColIndex() TestGet<type>ByColIndex() functions for each of 19 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
@@ -1806,9 +1855,58 @@ func TestHelperSetAndGetUint8ByColIndex(t *testing.T) {
 	}
 }
 
+//	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+func TestHelperSetAndGetTableByColIndex(t *testing.T) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const colIndex = 0
+	const rowIndex = 0
+
+	for _, test := range tests {
+		err = table.SetTableByColIndex(colIndex, rowIndex, test.expected)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		value, err := table.GetTableByColIndex(colIndex, rowIndex)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if value != test.expected {
+			t.Fatalf("expecting GetTableByColIndex() value %v, not %v", test.expected, value)
+		}
+	}
+}
+
 //	-----------------------------------------------------------------------
 //	bench test
-//	next group: BenchMarkHelpersSet<type>() functions for each of 18 types.
+//	next group: BenchMarkHelpersSet<type>() functions for each of 19 types.
 //	-----------------------------------------------------------------------
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []byte
@@ -2603,9 +2701,53 @@ func BenchmarkHelperSetUint8(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue *Table
+func BenchmarkHelperSetTable(b *testing.B) {
+
+	// See: TestSet<type>() functions
+
+	// Set up for benchmark.
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		b.Error(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const rowIndex = 0
+
+	for i := 0; i < b.N; i++ {
+		for _, test := range tests {
+
+			err = table.SetTable(colName, rowIndex, test.expected)
+			if err != nil {
+				b.Error(err)
+			}
+		}
+	}
+}
+
 //	--------------------------------------------------------------------------------
 //	bench test
-//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 18 types.
+//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 19 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
@@ -3508,9 +3650,59 @@ func BenchmarkHelperSetAndGetUint8ByColIndex(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+func BenchmarkHelperSetAndGetTableByColIndex(b *testing.B) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		b.Error(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const colIndex = 0
+	const rowIndex = 0
+
+	for i := 0; i < b.N; i++ {
+		for _, test := range tests {
+			err = table.SetTableByColIndex(colIndex, rowIndex, test.expected)
+			if err != nil {
+				b.Error(err)
+			}
+
+			value, err := table.GetTableByColIndex(colIndex, rowIndex)
+			if err != nil {
+				b.Error(err)
+			}
+			if value != test.expected {
+				b.Errorf("expecting GetTableByColIndex() value %v, not %v", test.expected, value)
+			}
+		}
+	}
+}
+
 //	--------------------------------------------------------------------------------
 //	bench test
-//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 18 types.
+//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 19 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
@@ -4262,6 +4454,48 @@ func BenchmarkHelperSetUint8ByColIndex(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, test := range tests {
 			err = table.SetUint8ByColIndex(colIndex, rowIndex, test.expected)
+			if err != nil {
+				b.Error(err)
+			}
+		}
+	}
+}
+
+//	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+func BenchmarkHelperSetTableByColIndex(b *testing.B) {
+
+	// See: TestSet<type>() functions
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		b.Error(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const colIndex = 0
+	const rowIndex = 0
+
+	for i := 0; i < b.N; i++ {
+		for _, test := range tests {
+			err = table.SetTableByColIndex(colIndex, rowIndex, test.expected)
 			if err != nil {
 				b.Error(err)
 			}
@@ -5223,6 +5457,59 @@ func BenchmarkHelperSetAndGetUint8(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue *Table
+func BenchmarkHelperSetAndGetTable(b *testing.B) {
+
+	// See: TestSet<type>() functions
+
+	// Set up for benchmark.
+
+	const colName string = "TableValue"
+
+	table, err := NewTable("SetAndGet")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		b.Error(err)
+	}
+
+	err = table.AppendRow()
+	if err != nil {
+		b.Error(err)
+	}
+
+	var tests = []struct {
+		expected *Table
+	}{
+		{NewNilTable()},
+		{NewNilTable()},
+	}
+
+	const rowIndex = 0
+
+	for i := 0; i < b.N; i++ {
+		for _, test := range tests {
+
+			err = table.SetTable(colName, rowIndex, test.expected)
+			if err != nil {
+				b.Error(err)
+			}
+
+			value, err := table.GetTable(colName, rowIndex)
+			if err != nil {
+				b.Error(err)
+			}
+
+			if value != test.expected {
+				b.Errorf("expecting GetTable() value %v, not %v", test.expected, value)
+			}
+		}
+	}
+}
+
 //	Test GetByteSliceMustGet()
 //  Test that the method panics on error.
 func TestGetByteSliceMustGet(t *testing.T) {
@@ -5232,7 +5519,7 @@ func TestGetByteSliceMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5304,7 +5591,7 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5376,7 +5663,7 @@ func TestGetBoolMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5445,7 +5732,7 @@ func TestGetByteMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5514,7 +5801,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5583,7 +5870,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5652,7 +5939,7 @@ func TestGetIntMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5721,7 +6008,7 @@ func TestGetInt16MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5790,7 +6077,7 @@ func TestGetInt32MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5859,7 +6146,7 @@ func TestGetInt64MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5928,7 +6215,7 @@ func TestGetInt8MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -5997,7 +6284,7 @@ func TestGetRuneMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6066,7 +6353,7 @@ func TestGetStringMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6135,7 +6422,7 @@ func TestGetUintMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6204,7 +6491,7 @@ func TestGetUint16MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6273,7 +6560,7 @@ func TestGetUint32MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6342,7 +6629,7 @@ func TestGetUint64MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6411,7 +6698,7 @@ func TestGetUint8MustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6471,6 +6758,75 @@ func TestGetUint8MustGet(t *testing.T) {
 	table.GetUint8MustGet(colName, minusIndex)
 }
 
+//	Test GetTableMustGet()
+//  Test that the method panics on error.
+func TestGetTableMustGet(t *testing.T) {
+
+	// See: TestGet<type>MustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("MyTable")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var colName string = "MyCol"
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = nonZeroValue("*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.SetTable(colName, 0, expecting.(*Table))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var got *Table
+	got = table.GetTableMustGet(colName, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Fatalf("func TestGetTableMustGet(%q, 0) expecting %v, but got %v", colName, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatalf("func TestGetTableMustGet(%q, %d) expecting panic(), but didn't panic()", colName, minusIndex)
+		}
+	}()
+
+	table.GetTableMustGet(colName, minusIndex)
+}
+
 //	Test GetByteSliceByColIndexMustGet()
 //  Test that the method panics on error.
 func TestGetByteSliceByColIndexMustGet(t *testing.T) {
@@ -6480,7 +6836,7 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6553,7 +6909,7 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6626,7 +6982,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6696,7 +7052,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6766,7 +7122,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6836,7 +7192,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6906,7 +7262,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -6976,7 +7332,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7046,7 +7402,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7116,7 +7472,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7186,7 +7542,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7256,7 +7612,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7326,7 +7682,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7396,7 +7752,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7466,7 +7822,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7536,7 +7892,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7606,7 +7962,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7676,7 +8032,7 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	var err error
 	var table *Table
 
-	table, err = NewTable("Table")
+	table, err = NewTable("MyTable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -7735,4 +8091,74 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 	}()
 
 	table.GetUint8ByColIndexMustGet(colIndex, minusIndex)
+}
+
+//	Test GetTableByColIndexMustGet()
+//  Test that the method panics on error.
+func TestGetTableByColIndexMustGet(t *testing.T) {
+
+	// See: TestGet<type>ByColIndexMustGet() functions
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("MyTable")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var colName string = "MyCol"
+	var colIndex int = 0
+	err = table.AppendCol(colName, "*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table.AppendRows(1)
+
+	// Test a simple get.
+
+	var expecting interface{}
+	expecting, err = nonZeroValue("*Table")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.SetTableByColIndex(colIndex, 0, expecting.(*Table))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var got *Table
+	got = table.GetTableByColIndexMustGet(colIndex, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var matches bool
+	matches = (expecting == got)
+
+	//	where(table)
+	//	where(fmt.Sprintf("got == expecting = %t", matches))
+
+	if !matches {
+		t.Fatalf("func TestGetTableByColIndexMustGet(%d, 0) expecting %v, but got %v", colIndex, expecting, got)
+	}
+
+	// Test that the method panics with an invalid argument.
+
+	const minusIndex = -1 // Will trigger error, therefore panic.
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatalf("func TestGetTableByColIndexMustGet(0, %d) expecting panic(), but didn't panic()", minusIndex)
+		}
+	}()
+
+	table.GetTableByColIndexMustGet(colIndex, minusIndex)
 }

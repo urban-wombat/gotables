@@ -11,7 +11,7 @@ import (
 )
 
 /*
-Copyright (c) 2017-2019 Malcolm Gorman
+Copyright (c) 2017-2020 Malcolm Gorman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,8 @@ SOFTWARE.
 // Types are defined in helpersmain.go
 
 //	------------------------------------------------------------------
-//	next group: Set<type>() functions for each of 18 types.
+//	next group: Set<type>() functions for each of 19 types.
+//  NOTE: Types are defined in helpersmain.go
 //	------------------------------------------------------------------
 
 //	Set table cell in colName at rowIndex to newVal []byte
@@ -812,8 +813,51 @@ func (table *Table) SetUint8(colName string, rowIndex int, newVal uint8) error {
 	return nil
 }
 
+//	Set table cell in colName at rowIndex to newVal *Table
+func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error {
+
+	// See: Set<type>() functions
+
+	var err error
+
+	if table == nil {
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
+	}
+
+	const valType string = "*Table"
+
+	colType, err := table.ColType(colName)
+	if err != nil {
+		return err
+	}
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %s expecting val of type %s, not type %s: %v",
+				util.FuncName(), table.Name(), colName, colType, valType, newVal)
+		}
+	}
+
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return err
+	}
+
+	// Note: hasCol was checked by ColType() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return err
+	}
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average 30% speedup.
+	table.rows[rowIndex][colIndex] = newVal
+
+	return nil
+}
+
 //	----------------------------------------------------------------------------
-//	next group: Set<type>ByColIndex() functions for each of 18 types.
+//	next group: Set<type>ByColIndex() functions for each of 19 types.
 //	----------------------------------------------------------------------------
 
 //	Set table cell in colIndex at rowIndex to newVal []byte
@@ -1518,8 +1562,47 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 	return nil
 }
 
+//	Set table cell in colIndex at rowIndex to newVal *Table
+func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table) error {
+
+	// See: Set<type>ByColIndex() functions
+
+	var err error
+
+	if table == nil {
+		return fmt.Errorf("table.%s: table is <nil>", util.FuncName())
+	}
+
+	const valType string = "*Table"
+
+	/*
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil { return err }
+	*/
+	colType := table.colTypes[colIndex]
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				util.FuncName(), table.Name(), colIndex, colType, valType, newVal)
+		}
+	}
+
+	// Note: hasCol was checked by ColTypeByColIndex() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return err
+	}
+
+	// Set the newVal
+	// Note: This essentially inlines SetValByColIndex(): an average 5 times speedup.
+	table.rows[rowIndex][colIndex] = newVal
+
+	return nil
+}
+
 //	------------------------------------------------------------------
-//	next group: Get<type>() functions for each of 18 types.
+//	next group: Get<type>() functions for each of 19 types.
 //	------------------------------------------------------------------
 
 //	Get []byte table cell from colName at rowIndex
@@ -2260,6 +2343,47 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 	return
 }
 
+//	Get *Table table cell from colName at rowIndex
+func (table *Table) GetTable(colName string, rowIndex int) (val *Table, err error) {
+
+	// See: Get<type>() functions
+
+	if table == nil {
+		return val, fmt.Errorf("table.%s: table is <nil>", util.FuncName())
+	}
+
+	const valType string = "*Table"
+
+	colType, err := table.ColType(colName)
+	if err != nil {
+		return val, err
+	}
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
+				util.FuncName(), table.Name(), colName, colType)
+		}
+	}
+
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return val, err
+	}
+
+	// Note: hasCol was checked by ColType() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return val, err
+	}
+
+	// Get the val
+	// Note: This essentially inlines GetVal(): an average 15% speedup.
+	val = table.rows[rowIndex][colIndex].(*Table)
+
+	return
+}
+
 /*	Get []byte table cell from colName at rowIndex
 
 	Like its non-MustGet alternative but panics on error.
@@ -2476,8 +2600,20 @@ func (table *Table) GetUint8MustGet(colName string, rowIndex int) (val uint8) {
 	return val
 }
 
+/*	Get *Table table cell from colName at rowIndex
+
+	Like its non-MustGet alternative but panics on error.
+*/
+func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
+	val, err := table.GetTable(colName, rowIndex)
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
 //	----------------------------------------------------------------------------
-//	next group: Get<type>ByColIndex() functions for each of 18 types.
+//	next group: Get<type>ByColIndex() functions for each of 19 types.
 //	----------------------------------------------------------------------------
 
 //  Get []byte table cell from colIndex at rowIndex
@@ -3146,6 +3282,43 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 	return
 }
 
+//  Get *Table table cell from colIndex at rowIndex
+func (table *Table) GetTableByColIndex(colIndex int, rowIndex int) (val *Table, err error) {
+
+	// See: Get<type>ByColIndex() functions
+
+	if table == nil {
+		err = fmt.Errorf("table.%s: table is <nil>", util.FuncName())
+		return
+	}
+
+	const valType string = "*Table"
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil {
+		return val, err
+	}
+
+	if valType != colType {
+		if !isAlias(colType, valType) {
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
+				util.FuncName(), table.Name(), colIndex, colType)
+		}
+	}
+
+	// Note: hasCol was checked by ColType() above. No need to call HasCell()
+	hasRow, err := table.HasRow(rowIndex)
+	if !hasRow {
+		return val, err
+	}
+
+	// Get the val
+	// Note: This essentially inlines GetVal(): an average 25% speedup.
+	val = table.rows[rowIndex][colIndex].(*Table)
+
+	return
+}
+
 /*  Get []byte table cell from colIndex at rowIndex
 
 Like its non-MustGet alternative but panics on error.
@@ -3362,6 +3535,18 @@ func (table *Table) GetUint8ByColIndexMustGet(colIndex int, rowIndex int) (val u
 	return val
 }
 
+/*  Get *Table table cell from colIndex at rowIndex
+
+Like its non-MustGet alternative but panics on error.
+*/
+func (table *Table) GetTableByColIndexMustGet(colIndex int, rowIndex int) (val *Table) {
+	val, err := table.GetTableByColIndex(colIndex, rowIndex)
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
 /*
 func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int) error {
 // This is the MUCH SLOWER previous version. Is there any safety advantage in using it? Perhaps not.
@@ -3414,6 +3599,8 @@ func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int
 			err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
 		case "uint8":
 			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
+		case "*Table":
+			err = table.SetTableByColIndex(colIndex, rowIndex, NewNilTable())
 		default:
 			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
@@ -3451,6 +3638,7 @@ type zeroVals struct {
 	uint32Val     uint32
 	uint64Val     uint64
 	uint8Val      uint8
+	tableVal      *Table
 }
 
 var zeroVal zeroVals
@@ -3475,6 +3663,7 @@ func init() {
 	zeroVal.uint32Val = 0
 	zeroVal.uint64Val = 0
 	zeroVal.uint8Val = 0
+	zeroVal.tableVal = NewNilTable()
 }
 
 func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
@@ -3540,8 +3729,11 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 	case "uint8":
 		// This is a x10 tuning strategy to avoid type conversion uint8(0)
 		table.rows[rowIndex][colIndex] = zeroVal.uint8Val
+	case "*Table":
+		// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
+		table.rows[rowIndex][colIndex] = zeroVal.tableVal
 	default:
-		//			return fmt.Errorf("invalid type: %s", "uint8")
+		//			return fmt.Errorf("invalid type: %s", "*Table")
 		// User-defined interface type.
 		table.rows[rowIndex][colIndex] = nil
 	}
@@ -3612,8 +3804,11 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 		case "uint8":
 			// This is a x10 tuning strategy to avoid type conversion uint8(0)
 			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
+		case "*Table":
+			// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
+			table.rows[rowIndex][colIndex] = zeroVal.tableVal
 		default:
-			//				return fmt.Errorf("invalid type: %s", "uint8")
+			//				return fmt.Errorf("invalid type: %s", "*Table")
 			// User-defined interface type.
 			table.rows[rowIndex][colIndex] = nil
 		}

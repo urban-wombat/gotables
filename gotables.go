@@ -486,8 +486,10 @@ type tableRow []interface{}
 	}
 */
 func NewTable(tableName string) (*Table, error) {
+/*
 	var err error
 	var newTable *Table = new(Table)
+
 	err = newTable.SetName(tableName)
 	if err != nil {
 		return nil, err
@@ -496,8 +498,47 @@ func NewTable(tableName string) (*Table, error) {
 	newTable.colTypes = []string{}
 	newTable.colNamesMap = map[string]int{}
 	newTable.rows = []tableRow{}
+*/
+
+	var newTable *Table = NewNilTable()
+
+	err := newTable.SetName(tableName)
+	if err != nil {
+		return nil, err
+	}
 
 	return newTable, nil
+}
+
+// For testing. Does not return error. Panics on error.
+func newNonZeroTable(tableName string) *Table {
+	var newTable *Table = NewNilTable()
+
+	err := newTable.SetName(tableName)
+	if err != nil {
+		panic(err)
+	}
+
+	return newTable
+}
+
+// Factory function to generate a nil *Table pointer.
+/*
+	var myTable *gotables.Table
+	myTable = gotables.NewNilTable()
+	if err != nil {
+		panic(err)
+	}
+*/
+func NewNilTable() *Table {
+	var newTable *Table = new(Table)
+
+	newTable.colNames = []string{}
+	newTable.colTypes = []string{}
+	newTable.colNamesMap = map[string]int{}
+	newTable.rows = []tableRow{}
+
+	return newTable
 }
 
 func newTableExported(tableName string) (*TableExported, error) {
@@ -1054,7 +1095,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				case "float64":
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
-				case "table":
+				case "*Table":
 					tableVal = row[colIndex].(*Table)
 					var tableName string = tableVal.Name()
 					// Write table name as [table_name].
@@ -1333,7 +1374,7 @@ func (table *Table) StringPadded() string {
 				f64Val = row[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				setWidths(s, colIndex, prenum, points, precis, width)
-			case "table":
+			case "*Table":
 				tableVal = row[colIndex].(*Table)
 				if tableVal != nil {
 					s = fmt.Sprintf("[%s]", tableVal.Name())
@@ -2624,7 +2665,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "float64":
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
-	case "table":
+	case "*Table":
 		tableVal = interfaceType.(*Table)
 		var tableName string
 		if tableVal != nil {
@@ -2855,7 +2896,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 		typeOfCol = reflect.TypeOf(float32(0))
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
-	case "table":
+	case "*Table":
 		tableVal, _ := NewTable("anyName")
 		typeOfCol = reflect.TypeOf(tableVal)
 	default:
@@ -3377,7 +3418,7 @@ func zeroValue(typeName string) (interface{}, error) {
 		return uint8(0), nil
 	case "byte":
 		return byte(0), nil
-	case "table":
+	case "*Table":
 		return "[]", nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
@@ -3430,6 +3471,8 @@ func nonZeroValue(typeName string) (interface{}, error) {
 		return uint8(1), nil
 	case "byte":
 		return byte(1), nil
+	case "*Table":
+		return newNonZeroTable("nonZeroTable"), nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
