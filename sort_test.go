@@ -1370,7 +1370,7 @@ func Test_Search(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s\n", util.FuncName())
+		// fmt.Printf("%s\n", UtilFuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int
@@ -1436,7 +1436,7 @@ func TestSearchLast(t *testing.T) {
 		}
 		sort.Ints(slice)
 		// fmt.Println()
-		// fmt.Printf("%s\n", util.FuncName())
+		// fmt.Printf("%s\n", UtilFuncName())
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(slice))
 		// fmt.Printf("test[%2d] %s\n", i, sliceToString(indices))
 		var index int

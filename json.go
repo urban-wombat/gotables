@@ -8,8 +8,6 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
-
-	"github.com/urban-wombat/util"
 )
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
@@ -32,7 +30,7 @@ var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 
 	if table == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var buf bytes.Buffer
@@ -107,7 +105,7 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err error) {
 
 	if table == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", util.FuncSource(), util.FuncName())
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.ColCount() == 0 {
@@ -151,7 +149,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonDataStrings []string, err error) {
 
 	if tableSet == nil {
-		return nil, nil, fmt.Errorf("%s %s tableSet is <nil>", util.FuncSource(), util.FuncName())
+		return nil, nil, fmt.Errorf("%s %s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {

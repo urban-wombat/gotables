@@ -13,8 +13,6 @@ import (
 	"strings"
 	"testing"
 	"unicode/utf8"
-
-	"github.com/urban-wombat/util"
 )
 
 /*
@@ -787,7 +785,7 @@ func ExampleRound() {
 	numberToRound := 12.326
 	places := 2 // The rounded fractional part will have 2 decimal places.
 
-	rounded := util.Round(numberToRound, places)
+	rounded := UtilRound(numberToRound, places)
 	fmt.Println(rounded)
 
 	// Output:
@@ -808,7 +806,7 @@ func TestRound(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		rounded := util.Round(test.val, test.places)
+		rounded := UtilRound(test.val, test.places)
 		if rounded != test.rounded {
 			t.Fatalf("test[%d]: expecting %f, not %f", i, test.rounded, rounded)
 		}
@@ -2902,7 +2900,7 @@ func TestTableSet_FileName(t *testing.T) {
 	`
 
 	// For testing, we need to write this out to a file so we can read it back.
-	actualFileName := util.FuncNameNoParens() + ".txt"
+	actualFileName := UtilFuncNameNoParens() + ".txt"
 	err := ioutil.WriteFile(actualFileName, []byte(tableString), 0644)
 	if err != nil {
 		t.Fatal(err)
@@ -6322,7 +6320,7 @@ i := 42
 if i != 42 { os.Exit(1) }
 }`
 
-	formattedGoProgramString, err := util.GoFmtProgramString(goProgramString)
+	formattedGoProgramString, err := UtilFormatSource(goProgramString)
 	if err != nil {
 		log.Println(err)
 	}

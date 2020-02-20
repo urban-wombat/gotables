@@ -158,5 +158,5 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	// MyNilTable != nil
 	// MyNilTable: []
 	// MyNilTable.isValidTable() == false
-	// gotables.go[2447] ERROR IsValidTable(): table has no name
+	// ERROR IsValidTable(): table has no name
 }
