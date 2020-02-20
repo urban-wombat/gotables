@@ -2446,19 +2446,19 @@ func (table *Table) IsValidTable() (bool, error) {
 		return false, err
 	}
 	if table.colNames == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] colNames == nil", UtilFuncSource(), UtilFuncName(), table.tableName)
+		err = fmt.Errorf("ERROR %s: table [%s] colNames == nil", UtilFuncName(), table.tableName)
 		return false, err
 	}
 	if table.colTypes == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] colTypes == nil", UtilFuncSource(), UtilFuncName(), table.tableName)
+		err = fmt.Errorf("ERROR %s: table [%s] colTypes == nil", UtilFuncName(), table.tableName)
 		return false, err
 	}
 	if table.colNamesMap == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] colNamesMap == nil", UtilFuncSource(), UtilFuncName(), table.tableName)
+		err = fmt.Errorf("ERROR %s: table [%s] colNamesMap == nil", UtilFuncName(), table.tableName)
 		return false, err
 	}
 	if table.rows == nil {
-		err = fmt.Errorf("%s ERROR %s: table [%s] rows == nil", UtilFuncSource(), UtilFuncName(), table.tableName)
+		err = fmt.Errorf("ERROR %s: table [%s] rows == nil", UtilFuncName(), table.tableName)
 		return false, err
 	}
 
