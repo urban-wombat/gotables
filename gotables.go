@@ -3793,7 +3793,13 @@ func (table *Table) ShuffleRandom() error {
 }
 
 /*
-	Includes some aliases:-
+	Return a slice of string with each of the types supported by gotables.
+
+	Conspicuously absent are the complex types (complex64 complex128).
+
+	*Table and *gotables.Table are not Go types.
+
+	The list includes some aliases:-
 		[]byte and []uint8
 		*Table and *gotables.Table
 */
