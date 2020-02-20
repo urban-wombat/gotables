@@ -3791,3 +3791,20 @@ func (table *Table) ShuffleRandom() error {
 
 	return nil
 }
+
+/*
+	Includes some aliases:-
+		[]byte and []uint8
+		*Table and *gotables.Table
+*/
+func TypesList() string {
+	var typesSlice []string
+
+	for key, _ := range globalColTypesMap {
+		typesSlice = append(typesSlice, key)
+	}
+
+	sort.Slice(typesSlice, func(i, j int) bool { return typesSlice[i] < typesSlice[j] })
+
+	return strings.Join(typesSlice, " ")
+}
