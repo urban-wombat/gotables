@@ -1095,7 +1095,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 				case "float64":
 					f64Val = row[colIndex].(float64)
 					buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
-				case "*Table":
+				case "*Table", "*gotables.Table":
 					tableVal = row[colIndex].(*Table)
 					var tableName string = tableVal.Name()
 					// Write table name as [table_name].
@@ -1374,7 +1374,7 @@ func (table *Table) StringPadded() string {
 				f64Val = row[colIndex].(float64)
 				s = strconv.FormatFloat(f64Val, 'f', -1, 64) // -1 strips off excess decimal places.
 				setWidths(s, colIndex, prenum, points, precis, width)
-			case "*Table":
+			case "*Table", "*gotables.Table":
 				tableVal = row[colIndex].(*Table)
 				if tableVal != nil {
 					s = fmt.Sprintf("[%s]", tableVal.Name())
@@ -2665,7 +2665,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	case "float64":
 		f64Val = interfaceType.(float64)
 		buf.WriteString(strconv.FormatFloat(f64Val, 'f', -1, 64)) // -1 strips off excess decimal places.
-	case "*Table":
+	case "*Table", "*gotables.Table":
 		tableVal = interfaceType.(*Table)
 		var tableName string
 		if tableVal != nil {
@@ -2896,7 +2896,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 		typeOfCol = reflect.TypeOf(float32(0))
 	case "float64":
 		typeOfCol = reflect.TypeOf(float64(0))
-	case "*Table":
+	case "*Table", "*gotables.Table":
 		tableVal, _ := NewTable("anyName")
 		typeOfCol = reflect.TypeOf(tableVal)
 	default:
@@ -3418,7 +3418,7 @@ func zeroValue(typeName string) (interface{}, error) {
 		return uint8(0), nil
 	case "byte":
 		return byte(0), nil
-	case "*Table":
+	case "*Table", "*gotables.Table":
 		return "[]", nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
@@ -3471,7 +3471,7 @@ func nonZeroValue(typeName string) (interface{}, error) {
 		return uint8(1), nil
 	case "byte":
 		return byte(1), nil
-	case "*Table":
+	case "*Table", "*gotables.Table":
 		return newNonZeroTable("nonZeroTable"), nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)

@@ -2386,7 +2386,7 @@ func (table *Table) GetTable(colName string, rowIndex int) (val *Table, err erro
 
 /*	Get []byte table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetByteSlice(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteSliceMustGet(colName string, rowIndex int) (val []byte) {
 	val, err := table.GetByteSlice(colName, rowIndex)
@@ -2398,7 +2398,7 @@ func (table *Table) GetByteSliceMustGet(colName string, rowIndex int) (val []byt
 
 /*	Get []uint8 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint8Slice(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8SliceMustGet(colName string, rowIndex int) (val []uint8) {
 	val, err := table.GetUint8Slice(colName, rowIndex)
@@ -2410,7 +2410,7 @@ func (table *Table) GetUint8SliceMustGet(colName string, rowIndex int) (val []ui
 
 /*	Get bool table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetBool(), but panics on error, and does not return an error.
 */
 func (table *Table) GetBoolMustGet(colName string, rowIndex int) (val bool) {
 	val, err := table.GetBool(colName, rowIndex)
@@ -2422,7 +2422,7 @@ func (table *Table) GetBoolMustGet(colName string, rowIndex int) (val bool) {
 
 /*	Get byte table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetByte(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteMustGet(colName string, rowIndex int) (val byte) {
 	val, err := table.GetByte(colName, rowIndex)
@@ -2434,7 +2434,7 @@ func (table *Table) GetByteMustGet(colName string, rowIndex int) (val byte) {
 
 /*	Get float32 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetFloat32(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat32MustGet(colName string, rowIndex int) (val float32) {
 	val, err := table.GetFloat32(colName, rowIndex)
@@ -2446,7 +2446,7 @@ func (table *Table) GetFloat32MustGet(colName string, rowIndex int) (val float32
 
 /*	Get float64 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetFloat64(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat64MustGet(colName string, rowIndex int) (val float64) {
 	val, err := table.GetFloat64(colName, rowIndex)
@@ -2458,7 +2458,7 @@ func (table *Table) GetFloat64MustGet(colName string, rowIndex int) (val float64
 
 /*	Get int table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetInt(), but panics on error, and does not return an error.
 */
 func (table *Table) GetIntMustGet(colName string, rowIndex int) (val int) {
 	val, err := table.GetInt(colName, rowIndex)
@@ -2470,7 +2470,7 @@ func (table *Table) GetIntMustGet(colName string, rowIndex int) (val int) {
 
 /*	Get int16 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetInt16(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt16MustGet(colName string, rowIndex int) (val int16) {
 	val, err := table.GetInt16(colName, rowIndex)
@@ -2482,7 +2482,7 @@ func (table *Table) GetInt16MustGet(colName string, rowIndex int) (val int16) {
 
 /*	Get int32 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetInt32(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt32MustGet(colName string, rowIndex int) (val int32) {
 	val, err := table.GetInt32(colName, rowIndex)
@@ -2494,7 +2494,7 @@ func (table *Table) GetInt32MustGet(colName string, rowIndex int) (val int32) {
 
 /*	Get int64 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetInt64(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt64MustGet(colName string, rowIndex int) (val int64) {
 	val, err := table.GetInt64(colName, rowIndex)
@@ -2506,7 +2506,7 @@ func (table *Table) GetInt64MustGet(colName string, rowIndex int) (val int64) {
 
 /*	Get int8 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetInt8(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt8MustGet(colName string, rowIndex int) (val int8) {
 	val, err := table.GetInt8(colName, rowIndex)
@@ -2518,7 +2518,7 @@ func (table *Table) GetInt8MustGet(colName string, rowIndex int) (val int8) {
 
 /*	Get rune table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetRune(), but panics on error, and does not return an error.
 */
 func (table *Table) GetRuneMustGet(colName string, rowIndex int) (val rune) {
 	val, err := table.GetRune(colName, rowIndex)
@@ -2530,7 +2530,7 @@ func (table *Table) GetRuneMustGet(colName string, rowIndex int) (val rune) {
 
 /*	Get string table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetString(), but panics on error, and does not return an error.
 */
 func (table *Table) GetStringMustGet(colName string, rowIndex int) (val string) {
 	val, err := table.GetString(colName, rowIndex)
@@ -2542,7 +2542,7 @@ func (table *Table) GetStringMustGet(colName string, rowIndex int) (val string) 
 
 /*	Get uint table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUintMustGet(colName string, rowIndex int) (val uint) {
 	val, err := table.GetUint(colName, rowIndex)
@@ -2554,7 +2554,7 @@ func (table *Table) GetUintMustGet(colName string, rowIndex int) (val uint) {
 
 /*	Get uint16 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint16(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint16MustGet(colName string, rowIndex int) (val uint16) {
 	val, err := table.GetUint16(colName, rowIndex)
@@ -2566,7 +2566,7 @@ func (table *Table) GetUint16MustGet(colName string, rowIndex int) (val uint16) 
 
 /*	Get uint32 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint32(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint32MustGet(colName string, rowIndex int) (val uint32) {
 	val, err := table.GetUint32(colName, rowIndex)
@@ -2578,7 +2578,7 @@ func (table *Table) GetUint32MustGet(colName string, rowIndex int) (val uint32) 
 
 /*	Get uint64 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint64(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint64MustGet(colName string, rowIndex int) (val uint64) {
 	val, err := table.GetUint64(colName, rowIndex)
@@ -2590,7 +2590,7 @@ func (table *Table) GetUint64MustGet(colName string, rowIndex int) (val uint64) 
 
 /*	Get uint8 table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetUint8(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8MustGet(colName string, rowIndex int) (val uint8) {
 	val, err := table.GetUint8(colName, rowIndex)
@@ -2602,7 +2602,7 @@ func (table *Table) GetUint8MustGet(colName string, rowIndex int) (val uint8) {
 
 /*	Get *Table table cell from colName at rowIndex
 
-	Like its non-MustGet alternative but panics on error.
+	Like its non-MustGet alternative  GetTable(), but panics on error, and does not return an error.
 */
 func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
 	val, err := table.GetTable(colName, rowIndex)
@@ -3321,7 +3321,7 @@ func (table *Table) GetTableByColIndex(colIndex int, rowIndex int) (val *Table, 
 
 /*  Get []byte table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetByteSliceByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteSliceByColIndexMustGet(colIndex int, rowIndex int) (val []byte) {
 	val, err := table.GetByteSliceByColIndex(colIndex, rowIndex)
@@ -3333,7 +3333,7 @@ func (table *Table) GetByteSliceByColIndexMustGet(colIndex int, rowIndex int) (v
 
 /*  Get []uint8 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUint8SliceByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8SliceByColIndexMustGet(colIndex int, rowIndex int) (val []uint8) {
 	val, err := table.GetUint8SliceByColIndex(colIndex, rowIndex)
@@ -3345,7 +3345,7 @@ func (table *Table) GetUint8SliceByColIndexMustGet(colIndex int, rowIndex int) (
 
 /*  Get bool table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetBoolByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetBoolByColIndexMustGet(colIndex int, rowIndex int) (val bool) {
 	val, err := table.GetBoolByColIndex(colIndex, rowIndex)
@@ -3357,7 +3357,7 @@ func (table *Table) GetBoolByColIndexMustGet(colIndex int, rowIndex int) (val bo
 
 /*  Get byte table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetByteByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteByColIndexMustGet(colIndex int, rowIndex int) (val byte) {
 	val, err := table.GetByteByColIndex(colIndex, rowIndex)
@@ -3369,7 +3369,7 @@ func (table *Table) GetByteByColIndexMustGet(colIndex int, rowIndex int) (val by
 
 /*  Get float32 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetFloat32ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat32ByColIndexMustGet(colIndex int, rowIndex int) (val float32) {
 	val, err := table.GetFloat32ByColIndex(colIndex, rowIndex)
@@ -3381,7 +3381,7 @@ func (table *Table) GetFloat32ByColIndexMustGet(colIndex int, rowIndex int) (val
 
 /*  Get float64 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetFloat64ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat64ByColIndexMustGet(colIndex int, rowIndex int) (val float64) {
 	val, err := table.GetFloat64ByColIndex(colIndex, rowIndex)
@@ -3393,7 +3393,7 @@ func (table *Table) GetFloat64ByColIndexMustGet(colIndex int, rowIndex int) (val
 
 /*  Get int table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetIntByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetIntByColIndexMustGet(colIndex int, rowIndex int) (val int) {
 	val, err := table.GetIntByColIndex(colIndex, rowIndex)
@@ -3405,7 +3405,7 @@ func (table *Table) GetIntByColIndexMustGet(colIndex int, rowIndex int) (val int
 
 /*  Get int16 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetInt16ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt16ByColIndexMustGet(colIndex int, rowIndex int) (val int16) {
 	val, err := table.GetInt16ByColIndex(colIndex, rowIndex)
@@ -3417,7 +3417,7 @@ func (table *Table) GetInt16ByColIndexMustGet(colIndex int, rowIndex int) (val i
 
 /*  Get int32 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetInt32ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt32ByColIndexMustGet(colIndex int, rowIndex int) (val int32) {
 	val, err := table.GetInt32ByColIndex(colIndex, rowIndex)
@@ -3429,7 +3429,7 @@ func (table *Table) GetInt32ByColIndexMustGet(colIndex int, rowIndex int) (val i
 
 /*  Get int64 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetInt64ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt64ByColIndexMustGet(colIndex int, rowIndex int) (val int64) {
 	val, err := table.GetInt64ByColIndex(colIndex, rowIndex)
@@ -3441,7 +3441,7 @@ func (table *Table) GetInt64ByColIndexMustGet(colIndex int, rowIndex int) (val i
 
 /*  Get int8 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetInt8ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt8ByColIndexMustGet(colIndex int, rowIndex int) (val int8) {
 	val, err := table.GetInt8ByColIndex(colIndex, rowIndex)
@@ -3453,7 +3453,7 @@ func (table *Table) GetInt8ByColIndexMustGet(colIndex int, rowIndex int) (val in
 
 /*  Get rune table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetRuneByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetRuneByColIndexMustGet(colIndex int, rowIndex int) (val rune) {
 	val, err := table.GetRuneByColIndex(colIndex, rowIndex)
@@ -3465,7 +3465,7 @@ func (table *Table) GetRuneByColIndexMustGet(colIndex int, rowIndex int) (val ru
 
 /*  Get string table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetStringByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetStringByColIndexMustGet(colIndex int, rowIndex int) (val string) {
 	val, err := table.GetStringByColIndex(colIndex, rowIndex)
@@ -3477,7 +3477,7 @@ func (table *Table) GetStringByColIndexMustGet(colIndex int, rowIndex int) (val 
 
 /*  Get uint table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUintByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUintByColIndexMustGet(colIndex int, rowIndex int) (val uint) {
 	val, err := table.GetUintByColIndex(colIndex, rowIndex)
@@ -3489,7 +3489,7 @@ func (table *Table) GetUintByColIndexMustGet(colIndex int, rowIndex int) (val ui
 
 /*  Get uint16 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUint16ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint16ByColIndexMustGet(colIndex int, rowIndex int) (val uint16) {
 	val, err := table.GetUint16ByColIndex(colIndex, rowIndex)
@@ -3501,7 +3501,7 @@ func (table *Table) GetUint16ByColIndexMustGet(colIndex int, rowIndex int) (val 
 
 /*  Get uint32 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUint32ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint32ByColIndexMustGet(colIndex int, rowIndex int) (val uint32) {
 	val, err := table.GetUint32ByColIndex(colIndex, rowIndex)
@@ -3513,7 +3513,7 @@ func (table *Table) GetUint32ByColIndexMustGet(colIndex int, rowIndex int) (val 
 
 /*  Get uint64 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUint64ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint64ByColIndexMustGet(colIndex int, rowIndex int) (val uint64) {
 	val, err := table.GetUint64ByColIndex(colIndex, rowIndex)
@@ -3525,7 +3525,7 @@ func (table *Table) GetUint64ByColIndexMustGet(colIndex int, rowIndex int) (val 
 
 /*  Get uint8 table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetUint8ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8ByColIndexMustGet(colIndex int, rowIndex int) (val uint8) {
 	val, err := table.GetUint8ByColIndex(colIndex, rowIndex)
@@ -3537,7 +3537,7 @@ func (table *Table) GetUint8ByColIndexMustGet(colIndex int, rowIndex int) (val u
 
 /*  Get *Table table cell from colIndex at rowIndex
 
-Like its non-MustGet alternative but panics on error.
+Like its non-MustGet alternative GetTableByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetTableByColIndexMustGet(colIndex int, rowIndex int) (val *Table) {
 	val, err := table.GetTableByColIndex(colIndex, rowIndex)

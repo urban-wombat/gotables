@@ -34,14 +34,19 @@ SOFTWARE.
 */
 
 // Note: Leading lowercase in 'cellTableInStruct' is required for it to be recognised as an Example!
+
 func ExampleNewTableFromString_cellTableInStruct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
-		MyString string = "The answer to life, the universe and everything is forty-two."
+		MyString string = "The answer to life, the universe and everything."
 		MyInt int = 42
 		MyTable *Table = [CellTable]
+		MyTable2 *gotables.Table = [CellTable2]
 		`
+	// Note 1: The only string form of a table cell containing a *Table is its table name in square brackets.
+	// Note 2: To get a table cell *Table as a string, first retrieve it to a variable.
+	// Note 3: It is parsed into an empty table with the name specified.
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
@@ -65,30 +70,35 @@ func ExampleNewTableFromString_cellTableInStruct() {
 	// Output:
 	// [MyTable]
 	// MyBool bool = true
-	// MyString string = "The answer to life, the universe and everything is forty-two."
+	// MyString string = "The answer to life, the universe and everything."
 	// MyInt int = 42
 	// MyTable *Table = [CellTable]
+	// MyTable2 *gotables.Table = [CellTable2]
 	//
 	// [MyTable]
-	// MyBool MyString                                                        MyInt MyTable
-	// bool   string                                                            int *Table
-	// true   "The answer to life, the universe and everything is forty-two."    42 [CellTable]
+	// MyBool MyString                                           MyInt MyTable     MyTable2
+	// bool   string                                               int *Table      *gotables.Table
+	// true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
 }
 
 // Note: Leading lowercase in table is required for it to be recognised as an Example!
+
 func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
-		MyString string = "The answer to life, the universe and everything is forty-two."
+		MyString string = "The answer to life, the universe and everything."
 		MyInt int = 42
 		MyTable *Table = [CellTable]
+		MyNilTable *Table = []
 		`
 
 	table, err := NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
 	}
+
+	fmt.Println(table)
 
 	var nilTable *Table = nil
 	err = table.SetVal("MyTable", 0, nilTable)
@@ -96,29 +106,57 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 		log.Println(err)
 	}
 
-	// Print the table in its original struct shape.
+	// Print the table with MyTable cell set to nil.
+	// MyNilTable will have the !nil value of an empty and unnamed table.
 	fmt.Println(table)
 
-	// Now change its shape to tabular.
-	err = table.SetStructShape(false)
-	if err != nil {
-		log.Println(err)
+	// Print the individual cells.
+
+	// Here the table cell *Table is nil.
+
+	MyTable, err := table.GetTable("MyTable", 0)
+	if MyTable == nil {
+		fmt.Println("MyTable == nil")
+	} else {
+		fmt.Println("MyTable != nil")
 	}
+	fmt.Printf("MyTable: %#v\n", MyTable)
 
-	// The table is now printed as a single row of data.
-	fmt.Println(table)
+	fmt.Println()
 
-	// Note: The struct/tabular shape is for readability and has no impact on its internal structure.
+	// Here the table cell *Table is set to a kind of nil *Table table (with no name) that's not actually nil.
+
+	MyNilTable, err := table.GetTable("MyNilTable", 0)
+	if MyNilTable == nil {
+		fmt.Println("MyNilTable == nil")
+	} else {
+		fmt.Println("MyNilTable != nil")
+	}
+	fmt.Printf("MyNilTable: %s", MyNilTable)
+	isValidTable, err := MyNilTable.IsValidTable()
+	fmt.Printf("MyNilTable.isValidTable() == %t\n", isValidTable)
+	fmt.Println(err)
 
 	// Output:
 	// [MyTable]
 	// MyBool bool = true
-	// MyString string = "The answer to life, the universe and everything is forty-two."
+	// MyString string = "The answer to life, the universe and everything."
 	// MyInt int = 42
-	// MyTable *Table = []
+	// MyTable *Table = [CellTable]
+	// MyNilTable *Table = []
 	//
 	// [MyTable]
-	// MyBool MyString                                                        MyInt MyTable
-	// bool   string                                                            int *Table
-	// true   "The answer to life, the universe and everything is forty-two."    42 []
+	// MyBool bool = true
+	// MyString string = "The answer to life, the universe and everything."
+	// MyInt int = 42
+	// MyTable *Table = []
+	// MyNilTable *Table = []
+	//
+	// MyTable == nil
+	// MyTable: (*gotables.Table)(nil)
+	//
+	// MyNilTable != nil
+	// MyNilTable: []
+	// MyNilTable.isValidTable() == false
+	// gotables.go[2447] ERROR IsValidTable(): table has no name
 }

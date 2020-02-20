@@ -147,8 +147,10 @@ var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\
 
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
+const tableNameNilPattern string = `^\[\]$`
 
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
+var tableNameNilRegexp *regexp.Regexp = regexp.MustCompile(tableNameNilPattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
@@ -204,6 +206,7 @@ var globalColTypesMap = map[string]int{
 	"uint8":   0,
 	"complex": 0,	// Not yet implemented.
 	"*Table":   0,
+	"*gotables.Table": 0,
 }
 
 var globalNumericColTypesMap = map[string]int{
@@ -1142,19 +1145,26 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowSlice[i] = float64Val
-		case "*Table":
+		case "*Table", "*gotables.Table":
 			rangeFound = tableNameRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
-				return nil, fmt.Errorf("%s expecting a valid place-holder value of [%s] but found: %s",
-					p.gotFilePos(), colTypes[i], remaining)
-			}
-			textFound = remaining[rangeFound[0]:rangeFound[1]]
-			// tableNameRegexp matches to [name] therefore Trim() will work safely.
-			var tableName string = strings.Trim(textFound, "[]")
-			tableVal, err = NewTable(tableName)
-			if err != nil {
-				return nil, fmt.Errorf("%s expecting a valid table name in the form [name] but found: %s",
-					p.gotFilePos(), remaining)
+				// See if it's a nil table.
+				rangeFound = tableNameNilRegexp.FindStringIndex(remaining)
+				if rangeFound != nil {
+					tableVal = NewNilTable()
+				} else {
+					return nil, fmt.Errorf("%s expecting a valid place-holder value of type %s, in square brackets, but found: %s",
+						p.gotFilePos(), colTypes[i], remaining)
+				}
+			} else {
+				textFound = remaining[rangeFound[0]:rangeFound[1]]
+				// tableNameRegexp matches to [name] therefore Trim() will work safely.
+				var tableName string = strings.Trim(textFound, "[]")
+				tableVal, err = NewTable(tableName)
+				if err != nil {
+					return nil, fmt.Errorf("%s expecting a valid table name in the form [name] but found: %s",
+						p.gotFilePos(), remaining)
+				}
 			}
 			rowSlice[i] = tableVal
 		default:
