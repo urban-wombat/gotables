@@ -65,7 +65,7 @@ func init() {
 		"int32":   "rune",
 		"rune":    "int32",
 		//		"[]int32" : "[]rune",	// Proposed?
-		"*Table":   "*gotables.Table",
+		"*Table":          "*gotables.Table",
 		"*gotables.Table": "*Table",
 	}
 
@@ -186,26 +186,26 @@ var typeAliasMap map[string]string
 // GO_TYPES
 
 var globalColTypesMap = map[string]int{
-	"[]byte":  0,
-	"[]uint8": 0,
-	"bool":    0,
-	"byte":    0,
-	"float32": 0,
-	"float64": 0,
-	"int":     0,
-	"int16":   0,
-	"int32":   0,
-	"rune":    0,
-	"int64":   0,
-	"int8":    0,
-	"string":  0,
-	"uint":    0,
-	"uint16":  0,
-	"uint32":  0,
-	"uint64":  0,
-	"uint8":   0,
-	"complex": 0,	// Not yet implemented.
-	"*Table":   0,
+	"[]byte":          0,
+	"[]uint8":         0,
+	"bool":            0,
+	"byte":            0,
+	"float32":         0,
+	"float64":         0,
+	"int":             0,
+	"int16":           0,
+	"int32":           0,
+	"rune":            0,
+	"int64":           0,
+	"int8":            0,
+	"string":          0,
+	"uint":            0,
+	"uint16":          0,
+	"uint32":          0,
+	"uint64":          0,
+	"uint8":           0,
+	"complex":         0, // Not yet implemented.
+	"*Table":          0,
 	"*gotables.Table": 0,
 }
 
@@ -223,7 +223,7 @@ var globalNumericColTypesMap = map[string]int{
 	"uint64":  0,
 	"uint8":   0,
 	"byte":    0,
-	"complex": 0,	// Not yet implemented.
+	"complex": 0, // Not yet implemented.
 }
 
 const structNameIndex = 0

@@ -2566,6 +2566,7 @@ func TestDeleteRows(t *testing.T) {
 }
 
 // Note: Leading lowercase in struct is required for it to be recognised as an Example!
+
 func ExampleNewTableFromString_struct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
@@ -3843,6 +3844,7 @@ func TestIsValidCellValue(t *testing.T) {
 }
 
 // Note: Leading lowercase in planets is required for it to be recognised as an Example!
+
 func ExampleNewTableFromString_planets() {
 	// mass:     Earth = 1 (relative to Earth)
 	// distance: Earth = 1 (relative to Earth - AU)
@@ -4902,7 +4904,9 @@ func TestSomeUnicodes(t *testing.T) {
 }
 
 // Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
+
 // Note: Glyph width is (in my experience) difficult to manage. Hence the uneven columns. May revisit.
+
 func ExampleNewTableFromString_unicodeRuneLiterals() {
 
 	var runesEqual string = `
@@ -5015,6 +5019,7 @@ func printRuneBytes(r rune) {
 }
 
 // Note: Leading lowercase in unicodeRuneLiterals is required for it to be recognised as an Example!
+
 func ExampleNewTableFromString_unicodeRuneLiteralsUnpadded() {
 
 	var runesEqual string = `
@@ -6479,6 +6484,7 @@ func isGoKeyword(name string) bool {
 }
 
 // Note: Leading lowercase in go113NumericLiteralsBinOctHex is required for it to be recognised as an Example!
+
 func ExampleNewTableSetFromString_go113NumericLiteralsBinOctHex() {
 	tableString :=
 		`[int_literals]

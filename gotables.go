@@ -486,19 +486,19 @@ type tableRow []interface{}
 	}
 */
 func NewTable(tableName string) (*Table, error) {
-/*
-	var err error
-	var newTable *Table = new(Table)
+	/*
+		var err error
+		var newTable *Table = new(Table)
 
-	err = newTable.SetName(tableName)
-	if err != nil {
-		return nil, err
-	}
-	newTable.colNames = []string{}
-	newTable.colTypes = []string{}
-	newTable.colNamesMap = map[string]int{}
-	newTable.rows = []tableRow{}
-*/
+		err = newTable.SetName(tableName)
+		if err != nil {
+			return nil, err
+		}
+		newTable.colNames = []string{}
+		newTable.colTypes = []string{}
+		newTable.colNamesMap = map[string]int{}
+		newTable.rows = []tableRow{}
+	*/
 
 	var newTable *Table = NewNilTable()
 
@@ -2671,7 +2671,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		if tableVal != nil {
 			tableName = tableVal.Name()
 		} else {
-			tableName = ""	// Square brackets applied below.
+			tableName = "" // Square brackets applied below.
 		}
 		// Write table name as [table_name].
 		buf.WriteByte(91) // Opening square bracket.
