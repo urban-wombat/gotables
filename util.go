@@ -49,13 +49,13 @@ func init() {
 }
 
 /*
-StringFlag implements the flag.Value interface https://golang.org/pkg/flag/#Value
+UtilStringFlag implements the flag.Value interface https://golang.org/pkg/flag/#Value
 	type Value interface {
 		String() string
 		Set(string) error
 	}
 */
-type StringFlag struct {
+type UtilStringFlag struct {
 	val    string // string field used by the flag.Value interface https://golang.org/pkg/flag/#Value
 	exists bool
 	set    bool
@@ -63,7 +63,7 @@ type StringFlag struct {
 }
 
 // Set() implements part of the flag.Value interface https://golang.org/pkg/flag/#Value
-func (sf *StringFlag) Set(s string) error {
+func (sf *UtilStringFlag) Set(s string) error {
 	sf.exists = true
 
 	if strings.HasPrefix(s, "-") {
@@ -78,22 +78,22 @@ func (sf *StringFlag) Set(s string) error {
 }
 
 // String() implements part of the flag.Value interface https://golang.org/pkg/flag/#Value
-func (sf *StringFlag) String() string {
+func (sf *UtilStringFlag) String() string {
 	return sf.val
 }
 
 // Exists() is specific to gotables.Util
-func (sf *StringFlag) Exists() bool {
+func (sf *UtilStringFlag) Exists() bool {
 	return sf.exists
 }
 
 // IsSet() is specific to gotables.Util
-func (sf *StringFlag) IsSet() bool {
+func (sf *UtilStringFlag) IsSet() bool {
 	return sf.set
 }
 
 // Error() is specific to gotables.Util
-func (sf *StringFlag) Error() error {
+func (sf *UtilStringFlag) Error() error {
 	return sf.err
 }
 
@@ -104,12 +104,12 @@ It means:-
 	(2) flag is set
 	(3) error is nil
 */
-func (sf *StringFlag) AllOk() bool {
+func (sf *UtilStringFlag) AllOk() bool {
 	return (sf.Exists() && sf.IsSet() && sf.Error() == nil)
 }
 
-// Print to stdout StringFlag field values and method results.
-func (sf *StringFlag) Print() {
+// Print to stdout UtilStringFlag field values and method results.
+func (sf *UtilStringFlag) Print() {
 	fmt.Fprintf(os.Stderr, "%#v\n", sf)
 	fmt.Fprintf(os.Stderr, "&UtilStringFlag.String() = %q\n", sf.String())
 	fmt.Fprintf(os.Stderr, "&UtilStringFlag.Exists() = %t\n", sf.Exists())
