@@ -484,20 +484,6 @@ type tableRow []interface{}
 	}
 */
 func NewTable(tableName string) (*Table, error) {
-	/*
-		var err error
-		var newTable *Table = new(Table)
-
-		err = newTable.SetName(tableName)
-		if err != nil {
-			return nil, err
-		}
-		newTable.colNames = []string{}
-		newTable.colTypes = []string{}
-		newTable.colNamesMap = map[string]int{}
-		newTable.rows = []tableRow{}
-	*/
-
 	var newTable *Table = NewNilTable()
 
 	err := newTable.SetName(tableName)
@@ -522,11 +508,9 @@ func newNonZeroTable(tableName string) *Table {
 
 // Factory function to generate a nil *Table pointer.
 /*
-	var myTable *gotables.Table
-	myTable = gotables.NewNilTable()
-	if err != nil {
-		panic(err)
-	}
+	var myTable *gotables.Table = gotables.NewNilTable()
+
+	Note: Does not return an error. It cannot fail.
 */
 func NewNilTable() *Table {
 	var newTable *Table = new(Table)
