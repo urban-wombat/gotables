@@ -182,7 +182,7 @@ const (
 var typeAliasMap map[string]string
 
 // GO_TYPES
-
+// Keep in sync with helpersmain/helpersmain.go globalColTypesMap
 var globalColTypesMap = map[string]int{
 	"[]byte":          0,
 	"[]uint8":         0,
@@ -202,7 +202,7 @@ var globalColTypesMap = map[string]int{
 	"uint32":          0,
 	"uint64":          0,
 	"uint8":           0,
-	"complex":         0, // Not yet implemented.
+//	"complex":         0, // Not yet implemented.
 	"*Table":          0,
 	"*gotables.Table": 0,
 }

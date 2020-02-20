@@ -33,8 +33,10 @@ SOFTWARE.
 // Types are defined in helpersmain.go
 
 //	------------------------------------------------------------------
-//	next group: Set<type>() functions for each of 19 types.
-//  NOTE: Types are defined in helpersmain.go
+//	next group: Set<type>() functions for each of 19 types
+//	20 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
+//	20 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string uint uint16 uint32 uint64 uint8
+//  NOTE: Types are defined in helpersmain.go AND parser.go
 //	------------------------------------------------------------------
 
 //	Set table cell in colName at rowIndex to newVal []byte
@@ -855,7 +857,10 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 }
 
 //	----------------------------------------------------------------------------
-//	next group: Set<type>ByColIndex() functions for each of 19 types.
+//	next group: Set<type>ByColIndex() functions for each of 19 types
+//	20 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
+//	20 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string uint uint16 uint32 uint64 uint8
+//  NOTE: Types are defined in helpersmain.go AND parser.go
 //	----------------------------------------------------------------------------
 
 //	Set table cell in colIndex at rowIndex to newVal []byte
@@ -1600,7 +1605,10 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 }
 
 //	------------------------------------------------------------------
-//	next group: Get<type>() functions for each of 19 types.
+//	next group: Get<type>() functions for each of 19 types
+//	20 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
+//	20 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string uint uint16 uint32 uint64 uint8
+//  NOTE: Types are defined in helpersmain.go AND parser.go
 //	------------------------------------------------------------------
 
 //	Get []byte table cell from colName at rowIndex
@@ -2611,7 +2619,10 @@ func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
 }
 
 //	----------------------------------------------------------------------------
-//	next group: Get<type>ByColIndex() functions for each of 19 types.
+//	next group: Get<type>ByColIndex() functions for each of 19 types
+//	20 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
+//	20 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string uint uint16 uint32 uint64 uint8
+//  NOTE: Types are defined in helpersmain.go AND parser.go
 //	----------------------------------------------------------------------------
 
 //  Get []byte table cell from colIndex at rowIndex
