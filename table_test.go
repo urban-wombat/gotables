@@ -33,9 +33,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Note: Leading lowercase in 'cellTableInStruct' is required for it to be recognised as an Example!
+/* Note: Leading lowercase in 'cellTableInStruct' is required for it to be recognised as an Example! */
 
-func ExampleNewTableFromString_cellTableInStruct() {
+func ExampleTable_GetTable_cellTableInStruct() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
@@ -53,17 +53,34 @@ func ExampleNewTableFromString_cellTableInStruct() {
 		log.Println(err)
 	}
 
-	// Print the table in its original struct shape.
 	fmt.Println(table)
 
-	// Now change its shape to tabular.
-	err = table.SetStructShape(false)
+	myTable, err := table.GetTable("MyTable", 0)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// The table is now printed as a single row of data.
-	fmt.Println(table)
+	err = myTable.AppendRow()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.AppendCol("msg", "string")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.SetString("msg", 0, "I am in a table in a cell!")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.SetStructShape(true)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(myTable)
 
 	// Note: The struct/tabular shape is for readability and has no impact on its internal structure.
 
@@ -75,15 +92,13 @@ func ExampleNewTableFromString_cellTableInStruct() {
 	// MyTable *Table = [CellTable]
 	// MyTable2 *gotables.Table = [CellTable2]
 	//
-	// [MyTable]
-	// MyBool MyString                                           MyInt MyTable     MyTable2
-	// bool   string                                               int *Table      *gotables.Table
-	// true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
+	// [CellTable]
+	// msg string = "I am in a table in a cell!"
 }
 
-// Note: Leading lowercase in table is required for it to be recognised as an Example!
+/* Note: Leading lowercase in table is required for it to be recognised as an Example! */
 
-func ExampleNewTableFromString_cellTableInStructSetToNil() {
+func ExampleTable_SetTable_cellTableInStructSetToNil() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool bool = true
@@ -101,7 +116,7 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	fmt.Println(table)
 
 	var nilTable *Table = nil
-	err = table.SetVal("MyTable", 0, nilTable)
+	err = table.SetTable("MyTable", 0, nilTable)
 	if err != nil {
 		log.Println(err)
 	}
@@ -159,4 +174,72 @@ func ExampleNewTableFromString_cellTableInStructSetToNil() {
 	// MyNilTable: []
 	// MyNilTable.isValidTable() == false
 	// ERROR IsValidTable(): table has no name
+}
+
+func ExampleNewNilTable_createAndUse() {
+
+	// We expect this to print a NilTable with syntax: []
+	var nilTable *Table = NewNilTable()
+	fmt.Println(nilTable)
+
+	// We expect this to be an invalid table
+	isValid, err := nilTable.IsValidTable()
+	fmt.Printf("isValid = %t\n", isValid)
+	fmt.Printf("err = %v\n", err)
+
+	// We expect any Set, Get or Append operation on the table to fail
+	err = nilTable.AppendRow()
+	fmt.Printf("err = %v\n", err)
+	err = nilTable.AppendCol("my_col", "string")
+	fmt.Printf("err = %v\n", err)
+
+	// This fails
+	err = nilTable.SetString("missing_col", 0, "my_string_value")
+	fmt.Printf("err = %v\n", err)
+	missing_col, err := nilTable.GetInt("missing_col", 0)
+	fmt.Printf("missing_col = %d\n", missing_col)
+	fmt.Printf("err = %v\n", err)
+
+	// Okay, now we will un-NilTable the NilTable
+	err = nilTable.SetName("NilTableNoLonger")
+	if err != nil {
+		log.Println(err)
+	}
+	// Expecting: [NilTableNoLonger]
+	fmt.Println(nilTable)
+
+	// Now we can add a row and a col and set the cell value
+
+	err = nilTable.AppendCol("my_col", "string")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = nilTable.AppendRow()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = nilTable.SetString("my_col", 0, "my_string_value")
+	if err != nil {
+		log.Println(err)
+	}
+
+	nilTable.SetStructShape(true)
+	fmt.Println(nilTable)
+
+	// Output:
+	// []
+	//
+	// isValid = false
+	// err = ERROR IsValidTable(): table has no name
+	// err = table.AppendRow(): table is an unnamed NilTable. Call table.SetName() to un-Nil it
+	// err = table.AppendCol(): table is an unnamed NilTable. Call table.SetName() to un-Nil it
+	// err = table [] col does not exist: missing_col
+	// missing_col = 0
+	// err = table [] col does not exist: missing_col
+	// [NilTableNoLonger]
+	//
+	// [NilTableNoLonger]
+	// my_col string = "my_string_value"
 }

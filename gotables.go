@@ -376,6 +376,7 @@ func (tableSet *TableSet) TableCount() int {
 
 // Add a table to a table set.
 func (tableSet *TableSet) AppendTable(newTable *Table) error {
+
 	if tableSet == nil {
 		return fmt.Errorf("%s ERROR: tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -450,6 +451,7 @@ type Table struct {
 	rows        []tableRow
 	sortKeys    []sortKey
 	structShape bool
+	isNilTable  bool
 }
 
 type TableExported struct {
@@ -475,13 +477,40 @@ type tableRow []interface{}
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
-// Factory function to generate a *Table pointer.
 /*
-	var myTable *gotables.Table
-	myTable, err = gotables.NewTable("My_Table")
-	if err != nil {
-		panic(err)
-	}
+	Factory function to create an empty *Table that is not yet ready to use.
+
+	The table is for use as zero value, a *Table that is a placeholder without being a Go nil.
+
+	To make it usable, give it a table name: table.SetTableName("MyTableName")
+
+	In its unusable NilTable state, table.IsValidTable() will return false.
+
+		var myTable *gotables.Table = gotables.NewNilTable()
+
+	Note: does not return an error. It cannot fail.
+*/
+func NewNilTable() *Table {
+	var newTable *Table = new(Table)
+
+	newTable.colNames = []string{}
+	newTable.colTypes = []string{}
+	newTable.colNamesMap = map[string]int{}
+	newTable.rows = []tableRow{}
+
+	newTable.isNilTable = true
+
+	return newTable
+}
+
+/*
+	Factory function to create an empty *Table
+
+		var myTable *gotables.Table
+		myTable, err = gotables.NewTable("My_Table")
+		if err != nil {
+			panic(err)
+		}
 */
 func NewTable(tableName string) (*Table, error) {
 	var newTable *Table = NewNilTable()
@@ -502,23 +531,6 @@ func newNonZeroTable(tableName string) *Table {
 	if err != nil {
 		panic(err)
 	}
-
-	return newTable
-}
-
-// Factory function to generate a nil *Table pointer.
-/*
-	var myTable *gotables.Table = gotables.NewNilTable()
-
-	Note: Does not return an error. It cannot fail.
-*/
-func NewNilTable() *Table {
-	var newTable *Table = new(Table)
-
-	newTable.colNames = []string{}
-	newTable.colTypes = []string{}
-	newTable.colNamesMap = map[string]int{}
-	newTable.rows = []tableRow{}
 
 	return newTable
 }
@@ -585,8 +597,13 @@ func (table *Table) appendRowOfNil() error {
 
 // Note: Can append rows to an empty (no columns) table, and later append columns - but not for long!
 func (table *Table) AppendRows(howMany int) error {
+
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	var err error
@@ -622,8 +639,13 @@ func (table *Table) AppendRows(howMany int) error {
 // All cells in the new added row will be set to their zero value, such as 0, "", or false.
 // Note: Can append rows to an empty (no columns) table, and later append columns.
 func (table *Table) AppendRow() error {
+
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	var err error
@@ -1504,6 +1526,10 @@ func (table *Table) GetTableAsCSV(optionalSubstituteHeadingNames ...string) (str
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	if table.isNilTable {
+		return "", fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+	}
+
 	var buf *bytes.Buffer = new(bytes.Buffer)
 	csvWriter := csv.NewWriter(buf)
 	var record []string = make([]string, table.ColCount())
@@ -1591,6 +1617,10 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	if isValid, err := IsValidColName(colName); !isValid {
@@ -1819,6 +1849,11 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
+
+	if table.isNilTable {
+		return nil, fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+	}
+
 	var err error
 	var colsTable *Table
 
@@ -1881,6 +1916,10 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 	if table == nil {
 		return nil, nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return nil, nil, fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	var colNames []string = []string{}
@@ -2003,10 +2042,16 @@ func (table *Table) RowCount() int {
 	Like its non-MustGet alternative but panics on error.
 */
 func (table *Table) GetValMustGet(colName string, rowIndex int) (val interface{}) {
+	if table.isNilTable {
+		err := fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+		panic(err)
+	}
+
 	val, err := table.GetVal(colName, rowIndex)
 	if err != nil {
 		panic(err)
 	}
+
 	return val
 }
 
@@ -2017,6 +2062,10 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 
 	if table == nil {
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return nil, fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	if printCaller {
@@ -2054,6 +2103,16 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	Like its non-MustGet alternative but panics on error.
 */
 func (table *Table) GetValByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
+	if table == nil {
+		err := fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		panic(err)
+	}
+
+	if table.isNilTable {
+		err := fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+		panic(err)
+	}
+
 	val, err := table.GetValByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2065,6 +2124,10 @@ func (table *Table) GetValByColIndexMustGet(colIndex int, rowIndex int) (val int
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return nil, fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	if printCaller {
@@ -2258,6 +2321,8 @@ func (table *Table) SetName(tableName string) error {
 	}
 
 	table.tableName = tableName
+
+	table.isNilTable = false
 
 	return nil
 }
@@ -2559,6 +2624,10 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	if table.isNilTable {
+		return "", fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+	}
+
 	if printCaller {
 		UtilPrintCaller()
 	}
@@ -2677,6 +2746,10 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	if table.isNilTable {
+		return "", fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+	}
+
 	if printCaller {
 		UtilPrintCaller()
 	}
@@ -2742,6 +2815,10 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 func (table *Table) GetColValsAsStrings(colName string) ([]string, error) {
 	if table == nil {
 		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return nil, fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	rowCount := table.RowCount()
@@ -3014,11 +3091,17 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 	Column order is ignored. Identical duplicate columns are ignored.
 */
 func (table *Table) AppendColsFromTable(fromTable *Table) error {
+
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s(fromTable): table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
+
 	if fromTable == nil {
 		return fmt.Errorf("fromTable.table.%s: table is <nil>", UtilFuncName())
+	}
+
+	if table.isNilTable {
+		return fmt.Errorf("table.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	var err error
@@ -3071,6 +3154,14 @@ func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRo
 
 	if fromTable == nil {
 		return fmt.Errorf("fromTable.table.%s: table is <nil>", UtilFuncName())
+	}
+
+	if toTable.isNilTable {
+		return fmt.Errorf("toTable.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
+	}
+
+	if fromTable.isNilTable {
+		return fmt.Errorf("fromTable.%s: table is an unnamed NilTable. Call table.SetName() to un-Nil it", UtilFuncName())
 	}
 
 	if debugging {
