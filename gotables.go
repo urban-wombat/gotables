@@ -478,13 +478,13 @@ type tableRow []interface{}
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 /*
-	Factory function to create an empty *Table that is not yet ready to use.
+	Factory function to create an empty *Table that is not yet ready to use
 
-	The table is for use as zero value, a *Table that is a placeholder without being a Go nil.
+	The table is for use as zero value, a *Table that is a placeholder without being a Go nil
 
 	To make it usable, give it a table name: table.SetTableName("MyTableName")
 
-	In its unusable NilTable state, table.IsValidTable() will return false.
+	In its unusable NilTable state, table.IsValidTable() will return false
 
 		var myTable *gotables.Table = gotables.NewNilTable()
 
