@@ -200,6 +200,20 @@ func NewTableFromString(s string) (*Table, error) {
 	return table, nil
 }
 
+/*
+	This function expects exactly ONE table in the string. Otherwise it's an error.
+	If there's more than one table in the string, use NewTableFromStringByTableName() instead.
+
+	On error, this function panics. It's for single-value contexts where you KNOW it will work.
+*/
+func NewTableFromStringMustMake(s string) *Table {
+	table, err := NewTableFromString(s)
+	if err != nil {
+		panic(err)
+	}
+	return table
+}
+
 func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 	tableSet, err := NewTableSetFromString(s)
 	if err != nil {

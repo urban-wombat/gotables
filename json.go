@@ -66,6 +66,16 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 				//				valStr = strings.ReplaceAll(valStr, " ", ",")	// New in Go 1.11?
 				valStr = replaceSpaces.ReplaceAllString(valStr, ",")
 				buf.WriteString(valStr)
+			case *Table:
+				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return "", err
+				}
+				valStr, err := nestedTable.GetTableDataAsJSON()
+				if err != nil {
+					return "", err
+				}
+				buf.WriteString(valStr)
 			default:
 				buf.WriteString(`"TYPE UNKNOWN"`)
 			}

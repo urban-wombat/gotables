@@ -2656,6 +2656,234 @@ func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
 	return val
 }
 
+/*	Set []byte MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetByteSlice(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetByteSliceMustSet(colName string, rowIndex int, val []byte) {
+
+	err := table.SetByteSlice(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set []uint8 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint8Slice(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUint8SliceMustSet(colName string, rowIndex int, val []uint8) {
+
+	err := table.SetUint8Slice(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set bool MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetBool(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetBoolMustSet(colName string, rowIndex int, val bool) {
+
+	err := table.SetBool(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set byte MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetByte(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetByteMustSet(colName string, rowIndex int, val byte) {
+
+	err := table.SetByte(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set float32 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetFloat32(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetFloat32MustSet(colName string, rowIndex int, val float32) {
+
+	err := table.SetFloat32(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set float64 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetFloat64(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetFloat64MustSet(colName string, rowIndex int, val float64) {
+
+	err := table.SetFloat64(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set int MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetInt(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetIntMustSet(colName string, rowIndex int, val int) {
+
+	err := table.SetInt(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set int16 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetInt16(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetInt16MustSet(colName string, rowIndex int, val int16) {
+
+	err := table.SetInt16(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set int32 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetInt32(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetInt32MustSet(colName string, rowIndex int, val int32) {
+
+	err := table.SetInt32(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set int64 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetInt64(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetInt64MustSet(colName string, rowIndex int, val int64) {
+
+	err := table.SetInt64(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set int8 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetInt8(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetInt8MustSet(colName string, rowIndex int, val int8) {
+
+	err := table.SetInt8(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set rune MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetRune(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetRuneMustSet(colName string, rowIndex int, val rune) {
+
+	err := table.SetRune(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set string MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetString(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetStringMustSet(colName string, rowIndex int, val string) {
+
+	err := table.SetString(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set uint MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUintMustSet(colName string, rowIndex int, val uint) {
+
+	err := table.SetUint(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set uint16 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint16(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUint16MustSet(colName string, rowIndex int, val uint16) {
+
+	err := table.SetUint16(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set uint32 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint32(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUint32MustSet(colName string, rowIndex int, val uint32) {
+
+	err := table.SetUint32(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set uint64 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint64(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUint64MustSet(colName string, rowIndex int, val uint64) {
+
+	err := table.SetUint64(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set uint8 MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetUint8(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetUint8MustSet(colName string, rowIndex int, val uint8) {
+
+	err := table.SetUint8(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*	Set *Table MustSet table cell from colName at rowIndex
+
+	Like its non-MustSet alternative  SetTable(), but panics on error, and does not return an error.
+*/
+func (table *Table) SetTableMustSet(colName string, rowIndex int, val *Table) {
+
+	err := table.SetTable(colName, rowIndex, val)
+	if err != nil {
+		panic(err)
+	}
+}
+
 //	----------------------------------------------------------------------------
 //	next group: Get<type>ByColIndex() functions for each of 19 types
 //	20 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table

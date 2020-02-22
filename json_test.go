@@ -36,7 +36,7 @@ func TestGetTableDataAsJSON(t *testing.T) {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore11]
+	[TypesGalore]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -1132,4 +1132,507 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	// float32 float32 float32
 	//
 	// table2.Equals(table1) == true
+}
+
+func ExampleTable_GetTableDataAsJSON() {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       f32     t     b    ui    bb            uu8
+    int string float64 float32 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+    4   "xxxx" 5.9     9.9     true  44   3     []            []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var jsonString string
+	jsonString, err = table.GetTableDataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("Print as is:")
+	fmt.Println()
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	fmt.Println("Print indented for readability:")
+	fmt.Println()
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		log.Println(err)
+	}
+	out.WriteTo(os.Stdout)
+
+	// Output:
+	// Print as is:
+	//
+	// {"TypesGalore":[{"i":1,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17]},{"i":2,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28]},{"i":3,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39]},{"i":4,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[]}]}
+	//
+	// Print indented for readability:
+	//
+	// {
+	// 	"TypesGalore": [
+	// 		{
+	// 			"i": 1,
+	// 			"s": "abc",
+	// 			"f": 2.3,
+	// 			"f32": 6.6,
+	// 			"t": true,
+	// 			"b": 11,
+	// 			"ui": 0,
+	// 			"bb": [
+	// 				11,
+	// 				12,
+	// 				13,
+	// 				14
+	// 			],
+	// 			"uu8": [
+	// 				15,
+	// 				16,
+	// 				17
+	// 			]
+	// 		},
+	// 		{
+	// 			"i": 2,
+	// 			"s": "xyz",
+	// 			"f": 4.5,
+	// 			"f32": 7.7,
+	// 			"t": false,
+	// 			"b": 22,
+	// 			"ui": 1,
+	// 			"bb": [
+	// 				22,
+	// 				23,
+	// 				24,
+	// 				25
+	// 			],
+	// 			"uu8": [
+	// 				26,
+	// 				27,
+	// 				28
+	// 			]
+	// 		},
+	// 		{
+	// 			"i": 3,
+	// 			"s": "ssss",
+	// 			"f": 4.9,
+	// 			"f32": 8.8,
+	// 			"t": false,
+	// 			"b": 33,
+	// 			"ui": 2,
+	// 			"bb": [
+	// 				33,
+	// 				34,
+	// 				35,
+	// 				36
+	// 			],
+	// 			"uu8": [
+	// 				37,
+	// 				38,
+	// 				39
+	// 			]
+	// 		},
+	// 		{
+	// 			"i": 4,
+	// 			"s": "xxxx",
+	// 			"f": 5.9,
+	// 			"f32": 9.9,
+	// 			"t": true,
+	// 			"b": 44,
+	// 			"ui": 3,
+	// 			"bb": [],
+	// 			"uu8": []
+	// 		}
+	// 	]
+	// }
+}
+
+func ExampleTable_GetTableDataAsJSON_nestedTables() {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore]
+    i   s      f       f32     t     b    ui    bb            uu8        right
+    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
+    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
+    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28] []
+    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39] []
+    3   "xxxx" 5.9     9.9     true  44   3     []            []         []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Now create and set some table cell tables.
+	right0 := `
+	[right0]
+	i int = 32`
+
+	right1 := `
+	[right1]
+	s string = "thirty-two"`
+
+	right2 := `
+	[right2]
+	x	y	z
+	int	int	int
+	1	2	3
+	4	5	6
+	7	8	9`
+
+	right3 := `
+	[right3]
+	f float32 = 88.8`
+
+	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
+	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
+	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
+	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
+
+	var jsonString string
+	jsonString, err = table.GetTableDataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("Print as is:")
+	fmt.Println()
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	fmt.Println("Print indented for readability:")
+	fmt.Println()
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		log.Println(err)
+	}
+	out.WriteTo(os.Stdout)
+
+	// Okay, now let's get it back from JSON into *Table
+
+	// Output:
+	// Print as is:
+	// 
+	// {"TypesGalore":[{"i":0,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17],"right":{"right0":[{"i":32}]}},{"i":1,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28],"right":{"right1":[{"s":"thirty-two"}]}},{"i":2,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39],"right":{"right2":[{"x":1,"y":2,"z":3},{"x":4,"y":5,"z":6},{"x":7,"y":8,"z":9}]}},{"i":3,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[],"right":{"right3":[{"f":88.8}]}}]}
+	// 
+	// Print indented for readability:
+	// 
+	// {
+	// 	"TypesGalore": [
+	// 		{
+	// 			"i": 0,
+	// 			"s": "abc",
+	// 			"f": 2.3,
+	// 			"f32": 6.6,
+	// 			"t": true,
+	// 			"b": 11,
+	// 			"ui": 0,
+	// 			"bb": [
+	// 				11,
+	// 				12,
+	// 				13,
+	// 				14
+	// 			],
+	// 			"uu8": [
+	// 				15,
+	// 				16,
+	// 				17
+	// 			],
+	// 			"right": {
+	// 				"right0": [
+	// 					{
+	// 						"i": 32
+	// 					}
+	// 				]
+	// 			}
+	// 		},
+	// 		{
+	// 			"i": 1,
+	// 			"s": "xyz",
+	// 			"f": 4.5,
+	// 			"f32": 7.7,
+	// 			"t": false,
+	// 			"b": 22,
+	// 			"ui": 1,
+	// 			"bb": [
+	// 				22,
+	// 				23,
+	// 				24,
+	// 				25
+	// 			],
+	// 			"uu8": [
+	// 				26,
+	// 				27,
+	// 				28
+	// 			],
+	// 			"right": {
+	// 				"right1": [
+	// 					{
+	// 						"s": "thirty-two"
+	// 					}
+	// 				]
+	// 			}
+	// 		},
+	// 		{
+	// 			"i": 2,
+	// 			"s": "ssss",
+	// 			"f": 4.9,
+	// 			"f32": 8.8,
+	// 			"t": false,
+	// 			"b": 33,
+	// 			"ui": 2,
+	// 			"bb": [
+	// 				33,
+	// 				34,
+	// 				35,
+	// 				36
+	// 			],
+	// 			"uu8": [
+	// 				37,
+	// 				38,
+	// 				39
+	// 			],
+	// 			"right": {
+	// 				"right2": [
+	// 					{
+	// 						"x": 1,
+	// 						"y": 2,
+	// 						"z": 3
+	// 					},
+	// 					{
+	// 						"x": 4,
+	// 						"y": 5,
+	// 						"z": 6
+	// 					},
+	// 					{
+	// 						"x": 7,
+	// 						"y": 8,
+	// 						"z": 9
+	// 					}
+	// 				]
+	// 			}
+	// 		},
+	// 		{
+	// 			"i": 3,
+	// 			"s": "xxxx",
+	// 			"f": 5.9,
+	// 			"f32": 9.9,
+	// 			"t": true,
+	// 			"b": 44,
+	// 			"ui": 3,
+	// 			"bb": [],
+	// 			"uu8": [],
+	// 			"right": {
+	// 				"right3": [
+	// 					{
+	// 						"f": 88.8
+	// 					}
+	// 				]
+	// 			}
+	// 		}
+	// 	]
+	// }
+}
+
+func ExampleTable_GetTableMetadataAsJSON() {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore13]
+    i   s      f       f32     t     b    ui    bb            uu8
+    int string float64 float32 bool  byte uint8 []byte        []uint8
+    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+    4   "xxxx" 5.9     9.9     true  44   3     []            []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	var jsonString string
+	jsonString, err = table.GetTableMetadataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("Print as is:")
+	fmt.Println()
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	fmt.Println("Print indented for readability:")
+	fmt.Println()
+
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		log.Println(err)
+	}
+
+	out.WriteTo(os.Stdout)
+	fmt.Println()
+
+	// Output:
+	// Print as is:
+	// 
+	// {"TypesGalore13":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"}]}
+	//
+	// Print indented for readability:
+	//
+	// {
+	// 	"TypesGalore13": [
+	// 		{
+	// 			"i": "int"
+	// 		},
+	// 		{
+	// 			"s": "string"
+	// 		},
+	// 		{
+	// 			"f": "float64"
+	// 		},
+	// 		{
+	// 			"f32": "float32"
+	// 		},
+	// 		{
+	// 			"t": "bool"
+	// 		},
+	// 		{
+	// 			"b": "byte"
+	// 		},
+	// 		{
+	// 			"ui": "uint8"
+	// 		},
+	// 		{
+	// 			"bb": "[]byte"
+	// 		},
+	// 		{
+	// 			"uu8": "[]uint8"
+	// 		}
+	// 	]
+	// }
+}
+
+func ExampleTable_GetTableMetadataAsJSON_nestedTables() {
+	var err error
+	var table *Table
+
+	var tableString string = `
+	[TypesGalore13]
+    i   s      f       f32     t     b    ui    bb            uu8        right
+    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
+    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
+    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28] []
+    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39] []
+    3   "xxxx" 5.9     9.9     true  44   3     []            []         []
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Now create and set some table cell tables.
+	right0 := `
+	[right0]
+	i int = 32`
+
+	right1 := `
+	[right1]
+	s string = "thirty-two"`
+
+	right2 := `
+	[right2]
+	x	y	z
+	int	int	int
+	1	2	3
+	4	5	6
+	7	8	9`
+
+	right3 := `
+	[right3]
+	f float32 = 88.8`
+
+	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
+	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
+	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
+	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
+
+	var jsonString string
+	jsonString, err = table.GetTableMetadataAsJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("Print as is:")
+	fmt.Println()
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	fmt.Println("Print indented for readability:")
+	fmt.Println()
+
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		log.Println(err)
+	}
+
+	out.WriteTo(os.Stdout)
+	fmt.Println()
+
+	// Output:
+	// Print as is:
+	// 
+	// {"TypesGalore13":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"},{"right":"*Table"}]}
+	//
+	// Print indented for readability:
+	//
+	// {
+	// 	"TypesGalore13": [
+	// 		{
+	// 			"i": "int"
+	// 		},
+	// 		{
+	// 			"s": "string"
+	// 		},
+	// 		{
+	// 			"f": "float64"
+	// 		},
+	// 		{
+	// 			"f32": "float32"
+	// 		},
+	// 		{
+	// 			"t": "bool"
+	// 		},
+	// 		{
+	// 			"b": "byte"
+	// 		},
+	// 		{
+	// 			"ui": "uint8"
+	// 		},
+	// 		{
+	// 			"bb": "[]byte"
+	// 		},
+	// 		{
+	// 			"uu8": "[]uint8"
+	// 		},
+	// 		{
+	// 			"right": "*Table"
+	// 		}
+	// 	]
+	// }
 }
