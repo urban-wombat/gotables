@@ -3902,7 +3902,8 @@ func (table *Table) ShuffleRandom() error {
 
 	Conspicuously absent are the complex types (complex64 complex128).
 
-	*Table and *gotables.Table are not Go types.
+	Custom type *gotables.Table (same as *Table) is not a Go type
+	but is supported by gotables to allow nested tables within table cells.
 
 	The list includes some aliases:-
 		[]byte and []uint8

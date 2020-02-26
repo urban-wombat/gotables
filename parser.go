@@ -145,7 +145,7 @@ var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\
 
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
-const tableNameNilPattern string = `^\[\]$`
+const tableNameNilPattern string = `^\[\]`
 
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var tableNameNilRegexp *regexp.Regexp = regexp.MustCompile(tableNameNilPattern)
@@ -1146,9 +1146,12 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 		case "*Table", "*gotables.Table":
 			rangeFound = tableNameRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
+where(remaining)
 				// See if it's a nil table.
 				rangeFound = tableNameNilRegexp.FindStringIndex(remaining)
+where(remaining)
 				if rangeFound != nil {
+where(remaining)
 					tableVal = NewNilTable()
 				} else {
 					return nil, fmt.Errorf("%s expecting a valid place-holder value of type %s, in square brackets, but found: %s",
