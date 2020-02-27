@@ -1658,6 +1658,109 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	// }
 //}
 
+func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
+	var err error
+	var table *Table
+
+	var tableString string
+	tableString = `
+	[SameTableReference]
+    i   s      right
+    int string *Table
+    0   "abc"  [] 
+    `
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// This should fail: We are assigning the same table.
+	table.SetTableMustSet("right", 0, table)	// table already exists (at the top level)
+	_, err = table.GetTableAsJSON()
+	if err != nil {
+		// Error printed here.
+		fmt.Println(err)
+	}
+
+	// Now try again with a COPY of the same table, which will have a new reference.
+	tableCopy, err := table.Copy(false)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println()
+
+	// This should succeed: We are assigning a DIFFERENT table, with the same contents.
+	table.SetTableMustSet("right", 0, tableCopy)	// Different table reference.
+	jsonString, err := table.GetTableAsJSON()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Print as is:")
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	fmt.Println("Print indented for readability:")
+	var out bytes.Buffer
+	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	if err != nil {
+		log.Println(err)
+	}
+	out.WriteTo(os.Stdout)
+
+	// Output:
+	// getTableDataAsJSON_recursive(): circular reference: table [SameTableReference] already exists in nested tables
+	//
+	// Print as is:
+	// {"SameTableReference":{"metadata::SameTableReference":[{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::SameTableReference":[[{"i":0},{"s":"abc"},{"right":{"SameTableReference":{"metadata::SameTableReference":[{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::SameTableReference":[]}}]]}
+	//
+	// Print indented for readability:
+	// {
+	// 	"SameTableReference": {
+	// 		"metadata::SameTableReference": [
+	// 			{
+	// 				"i": "int"
+	// 			},
+	// 			{
+	// 				"s": "string"
+	// 			},
+	// 			{
+	// 				"right": "*Table"
+	// 			}
+	// 		]
+	// 	},
+	// 	"data::SameTableReference": [
+	// 		[
+	// 			{
+	// 				"i": 0
+	// 			},
+	// 			{
+	// 				"s": "abc"
+	// 			},
+	// 			{
+	// 				"right": {
+	// 					"SameTableReference": {
+	// 						"metadata::SameTableReference": [
+	// 							{
+	// 								"i": "int"
+	// 							},
+	// 							{
+	// 								"s": "string"
+	// 							},
+	// 							{
+	// 								"right": "*Table"
+	// 							}
+	// 						]
+	// 					},
+	// 					"data::SameTableReference": []
+	// 				}
+	// 			}
+	// 		]
+	// 	]
+	// }
+}
+
 func ExampleTable_GetTableAsJSON_nestedTables() {
 	var err error
 	var table *Table
@@ -1718,7 +1821,6 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 		log.Println(err)
 	}
 
-/*
 	// Now create and set some table cell tables.
 	right0 := `
 	[right0]
@@ -1740,15 +1842,19 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	[right3]
 	f float32 = 88.8`
 
+/*
 	right4 := `
 	[right4]
 	t1 *Table = []
 	t2 *gotables.Table = []`
+*/
 
 	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
 	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
 	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
 	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
+	table.SetTableMustSet("right", 4, table)
+/*
 	tableRight4 := NewTableFromStringMustMake(right4)
 	table.SetTableMustSet("right", 4, tableRight4)
 	tableRight4.SetTableMustSet("t1", 0, NewTableFromStringMustMake(right2))
@@ -1756,18 +1862,18 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 */
 
 	var jsonString string
-	jsonString, err = table.GetTableMetadataAsJSON()	// okay
-//	jsonString, err = table.GetTableDataAsJSON()		// okay
-//	jsonString, err = table.GetTableAsJSON()			// okay
-
-/*
-	var buf bytes.Buffer
-	err = getTableDataAsJSON_recursive(table, &buf)		// okay but does not generate valid JSON by itself.
+//	jsonString, err = table.GetTableMetadataAsJSON()	// okay
 	if err != nil {
 		log.Println(err)
 	}
-	jsonString = buf.String()
-*/
+//	jsonString, err = table.GetTableDataAsJSON()		// okay
+	if err != nil {
+		log.Println(err)
+	}
+	jsonString, err = table.GetTableAsJSON()			// okay
+	if err != nil {
+		log.Println(err)
+	}
 
 	fmt.Println("Print as is:")
 	fmt.Println()
@@ -1784,14 +1890,6 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	out.WriteTo(os.Stdout)
 
 	// Now let's get it back from JSON into *Table
-
-/*
-	tableFromJSON, err := NewTableFromJSON(jsonMetadataString, jsonString)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println(tableFromJSON)
-*/
 
 	// Output:
 

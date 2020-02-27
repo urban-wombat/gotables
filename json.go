@@ -10,98 +10,49 @@ import (
 	"strings"
 )
 
+type circRefMap map[*Table]struct{}
+var empty struct{}
+
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
-// DEPRECATED
-///*
-//	Marshal json from the rows of data in this table.
-//
-//	A *gotables.Table is composed of metadata and data:-
-//		1. Metadata:-
-//			* Table name
-//			* Column names
-//			* Column types
-//		2. Data:
-//			* Rows of data
-//
-//	To generate json metadata and data:-
-//		1. Meta: call method table.GetTableMetadataAsJSON()
-//		2. Data: call method table.GetTableDataAsJSON()
-//*/
-//func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
-//
-//	if table == nil {
-//		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
-//	}
-//
-//	var buf bytes.Buffer
-//
-//	buf.WriteByte(123)  // Opening brace
-//	buf.WriteString(`"data":[`)
-//	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-//		buf.WriteByte(123) // Opening brace
-//		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-//			buf.WriteByte('"')
-//			buf.WriteString(table.colNames[colIndex])
-//			buf.WriteString(`":`)
-//			var val interface{}
-//			val, err = table.GetValByColIndex(colIndex, rowIndex)
-//			if err != nil {
-//				return "", err
-//			}
-//			switch val.(type) {
-//			case string:
-//				buf.WriteString(`"` + val.(string) + `"`) // May be faster as 3 writes?
-//			case bool, int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
-//				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-//				if err != nil {
-//					return "", err
-//				}
-//				buf.WriteString(valStr)
-//			case []byte:
-//				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
-//				if err != nil {
-//					return "", err
-//				}
-//				// Insert comma delimiters between slice elements.
-//				//				valStr = strings.ReplaceAll(valStr, " ", ",")	// New in Go 1.11?
-//				valStr = replaceSpaces.ReplaceAllString(valStr, ",")
-//				buf.WriteString(valStr)
-//			case *Table:
-//				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
-//				if err != nil {
-//					return "", err
-//				}
-//				metadataStr, err := nestedTable.GetTableMetadataAsJSON()
-//				if err != nil {
-//					return "", err
-//				}
-//				dataStr, err := nestedTable.GetTableDataAsJSON()
-//				if err != nil {
-//					return "", err
-//				}
-//				valStr := metadataStr
-//				valStr += dataStr
-//				buf.WriteString(valStr)
-//			default:
-//				buf.WriteString(`"TYPE UNKNOWN"`)
-//			}
-//			if colIndex < len(table.colNames)-1 {
-//				buf.WriteByte(',')
-//			}
-//		}
-//		buf.WriteByte(125) // Closing brace
-//		if rowIndex < len(table.rows)-1 {
-//			buf.WriteByte(',')
-//		}
-//	}
-//	buf.WriteByte(']')
-//	buf.WriteByte(125)  // Closing brace
-//
-//	jsonDataString = buf.String()
-//
-//	return
-//}
+/*
+	Marshal json from the rows of data in this table.
+
+	A *gotables.Table is composed of metadata and data:-
+		1. Metadata:-
+			* Table name
+			* Column names
+			* Column types
+		2. Data:
+			* Rows of data
+
+	To generate json metadata and data:-
+		1. Meta: call method table.GetTableMetadataAsJSON()
+		2. Data: call method table.GetTableDataAsJSON()
+*/
+func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
+
+	if table == nil {
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	var buf bytes.Buffer
+	var refMap circRefMap = map[*Table]struct{}{}
+
+	buf.WriteByte(123)	// Opening brace outermost
+	refMap[table] = empty
+
+	err = getTableDataAsJSON_recursive(table, &buf, refMap)
+	if err != nil {
+		return "", err
+	}
+
+	buf.WriteByte(125)	// Closing brace outermost
+
+	jsonDataString = buf.String()
+
+	return
+}
 
 /*
 	Marshal json from the metadata in this table.
@@ -127,14 +78,14 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 	}
 
 	if table.ColCount() == 0 {
-		return "", fmt.Errorf("%s: in table [%s]: cannot marshal json metadata from a table with zero columns", UtilFuncName(), table.Name())
+		// return "", fmt.Errorf("%s: in table [%s]: cannot marshal json metadata from a table with zero columns", UtilFuncName(), table.Name())
+		return "[]", nil
 	}
 
 	var buf bytes.Buffer
 
 	buf.WriteByte(123) // Opening brace
-	buf.WriteString(fmt.Sprintf(`"%s":`, table.tableName + "_metadata"))
-	buf.WriteByte('[')
+	buf.WriteString(fmt.Sprintf(`"%s::%s":[`, "metadata", table.tableName))
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 		buf.WriteByte(123) // Opening brace around heading element (name: type)
 		buf.WriteByte('"')
@@ -745,10 +696,12 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 	}
 
 	var buf bytes.Buffer
+	var refMap circRefMap = map[*Table]struct{}{}
 
 	buf.WriteByte(123)	// Opening brace outermost
+	refMap[table] = empty
 
-	err = getTableDataAsJSON_recursive(table, &buf)
+	err = getTableDataAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
 	}
@@ -766,7 +719,7 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 	Note: This doesn't generate valid JSON by itself.
 	Used by GetTableAsJSON() only.
 */
-func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer) (err error) {
+func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -775,7 +728,8 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer) (err error) {
 	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
 	// Get metadata
-	jsonMetadata, err := table.GetTableMetadataAsJSON()
+	var jsonMetadata string
+	jsonMetadata, err = table.GetTableMetadataAsJSON()
 	if err != nil {
 		return err
 	}
@@ -787,7 +741,7 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer) (err error) {
 
 	// Get data
 
-	buf.WriteString(fmt.Sprintf("%q:[", table.Name() + "_data"))	// Begin array of rows.
+	buf.WriteString(fmt.Sprintf(`"%s::%s":[`, "data", table.Name()))	// Begin array of rows.
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		buf.WriteByte('[')	// Begin array of column cells.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -805,13 +759,15 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer) (err error) {
 				buf.WriteString(fmt.Sprintf("%q", val.(string)))
 
 			case bool, int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
-				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
+				var valStr string
+				valStr, err = table.GetValAsStringByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return err
 				}
 				buf.WriteString(valStr)
 
 			case []byte:
+				var valStr string
 				valStr, err := table.GetValAsStringByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return err
@@ -823,16 +779,24 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer) (err error) {
 
 			case *Table:
 
-				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
+				var nestedTable *Table
+				nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return err
+				}
+
+				_, exists := refMap[nestedTable]
+				if exists {
+					err = fmt.Errorf("%s: circular reference: table [%s] already exists in nested tables",
+						UtilFuncName(), nestedTable.Name())
+					return
 				}
 
 				if nestedTable.isNilTable {
 					buf.WriteString("null")
 				} else {
 					buf.WriteByte(123)	// Begin nested table.
-					err = getTableDataAsJSON_recursive(nestedTable, buf)
+					err = getTableDataAsJSON_recursive(nestedTable, buf, refMap)
 					if err != nil {
 						return err
 					}
