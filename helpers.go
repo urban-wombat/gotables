@@ -2396,6 +2396,10 @@ func (table *Table) GetTable(colName string, rowIndex int) (val *Table, err erro
 */
 func (table *Table) GetByteSliceMustGet(colName string, rowIndex int) (val []byte) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetByteSlice(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2409,6 +2413,10 @@ func (table *Table) GetByteSliceMustGet(colName string, rowIndex int) (val []byt
 	Like its non-MustGet alternative  GetUint8Slice(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8SliceMustGet(colName string, rowIndex int) (val []uint8) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint8Slice(colName, rowIndex)
 	if err != nil {
@@ -2424,6 +2432,10 @@ func (table *Table) GetUint8SliceMustGet(colName string, rowIndex int) (val []ui
 */
 func (table *Table) GetBoolMustGet(colName string, rowIndex int) (val bool) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetBool(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2437,6 +2449,10 @@ func (table *Table) GetBoolMustGet(colName string, rowIndex int) (val bool) {
 	Like its non-MustGet alternative  GetByte(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteMustGet(colName string, rowIndex int) (val byte) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetByte(colName, rowIndex)
 	if err != nil {
@@ -2452,6 +2468,10 @@ func (table *Table) GetByteMustGet(colName string, rowIndex int) (val byte) {
 */
 func (table *Table) GetFloat32MustGet(colName string, rowIndex int) (val float32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetFloat32(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2465,6 +2485,10 @@ func (table *Table) GetFloat32MustGet(colName string, rowIndex int) (val float32
 	Like its non-MustGet alternative  GetFloat64(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat64MustGet(colName string, rowIndex int) (val float64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetFloat64(colName, rowIndex)
 	if err != nil {
@@ -2480,6 +2504,10 @@ func (table *Table) GetFloat64MustGet(colName string, rowIndex int) (val float64
 */
 func (table *Table) GetIntMustGet(colName string, rowIndex int) (val int) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetInt(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2493,6 +2521,10 @@ func (table *Table) GetIntMustGet(colName string, rowIndex int) (val int) {
 	Like its non-MustGet alternative  GetInt16(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt16MustGet(colName string, rowIndex int) (val int16) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetInt16(colName, rowIndex)
 	if err != nil {
@@ -2508,6 +2540,10 @@ func (table *Table) GetInt16MustGet(colName string, rowIndex int) (val int16) {
 */
 func (table *Table) GetInt32MustGet(colName string, rowIndex int) (val int32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetInt32(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2521,6 +2557,10 @@ func (table *Table) GetInt32MustGet(colName string, rowIndex int) (val int32) {
 	Like its non-MustGet alternative  GetInt64(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt64MustGet(colName string, rowIndex int) (val int64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetInt64(colName, rowIndex)
 	if err != nil {
@@ -2536,6 +2576,10 @@ func (table *Table) GetInt64MustGet(colName string, rowIndex int) (val int64) {
 */
 func (table *Table) GetInt8MustGet(colName string, rowIndex int) (val int8) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetInt8(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2549,6 +2593,10 @@ func (table *Table) GetInt8MustGet(colName string, rowIndex int) (val int8) {
 	Like its non-MustGet alternative  GetRune(), but panics on error, and does not return an error.
 */
 func (table *Table) GetRuneMustGet(colName string, rowIndex int) (val rune) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetRune(colName, rowIndex)
 	if err != nil {
@@ -2564,6 +2612,10 @@ func (table *Table) GetRuneMustGet(colName string, rowIndex int) (val rune) {
 */
 func (table *Table) GetStringMustGet(colName string, rowIndex int) (val string) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetString(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2577,6 +2629,10 @@ func (table *Table) GetStringMustGet(colName string, rowIndex int) (val string) 
 	Like its non-MustGet alternative  GetUint(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUintMustGet(colName string, rowIndex int) (val uint) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint(colName, rowIndex)
 	if err != nil {
@@ -2592,6 +2648,10 @@ func (table *Table) GetUintMustGet(colName string, rowIndex int) (val uint) {
 */
 func (table *Table) GetUint16MustGet(colName string, rowIndex int) (val uint16) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetUint16(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2605,6 +2665,10 @@ func (table *Table) GetUint16MustGet(colName string, rowIndex int) (val uint16) 
 	Like its non-MustGet alternative  GetUint32(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint32MustGet(colName string, rowIndex int) (val uint32) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint32(colName, rowIndex)
 	if err != nil {
@@ -2620,6 +2684,10 @@ func (table *Table) GetUint32MustGet(colName string, rowIndex int) (val uint32) 
 */
 func (table *Table) GetUint64MustGet(colName string, rowIndex int) (val uint64) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetUint64(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2633,6 +2701,10 @@ func (table *Table) GetUint64MustGet(colName string, rowIndex int) (val uint64) 
 	Like its non-MustGet alternative  GetUint8(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8MustGet(colName string, rowIndex int) (val uint8) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint8(colName, rowIndex)
 	if err != nil {
@@ -2648,6 +2720,10 @@ func (table *Table) GetUint8MustGet(colName string, rowIndex int) (val uint8) {
 */
 func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetTable(colName, rowIndex)
 	if err != nil {
 		panic(err)
@@ -2662,6 +2738,10 @@ func (table *Table) GetTableMustGet(colName string, rowIndex int) (val *Table) {
 */
 func (table *Table) SetByteSliceMustSet(colName string, rowIndex int, val []byte) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetByteSlice(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2673,6 +2753,10 @@ func (table *Table) SetByteSliceMustSet(colName string, rowIndex int, val []byte
 	Like its non-MustSet alternative  SetUint8Slice(), but panics on error, and does not return an error.
 */
 func (table *Table) SetUint8SliceMustSet(colName string, rowIndex int, val []uint8) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetUint8Slice(colName, rowIndex, val)
 	if err != nil {
@@ -2686,6 +2770,10 @@ func (table *Table) SetUint8SliceMustSet(colName string, rowIndex int, val []uin
 */
 func (table *Table) SetBoolMustSet(colName string, rowIndex int, val bool) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetBool(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2697,6 +2785,10 @@ func (table *Table) SetBoolMustSet(colName string, rowIndex int, val bool) {
 	Like its non-MustSet alternative  SetByte(), but panics on error, and does not return an error.
 */
 func (table *Table) SetByteMustSet(colName string, rowIndex int, val byte) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetByte(colName, rowIndex, val)
 	if err != nil {
@@ -2710,6 +2802,10 @@ func (table *Table) SetByteMustSet(colName string, rowIndex int, val byte) {
 */
 func (table *Table) SetFloat32MustSet(colName string, rowIndex int, val float32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetFloat32(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2721,6 +2817,10 @@ func (table *Table) SetFloat32MustSet(colName string, rowIndex int, val float32)
 	Like its non-MustSet alternative  SetFloat64(), but panics on error, and does not return an error.
 */
 func (table *Table) SetFloat64MustSet(colName string, rowIndex int, val float64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetFloat64(colName, rowIndex, val)
 	if err != nil {
@@ -2734,6 +2834,10 @@ func (table *Table) SetFloat64MustSet(colName string, rowIndex int, val float64)
 */
 func (table *Table) SetIntMustSet(colName string, rowIndex int, val int) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetInt(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2745,6 +2849,10 @@ func (table *Table) SetIntMustSet(colName string, rowIndex int, val int) {
 	Like its non-MustSet alternative  SetInt16(), but panics on error, and does not return an error.
 */
 func (table *Table) SetInt16MustSet(colName string, rowIndex int, val int16) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetInt16(colName, rowIndex, val)
 	if err != nil {
@@ -2758,6 +2866,10 @@ func (table *Table) SetInt16MustSet(colName string, rowIndex int, val int16) {
 */
 func (table *Table) SetInt32MustSet(colName string, rowIndex int, val int32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetInt32(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2769,6 +2881,10 @@ func (table *Table) SetInt32MustSet(colName string, rowIndex int, val int32) {
 	Like its non-MustSet alternative  SetInt64(), but panics on error, and does not return an error.
 */
 func (table *Table) SetInt64MustSet(colName string, rowIndex int, val int64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetInt64(colName, rowIndex, val)
 	if err != nil {
@@ -2782,6 +2898,10 @@ func (table *Table) SetInt64MustSet(colName string, rowIndex int, val int64) {
 */
 func (table *Table) SetInt8MustSet(colName string, rowIndex int, val int8) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetInt8(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2793,6 +2913,10 @@ func (table *Table) SetInt8MustSet(colName string, rowIndex int, val int8) {
 	Like its non-MustSet alternative  SetRune(), but panics on error, and does not return an error.
 */
 func (table *Table) SetRuneMustSet(colName string, rowIndex int, val rune) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetRune(colName, rowIndex, val)
 	if err != nil {
@@ -2806,6 +2930,10 @@ func (table *Table) SetRuneMustSet(colName string, rowIndex int, val rune) {
 */
 func (table *Table) SetStringMustSet(colName string, rowIndex int, val string) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetString(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2817,6 +2945,10 @@ func (table *Table) SetStringMustSet(colName string, rowIndex int, val string) {
 	Like its non-MustSet alternative  SetUint(), but panics on error, and does not return an error.
 */
 func (table *Table) SetUintMustSet(colName string, rowIndex int, val uint) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetUint(colName, rowIndex, val)
 	if err != nil {
@@ -2830,6 +2962,10 @@ func (table *Table) SetUintMustSet(colName string, rowIndex int, val uint) {
 */
 func (table *Table) SetUint16MustSet(colName string, rowIndex int, val uint16) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetUint16(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2841,6 +2977,10 @@ func (table *Table) SetUint16MustSet(colName string, rowIndex int, val uint16) {
 	Like its non-MustSet alternative  SetUint32(), but panics on error, and does not return an error.
 */
 func (table *Table) SetUint32MustSet(colName string, rowIndex int, val uint32) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetUint32(colName, rowIndex, val)
 	if err != nil {
@@ -2854,6 +2994,10 @@ func (table *Table) SetUint32MustSet(colName string, rowIndex int, val uint32) {
 */
 func (table *Table) SetUint64MustSet(colName string, rowIndex int, val uint64) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetUint64(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2866,6 +3010,10 @@ func (table *Table) SetUint64MustSet(colName string, rowIndex int, val uint64) {
 */
 func (table *Table) SetUint8MustSet(colName string, rowIndex int, val uint8) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	err := table.SetUint8(colName, rowIndex, val)
 	if err != nil {
 		panic(err)
@@ -2877,6 +3025,10 @@ func (table *Table) SetUint8MustSet(colName string, rowIndex int, val uint8) {
 	Like its non-MustSet alternative  SetTable(), but panics on error, and does not return an error.
 */
 func (table *Table) SetTableMustSet(colName string, rowIndex int, val *Table) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	err := table.SetTable(colName, rowIndex, val)
 	if err != nil {
@@ -3600,6 +3752,10 @@ Like its non-MustGet alternative GetByteSliceByColIndex(), but panics on error, 
 */
 func (table *Table) GetByteSliceByColIndexMustGet(colIndex int, rowIndex int) (val []byte) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetByteSliceByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3613,6 +3769,10 @@ func (table *Table) GetByteSliceByColIndexMustGet(colIndex int, rowIndex int) (v
 Like its non-MustGet alternative GetUint8SliceByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint8SliceByColIndexMustGet(colIndex int, rowIndex int) (val []uint8) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint8SliceByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3628,6 +3788,10 @@ Like its non-MustGet alternative GetBoolByColIndex(), but panics on error, and d
 */
 func (table *Table) GetBoolByColIndexMustGet(colIndex int, rowIndex int) (val bool) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetBoolByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3641,6 +3805,10 @@ func (table *Table) GetBoolByColIndexMustGet(colIndex int, rowIndex int) (val bo
 Like its non-MustGet alternative GetByteByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetByteByColIndexMustGet(colIndex int, rowIndex int) (val byte) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetByteByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3656,6 +3824,10 @@ Like its non-MustGet alternative GetFloat32ByColIndex(), but panics on error, an
 */
 func (table *Table) GetFloat32ByColIndexMustGet(colIndex int, rowIndex int) (val float32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetFloat32ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3669,6 +3841,10 @@ func (table *Table) GetFloat32ByColIndexMustGet(colIndex int, rowIndex int) (val
 Like its non-MustGet alternative GetFloat64ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetFloat64ByColIndexMustGet(colIndex int, rowIndex int) (val float64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetFloat64ByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3684,6 +3860,10 @@ Like its non-MustGet alternative GetIntByColIndex(), but panics on error, and do
 */
 func (table *Table) GetIntByColIndexMustGet(colIndex int, rowIndex int) (val int) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetIntByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3697,6 +3877,10 @@ func (table *Table) GetIntByColIndexMustGet(colIndex int, rowIndex int) (val int
 Like its non-MustGet alternative GetInt16ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt16ByColIndexMustGet(colIndex int, rowIndex int) (val int16) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetInt16ByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3712,6 +3896,10 @@ Like its non-MustGet alternative GetInt32ByColIndex(), but panics on error, and 
 */
 func (table *Table) GetInt32ByColIndexMustGet(colIndex int, rowIndex int) (val int32) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetInt32ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3725,6 +3913,10 @@ func (table *Table) GetInt32ByColIndexMustGet(colIndex int, rowIndex int) (val i
 Like its non-MustGet alternative GetInt64ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetInt64ByColIndexMustGet(colIndex int, rowIndex int) (val int64) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetInt64ByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3740,6 +3932,10 @@ Like its non-MustGet alternative GetInt8ByColIndex(), but panics on error, and d
 */
 func (table *Table) GetInt8ByColIndexMustGet(colIndex int, rowIndex int) (val int8) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetInt8ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3753,6 +3949,10 @@ func (table *Table) GetInt8ByColIndexMustGet(colIndex int, rowIndex int) (val in
 Like its non-MustGet alternative GetRuneByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetRuneByColIndexMustGet(colIndex int, rowIndex int) (val rune) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetRuneByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3768,6 +3968,10 @@ Like its non-MustGet alternative GetStringByColIndex(), but panics on error, and
 */
 func (table *Table) GetStringByColIndexMustGet(colIndex int, rowIndex int) (val string) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetStringByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3781,6 +3985,10 @@ func (table *Table) GetStringByColIndexMustGet(colIndex int, rowIndex int) (val 
 Like its non-MustGet alternative GetUintByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUintByColIndexMustGet(colIndex int, rowIndex int) (val uint) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUintByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3796,6 +4004,10 @@ Like its non-MustGet alternative GetUint16ByColIndex(), but panics on error, and
 */
 func (table *Table) GetUint16ByColIndexMustGet(colIndex int, rowIndex int) (val uint16) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetUint16ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3809,6 +4021,10 @@ func (table *Table) GetUint16ByColIndexMustGet(colIndex int, rowIndex int) (val 
 Like its non-MustGet alternative GetUint32ByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetUint32ByColIndexMustGet(colIndex int, rowIndex int) (val uint32) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetUint32ByColIndex(colIndex, rowIndex)
 	if err != nil {
@@ -3824,6 +4040,10 @@ Like its non-MustGet alternative GetUint64ByColIndex(), but panics on error, and
 */
 func (table *Table) GetUint64ByColIndexMustGet(colIndex int, rowIndex int) (val uint64) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetUint64ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3838,6 +4058,10 @@ Like its non-MustGet alternative GetUint8ByColIndex(), but panics on error, and 
 */
 func (table *Table) GetUint8ByColIndexMustGet(colIndex int, rowIndex int) (val uint8) {
 
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
+
 	val, err := table.GetUint8ByColIndex(colIndex, rowIndex)
 	if err != nil {
 		panic(err)
@@ -3851,6 +4075,10 @@ func (table *Table) GetUint8ByColIndexMustGet(colIndex int, rowIndex int) (val u
 Like its non-MustGet alternative GetTableByColIndex(), but panics on error, and does not return an error.
 */
 func (table *Table) GetTableByColIndexMustGet(colIndex int, rowIndex int) (val *Table) {
+
+	if table == nil {
+		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+	}
 
 	val, err := table.GetTableByColIndex(colIndex, rowIndex)
 	if err != nil {

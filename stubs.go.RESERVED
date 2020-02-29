@@ -1,0 +1,38 @@
+package gotables
+
+func (table *Table) SetRowCellsToZeroValue(i int) error {return nil}
+
+func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, f float32) error {return nil}
+
+func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, f float64) error {return nil}
+
+func (table *Table) SetCellToZeroValueByColIndex(int, int) error {return nil}
+
+func (*Table) SetInt(string, int, int) error {return nil}
+
+func (*Table) SetString(string, int, string) error {return nil}
+func (*Table) SetUint(string, int, uint) error {return nil}
+func (*Table) SetByte(string, int, byte) error {return nil}
+func (*Table) SetInt8(string, int, int8) error {return nil}
+func (*Table) SetInt16(string, int, int16) error {return nil}
+func (*Table) SetInt32(string, int, int32) error {return nil}
+func (*Table) SetInt64(string, int, int64) error {return nil}
+func (*Table) SetUint8(string, int, uint8) error {return nil}
+func (*Table) SetUint16(string, int, uint16) error {return nil}
+func (*Table) SetUint32(string, int, uint32) error {return nil}
+func (*Table) SetUint64(string, int, uint64) error {return nil}
+func (*Table) SetFloat32(string, int, float32) error {return nil}
+func (*Table) SetFloat64(string, int, float64) error {return nil}
+func (*Table) SetBool(string, int, bool) error {return nil}
+func (*Table) SetByteSlice(string, int, []byte) error {return nil}
+func (*Table) SetTable(string, int, *Table) error {return nil}
+
+func (*Table) GetString(string, int) (string, error) {return "", nil}
+func (*Table) GetBool(string, int) (bool, error) {return false, nil}
+
+func (*Table) GetStringByColIndex(int, int) (string, error) {return "", nil}
+func (*Table) GetBoolByColIndex(int, int) (bool, error) {return false, nil}
+func (*Table) GetTableByColIndex(int, int) (*Table, error) {return nil, nil}
+
+func (*Table) SetBoolByColIndex(int, int, bool) error {return nil}
+func (*Table) SetStringByColIndex(int, int, string) error {return nil}

@@ -1540,7 +1540,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	// {"TypesGalore":[{"i":0,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17],"right":{"right0":[{"i":32}]}},{"i":1,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28],"right":{"right1":[{"s":"thirty-two"}]}},{"i":2,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39],"right":{"right2":[{"x":1,"y":2,"z":3},{"x":4,"y":5,"z":6},{"x":7,"y":8,"z":9}]}},{"i":3,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[],"right":{"right3":[{"f":88.8}]}}]}
 //	// 
 //	// Print indented for readability:
-//	// 
+//	//
 //	// {
 //	// 	"TypesGalore": [
 //	// 		{
@@ -1665,9 +1665,9 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	var tableString string
 	tableString = `
 	[SameTableReference]
-    i   s      right
-    int string *Table
-    0   "abc"  [] 
+    left	i   s      right
+    *Table	int string *Table
+    nil		0   "abc"  [] 
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
@@ -1679,86 +1679,60 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	_, err = table.GetTableAsJSON()
 	if err != nil {
 		// Error printed here.
+where()
 		fmt.Println(err)
 	}
 
+	var jsonString string
+	var tableCopy *Table
+/*
 	// Now try again with a COPY of the same table, which will have a new reference.
-	tableCopy, err := table.Copy(false)
+	tableCopy, err = table.Copy(true)
 	if err != nil {
+where(tableCopy)
 		fmt.Println(err)
+fmt.Println()
+fmt.Println()
 	}
-
-	fmt.Println()
 
 	// This should succeed: We are assigning a DIFFERENT table, with the same contents.
 	table.SetTableMustSet("right", 0, tableCopy)	// Different table reference.
-	jsonString, err := table.GetTableAsJSON()
+	jsonString, err = table.GetTableAsJSON()
 	if err != nil {
+where(table)
 		fmt.Println(err)
+fmt.Println()
+fmt.Println()
 	}
+*/
+
+	// We want this to succeed, but at first it will probably fail because checking is too strict.
+	table.SetTableMustSet("left", 0, tableCopy)	// Same table reference as right
+	jsonString, err = table.GetTableAsJSON()
+	if err != nil {
+where(table)
+		fmt.Println(err)
+fmt.Println()
+fmt.Println()
+	}
+
+	fmt.Println()
 
 	fmt.Println("Print as is:")
 	fmt.Println(jsonString)
 	fmt.Println()
 
 	fmt.Println("Print indented for readability:")
-	var out bytes.Buffer
-	err = json.Indent(&out, []byte(jsonString), "", "\t")
+	jsonString, err = table.GetTableAsJSONIndented("", "\t")
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
+fmt.Println()
+fmt.Println()
 	}
-	out.WriteTo(os.Stdout)
+//	fmt.Println(jsonString)
 
 	// Output:
-	// getTableDataAsJSON_recursive(): circular reference: table [SameTableReference] already exists in nested tables
-	//
-	// Print as is:
-	// {"SameTableReference":{"metadata::SameTableReference":[{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::SameTableReference":[[{"i":0},{"s":"abc"},{"right":{"SameTableReference":{"metadata::SameTableReference":[{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::SameTableReference":[]}}]]}
-	//
-	// Print indented for readability:
-	// {
-	// 	"SameTableReference": {
-	// 		"metadata::SameTableReference": [
-	// 			{
-	// 				"i": "int"
-	// 			},
-	// 			{
-	// 				"s": "string"
-	// 			},
-	// 			{
-	// 				"right": "*Table"
-	// 			}
-	// 		]
-	// 	},
-	// 	"data::SameTableReference": [
-	// 		[
-	// 			{
-	// 				"i": 0
-	// 			},
-	// 			{
-	// 				"s": "abc"
-	// 			},
-	// 			{
-	// 				"right": {
-	// 					"SameTableReference": {
-	// 						"metadata::SameTableReference": [
-	// 							{
-	// 								"i": "int"
-	// 							},
-	// 							{
-	// 								"s": "string"
-	// 							},
-	// 							{
-	// 								"right": "*Table"
-	// 							}
-	// 						]
-	// 					},
-	// 					"data::SameTableReference": []
-	// 				}
-	// 			}
-	// 		]
-	// 	]
-	// }
+	// getTableDataAsJSON_recursive(): circular reference to table [SameTableReference] already exists in ancestor
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {

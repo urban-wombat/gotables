@@ -40,7 +40,7 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 
 	buf.WriteByte(123)	// Opening brace outermost
-	refMap[table] = empty
+//	refMap[table] = empty
 
 	err = getTableDataAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
@@ -52,6 +52,22 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 	jsonDataString = buf.String()
 
 	return
+}
+
+func (table *Table) GetTableDataAsJSONIndented(prefix string, indent string) (jsonDataString string, err error) {
+
+	jsonString, err := table.GetTableDataAsJSON()
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 /*
@@ -104,6 +120,22 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 	jsonMetadataString = buf.String()
 
 	return
+}
+
+func (table *Table) GetTableMetadataAsJSONIndented(prefix string, indent string) (jsonDataString string, err error) {
+
+	jsonString, err := table.GetTableMetadataAsJSON()
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 /*
@@ -699,7 +731,7 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 
 	buf.WriteByte(123)	// Opening brace outermost
-	refMap[table] = empty
+//	refMap[table] = empty
 
 	err = getTableDataAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
@@ -713,6 +745,22 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 	return
 }
 
+func (table *Table) GetTableAsJSONIndented(prefix string, indent string) (jsonDataString string, err error) {
+
+	jsonString, err := table.GetTableAsJSON()
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
 /*
 	Recursively walk down into any nested tables.
 
@@ -724,6 +772,9 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRe
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
+
+	// Add this table to the circular reference map.
+	refMap[table] = empty
 
 	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
@@ -787,12 +838,16 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRe
 
 				_, exists := refMap[nestedTable]
 				if exists {
-					err = fmt.Errorf("%s: circular reference: table [%s] already exists in nested tables",
+					err = fmt.Errorf("%s: circular reference to table [%s] already exists in ancestor",
 						UtilFuncName(), nestedTable.Name())
 					return
 				}
 
-				if nestedTable.isNilTable {
+				isNilTable, err := nestedTable.IsNilTable()
+				if err != nil {
+					return err
+				}
+				if isNilTable {
 					buf.WriteString("null")
 				} else {
 					buf.WriteByte(123)	// Begin nested table.

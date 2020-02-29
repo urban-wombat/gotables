@@ -2335,7 +2335,6 @@ func (table *Table) SetName(tableName string) error {
 	}
 
 	table.tableName = tableName
-
 	table.isNilTable = false
 
 	return nil
@@ -2492,6 +2491,7 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 		Valid sort keys (if any are set)?
 */
 func (table *Table) IsValidTable() (bool, error) {
+
 	if table == nil {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -2589,6 +2589,15 @@ func (table *Table) IsValidTable() (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (table *Table) IsNilTable() (bool, error) {
+
+	if table == nil {
+		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	return table.isNilTable, nil
 }
 
 func (table *Table) isValidColNamesMap() (bool, error) {
@@ -3268,6 +3277,11 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 	To copy some but not all rows, use NewTableFromRows()
 */
 func (table *Table) Copy(copyRowsAlso bool) (*Table, error) {
+
+	if table == nil {
+		return nil, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
 	var err error
 	var tableCopy *Table
 	const firstRow = 0
@@ -3302,6 +3316,11 @@ func (table *Table) Copy(copyRowsAlso bool) (*Table, error) {
 	Create a copy of TableSet, with or without copying table rows of data.
 */
 func (tableSet *TableSet) Copy(copyRowsAlso bool) (*TableSet, error) {
+
+	if tableSet == nil {
+		return nil, fmt.Errorf("%s ERROR: tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
 	var err error
 	var tableSetCopy *TableSet
 
