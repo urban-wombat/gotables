@@ -1662,63 +1662,70 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	var err error
 	var table *Table
 
+	// Minor note: both nil and [] are acceptable empty table placeholders.
+	//             Each will result in a NilTable with no table name.
+	//             To make the table usable, give it a table name.
+
 	var tableString string
 	tableString = `
 	[SameTableReference]
     left	i   s      right
     *Table	int string *Table
-    nil		0   "abc"  [] 
+    nil		42  "abc"  [] 
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// This should fail: We are assigning the same table.
+	fmt.Println("This should fail: We are assigning the same table as the parent.")
 	table.SetTableMustSet("right", 0, table)	// table already exists (at the top level)
+	fmt.Printf("%s", table)
 	_, err = table.GetTableAsJSON()
 	if err != nil {
-		// Error printed here.
-where()
+		// Error prints here.
 		fmt.Println(err)
 	}
+	fmt.Println()
 
+	fmt.Println("Now try again with a COPY of the same table, which will have a new reference.")
 	var jsonString string
 	var tableCopy *Table
-/*
-	// Now try again with a COPY of the same table, which will have a new reference.
 	tableCopy, err = table.Copy(true)
 	if err != nil {
-where(tableCopy)
+		// No error to print here.
 		fmt.Println(err)
-fmt.Println()
-fmt.Println()
 	}
+	err = tableCopy.SetName("TableCopy")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.")
+	err = tableCopy.SetTable("right", 0, nil)	// Not allowed. Must use an actual *Table reference.
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = tableCopy.SetTable("right", 0, NewNilTable())	// Otherwise this is another circular reference.
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%s", tableCopy)
+	fmt.Println()
 
-	// This should succeed: We are assigning a DIFFERENT table, with the same contents.
+	fmt.Println("This should succeed: We are assigning a DIFFERENT table (same contents doesn't matter).")
 	table.SetTableMustSet("right", 0, tableCopy)	// Different table reference.
+	fmt.Printf("%s", table)
 	jsonString, err = table.GetTableAsJSON()
 	if err != nil {
-where(table)
 		fmt.Println(err)
-fmt.Println()
-fmt.Println()
 	}
-*/
-
-	// We want this to succeed, but at first it will probably fail because checking is too strict.
-	table.SetTableMustSet("left", 0, tableCopy)	// Same table reference as right
-	jsonString, err = table.GetTableAsJSON()
-	if err != nil {
-where(table)
-		fmt.Println(err)
-fmt.Println()
-fmt.Println()
-	}
-
 	fmt.Println()
 
 	fmt.Println("Print as is:")
+	jsonString, err = table.GetTableAsJSON()
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(jsonString)
 	fmt.Println()
 
@@ -1726,13 +1733,120 @@ fmt.Println()
 	jsonString, err = table.GetTableAsJSONIndented("", "\t")
 	if err != nil {
 		fmt.Println(err)
-fmt.Println()
-fmt.Println()
 	}
-//	fmt.Println(jsonString)
+	fmt.Println(jsonString)
+
+	fmt.Println()
+
+	fmt.Println("This should fail: We are assigning the same table to multiple cells.")
+	table.SetTableMustSet("left", 0, tableCopy)	// Different table reference.
+	fmt.Printf("%s", table)
+	jsonString, err = table.GetTableAsJSON()
+	if err != nil {
+		// Error prints here.
+		fmt.Println(err)
+	}
 
 	// Output:
-	// getTableDataAsJSON_recursive(): circular reference to table [SameTableReference] already exists in ancestor
+	// This should fail: We are assigning the same table as the parent.
+	// [SameTableReference]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  [SameTableReference]
+	// getTableAsJSON_recursive(): circular reference: a reference to table [SameTableReference] already exists
+	//
+	// Now try again with a COPY of the same table, which will have a new reference.
+	// By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.
+	// SetTable(): table [TableCopy] col right expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
+	// [TableCopy]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  []
+	//
+	// This should succeed: We are assigning a DIFFERENT table (same contents doesn't matter).
+	// [SameTableReference]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  [TableCopy]
+	//
+	// Print as is:
+	// {"SameTableReference":{"metadata::SameTableReference":[{"left":"*Table"},{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::SameTableReference":[[{"left":null},{"i":42},{"s":"abc"},{"right":{"TableCopy":{"metadata::TableCopy":[{"left":"*Table"},{"i":"int"},{"s":"string"},{"right":"*Table"}]},"data::TableCopy":[[{"left":null},{"i":42},{"s":"abc"},{"right":null}]]}}]]}
+	//
+	// Print indented for readability:
+	// {
+	// 	"SameTableReference": {
+	// 		"metadata::SameTableReference": [
+	// 			{
+	// 				"left": "*Table"
+	// 			},
+	// 			{
+	// 				"i": "int"
+	// 			},
+	// 			{
+	// 				"s": "string"
+	// 			},
+	// 			{
+	// 				"right": "*Table"
+	// 			}
+	// 		]
+	// 	},
+	// 	"data::SameTableReference": [
+	// 		[
+	// 			{
+	// 				"left": null
+	// 			},
+	// 			{
+	// 				"i": 42
+	// 			},
+	// 			{
+	// 				"s": "abc"
+	// 			},
+	// 			{
+	// 				"right": {
+	// 					"TableCopy": {
+	// 						"metadata::TableCopy": [
+	// 							{
+	// 								"left": "*Table"
+	// 							},
+	// 							{
+	// 								"i": "int"
+	// 							},
+	// 							{
+	// 								"s": "string"
+	// 							},
+	// 							{
+	// 								"right": "*Table"
+	// 							}
+	// 						]
+	// 					},
+	// 					"data::TableCopy": [
+	// 						[
+	// 							{
+	// 								"left": null
+	// 							},
+	// 							{
+	// 								"i": 42
+	// 							},
+	// 							{
+	// 								"s": "abc"
+	// 							},
+	// 							{
+	// 								"right": null
+	// 							}
+	// 						]
+	// 					]
+	// 				}
+	// 			}
+	// 		]
+	// 	]
+	// }
+	//
+	// This should fail: We are assigning the same table to multiple cells.
+	// [SameTableReference]
+	// left          i s      right
+	// *Table      int string *Table
+	// [TableCopy]  42 "abc"  [TableCopy]
+	// getTableAsJSON_recursive(): circular reference: a reference to table [TableCopy] already exists
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {

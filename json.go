@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type circRefMap map[*Table]struct{}
+// type circRefMap map[*Table]struct{}
 var empty struct{}
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
@@ -38,11 +38,11 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 
 	var buf bytes.Buffer
 	var refMap circRefMap = map[*Table]struct{}{}
+	refMap[table] = empty	// Put this top-level table into the map.
 
 	buf.WriteByte(123)	// Opening brace outermost
-//	refMap[table] = empty
 
-	err = getTableDataAsJSON_recursive(table, &buf, refMap)
+	err = getTableAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
 	}
@@ -731,9 +731,8 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 
 	buf.WriteByte(123)	// Opening brace outermost
-//	refMap[table] = empty
 
-	err = getTableDataAsJSON_recursive(table, &buf, refMap)
+	err = getTableAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
 	}
@@ -767,7 +766,7 @@ func (table *Table) GetTableAsJSONIndented(prefix string, indent string) (jsonDa
 	Note: This doesn't generate valid JSON by itself.
 	Used by GetTableAsJSON() only.
 */
-func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
+func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -775,6 +774,7 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRe
 
 	// Add this table to the circular reference map.
 	refMap[table] = empty
+//fmt.Printf("#2 getTableAsJSON_recursive(table)       = %p\n", table)
 
 	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
@@ -835,10 +835,11 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRe
 				if err != nil {
 					return err
 				}
+//fmt.Printf("#3 getTableAsJSON_recursive(nestedTable) = %p\n", nestedTable)
 
 				_, exists := refMap[nestedTable]
 				if exists {
-					err = fmt.Errorf("%s: circular reference to table [%s] already exists in ancestor",
+					err = fmt.Errorf("%s: circular reference: a reference to table [%s] already exists",
 						UtilFuncName(), nestedTable.Name())
 					return
 				}
@@ -851,7 +852,7 @@ func getTableDataAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRe
 					buf.WriteString("null")
 				} else {
 					buf.WriteByte(123)	// Begin nested table.
-					err = getTableDataAsJSON_recursive(nestedTable, buf, refMap)
+					err = getTableAsJSON_recursive(nestedTable, buf, refMap)
 					if err != nil {
 						return err
 					}
