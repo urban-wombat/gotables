@@ -52,6 +52,12 @@ func (table *Table) SetByteSlice(colName string, rowIndex int, newVal []byte) er
 
 	const valType string = "[]byte"
 
+	// Do not allow <nil> for type []byte
+	if newVal == nil {
+		return fmt.Errorf("%s: table [%s] col %s expecting val of type []byte, not: <nil>",
+			UtilFuncName(), table.Name(), colName)
+	}
+
 	colType, err := table.ColType(colName)
 	if err != nil {
 		return err
@@ -94,6 +100,12 @@ func (table *Table) SetUint8Slice(colName string, rowIndex int, newVal []uint8) 
 	}
 
 	const valType string = "[]uint8"
+
+	// Do not allow <nil> for type []uint8
+	if newVal == nil {
+		return fmt.Errorf("%s: table [%s] col %s expecting val of type []uint8, not: <nil>",
+			UtilFuncName(), table.Name(), colName)
+	}
 
 	colType, err := table.ColType(colName)
 	if err != nil {
@@ -826,6 +838,7 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 
 	const valType string = "*Table"
 
+	// Do not allow <nil> for type *Table
 	if newVal == nil {
 		return fmt.Errorf("%s: table [%s] col %s expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
 			UtilFuncName(), table.Name(), colName)
@@ -881,6 +894,12 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 
 	const valType string = "[]byte"
 
+	// Do not allow <nil> for type []byte
+	if newVal == nil {
+		return fmt.Errorf("%s: table [%s] col %d expecting val of type []byte, not: <nil>",
+			UtilFuncName(), table.Name(), colIndex)
+	}
+
 	colType := table.colTypes[colIndex]
 
 	if valType != colType {
@@ -915,6 +934,12 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 	}
 
 	const valType string = "[]uint8"
+
+	// Do not allow <nil> for type []uint8
+	if newVal == nil {
+		return fmt.Errorf("%s: table [%s] col %d expecting val of type []uint8, not: <nil>",
+			UtilFuncName(), table.Name(), colIndex)
+	}
 
 	colType := table.colTypes[colIndex]
 
@@ -1511,6 +1536,7 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 
 	const valType string = "*Table"
 
+	// Do not allow <nil> for type *Table
 	if newVal == nil {
 		return fmt.Errorf("%s: table [%s] col %d expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
 			UtilFuncName(), table.Name(), colIndex)

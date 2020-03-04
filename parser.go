@@ -145,7 +145,7 @@ var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\
 
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
-const tableNameNilPattern string = `^(\[\]|nil)`
+const tableNameNilPattern string = `^(\[\])`
 
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var tableNameNilRegexp *regexp.Regexp = regexp.MustCompile(tableNameNilPattern)

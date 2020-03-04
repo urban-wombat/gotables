@@ -457,8 +457,6 @@ Table
 #####################################################################################
 */
 
-type circRefMap map[*Table]struct{}
-
 type Table struct {
 	tableName   string
 	colNames    []string
@@ -468,7 +466,6 @@ type Table struct {
 	sortKeys    []sortKey
 	structShape bool
 	isNilTable  bool
-	circRef	    circRefMap
 }
 
 type TableExported struct {
@@ -516,8 +513,6 @@ func NewNilTable() *Table {
 	newTable.rows = []tableRow{}
 
 	newTable.isNilTable = true
-	newTable.circRef =  map[*Table]struct{}{}
-	newTable.circRef[newTable] = struct{}{}
 
 	return newTable
 }

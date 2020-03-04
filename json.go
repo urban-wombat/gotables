@@ -10,10 +10,13 @@ import (
 	"strings"
 )
 
-// type circRefMap map[*Table]struct{}
+type circRefMap map[*Table]struct{}
 var empty struct{}
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
+
+const metadataTableNamePrefix string = "metadata::"
+const dataTableNamePrefix string     = "data::"
 
 /*
 	Marshal json from the rows of data in this table.
@@ -36,9 +39,10 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	var buf bytes.Buffer
 	var refMap circRefMap = map[*Table]struct{}{}
 	refMap[table] = empty	// Put this top-level table into the map.
+
+	var buf bytes.Buffer
 
 	buf.WriteByte(123)	// Opening brace outermost
 
@@ -101,7 +105,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 	var buf bytes.Buffer
 
 	buf.WriteByte(123) // Opening brace
-	buf.WriteString(fmt.Sprintf(`"%s::%s":[`, "metadata", table.tableName))
+	buf.WriteString(fmt.Sprintf(`"%s%s":[`, metadataTableNamePrefix, table.tableName))
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 		buf.WriteByte(123) // Opening brace around heading element (name: type)
 		buf.WriteByte('"')
@@ -217,10 +221,15 @@ func newTableFromJSONMetadata(jsonMetadataString string) (table *Table, err erro
 
 	// Get the table name.
 	var metadataTableName string
+	var tableName string
 	switch token.(type) {
 	case string: // As expected
 		metadataTableName = token.(string)
-		table, err = NewTable(metadataTableName)
+
+		// Strip off metadataTableNamePrefix, leaving the table name.
+		tableName = metadataTableName[len(metadataTableNamePrefix):]
+
+		table, err = NewTable(tableName)
 		if err != nil {
 			return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 		}
@@ -326,11 +335,19 @@ func newTableFromJSONData(metadataTable *Table, jsonDataString string) (table *T
 	for dataTableName, _ = range tableMap {
 		// There should be only one key, and it should be the table name.
 	}
+
+	// Strip off metadataTableNamePrefix, leaving the table name.
+	dataTableName = dataTableName[len(dataTableNamePrefix):]
+where(dataTableName)
+
 	if dataTableName != metadataTableName {
 		return nil, fmt.Errorf("newTableFromJSON(): unexpected JSON metadataTableName %q != JSON dataTableName %q",
 			metadataTableName, dataTableName)
 	}
 
+//where(tableMap)
+where(fmt.Sprintf("dataTableName = %s", dataTableName))
+where(fmt.Sprintf("tableMap = %v", tableMap))
 	var rowsInterface []interface{} = tableMap[dataTableName].([]interface{})
 //where(rowsInterface)
 
@@ -727,8 +744,8 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	var buf bytes.Buffer
 	var refMap circRefMap = map[*Table]struct{}{}
+	var buf bytes.Buffer
 
 	buf.WriteByte(123)	// Opening brace outermost
 
@@ -774,7 +791,6 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 
 	// Add this table to the circular reference map.
 	refMap[table] = empty
-//fmt.Printf("#2 getTableAsJSON_recursive(table)       = %p\n", table)
 
 	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
@@ -792,7 +808,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 
 	// Get data
 
-	buf.WriteString(fmt.Sprintf(`"%s::%s":[`, "data", table.Name()))	// Begin array of rows.
+	buf.WriteString(fmt.Sprintf(`"%s%s":[`, dataTableNamePrefix, table.Name()))	// Begin array of rows.
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		buf.WriteByte('[')	// Begin array of column cells.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {

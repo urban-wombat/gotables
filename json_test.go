@@ -36,7 +36,7 @@ SOFTWARE.
 //	var table *Table
 //
 //	var tableString string = `
-//	[TypesGalore]
+//	[TypesGalore11]
 //    i   s      f       f32     t     b    ui    bb            uu8
 //    int string float64 float32 bool  byte uint8 []byte        []uint8
 //    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -127,7 +127,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore13]
+	[TypesGalore14]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -167,7 +167,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 //	var tableSet *TableSet
 //
 //	var tableSetString string = `
-//	[TypesGalore14]
+//	[TypesGalore15]
 //    i   s      f       f32     t     b    ui    bb            uu8
 //    int string float64 float32 bool  byte uint8 []byte        []uint8
 //    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -215,7 +215,7 @@ func TestNewTableFromJSON(t *testing.T) {
 	var table2 *Table // Output table
 
 	var tableString string = `
-		[TypesGalore15]
+		[TypesGalore16]
 	    i   s      f       f32     t     b    ui    bb            uu8
 	    int string float64 float32 bool  byte uint8 []byte        []uint8
 	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -298,7 +298,7 @@ func TestNewTableSetFromJSON(t *testing.T) {
 	var tableSet2 *TableSet // Output tableSet
 
 	var tableSetString string = `
-		[TypesGalore15]
+		[TypesGalore17]
 	    i   s      f       f32     t     b    ui    bb            uu8
 	    int string float64 float32 bool  byte uint8 []byte        []uint8
 	    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -1139,7 +1139,7 @@ func ExampleTable_GetTableDataAsJSON() {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore]
+	[TypesGalore18]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -1175,12 +1175,12 @@ func ExampleTable_GetTableDataAsJSON() {
 	// Output:
 	// Print as is:
 	//
-	// {"TypesGalore":[{"i":1,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17]},{"i":2,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28]},{"i":3,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39]},{"i":4,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[]}]}
+	// {"TypesGalore18":[{"i":1,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17]},{"i":2,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28]},{"i":3,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39]},{"i":4,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[]}]}
 	//
 	// Print indented for readability:
 	//
 	// {
-	// 	"TypesGalore": [
+	// 	"TypesGalore18": [
 	// 		{
 	// 			"i": 1,
 	// 			"s": "abc",
@@ -1261,7 +1261,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 	var table *Table
 
 	var tableString string = `
-	[TypesGalore13]
+	[TypesGalore19]
     i   s      f       f32     t     b    ui    bb            uu8
     int string float64 float32 bool  byte uint8 []byte        []uint8
     1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
@@ -1300,12 +1300,12 @@ func ExampleTable_GetTableMetadataAsJSON() {
 	// Output:
 	// Print as is:
 	// 
-	// {"TypesGalore13":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"}]}
+	// {"TypesGalore19":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"}]}
 	//
 	// Print indented for readability:
 	//
 	// {
-	// 	"TypesGalore13": [
+	// 	"TypesGalore19": [
 	// 		{
 	// 			"i": "int"
 	// 		},
@@ -1342,7 +1342,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	var table *Table
 //
 //	var tableString string = `
-//	[TypesGalore13]
+//	[TypesGalore20]
 //    i   s      f       f32     t     b    ui    bb            uu8        right
 //    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
 //    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
@@ -1417,12 +1417,12 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	//
 //	// Print as is:
 //	//
-//	// {"TypesGalore13":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"},{"right":"*Table"}]}
+//	// {"TypesGalore20":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"},{"right":"*Table"}]}
 //	//
 //	// Print indented for readability:
 //	//
 //	// {
-//	// 	"TypesGalore13": [
+//	// 	"TypesGalore20": [
 //	// 		{
 //	// 			"i": "int"
 //	// 		},
@@ -1462,7 +1462,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	var table *Table
 //
 //	var tableString string = `
-//	[TypesGalore]
+//	[TypesGalore21]
 //    i   s      f       f32     t     b    ui    bb            uu8        right
 //    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
 //    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
@@ -1537,12 +1537,12 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	// Output:
 //	// Print as is:
 //	// 
-//	// {"TypesGalore":[{"i":0,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17],"right":{"right0":[{"i":32}]}},{"i":1,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28],"right":{"right1":[{"s":"thirty-two"}]}},{"i":2,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39],"right":{"right2":[{"x":1,"y":2,"z":3},{"x":4,"y":5,"z":6},{"x":7,"y":8,"z":9}]}},{"i":3,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[],"right":{"right3":[{"f":88.8}]}}]}
+//	// {"TypesGalore21":[{"i":0,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17],"right":{"right0":[{"i":32}]}},{"i":1,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28],"right":{"right1":[{"s":"thirty-two"}]}},{"i":2,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39],"right":{"right2":[{"x":1,"y":2,"z":3},{"x":4,"y":5,"z":6},{"x":7,"y":8,"z":9}]}},{"i":3,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[],"right":{"right3":[{"f":88.8}]}}]}
 //	// 
 //	// Print indented for readability:
 //	//
 //	// {
-//	// 	"TypesGalore": [
+//	// 	"TypesGalore21": [
 //	// 		{
 //	// 			"i": 0,
 //	// 			"s": "abc",
@@ -1671,7 +1671,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	[SameTableReference]
     left	i   s      right
     *Table	int string *Table
-    nil		42  "abc"  [] 
+    []		42  "abc"  [] 
     `
 	table, err = NewTableFromString(tableString)
 	if err != nil {
@@ -1856,7 +1856,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	var tableString string
 /*
 	tableString = `
-	[TypesGalore]
+	[TypesGalore22]
     i   s      f       f32     t     b    ui    bb            uu8        right
     int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
     0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
@@ -1866,7 +1866,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
     `
 */
 	tableString = `
-	[TypesGalore]
+	[TypesGalore22]
     i   s      right
     int string *Table
     0   "abc"  []
@@ -1877,7 +1877,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
     `
 /*
 	tableString = `
-	[TypesGalore]
+	[TypesGalore22]
     i   s		ii	ss		iii
     int string	int	string	int
     0   "abc"	0	"def"	0
@@ -1897,7 +1897,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 */
 /*
 	tableString = `
-	[TypesGalore]
+	[TypesGalore22]
 	a	t		b
 	int	*Table	int
 	1	[]		3
