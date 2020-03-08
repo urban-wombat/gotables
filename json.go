@@ -918,17 +918,45 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 	return
 }
 
+func checkJsonDecodeError(checkErr error) (err error) {
+	if checkErr == io.EOF {
+		return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
+	}
+
+	if checkErr != nil {
+		return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+	}
+
+	return nil
+}
+
 func NewTableFromJSON(jsonString string) (table *Table, err error) {
 where("inside newTableFromJSON()")
+const verbose bool = false
+if verbose {
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(buf.String())
+}
 
 	if jsonString == "" {
 		return nil, fmt.Errorf("%s: jsonString is empty", UtilFuncName())
 	}
 
-	dec := json.NewDecoder(strings.NewReader(jsonString))
-	table = NewNilTable()
+table, err = newTableFromJSONMetadata(jsonString)
+if err != nil {
+	return
+}
+where(table)
+return
 
-	err = newTableFromJSON_recursive(dec, table)
+	dec := json.NewDecoder(strings.NewReader(jsonString))
+//	table = nil
+
+	table, err = newTableFromJSON_recursive(dec, table)
 	if err != nil {	// A bit redundant if it's the last line of the function.
 		return
 	}
@@ -936,7 +964,7 @@ where("inside newTableFromJSON()")
 	return
 }
 
-func newTableFromJSON_recursive(dec *json.Decoder, table *Table) (err error) {
+func newTableFromJSON_recursive(dec *json.Decoder, tableIn *Table) (table *Table, err error) {
 where("inside newTableFromJSONrecursive()")
 
 	/*
@@ -948,52 +976,52 @@ where("inside newTableFromJSONrecursive()")
 
 	var token json.Token
 
-	// Skip opening brace
+	// Skip overall object opening brace
+where("Skip overall object opening brace")
 	token, err = dec.Token()
+	if err = checkJsonDecodeError(err); err != nil {
+		return nil, err
+	}
 where(fmt.Sprintf("TOKEN: %s", token))
-	if err == io.EOF {
-		return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
-	}
-	if err != nil {
-		return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
-	}
 
 	// Get table name
 	token, err = dec.Token()
+	if err = checkJsonDecodeError(err); err != nil {
+		return nil, err
+	}
+	var tableName string = token.(string)
 where(fmt.Sprintf("TOKEN: %s", token))
-	if err == io.EOF {
-		return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
-	}
+	tableIn, err = NewTable(tableName)
 	if err != nil {
-		return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+		return
 	}
+where(tableIn)
 
-	// Get the table name.
-	var tableName string
-	switch token.(type) {
-	case string: // As expected
-where("case string:")
-		tableName = token.(string)
-where(fmt.Sprintf("tableName = %q", tableName))
-
-/*
-		// Strip off metadataTableNamePrefix, leaving the table name.
-		tableName = metadataTableName[len(metadataTableNamePrefix):]
-*/
-
-where(fmt.Sprintf("BEFORE NEW table = %v", table))
-		table, err = NewTable(tableName)
-		if err != nil {
-			return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
-		}
-where(fmt.Sprintf("AFTER  NEW table = %v", table))
-	default:
-		return fmt.Errorf("%s ERROR %s: expecting table name but found: %v",
-			UtilFuncSource(), UtilFuncName(), reflect.TypeOf(token))
+	// Skip metadata opening brace
+where("Skip metadata opening brace")
+	token, err = dec.Token()
+	if err = checkJsonDecodeError(err); err != nil {
+		return nil, err
 	}
+where(fmt.Sprintf("TOKEN: %s", token))
+
+	// Skip metadata name
+where("Skip metadata name")
+	token, err = dec.Token()
+	if err = checkJsonDecodeError(err); err != nil {
+		return nil, err
+	}
+where(fmt.Sprintf("TOKEN: %s", token))
+
+	// Skip opening colnames/types array square bracket
+where("Skip opening colnames/types array square bracket")
+	token, err = dec.Token()
+	if err = checkJsonDecodeError(err); err != nil {
+		return nil, err
+	}
+where(fmt.Sprintf("TOKEN: %s", token))
 
 	// Simple parsing flags and values.
-	var metadataNameNext = true
 	var colNameNext bool = false
 	var colName string
 	var colTypeNext bool = false
@@ -1002,16 +1030,13 @@ where(fmt.Sprintf("AFTER  NEW table = %v", table))
 
 repeatLimit := 4
 i := 1
-where("for ...")
+where(fmt.Sprintf("for i=%d to %d ...", i, repeatLimit))
 Loop:
 	for {
 		token, err = dec.Token()
 where(fmt.Sprintf("i=%d TOKEN: %s", i, token))
-		if err == io.EOF {
-			return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
-		}
-		if err != nil {
-			return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+		if err = checkJsonDecodeError(err); err != nil {
+			return nil, err
 		}
 
 		switch token.(type) {
@@ -1020,61 +1045,69 @@ where("case json.Delim:")
 			delim := token.(json.Delim)
 			switch delim {
 			case 123: // Opening brace
-where("case 123: // Opening brace")
-				if metadataNameNext {
-					// Skip metadataName. We don't need it.
-					metadataNameNext = false
-					break Loop
-				}
+where("	case 123: // Opening brace")
 				colNameNext = true
 				prevDelim = 123	// Opening brace
 			case 125: // Closing brace
-where("case 125: // Closing brace")
-				if prevDelim == 125	{
+where("	case 125: // Closing brace")
+				if prevDelim == 125	{	// 2 closing braces in a row.
 					// Closing brace: end of JSON metadata object
-where("prevDelim == 125 { // Closing brace: end of JSON metadata object")
+where("	prevDelim == 125 // Closing brace: end of JSON metadata object")
 					// Table metadata is now completely initialised. Now do the rows of data.
-					//							return table, nil
+					//							return tableIn, nil
+where("		break Loop")
 					break Loop
 				}
-				// We now have a colName-plus-colType pair. Add this col to table.
-where(fmt.Sprintf("table.AppendCol(colName=%q, colType=%q)", colName, colType))
-				err = table.AppendCol(colName, colType)
+				// We now have a colName-plus-colType pair. Add this col to tableIn.
+where(fmt.Sprintf("	tableIn.AppendCol(colName=%q, colType=%q)", colName, colType))
+				err = tableIn.AppendCol(colName, colType)
 				if err != nil {
-					return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 				}
 				prevDelim = 125 // Closing brace: end of col
 			case '[': // Ignore slice signifiers in type names
+where(fmt.Sprintf("	case '[' // Ignore slice signifiers in type names"))
 			case ']': // Ignore slice signifiers in type names
+where(fmt.Sprintf("	case ']' // Ignore slice signifiers in type names"))
 			}
 		case string:
+where("case string:")
 			if colNameNext {
+where("colNameNext")
 				colName = token.(string)
 				colNameNext = false
 				colTypeNext = true
 			} else if colTypeNext {
+where("colTypeNext")
 				colType = token.(string)
 				colTypeNext = false
 			} else {
-				return fmt.Errorf("newTableFromJSON(): expecting colName or colType")
+				return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
 			}
 		case bool:
-			return fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+where("case bool:")
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 		case float64:
-			return fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+where("case float64:")
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 		case json.Number:
-			return fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+where("case json.Number:")
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 		case nil:
-			return fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+where("case nil:")
+			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
 		default:
-			return fmt.Errorf("unknown json token type %T value %v\n", token, token)
+where("default:")
+			return nil, fmt.Errorf("unknown json token type %T value %v\n", token, token)
 		}
+where(tableIn)
 if i > repeatLimit {
+where(fmt.Sprintf("i=%d > repeatLimit=%d", i, repeatLimit))
 os.Exit(i)
 i++
 }
 	}
 
-where()
-	return nil
+where(fmt.Sprintf("return nil i=%d", i))
+	return nil, nil
 }
