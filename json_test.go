@@ -208,33 +208,44 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 
 func TestNewTableFromJSON(t *testing.T) {
 
-	const verbose = false
+	const verbose = true
 
 	var err error
-	var table1 *Table // Input table
-	var table2 *Table // Output table
+	var tableInput *Table // Input table
+	var tableOutput *Table // Output table
 
 	var tableString string = `
 		[TypesGalore16]
-	    i   s      f       f32     t     b    ui    bb            uu8
-	    int string float64 float32 bool  byte uint8 []byte        []uint8
-	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
-	    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
-	    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
-	    3   "xxxx" 5.9     9.9     true  44   3     []            []
-	    4   "yyyy" 6.9    10.9     false 55   4     [0]           [2]
+	    i   s      f       f32     t     b    ui    bb            uu8			table1
+	    int string float64 float32 bool  byte uint8 []byte        []uint8		*Table
+	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]	[]
+	    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]	[]
+	    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]	[]
+	    3   "xxxx" 5.9     9.9     true  44   3     []            []			[]
+	    4   "yyyy" 6.9    10.9     false 55   4     [0]           [2]			[]
 	    `
-	table1, err = NewTableFromString(tableString)
+	tableInput, err = NewTableFromString(tableString)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	// Nest a table and see what happens.
+	table1, err := NewTable("Table1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tableInput.SetTable("table1", 0, table1)
+	if err != nil {
+		t.Fatal(err)
+	}
+where(tableInput)
+
 	if verbose {
-		fmt.Printf("\n\n%v\n", table1)
+		fmt.Printf("\n\n%v\n", tableInput)
 	}
 
 	var jsonMetadataString string
-	jsonMetadataString, err = table1.GetTableMetadataAsJSON()
+	jsonMetadataString, err = tableInput.GetTableMetadataAsJSON()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -250,7 +261,7 @@ func TestNewTableFromJSON(t *testing.T) {
 	}
 
 	var jsonString string
-	jsonString, err = table1.GetTableDataAsJSON()
+	jsonString, err = tableInput.GetTableDataAsJSON()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -267,20 +278,20 @@ where(jsonString)
 	}
 
 where("calling NewTableFromJSON() ...")
-//	table2, err = NewTableFromJSON(jsonMetadataString, jsonString)
-	table2, err = NewTableFromJSON(jsonString)
+//	tableOutput, err = NewTableFromJSON(jsonMetadataString, jsonString)
+	tableOutput, err = NewTableFromJSON(jsonString)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = table1.Equals(table2)
+	_, err = tableInput.Equals(tableOutput)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Does table.Equals() check row order?
-	for rowIndex := 0; rowIndex < table2.RowCount(); rowIndex++ {
-		i, err := table2.GetInt("i", rowIndex)
+	for rowIndex := 0; rowIndex < tableOutput.RowCount(); rowIndex++ {
+		i, err := tableOutput.GetInt("i", rowIndex)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -289,9 +300,10 @@ where("calling NewTableFromJSON() ...")
 			t.Fatalf("expecting decoded table rows in order, but found row %d at rowIndex %d", i, rowIndex)
 		}
 	}
+where()
 
 	if verbose {
-		fmt.Printf("\n\n%v\n", table2)
+		fmt.Printf("\n\n%v\n", tableOutput)
 	}
 }
 

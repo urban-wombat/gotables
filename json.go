@@ -939,43 +939,6 @@ func checkJsonDecodeError(checkErr error) (err error) {
 	return nil
 }
 
-func NewTableFromJSON(jsonString string) (table *Table, err error) {
-parseJSON(jsonString)
-os.Exit(44)
-
-where("inside newTableFromJSON()")
-const verbose bool = false
-if verbose {
-	var buf bytes.Buffer
-	err = json.Indent(&buf, []byte(jsonString), "", "\t")
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(buf.String())
-}
-
-	if jsonString == "" {
-		return nil, fmt.Errorf("%s: jsonString is empty", UtilFuncName())
-	}
-
-table, err = newTableFromJSONMetadata(jsonString)
-if err != nil {
-	return
-}
-where(table)
-return
-
-	dec := json.NewDecoder(strings.NewReader(jsonString))
-//	table = nil
-
-	table, err = newTableFromJSON_recursive(dec, table)
-	if err != nil {	// A bit redundant if it's the last line of the function.
-		return
-	}
-	
-	return
-}
-
 func newTableFromJSON_recursive(dec *json.Decoder, tableIn *Table) (table *Table, err error) {
 where("inside newTableFromJSONrecursive()")
 
@@ -1124,15 +1087,56 @@ where(fmt.Sprintf("return nil i=%d", i))
 	return nil, nil
 }
 
-func parseJSON(jsonString string) (table *Table, err error) {
+func NewTableFromJSON(jsonString string) (table *Table, err error) {
+where("inside NewTableFromJSON()")
+where()
 
-	var exists bool
+const verbose bool = false
+if verbose {
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(buf.String())
+}
+
+where()
+	if jsonString == "" {
+		return nil, fmt.Errorf("%s: jsonString is empty", UtilFuncName())
+	}
+
+where()
 	var m map[string]interface{}
 	err = json.Unmarshal([]byte(jsonString), &m)
 	if err != nil {
 		return nil, err
 	}
 
+where()
+	table, err = newTableFromJSON(m)
+	if err != nil {
+		return nil, err
+	}
+
+where()
+	return
+}
+
+func newTableFromJSON(m map[string]interface{}) (table *Table, err error) {
+
+where()
+	var exists bool
+
+	/*
+	var m map[string]interface{}
+	err = json.Unmarshal([]byte(jsonString), &m)
+	if err != nil {
+		return nil, err
+	}
+	*/
+
+where()
 	/*
 		We don't know the order map values will be returned if we iterate of the map:
 		(1) tableName
@@ -1141,6 +1145,7 @@ func parseJSON(jsonString string) (table *Table, err error) {
 		So we retrieve each of the 3 (possibly 2) top-level map values individually.
 	*/
 
+where()
 	// (1) Retrieve and process table name.
 	var tableName string
 	tableName, exists = m["tableName"].(string)
@@ -1153,6 +1158,7 @@ func parseJSON(jsonString string) (table *Table, err error) {
 	}
 table.SetStructShape(true)
 
+where()
 	// (2) Retrieve and process metadata.
 	var metadata []interface{}
 	metadata, exists = m[fmt.Sprintf("metadata::%s", tableName)].([]interface{})
@@ -1172,6 +1178,7 @@ table.SetStructShape(true)
 			return nil, fmt.Errorf("expecting col type value from JSON string value but got type %T: %v", val, val)
 		}
 
+where()
 		err = table.AppendCol(colName, colType)
 		if err != nil {
 			return nil, err
@@ -1179,6 +1186,7 @@ table.SetStructShape(true)
 	}
 where(fmt.Sprintf("\n\n%v\n", table))
 
+where()
 	// (3) Retrieve and process data (if any).
 	var data []interface{}
 	data, exists = m[fmt.Sprintf("data::%s", tableName)].([]interface{})
@@ -1195,6 +1203,7 @@ where(data)
 			return nil, err
 		}
 
+where()
 		var row []interface{} = val.([]interface{})
 		for colIndex, val := range row {
 			where(fmt.Sprintf("\t\tcol [%d] %v", colIndex, val))
@@ -1203,6 +1212,7 @@ where(data)
 				// There's only one map element here: colName and colType.
 				where(fmt.Sprintf("\t\t\tcol=%d row=%d celltype=%T cell=%v", colIndex, rowIndex, cell, cell))
 
+where()
 				var colType string = table.colTypes[colIndex]
 				switch cell.(type) {
 				case string:
@@ -1253,8 +1263,18 @@ where(data)
 	// TODO We need to somehow parse this into a table!
 					err = table.SetTableByColIndex(colIndex, rowIndex, cell.(*Table))
 				case nil:
-					// TODO: This may break nested tables.
-					return nil, fmt.Errorf("newTableFromJSON(): unexpected nil value")
+					switch colType {
+						case "*Table", "*gotables.Table":
+//							tableNested, err := newTableFromJSON(cell.(map[string]interface{}))
+							var tableNested *Table = NewNilTable()
+							err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+							if err != nil {
+								return nil, err
+							}
+						default:
+							return nil, fmt.Errorf("newTableFromJSON(): unexpected nil value at [%s].(%d,%d)",
+								tableName, colIndex, rowIndex)
+					}
 				default:
 					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
 						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))
@@ -1269,30 +1289,6 @@ where(data)
 	}
 where(table)
 
-/*
-	for key, v := range m {
-where(fmt.Sprintf("%v", table))
-		switch val := v.(type) {
-		case string:
-			fmt.Println(key, "is string", val)
-			if key == "tableName" {
-				table.SetName(val)
-				if err != nil {
-					return nil, err
-				}
-			}
-		case float64:
-			fmt.Println(key, "is float64", val)
-		case []interface{}:
-			fmt.Println(key, "is an array:")
-			for i, u := range val {
-				fmt.Println(i, u)
-			}
-		default:
-			fmt.Println(key, "is of a type I don't know how to handle")
-		}
-	}
-*/
-
+where()
 	return
 }
