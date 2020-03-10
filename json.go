@@ -1126,6 +1126,7 @@ where(fmt.Sprintf("return nil i=%d", i))
 
 func parseJSON(jsonString string) (table *Table, err error) {
 
+	var exists bool
 	var m map[string]interface{}
 	err = json.Unmarshal([]byte(jsonString), &m)
 	if err != nil {
@@ -1140,15 +1141,24 @@ func parseJSON(jsonString string) (table *Table, err error) {
 		So we retrieve each of the 3 (possibly 2) top-level map values individually.
 	*/
 
-	var tableName string = m["tableName"].(string)
+	// (1) Retrieve and process table name.
+	var tableName string
+	tableName, exists = m["tableName"].(string)
+	if !exists {
+		return nil, fmt.Errorf("JSON is missing table name")
+	}
 	table, err = NewTable(tableName)
 	if err != nil {
 		return nil, err
 	}
 table.SetStructShape(true)
 
-	(1) Retrieve and process metadata:
-	var metadata []interface{} = m[fmt.Sprintf("metadata::%s", tableName)].([]interface{})
+	// (2) Retrieve and process metadata.
+	var metadata []interface{}
+	metadata, exists = m[fmt.Sprintf("metadata::%s", tableName)].([]interface{})
+	if !exists {
+		return nil, fmt.Errorf("JSON is missing table metadata")
+	}
 	// Loop through the array of metadata.
 	for _, colNameAndType := range metadata {
 		var colName string
@@ -1159,7 +1169,7 @@ table.SetStructShape(true)
 		}
 		colType, ok := val.(string)
 		if !ok {
-			return nil, fmt.Errorf("expecting col type of type string but got: %v", val)
+			return nil, fmt.Errorf("expecting col type value from JSON string value but got type %T: %v", val, val)
 		}
 
 		err = table.AppendCol(colName, colType)
@@ -1169,8 +1179,95 @@ table.SetStructShape(true)
 	}
 where(fmt.Sprintf("\n\n%v\n", table))
 
-	var data interface{} = m[fmt.Sprintf("data::%s", tableName)].(interface{})
+	// (3) Retrieve and process data (if any).
+	var data []interface{}
+	data, exists = m[fmt.Sprintf("data::%s", tableName)].([]interface{})
+	if !exists {
+		// Zero rows in this table. That's okay.
+		return table, nil
+	}
 where(data)
+	// Loop through the array of rows.
+	for rowIndex, val := range data {
+		where(fmt.Sprintf("row [%d] %v", rowIndex, val))
+		err = table.AppendRow()
+		if err != nil {
+			return nil, err
+		}
+
+		var row []interface{} = val.([]interface{})
+		for colIndex, val := range row {
+			where(fmt.Sprintf("\t\tcol [%d] %v", colIndex, val))
+			var cell interface{}
+			for _, cell = range val.(map[string]interface{}) {
+				// There's only one map element here: colName and colType.
+				where(fmt.Sprintf("\t\t\tcol=%d row=%d celltype=%T cell=%v", colIndex, rowIndex, cell, cell))
+
+				var colType string = table.colTypes[colIndex]
+				switch cell.(type) {
+				case string:
+					err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
+				case float64:	// All JSON number values are stored as float64
+					switch colType {	// We need to convert them back to gotables numeric types
+					case "int":
+						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
+					case "uint":
+						err = table.SetUintByColIndex(colIndex, rowIndex, uint(cell.(float64)))
+					case "byte":
+						err = table.SetByteByColIndex(colIndex, rowIndex, byte(cell.(float64)))
+					case "int8":
+						err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(cell.(float64)))
+					case "int16":
+						err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(cell.(float64)))
+					case "int32":
+						err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(cell.(float64)))
+					case "int64":
+						err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(cell.(float64)))
+					case "uint8":
+						err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(cell.(float64)))
+					case "uint16":
+						err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(cell.(float64)))
+					case "uint32":
+						err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(cell.(float64)))
+					case "uint64":
+						err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(cell.(float64)))
+					case "float32":
+						err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(cell.(float64)))
+					case "float64":
+						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(cell.(float64)))
+					}
+					if err != nil {
+						err := fmt.Errorf("could not convert JSON float64 to gotables %s", colType)
+						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+					}
+				case bool:
+					err = table.SetBoolByColIndex(colIndex, rowIndex, cell.(bool))
+				case []interface{}: // This cell is a slice
+					var interfaceSlice []interface{} = cell.([]interface{})
+					var byteSlice []byte = []byte{}
+					for _, sliceVal := range interfaceSlice {
+						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
+					}
+					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
+				case map[string]interface{}:	// This cell is a table
+	// TODO We need to somehow parse this into a table!
+					err = table.SetTableByColIndex(colIndex, rowIndex, cell.(*Table))
+				case nil:
+					// TODO: This may break nested tables.
+					return nil, fmt.Errorf("newTableFromJSON(): unexpected nil value")
+				default:
+					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
+						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))
+				}
+	
+				// Single error handler for all the table.Set...() calls.
+				if err != nil {
+					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+				}
+			}
+		}
+	}
+where(table)
 
 /*
 	for key, v := range m {
