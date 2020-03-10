@@ -47,6 +47,9 @@ func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
 
 	buf.WriteByte(123)	// Opening brace outermost
 
+where()
+	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
+
 	err = getTableAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
@@ -105,7 +108,7 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 
 	var buf bytes.Buffer
 
-	buf.WriteByte(123) // Opening brace
+//	buf.WriteByte(123) // Opening brace
 	buf.WriteString(fmt.Sprintf(`"%s%s":[`, metadataTableNamePrefix, table.tableName))
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 		buf.WriteByte(123) // Opening brace around heading element (name: type)
@@ -120,9 +123,11 @@ func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err err
 		}
 	}
 	buf.WriteByte(']')
-	buf.WriteByte(125) // Closing brace
+//	buf.WriteByte(125) // Closing brace
 
 	jsonMetadataString = buf.String()
+
+where(jsonMetadataString)
 
 	return
 }
@@ -773,6 +778,10 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 
 	buf.WriteByte(123)	// Opening brace outermost
 
+// THIS ISN'T BEING USED! YET.
+where()
+	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
+
 	err = getTableAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
@@ -816,7 +825,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 	// Add this table to the circular reference map.
 	refMap[table] = empty
 
-	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
+//	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
 	// Get metadata
 	var jsonMetadata string
@@ -931,6 +940,9 @@ func checkJsonDecodeError(checkErr error) (err error) {
 }
 
 func NewTableFromJSON(jsonString string) (table *Table, err error) {
+parseJSON(jsonString)
+os.Exit(44)
+
 where("inside newTableFromJSON()")
 const verbose bool = false
 if verbose {
@@ -1110,4 +1122,80 @@ i++
 
 where(fmt.Sprintf("return nil i=%d", i))
 	return nil, nil
+}
+
+func parseJSON(jsonString string) (table *Table, err error) {
+
+	var m map[string]interface{}
+	err = json.Unmarshal([]byte(jsonString), &m)
+	if err != nil {
+		return nil, err
+	}
+
+	/*
+		We don't know the order map values will be returned if we iterate of the map:
+		(1) tableName
+		(2) metadata
+		(3) data (if any)
+		So we retrieve each of the 3 (possibly 2) top-level map values individually.
+	*/
+
+	var tableName string = m["tableName"].(string)
+	table, err = NewTable(tableName)
+	if err != nil {
+		return nil, err
+	}
+table.SetStructShape(true)
+
+	(1) Retrieve and process metadata:
+	var metadata []interface{} = m[fmt.Sprintf("metadata::%s", tableName)].([]interface{})
+	// Loop through the array of metadata.
+	for _, colNameAndType := range metadata {
+		var colName string
+		var colType string
+		var val interface{}
+		for colName, val = range colNameAndType.(map[string]interface{}) {
+			// There's only one map element here: colName and colType.
+		}
+		colType, ok := val.(string)
+		if !ok {
+			return nil, fmt.Errorf("expecting col type of type string but got: %v", val)
+		}
+
+		err = table.AppendCol(colName, colType)
+		if err != nil {
+			return nil, err
+		}
+	}
+where(fmt.Sprintf("\n\n%v\n", table))
+
+	var data interface{} = m[fmt.Sprintf("data::%s", tableName)].(interface{})
+where(data)
+
+/*
+	for key, v := range m {
+where(fmt.Sprintf("%v", table))
+		switch val := v.(type) {
+		case string:
+			fmt.Println(key, "is string", val)
+			if key == "tableName" {
+				table.SetName(val)
+				if err != nil {
+					return nil, err
+				}
+			}
+		case float64:
+			fmt.Println(key, "is float64", val)
+		case []interface{}:
+			fmt.Println(key, "is an array:")
+			for i, u := range val {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(key, "is of a type I don't know how to handle")
+		}
+	}
+*/
+
+	return
 }

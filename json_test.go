@@ -255,6 +255,7 @@ func TestNewTableFromJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+where(jsonString)
 	if verbose {
 		var buf bytes.Buffer
 		// For readability.
