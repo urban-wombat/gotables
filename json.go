@@ -35,6 +35,7 @@ const dataTableNamePrefix string     = "data::"
 		2. Data: call method table.GetTableDataAsJSON()
 */
 func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -63,6 +64,7 @@ where()
 }
 
 func (table *Table) GetTableDataAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	jsonString, err := table.GetTableDataAsJSON()
 	if err != nil {
@@ -96,6 +98,7 @@ func (table *Table) GetTableDataAsJSONIndent(prefix string, indent string) (json
 	Note: The table must have at least 1 col defined (zero rows are okay).
 */
 func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -133,6 +136,7 @@ where(jsonMetadataString)
 }
 
 func (table *Table) GetTableMetadataAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	jsonString, err := table.GetTableMetadataAsJSON()
 	if err != nil {
@@ -158,6 +162,7 @@ func (table *Table) GetTableMetadataAsJSONIndent(prefix string, indent string) (
 	Each slice element of metadata corresponds with (matches) each element of row data.
 */
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonStrings []string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if tableSet == nil {
 		return nil, nil, fmt.Errorf("%s %s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
@@ -190,7 +195,7 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jso
 }
 
 func newTableFromJSONMetadata(jsonMetadataString string) (table *Table, err error) {
-where("inside newTableFromJSONMetadata")
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if jsonMetadataString == "" {
 		return nil, fmt.Errorf("%s: jsonMetadataString is empty", UtilFuncName())
@@ -311,7 +316,7 @@ Loop:
 }
 
 func newTableFromJSONData(metadataTable *Table, jsonDataString string) (table *Table, err error) {
-where("inside newTableFromJSONData()")
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 where(fmt.Sprintf("jsonDataString = %s", jsonDataString))
 	// Strictly speaking, this doesn't create a new table, but the naming is more consistent with
 	// newTableFromJSONMetadata() which it goes with.
@@ -768,6 +773,7 @@ os.Exit(4)
 //}
 
 func (table *Table) GetTableAsJSON() (json string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -778,8 +784,6 @@ func (table *Table) GetTableAsJSON() (json string, err error) {
 
 	buf.WriteByte(123)	// Opening brace outermost
 
-// THIS ISN'T BEING USED! YET.
-where()
 	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
 
 	err = getTableAsJSON_recursive(table, &buf, refMap)
@@ -795,6 +799,7 @@ where()
 }
 
 func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	jsonString, err := table.GetTableAsJSON()
 	if err != nil {
@@ -817,6 +822,7 @@ func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonData
 	Used by GetTableAsJSON() only.
 */
 func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -827,6 +833,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 
 //	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
 
+/*
 	// Get metadata
 	var jsonMetadata string
 	jsonMetadata, err = table.GetTableMetadataAsJSON()
@@ -834,6 +841,28 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 		return err
 	}
 	buf.WriteString(jsonMetadata)
+*/
+
+	if table.ColCount() == 0 {
+		buf.WriteString("[]")
+	}
+
+//	var buf bytes.Buffer
+
+	buf.WriteString(fmt.Sprintf(`"%s%s":[`, metadataTableNamePrefix, table.tableName))
+	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
+		buf.WriteByte(123) // Opening brace around heading element (name: type)
+		buf.WriteByte('"')
+		buf.WriteString(table.colNames[colIndex])
+		buf.WriteString(`":"`)
+		buf.WriteString(table.colTypes[colIndex])
+		buf.WriteByte('"')
+		buf.WriteByte(125) // Closing brace around heading element (name: type)
+		if colIndex < len(table.colNames)-1 {
+			buf.WriteByte(',')
+		}
+	}
+	buf.WriteByte(']')
 
 
 	buf.WriteByte(',')	// Between metadata and data.
@@ -940,7 +969,7 @@ func checkJsonDecodeError(checkErr error) (err error) {
 }
 
 func newTableFromJSON_recursive(dec *json.Decoder, tableIn *Table) (table *Table, err error) {
-where("inside newTableFromJSONrecursive()")
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	/*
 		Create empty table from metadata.
@@ -1088,8 +1117,7 @@ where(fmt.Sprintf("return nil i=%d", i))
 }
 
 func NewTableFromJSON(jsonString string) (table *Table, err error) {
-where("inside NewTableFromJSON()")
-where()
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 const verbose bool = false
 if verbose {
@@ -1124,8 +1152,8 @@ where()
 }
 
 func newTableFromJSON(m map[string]interface{}) (table *Table, err error) {
+where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
-where()
 	var exists bool
 
 	/*

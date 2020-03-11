@@ -244,6 +244,7 @@ where(tableInput)
 		fmt.Printf("\n\n%v\n", tableInput)
 	}
 
+/*
 	var jsonMetadataString string
 	jsonMetadataString, err = tableInput.GetTableMetadataAsJSON()
 	if err != nil {
@@ -259,14 +260,25 @@ where(tableInput)
 		}
 		buf.WriteTo(os.Stdout)
 	}
+*/
 
 	var jsonString string
+
+/*
 	jsonString, err = tableInput.GetTableDataAsJSON()
 	if err != nil {
 		t.Fatal(err)
 	}
-
 where(jsonString)
+*/
+
+	jsonString, err = tableInput.GetTableAsJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+where(jsonString)
+os.Exit(33)
+
 	if verbose {
 		var buf bytes.Buffer
 		// For readability.
