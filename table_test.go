@@ -225,7 +225,7 @@ func ExampleNewNilTable_createAndUse() {
 		log.Println(err)
 	}
 
-	nilTable.SetStructShape(true)
+	_ = nilTable.SetStructShape(true)
 	fmt.Println(nilTable)
 
 	// Output:

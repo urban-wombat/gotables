@@ -1348,12 +1348,21 @@ func parseUint(s string, bitSize int) (uint64Val uint64, err error) {
 	return
 }
 
-func writeHeapDump() {
+func writeHeapDump() (err error) {
 	fmt.Printf("writing %s.heapdump", os.Args[0])
 	f, err := os.Create(os.Args[0] + ".heapdump")
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
+
+	// Note: didn't defer f.Close() for the reasons in the following post:
+	//       https://www.joeshaw.org/dont-defer-close-on-writable-files
+	err = f.Close()
+	if err != nil {
+		return err
+	}
+
 	debug.WriteHeapDump(f.Fd())
+
+	return nil
 }

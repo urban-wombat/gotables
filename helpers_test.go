@@ -5535,7 +5535,10 @@ func TestGetByteSliceMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5607,7 +5610,10 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5679,7 +5685,10 @@ func TestGetBoolMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5748,7 +5757,10 @@ func TestGetByteMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5817,7 +5829,10 @@ func TestGetFloat32MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5886,7 +5901,10 @@ func TestGetFloat64MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -5955,7 +5973,10 @@ func TestGetIntMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6024,7 +6045,10 @@ func TestGetInt16MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6093,7 +6117,10 @@ func TestGetInt32MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6162,7 +6189,10 @@ func TestGetInt64MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6231,7 +6261,10 @@ func TestGetInt8MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6300,7 +6333,10 @@ func TestGetRuneMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6369,7 +6405,10 @@ func TestGetStringMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6438,7 +6477,10 @@ func TestGetUintMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6507,7 +6549,10 @@ func TestGetUint16MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6576,7 +6621,10 @@ func TestGetUint32MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6645,7 +6693,10 @@ func TestGetUint64MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6714,7 +6765,10 @@ func TestGetUint8MustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6783,7 +6837,10 @@ func TestGetTableMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6853,7 +6910,10 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6926,7 +6986,10 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -6999,7 +7062,10 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7069,7 +7135,10 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7139,7 +7208,10 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7209,7 +7281,10 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7279,7 +7354,10 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7349,7 +7427,10 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7419,7 +7500,10 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7489,7 +7573,10 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7559,7 +7646,10 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7629,7 +7719,10 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7699,7 +7792,10 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7769,7 +7865,10 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7839,7 +7938,10 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7909,7 +8011,10 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -7979,7 +8084,10 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -8049,7 +8157,10 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 
@@ -8119,7 +8230,10 @@ func TestGetTableByColIndexMustGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.AppendRows(1)
+	err = table.AppendRows(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Test a simple get.
 

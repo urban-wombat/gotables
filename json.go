@@ -35,7 +35,7 @@ const dataTableNamePrefix string     = "data::"
 		2. Data: call method table.GetTableDataAsJSON()
 */
 func (table *Table) GetTableDataAsJSON() (jsonDataString string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -64,7 +64,7 @@ where()
 }
 
 func (table *Table) GetTableDataAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	jsonString, err := table.GetTableDataAsJSON()
 	if err != nil {
@@ -98,7 +98,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 	Note: The table must have at least 1 col defined (zero rows are okay).
 */
 func (table *Table) GetTableMetadataAsJSON() (jsonMetadataString string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -136,7 +136,7 @@ where(jsonMetadataString)
 }
 
 func (table *Table) GetTableMetadataAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	jsonString, err := table.GetTableMetadataAsJSON()
 	if err != nil {
@@ -162,7 +162,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 	Each slice element of metadata corresponds with (matches) each element of row data.
 */
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonMetadataStrings []string, jsonStrings []string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if tableSet == nil {
 		return nil, nil, fmt.Errorf("%s %s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
@@ -195,7 +195,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 }
 
 func newTableFromJSONMetadata(jsonMetadataString string) (table *Table, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if jsonMetadataString == "" {
 		return nil, fmt.Errorf("%s: jsonMetadataString is empty", UtilFuncName())
@@ -316,7 +316,7 @@ Loop:
 }
 
 func newTableFromJSONData(metadataTable *Table, jsonDataString string) (table *Table, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 where(fmt.Sprintf("jsonDataString = %s", jsonDataString))
 	// Strictly speaking, this doesn't create a new table, but the naming is more consistent with
 	// newTableFromJSONMetadata() which it goes with.
@@ -334,7 +334,7 @@ where(fmt.Sprintf("jsonDataString = %s", jsonDataString))
 	metadataTableName := table.Name()
 
 	var unmarshalled interface{}
-where("calling json.Unmarshal() ...")
+where("***CALLING** json.Unmarshal() ...")
 	err = json.Unmarshal([]byte(jsonDataString), &unmarshalled)
 	if err != nil {
 		return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
@@ -711,14 +711,14 @@ os.Exit(4)
 //where("inside NewTableFromJSON")
 //
 //	var metadataTable *Table
-//where("calling newTableFromJSONMetadata()")
+//where("***CALLING** newTableFromJSONMetadata()")
 //	metadataTable, err = newTableFromJSONMetadata(jsonMetadataString)
 //	if err != nil {
 //		return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 //	}
 //where(metadataTable)
 //
-//where("calling newTableFromJSONData(metadataTable, jsonDataString) ...")
+//where("***CALLING** newTableFromJSONData(metadataTable, jsonDataString) ...")
 //	table, err = newTableFromJSONData(metadataTable, jsonDataString)
 //	if err != nil {
 //		return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
@@ -773,7 +773,7 @@ os.Exit(4)
 //}
 
 func (table *Table) GetTableAsJSON() (json string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -784,8 +784,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 
 	buf.WriteByte(123)	// Opening brace outermost
 
-	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
-
+where("***CALLING** getTableAsJSON_recursive()")
 	err = getTableAsJSON_recursive(table, &buf, refMap)
 	if err != nil {
 		return "", err
@@ -798,31 +797,8 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 	return
 }
 
-func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
-
-	jsonString, err := table.GetTableAsJSON()
-	if err != nil {
-		return "", err
-	}
-
-	var buf bytes.Buffer
-	err = json.Indent(&buf, []byte(jsonString), "", "\t")
-	if err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
-}
-
-/*
-	Recursively walk down into any nested tables.
-
-	Note: This doesn't generate valid JSON by itself.
-	Used by GetTableAsJSON() only.
-*/
 func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -831,23 +807,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 	// Add this table to the circular reference map.
 	refMap[table] = empty
 
-//	buf.WriteString(fmt.Sprintf("%q:", table.Name()))	// Begin outermost object
-
-/*
-	// Get metadata
-	var jsonMetadata string
-	jsonMetadata, err = table.GetTableMetadataAsJSON()
-	if err != nil {
-		return err
-	}
-	buf.WriteString(jsonMetadata)
-*/
-
-	if table.ColCount() == 0 {
-		buf.WriteString("[]")
-	}
-
-//	var buf bytes.Buffer
+	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
 
 	buf.WriteString(fmt.Sprintf(`"%s%s":[`, metadataTableNamePrefix, table.tableName))
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
@@ -863,10 +823,7 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 		}
 	}
 	buf.WriteByte(']')
-
-
 	buf.WriteByte(',')	// Between metadata and data.
-
 
 	// Get data
 
@@ -956,6 +913,23 @@ where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
 	return
 }
 
+func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonDataString string, err error) {
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+
+	jsonString, err := table.GetTableAsJSON()
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
 func checkJsonDecodeError(checkErr error) (err error) {
 	if checkErr == io.EOF {
 		return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
@@ -968,156 +942,156 @@ func checkJsonDecodeError(checkErr error) (err error) {
 	return nil
 }
 
-func newTableFromJSON_recursive(dec *json.Decoder, tableIn *Table) (table *Table, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
-
-	/*
-		Create empty table from metadata.
-		Note: To preserve column order, we do NOT use JSON marshalling into a map,
-		because iterating over a map returns values in random order.
-		Instead, we use the json decoder.
-	*/
-
-	var token json.Token
-
-	// Skip overall object opening brace
-where("Skip overall object opening brace")
-	token, err = dec.Token()
-	if err = checkJsonDecodeError(err); err != nil {
-		return nil, err
-	}
-where(fmt.Sprintf("TOKEN: %s", token))
-
-	// Get table name
-	token, err = dec.Token()
-	if err = checkJsonDecodeError(err); err != nil {
-		return nil, err
-	}
-	var tableName string = token.(string)
-where(fmt.Sprintf("TOKEN: %s", token))
-	tableIn, err = NewTable(tableName)
-	if err != nil {
-		return
-	}
-where(tableIn)
-
-	// Skip metadata opening brace
-where("Skip metadata opening brace")
-	token, err = dec.Token()
-	if err = checkJsonDecodeError(err); err != nil {
-		return nil, err
-	}
-where(fmt.Sprintf("TOKEN: %s", token))
-
-	// Skip metadata name
-where("Skip metadata name")
-	token, err = dec.Token()
-	if err = checkJsonDecodeError(err); err != nil {
-		return nil, err
-	}
-where(fmt.Sprintf("TOKEN: %s", token))
-
-	// Skip opening colnames/types array square bracket
-where("Skip opening colnames/types array square bracket")
-	token, err = dec.Token()
-	if err = checkJsonDecodeError(err); err != nil {
-		return nil, err
-	}
-where(fmt.Sprintf("TOKEN: %s", token))
-
-	// Simple parsing flags and values.
-	var colNameNext bool = false
-	var colName string
-	var colTypeNext bool = false
-	var colType string
-	var prevDelim rune
-
-repeatLimit := 4
-i := 1
-where(fmt.Sprintf("for i=%d to %d ...", i, repeatLimit))
-Loop:
-	for {
-		token, err = dec.Token()
-where(fmt.Sprintf("i=%d TOKEN: %s", i, token))
-		if err = checkJsonDecodeError(err); err != nil {
-			return nil, err
-		}
-
-		switch token.(type) {
-		case json.Delim:
-where("case json.Delim:")
-			delim := token.(json.Delim)
-			switch delim {
-			case 123: // Opening brace
-where("	case 123: // Opening brace")
-				colNameNext = true
-				prevDelim = 123	// Opening brace
-			case 125: // Closing brace
-where("	case 125: // Closing brace")
-				if prevDelim == 125	{	// 2 closing braces in a row.
-					// Closing brace: end of JSON metadata object
-where("	prevDelim == 125 // Closing brace: end of JSON metadata object")
-					// Table metadata is now completely initialised. Now do the rows of data.
-					//							return tableIn, nil
-where("		break Loop")
-					break Loop
-				}
-				// We now have a colName-plus-colType pair. Add this col to tableIn.
-where(fmt.Sprintf("	tableIn.AppendCol(colName=%q, colType=%q)", colName, colType))
-				err = tableIn.AppendCol(colName, colType)
-				if err != nil {
-					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
-				}
-				prevDelim = 125 // Closing brace: end of col
-			case '[': // Ignore slice signifiers in type names
-where(fmt.Sprintf("	case '[' // Ignore slice signifiers in type names"))
-			case ']': // Ignore slice signifiers in type names
-where(fmt.Sprintf("	case ']' // Ignore slice signifiers in type names"))
-			}
-		case string:
-where("case string:")
-			if colNameNext {
-where("colNameNext")
-				colName = token.(string)
-				colNameNext = false
-				colTypeNext = true
-			} else if colTypeNext {
-where("colTypeNext")
-				colType = token.(string)
-				colTypeNext = false
-			} else {
-				return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
-			}
-		case bool:
-where("case bool:")
-			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-		case float64:
-where("case float64:")
-			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-		case json.Number:
-where("case json.Number:")
-			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-		case nil:
-where("case nil:")
-			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
-		default:
-where("default:")
-			return nil, fmt.Errorf("unknown json token type %T value %v\n", token, token)
-		}
-where(tableIn)
-if i > repeatLimit {
-where(fmt.Sprintf("i=%d > repeatLimit=%d", i, repeatLimit))
-os.Exit(i)
-i++
-}
-	}
-
-where(fmt.Sprintf("return nil i=%d", i))
-	return nil, nil
-}
+// func newTableFromJSON_recursive(dec *json.Decoder, tableIn *Table) (table *Table, err error) {
+// where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+// 
+// 	/*
+// 		Create empty table from metadata.
+// 		Note: To preserve column order, we do NOT use JSON marshalling into a map,
+// 		because iterating over a map returns values in random order.
+// 		Instead, we use the json decoder.
+// 	*/
+// 
+// 	var token json.Token
+// 
+// 	// Skip overall object opening brace
+// where("Skip overall object opening brace")
+// 	token, err = dec.Token()
+// 	if err = checkJsonDecodeError(err); err != nil {
+// 		return nil, err
+// 	}
+// where(fmt.Sprintf("TOKEN: %s", token))
+// 
+// 	// Get table name
+// 	token, err = dec.Token()
+// 	if err = checkJsonDecodeError(err); err != nil {
+// 		return nil, err
+// 	}
+// 	var tableName string = token.(string)
+// where(fmt.Sprintf("TOKEN: %s", token))
+// 	tableIn, err = NewTable(tableName)
+// 	if err != nil {
+// 		return
+// 	}
+// where(tableIn)
+// 
+// 	// Skip metadata opening brace
+// where("Skip metadata opening brace")
+// 	token, err = dec.Token()
+// 	if err = checkJsonDecodeError(err); err != nil {
+// 		return nil, err
+// 	}
+// where(fmt.Sprintf("TOKEN: %s", token))
+// 
+// 	// Skip metadata name
+// where("Skip metadata name")
+// 	token, err = dec.Token()
+// 	if err = checkJsonDecodeError(err); err != nil {
+// 		return nil, err
+// 	}
+// where(fmt.Sprintf("TOKEN: %s", token))
+// 
+// 	// Skip opening colnames/types array square bracket
+// where("Skip opening colnames/types array square bracket")
+// 	token, err = dec.Token()
+// 	if err = checkJsonDecodeError(err); err != nil {
+// 		return nil, err
+// 	}
+// where(fmt.Sprintf("TOKEN: %s", token))
+// 
+// 	// Simple parsing flags and values.
+// 	var colNameNext bool = false
+// 	var colName string
+// 	var colTypeNext bool = false
+// 	var colType string
+// 	var prevDelim rune
+// 
+// repeatLimit := 4
+// i := 1
+// where(fmt.Sprintf("for i=%d to %d ...", i, repeatLimit))
+// Loop:
+// 	for {
+// 		token, err = dec.Token()
+// where(fmt.Sprintf("i=%d TOKEN: %s", i, token))
+// 		if err = checkJsonDecodeError(err); err != nil {
+// 			return nil, err
+// 		}
+// 
+// 		switch token.(type) {
+// 		case json.Delim:
+// where("case json.Delim:")
+// 			delim := token.(json.Delim)
+// 			switch delim {
+// 			case 123: // Opening brace
+// where("	case 123: // Opening brace")
+// 				colNameNext = true
+// 				prevDelim = 123	// Opening brace
+// 			case 125: // Closing brace
+// where("	case 125: // Closing brace")
+// 				if prevDelim == 125	{	// 2 closing braces in a row.
+// 					// Closing brace: end of JSON metadata object
+// where("	prevDelim == 125 // Closing brace: end of JSON metadata object")
+// 					// Table metadata is now completely initialised. Now do the rows of data.
+// 					//							return tableIn, nil
+// where("		break Loop")
+// 					break Loop
+// 				}
+// 				// We now have a colName-plus-colType pair. Add this col to tableIn.
+// where(fmt.Sprintf("	tableIn.AppendCol(colName=%q, colType=%q)", colName, colType))
+// 				err = tableIn.AppendCol(colName, colType)
+// 				if err != nil {
+// 					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+// 				}
+// 				prevDelim = 125 // Closing brace: end of col
+// 			case '[': // Ignore slice signifiers in type names
+// where(fmt.Sprintf("	case '[' // Ignore slice signifiers in type names"))
+// 			case ']': // Ignore slice signifiers in type names
+// where(fmt.Sprintf("	case ']' // Ignore slice signifiers in type names"))
+// 			}
+// 		case string:
+// where("case string:")
+// 			if colNameNext {
+// where("colNameNext")
+// 				colName = token.(string)
+// 				colNameNext = false
+// 				colTypeNext = true
+// 			} else if colTypeNext {
+// where("colTypeNext")
+// 				colType = token.(string)
+// 				colTypeNext = false
+// 			} else {
+// 				return nil, fmt.Errorf("newTableFromJSON(): expecting colName or colType")
+// 			}
+// 		case bool:
+// where("case bool:")
+// 			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+// 		case float64:
+// where("case float64:")
+// 			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+// 		case json.Number:
+// where("case json.Number:")
+// 			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+// 		case nil:
+// where("case nil:")
+// 			return nil, fmt.Errorf("newTableFromJSON(): unexpected value of type: %v", reflect.TypeOf(token))
+// 		default:
+// where("default:")
+// 			return nil, fmt.Errorf("unknown json token type %T value %v\n", token, token)
+// 		}
+// where(tableIn)
+// if i > repeatLimit {
+// where(fmt.Sprintf("i=%d > repeatLimit=%d", i, repeatLimit))
+// os.Exit(i)
+// i++
+// }
+// 	}
+// 
+// where(fmt.Sprintf("return nil i=%d", i))
+// 	return nil, nil
+// }
 
 func NewTableFromJSON(jsonString string) (table *Table, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 const verbose bool = false
 if verbose {
@@ -1142,7 +1116,7 @@ where()
 	}
 
 where()
-	table, err = newTableFromJSON(m)
+	table, err = newTableFromJSON_recursive(m)
 	if err != nil {
 		return nil, err
 	}
@@ -1151,8 +1125,8 @@ where()
 	return
 }
 
-func newTableFromJSON(m map[string]interface{}) (table *Table, err error) {
-where(fmt.Sprintf("%s ***INSIDE*** %s", UtilFuncSource(), UtilFuncName()))
+func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err error) {
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	var exists bool
 
@@ -1184,7 +1158,10 @@ where()
 	if err != nil {
 		return nil, err
 	}
-table.SetStructShape(true)
+err = table.SetStructShape(true)
+if err != nil {
+	return nil, err
+}
 
 where()
 	// (2) Retrieve and process metadata.
@@ -1274,6 +1251,7 @@ where()
 					case "float64":
 						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(cell.(float64)))
 					}
+					// Single error handler for all the calls in this switch statement.
 					if err != nil {
 						err := fmt.Errorf("could not convert JSON float64 to gotables %s", colType)
 						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
@@ -1287,28 +1265,41 @@ where()
 						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
 					}
 					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
-				case map[string]interface{}:	// This cell is a table
-	// TODO We need to somehow parse this into a table!
-					err = table.SetTableByColIndex(colIndex, rowIndex, cell.(*Table))
-				case nil:
+					if err != nil {
+						return nil, err
+					}
+				case map[string]interface{}:	// This cell is a table.
 					switch colType {
 						case "*Table", "*gotables.Table":
-//							tableNested, err := newTableFromJSON(cell.(map[string]interface{}))
+						tableNested, err := newTableFromJSON_recursive(cell.(map[string]interface{}))
+						if err != nil {
+							return nil, err
+						}
+						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+						if err != nil {
+							return nil, err
+						}
+						default:
+							return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected cell value at [%s].(%d,%d)",
+								tableName, colIndex, rowIndex)
+					}
+				case nil:	// This cell is a nil table.
+					switch colType {
+						case "*Table", "*gotables.Table":
 							var tableNested *Table = NewNilTable()
 							err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
 							if err != nil {
 								return nil, err
 							}
 						default:
-							return nil, fmt.Errorf("newTableFromJSON(): unexpected nil value at [%s].(%d,%d)",
+							return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
 								tableName, colIndex, rowIndex)
 					}
 				default:
 					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
 						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))
 				}
-	
-				// Single error handler for all the table.Set...() calls.
+				// Single error handler for all the calls in this switch statement.
 				if err != nil {
 					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 				}

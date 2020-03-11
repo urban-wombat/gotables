@@ -66,7 +66,7 @@ SOFTWARE.
 //			t.Fatal(err)
 //		}
 //
-//		out.WriteTo(os.Stdout)
+//		_, _ = out.WriteTo(os.Stdout)
 //		fmt.Println()
 //	*/
 //}
@@ -117,7 +117,7 @@ func TestGetTableSetAsJSON(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		out.WriteTo(os.Stdout)
+		_, _ = out.WriteTo(os.Stdout)
 		fmt.Println()
 	*/
 }
@@ -157,7 +157,7 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		out.WriteTo(os.Stdout)
+		_, _ = out.WriteTo(os.Stdout)
 		fmt.Println()
 	*/
 }
@@ -201,14 +201,14 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 //			t.Fatal(err)
 //		}
 //
-//		out.WriteTo(os.Stdout)
+//		_, _ = out.WriteTo(os.Stdout)
 //		fmt.Println()
 //	*/
 //}
 
 func TestNewTableFromJSON(t *testing.T) {
 
-	const verbose = true
+	const verbose = false
 
 	var err error
 	var tableInput *Table // Input table
@@ -216,7 +216,7 @@ func TestNewTableFromJSON(t *testing.T) {
 
 	var tableString string = `
 		[TypesGalore16]
-	    i   s      f       f32     t     b    ui    bb            uu8			table1
+	    i   s      f       f32     t     b    ui    bb            uu8			table
 	    int string float64 float32 bool  byte uint8 []byte        []uint8		*Table
 	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]	[]
 	    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]	[]
@@ -230,54 +230,40 @@ func TestNewTableFromJSON(t *testing.T) {
 	}
 
 	// Nest a table and see what happens.
-	table1, err := NewTable("Table1")
+	table4, err := NewTableFromString(
+	`[Table4]
+	i int = 3
+	`)
 	if err != nil {
 		t.Fatal(err)
 	}
-	tableInput.SetTable("table1", 0, table1)
+	err = tableInput.SetTable("table", 4, table4)
 	if err != nil {
 		t.Fatal(err)
 	}
-where(tableInput)
+
+	if verbose {
+		where(table4)
+		where(tableInput)
+	}
 
 	if verbose {
 		fmt.Printf("\n\n%v\n", tableInput)
 	}
 
-/*
-	var jsonMetadataString string
-	jsonMetadataString, err = tableInput.GetTableMetadataAsJSON()
+	var jsonString string
+
+	if verbose {
+		where("calling GetTableAsJSON()")
+	}
+	jsonString, err = tableInput.GetTableAsJSON()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if verbose {
-		var buf bytes.Buffer
-		// For readability.
-		err = json.Indent(&buf, []byte(jsonMetadataString), "", "\t")
-		if err != nil {
-			t.Fatal(err)
-		}
-		buf.WriteTo(os.Stdout)
+		where(jsonString)
 	}
-*/
-
-	var jsonString string
-
-/*
-	jsonString, err = tableInput.GetTableDataAsJSON()
-	if err != nil {
-		t.Fatal(err)
-	}
-where(jsonString)
-*/
-
-	jsonString, err = tableInput.GetTableAsJSON()
-	if err != nil {
-		t.Fatal(err)
-	}
-where(jsonString)
-os.Exit(33)
 
 	if verbose {
 		var buf bytes.Buffer
@@ -286,15 +272,20 @@ os.Exit(33)
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 	}
 
-where("calling NewTableFromJSON() ...")
-//	tableOutput, err = NewTableFromJSON(jsonMetadataString, jsonString)
+where("***CALLING** NewTableFromJSON() ...")
 	tableOutput, err = NewTableFromJSON(jsonString)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	table4out, err := tableInput.GetTable("table", 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+where(table4out)
 
 	_, err = tableInput.Equals(tableOutput)
 	if err != nil {
@@ -360,7 +351,7 @@ func TestNewTableSetFromJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 	}
 
 	tableSet2, err = NewTableSetFromJSON(jsonMetadataStrings, jsonDataStrings)
@@ -411,7 +402,7 @@ func TestAllJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		fmt.Println()
 		fmt.Println()
@@ -428,7 +419,7 @@ func TestAllJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		fmt.Println()
 		fmt.Println()
@@ -486,14 +477,14 @@ func TestAllJSON(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			buf.WriteTo(os.Stdout)
+			_, _ = buf.WriteTo(os.Stdout)
 
 			// For readability.
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
-			buf.WriteTo(os.Stdout)
+			_, _ = buf.WriteTo(os.Stdout)
 		}
 
 		fmt.Println()
@@ -555,7 +546,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		fmt.Println()
 		fmt.Println()
@@ -572,7 +563,7 @@ func TestAllJSONZeroRows(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		fmt.Println()
 		fmt.Println()
@@ -630,14 +621,14 @@ func TestAllJSONZeroRows(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			buf.WriteTo(os.Stdout)
+			_, _ = buf.WriteTo(os.Stdout)
 
 			// For readability.
 			err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "\t")
 			if err != nil {
 				t.Fatal(err)
 			}
-			buf.WriteTo(os.Stdout)
+			_, _ = buf.WriteTo(os.Stdout)
 		}
 
 		fmt.Println()
@@ -701,7 +692,7 @@ func TestAllJSONZeroMetadata(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		fmt.Println()
 		fmt.Println()
@@ -759,7 +750,7 @@ func ExampleNewTableFromJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	buf.WriteTo(os.Stdout)
+	_, _ = buf.WriteTo(os.Stdout)
 
 	fmt.Println()
 	fmt.Println()
@@ -774,7 +765,7 @@ func ExampleNewTableFromJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	buf.WriteTo(os.Stdout)
+	_, _ = buf.WriteTo(os.Stdout)
 
 	fmt.Println()
 	fmt.Println()
@@ -872,7 +863,7 @@ func ExampleNewTableFromJSON_zeroRows() {
 	if err != nil {
 		log.Println(err)
 	}
-	buf.WriteTo(os.Stdout)
+	_, _ = buf.WriteTo(os.Stdout)
 
 	fmt.Println()
 	fmt.Println()
@@ -887,7 +878,7 @@ func ExampleNewTableFromJSON_zeroRows() {
 	if err != nil {
 		log.Println(err)
 	}
-	buf.WriteTo(os.Stdout)
+	_, _ = buf.WriteTo(os.Stdout)
 
 	fmt.Println()
 	fmt.Println()
@@ -972,14 +963,14 @@ func ExampleNewTableSetFromJSON() {
 		if err != nil {
 			log.Println(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		// For readability.
 		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
 		if err != nil {
 			log.Println(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 	}
 
 	fmt.Println()
@@ -1104,14 +1095,14 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 		if err != nil {
 			log.Println(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 
 		// For readability.
 		err = json.Indent(&buf, []byte(jsonDataSlice[i]), "", "  ")
 		if err != nil {
 			log.Println(err)
 		}
-		buf.WriteTo(os.Stdout)
+		_, _ = buf.WriteTo(os.Stdout)
 	}
 
 	fmt.Println()
@@ -1220,7 +1211,7 @@ func ExampleTable_GetTableDataAsJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	out.WriteTo(os.Stdout)
+	_, _ = out.WriteTo(os.Stdout)
 
 	// Output:
 	// Print as is:
@@ -1344,7 +1335,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 		log.Println(err)
 	}
 
-	out.WriteTo(os.Stdout)
+	_, _ = out.WriteTo(os.Stdout)
 	fmt.Println()
 
 	// Output:
@@ -1457,7 +1448,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //		log.Println(err)
 //	}
 //
-//	out.WriteTo(os.Stdout)
+//	_, _ = out.WriteTo(os.Stdout)
 //	fmt.Println()
 //
 //	// Output:
@@ -1568,7 +1559,7 @@ func ExampleTable_GetTableMetadataAsJSON() {
 //	if err != nil {
 //		log.Println(err)
 //	}
-//	out.WriteTo(os.Stdout)
+//	_, _ = out.WriteTo(os.Stdout)
 //
 //	// Now let's get it back from JSON into *Table
 //
@@ -2025,7 +2016,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	if err != nil {
 		log.Println(err)
 	}
-	out.WriteTo(os.Stdout)
+	_, _ = out.WriteTo(os.Stdout)
 
 	// Now let's get it back from JSON into *Table
 
