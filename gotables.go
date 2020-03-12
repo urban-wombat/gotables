@@ -466,6 +466,7 @@ type Table struct {
 	sortKeys    []sortKey
 	structShape bool
 	isNilTable  bool
+	parentTable *Table
 }
 
 type TableExported struct {
@@ -3089,13 +3090,13 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
-					return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-						table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
+					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName%q rowIndex=%d: %v != %v",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 				}
 				for i := 0; i < len(slice1); i++ {
 					if slice1[i] != slice2[i] {
-						return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-							table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
+						return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex%d: %v != %v",
+							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}
 			} else if isTable {
@@ -3107,14 +3108,30 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				if err != nil {
 					return false, err
 				}
+
+				// Recursive call to compare nested tables.
 				equals, err := nestedTable1.Equals(nestedTable2)
 				if !equals {
-					return equals, fmt.Errorf("%v (nested tables)", err)
+					if nestedTable1.parentTable != nil {
+						parentTableName := nestedTable1.parentTable.Name()
+						return equals, fmt.Errorf("%v (parent table [%s] colIndex=%d colName=%q rowIndex=%d)",
+							err, parentTableName, colIndex, colName, rowIndex)
+					} else {
+						return equals, fmt.Errorf("%v (nested table)", err)
+					}
+/*
+Hmmm. Maybe the error message will be composed with each recursive call?
+					var nesting *Table = nestedTable1	// Doesn't matter which of 1 and 2.
+					for nesting.parentTable != nil {
+						
+					}
+*/
 				}
+
 			} else {	// For all other (atomic) types.
 				if val1 != val2 {
-					return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-						table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
+					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 				}
 			}
 

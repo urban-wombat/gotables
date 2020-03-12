@@ -844,6 +844,9 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 			UtilFuncName(), table.Name(), colName)
 	}
 
+	// This may help with reporting errors.
+	newVal.parentTable = table
+
 	colType, err := table.ColType(colName)
 	if err != nil {
 		return err
@@ -1541,6 +1544,9 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 		return fmt.Errorf("%s: table [%s] col %d expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
 			UtilFuncName(), table.Name(), colIndex)
 	}
+
+	// This may help with reporting errors.
+	newVal.parentTable = table
 
 	colType := table.colTypes[colIndex]
 
