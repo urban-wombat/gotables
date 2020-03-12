@@ -281,11 +281,12 @@ where("***CALLING** NewTableFromJSON() ...")
 		t.Fatal(err)
 	}
 
+/*
 	table4out, err := tableInput.GetTable("table", 4)
 	if err != nil {
 		t.Fatal(err)
 	}
-where(table4out)
+*/
 
 	_, err = tableInput.Equals(tableOutput)
 	if err != nil {
@@ -303,7 +304,110 @@ where(table4out)
 			t.Fatalf("expecting decoded table rows in order, but found row %d at rowIndex %d", i, rowIndex)
 		}
 	}
-where()
+
+	if verbose {
+		fmt.Printf("\n\n%v\n", tableOutput)
+	}
+}
+
+func TestNewTableFromJSONZeroRows(t *testing.T) {
+
+	const verbose = false
+
+	var err error
+	var tableInput *Table // Input table
+	var tableOutput *Table // Output table
+
+	var tableString string = `
+		[TypesGalore16]
+	    i   s      f       f32     t     b    ui    bb            uu8			table
+	    int string float64 float32 bool  byte uint8 []byte        []uint8		*Table
+	    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]	[]
+	    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]	[]
+	    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]	[]
+	    3   "xxxx" 5.9     9.9     true  44   3     []            []			[]
+	    4   "yyyy" 6.9    10.9     false 55   4     [0]           [2]			[]
+	    `
+	tableInput, err = NewTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Nest a table and see what happens.
+	table4, err := NewTableFromString(
+	`[Table4]
+	i int = 3
+	`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = tableInput.SetTable("table", 4, table4)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if verbose {
+		where(table4)
+		where(tableInput)
+	}
+
+	if verbose {
+		fmt.Printf("\n\n%v\n", tableInput)
+	}
+
+	var jsonString string
+
+	if verbose {
+		where("calling GetTableAsJSON()")
+	}
+	jsonString, err = tableInput.GetTableAsJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if verbose {
+		where(jsonString)
+	}
+
+	if verbose {
+		var buf bytes.Buffer
+		// For readability.
+		err = json.Indent(&buf, []byte(jsonString), "", "\t")
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, _ = buf.WriteTo(os.Stdout)
+	}
+
+where("***CALLING** NewTableFromJSON() ...")
+	tableOutput, err = NewTableFromJSON(jsonString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+/*
+	table4out, err := tableInput.GetTable("table", 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+*/
+
+	_, err = tableInput.Equals(tableOutput)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Does table.Equals() check row order?
+	for rowIndex := 0; rowIndex < tableOutput.RowCount(); rowIndex++ {
+		i, err := tableOutput.GetInt("i", rowIndex)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if i != rowIndex {
+			t.Fatalf("expecting decoded table rows in order, but found row %d at rowIndex %d", i, rowIndex)
+		}
+	}
 
 	if verbose {
 		fmt.Printf("\n\n%v\n", tableOutput)
