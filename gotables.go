@@ -2044,6 +2044,7 @@ func (table *Table) ColCount() int {
 	Returns -1 if there is an error (namely: the table variable is nil).
 */
 func (table *Table) RowCount() int {
+
 	if table == nil {
 		return -1
 	}
@@ -3012,6 +3013,7 @@ func isExportableName(name string) bool {
 	Useful for testing.
 */
 func (table1 *Table) Equals(table2 *Table) (bool, error) {
+
 	if table1 == nil {
 		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil")
 	}
@@ -3070,7 +3072,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 			return false, err
 		}
 
-		isSlice := strings.HasPrefix(colType, "[]")
+		isSlice, _ := IsSliceColType(colType)
+		isTable, _ := IsTableColType(colType)
 
 		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
 			val1, err := table1.GetValByColIndex(colIndex, rowIndex)
@@ -3082,23 +3085,36 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 
-			if isSlice {
+			if isSlice {	// For slices.
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
 					return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-						table1.Name(), table2.Name(), colName, colIndex, val1, val2)
+						table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
 				}
 				for i := 0; i < len(slice1); i++ {
 					if slice1[i] != slice2[i] {
 						return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-							table1.Name(), table2.Name(), colName, colIndex, val1, val2)
+							table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
 					}
 				}
-			} else {
+			} else if isTable {
+				nestedTable1, err := table1.GetTableByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return false, err
+				}
+				nestedTable2, err := table2.GetTableByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return false, err
+				}
+				equals, err := nestedTable1.Equals(nestedTable2)
+				if !equals {
+					return equals, fmt.Errorf("%v (nested tables)", err)
+				}
+			} else {	// For all other (atomic) types.
 				if val1 != val2 {
 					return false, fmt.Errorf("[%s].Equals([%s]): col %q row %d: %v != %v",
-						table1.Name(), table2.Name(), colName, colIndex, val1, val2)
+						table1.Name(), table2.Name(), colName, rowIndex, val1, val2)
 				}
 			}
 

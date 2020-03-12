@@ -224,6 +224,16 @@ var globalNumericColTypesMap = map[string]int{
 	"complex": 0, // Not yet implemented.
 }
 
+var globalSliceColTypesMap = map[string]int {
+	"[]byte":  0,
+	"[]uint8": 0,
+}
+
+var globalTableColTypesMap = map[string]int {
+	"*Table":          0,
+	"*gotables.Table": 0,
+}
+
 const structNameIndex = 0
 const structTypeIndex = 1
 const structEqualsIndex = 2
@@ -715,6 +725,40 @@ func IsNumericColType(colType string) (bool, error) {
 		msg := fmt.Sprintf("non-numeric col type: %s (numeric types:", colType)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 		for typeName, _ := range globalNumericColTypesMap {
+			msg += fmt.Sprintf(" %s", typeName)
+		}
+		msg += ")"
+		err := errors.New(msg)
+		return false, err
+	}
+
+	return true, nil
+}
+
+func IsSliceColType(colType string) (bool, error) {
+	_, contains := globalSliceColTypesMap[colType]
+
+	if !contains {
+		msg := fmt.Sprintf("non-slice col type: %s (slice types:", colType)
+		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+		for typeName, _ := range globalSliceColTypesMap {
+			msg += fmt.Sprintf(" %s", typeName)
+		}
+		msg += ")"
+		err := errors.New(msg)
+		return false, err
+	}
+
+	return true, nil
+}
+
+func IsTableColType(colType string) (bool, error) {
+	_, contains := globalTableColTypesMap[colType]
+
+	if !contains {
+		msg := fmt.Sprintf("non-table col type: %s (table types:", colType)
+		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+		for typeName, _ := range globalTableColTypesMap {
 			msg += fmt.Sprintf(" %s", typeName)
 		}
 		msg += ")"
