@@ -404,6 +404,9 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
 					// We know it's there (from the line split above), so don't check for nil returned.
 					var rangeFound []int = equalsRegexp.FindStringIndex(line)
+					if rangeFound == nil {	// This avoids a runtime error.
+						return nil, fmt.Errorf("%s expecting <name> <type> = <value> but found: %s", p.gotFilePos(), line)
+					}
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.
 
@@ -411,6 +414,11 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Exactly one row is needed for a struct table which has data. Zero rows if no data.
 					if table.RowCount() == 0 {
 						err = table.AppendRow()
+						if err != nil {
+							return nil, err
+						}
+
+						table.SetStructShape(true)
 						if err != nil {
 							return nil, err
 						}

@@ -1033,42 +1033,6 @@ func checkJsonDecodeError(checkErr error) (err error) {
 // 	return nil, nil
 // }
 
-func NewTableFromJSON(jsonString string) (table *Table, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-
-const verbose bool = false
-
-if verbose {
-	var buf bytes.Buffer
-	err = json.Indent(&buf, []byte(jsonString), "", "\t")
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(buf.String())
-}
-
-where()
-	if jsonString == "" {
-		return nil, fmt.Errorf("%s: jsonString is empty", UtilFuncName())
-	}
-
-where()
-	var m map[string]interface{}
-	err = json.Unmarshal([]byte(jsonString), &m)
-	if err != nil {
-		return nil, err
-	}
-
-where()
-	table, err = newTableFromJSON_recursive(m)
-	if err != nil {
-		return nil, err
-	}
-
-where()
-	return
-}
-
 func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err error) {
 where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
@@ -1361,7 +1325,6 @@ func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
 	if err != nil {
 		return nil, err
 	}
-where(tableSet)
 
 	// (2) Retrieve and process tables.
 	var tablesMap []interface{}
@@ -1369,11 +1332,10 @@ where(tableSet)
 	if !exists {
 		return nil, fmt.Errorf("JSON is missing tables")
 	}
-where(tablesMap)
-where(fmt.Sprintf("tablesMap type %T", tablesMap))
 
 	var tableMap map[string]interface{}
 	var tableMapInterface interface{}
+
 	// Loop through the array of tables.
 	for _, tableMapInterface = range tablesMap {
 
@@ -1384,15 +1346,54 @@ where(fmt.Sprintf("tablesMap type %T", tablesMap))
 		if err != nil {
 			return nil, err
 		}
-		where(table)
 
 		err = tableSet.Append(table)
 		if err != nil {
 			return nil, err
 		}
 	}
-where(jsonTableSet)
-where(tableSet)
+
+	return
+}
+
+func NewTableFromJSON(jsonString string) (table *Table, err error) {
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+
+	// This is similar to NewTableFromString which first gets a TableSet.
+
+	if jsonString == "" {
+		return nil, fmt.Errorf("%s: jsonString is empty", UtilFuncName())
+	}
+
+	tableSet, err := NewTableSetFromJSON(jsonString)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
+	}
+
+	tableCount := tableSet.TableCount()
+	if tableCount != 1 {
+		return nil, fmt.Errorf("%s: expecting a JSON string containing 1 table but found %d table%s",
+			 UtilFuncName(), tableCount, plural(tableCount))
+	}
+
+	table, err = tableSet.TableByTableIndex(0)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
+	}
+
+	return table, nil
+}
+
+func NewTableFromJSONByTableName(jsonString string, tableName string) (table *Table, err error) {
+	tableSet, err := NewTableSetFromJSON(jsonString)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
+	}
+
+	table, err = tableSet.Table(tableName)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
+	}
 
 	return
 }

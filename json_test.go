@@ -161,6 +161,7 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 
 		[YetAnotherTable]
 		love bool = true
+		hate bool = false
 	    `
 	tableSetInput, err = NewTableSetFromString(tableString)
 	if err != nil {
@@ -198,7 +199,7 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	if verbose {
 		where("calling GetTableAsJSON()")
 	}
-//	jsonString, err = tableInput.GetTableAsJSON()
+
 	jsonString, err = tableSetInput.GetTableSetAsJSON()
 	if err != nil {
 		t.Fatal(err)
@@ -219,11 +220,19 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	}
 
 where(jsonString)
-	// where("***CALLING** NewTableFromJSON() ...")
+	// where("***CALLING** NewTableSetFromJSON() ...")
 	tableSetOutput, err = NewTableSetFromJSON(jsonString)
 	if err != nil {
 		t.Fatal(err)
 	}
+where(fmt.Sprintf("\n\n%s", tableSetOutput))
+
+	// where("***CALLING** NewTableFromJSON() ...")
+	tableOutput, err = NewTableFromJSONByTableName(jsonString, "YetAnotherTable")
+	if err != nil {
+		t.Fatal(err)
+	}
+where(tableOutput)
 
 	_, err = tableSetInput.Equals(tableSetOutput)
 	if err != nil {
