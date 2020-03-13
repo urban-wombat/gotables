@@ -8,7 +8,6 @@ import (
 	"os"
 	"reflect"
 	"regexp"
-	"time"
 )
 
 type circRefMap map[*Table]struct{}
@@ -1377,10 +1376,8 @@ where(fmt.Sprintf("tablesMap type %T", tablesMap))
 	var tableMapInterface interface{}
 	// Loop through the array of tables.
 	for _, tableMapInterface = range tablesMap {
+
 		tableMap = tableMapInterface.(map[string]interface{})
-where(tableMap)
-where(fmt.Sprintf("*** tableMap type: %T", tableMap))
-time.Sleep(1*1000)
 
 		var table *Table
 		table, err = newTableFromJSON_recursive(tableMap)
@@ -1393,8 +1390,8 @@ time.Sleep(1*1000)
 		if err != nil {
 			return nil, err
 		}
-where(tableSet)
 	}
+where(jsonTableSet)
 where(tableSet)
 
 	return

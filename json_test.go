@@ -143,6 +143,8 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	var tableOutput *Table	// Output table
 
 	var tableString string = `
+		[[MyTableSet]]
+
 		[TypesGalore16]
 	    i   s      f       f32     t     b    ui    bb            uu8			table
 	    int string float64 float32 bool  byte uint8 []byte        []uint8		*Table
@@ -151,6 +153,14 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]	[]
 	    3   "xxxx" 5.9     9.9     true  44   3     []            []			[]
 	    4   "yyyy" 6.9    10.9     false 55   4     [0]           [2]			[]
+
+		[AnotherTable]
+		i	j	k
+		int	int	int
+		1	3	9
+
+		[YetAnotherTable]
+		love bool = true
 	    `
 	tableSetInput, err = NewTableSetFromString(tableString)
 	if err != nil {

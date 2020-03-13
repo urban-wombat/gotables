@@ -133,7 +133,6 @@ var uintRegexpString string
 var uintRegexp *regexp.Regexp
 var uintSliceRegexpString string
 var uintSliceRegexp *regexp.Regexp
-
 var intRegexp *regexp.Regexp
 
 // See init()
@@ -143,10 +142,12 @@ var intRegexp *regexp.Regexp
 // From Regular Expressions Cookbook.
 var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][-+]?[0-9]+)?)|([Nn][Aa][Nn])`)
 
+const tableSetNamePattern string = `^\[\[[a-zA-Z_][a-zA-Z0-9_]*\]\]$`
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
 const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
 const tableNameNilPattern string = `^(\[\])`
 
+var tableSetNameRegexp *regexp.Regexp = regexp.MustCompile(tableSetNamePattern)
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
 var tableNameNilRegexp *regexp.Regexp = regexp.MustCompile(tableNameNilPattern)
 var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
@@ -269,8 +270,9 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 	var parserColTypes []string
 	var rowSliceOfStructTable tableRow // Needs to persist over multiple lines.
 
-	unnamed := ""
-	tables, err := NewTableSet(unnamed)
+	var tableSetNameHasBeenSet bool = false
+	unnamedTableSet := ""
+	tables, err := NewTableSet(unnamedTableSet)
 	if err != nil {
 		return nil, fmt.Errorf("%s %s", p.gotFilePos(), err)
 	}
@@ -318,6 +320,21 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 			if len(line) > 0 {
 				// Skip blank lines before table.
+
+				if tableSetNameHasBeenSet == false {	// Test is for efficiency (not bench tested).
+					// Try to get tableSetName here.
+					tableSetName, err := p.getTableSetName(line)
+					if err == nil {	// No error means: got a TableSet name
+						err = tables.SetName(tableSetName)
+						if err != nil {
+							return nil, err
+						}
+	
+						tableSetNameHasBeenSet = true
+
+						continue
+					}
+				}
 
 				var tableName string
 				tableName, err = p.getTableName(line)
@@ -632,6 +649,31 @@ func file_line() string {
 		s = ""
 	}
 	return s
+}
+
+func (p *parser) getTableSetName(line string) (string, error) {
+
+	fields := strings.Fields(line)
+where("fields")
+where(fields)
+where(len(fields))
+	if len(fields) != 1 { // Note: len(fields) cannot be 0, because len(line) > 0 has been tested before call.
+		return "", fmt.Errorf("%s expecting a table set name in double square brackets but found: %s", p.gotFilePos(), fields[0])
+	}
+
+	tableSetName := fields[0]
+	result := tableSetNameRegexp.MatchString(tableSetName)
+	if !result {
+		return "", fmt.Errorf("%s expecting a valid alpha-numeric table set name in double square brackets, eg [[_Foo2Bar3]] but found: %s",
+			p.gotFilePos(), tableSetName)
+	}
+
+	// Must be at least 5 chars to have matched tableSetNameRegexp.
+
+	// Strip off surrounding [[]]
+	tableSetName = tableSetName[2 : len(tableSetName)-2]
+
+	return tableSetName, nil
 }
 
 func (p *parser) getTableName(line string) (string, error) {

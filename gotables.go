@@ -289,7 +289,7 @@ func (tableSet *TableSet) StringPadded() string {
 
 	var tableSetName string = tableSet.Name()
 	if tableSetName != "" {
-		s += fmt.Sprintf("# %s\n\n", tableSet.Name())
+		s += fmt.Sprintf("[[%s]]\n\n", tableSet.Name())
 	}
 
 	var table *Table
@@ -347,14 +347,19 @@ func (tableSet *TableSet) Name() string {
 	return tableSet.tableSetName
 }
 
-func (tableSet *TableSet) SetName(tableSetName string) {
+func (tableSet *TableSet) SetName(tableSetName string) error {
+//		if tableSet == nil {
+//			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", UtilFuncSource(), UtilFuncName()))
+//			UtilPrintCaller()
+//			return
+//		}
 	if tableSet == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", UtilFuncSource(), UtilFuncName()))
-		UtilPrintCaller()
-		return
+		return fmt.Errorf("%s ERROR: tableSet.%s: tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	tableSet.tableSetName = tableSetName
+
+	return nil
 }
 
 // The file name if this TableSet has been created from a file. Otherwise ""
