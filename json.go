@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"time"
 )
 
 type circRefMap map[*Table]struct{}
@@ -149,35 +150,6 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	}
 
 	return buf.String(), nil
-}
-
-/*
-	Marshal gotables TableSet to JSON
-*/
-func (tableSet *TableSet) GetTableSetAsJSON() (jsonStrings []string, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-
-	if tableSet == nil {
-		return nil, fmt.Errorf("%s %s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
-	}
-
-	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
-
-		var table *Table
-		table, err = tableSet.TableByTableIndex(tableIndex)
-		if err != nil {
-			return nil, err
-		}
-
-		var jsonString string
-		jsonString, err = table.GetTableAsJSON()
-		if err != nil {
-			return nil, err
-		}
-		jsonStrings = append(jsonStrings, jsonString)
-	}
-
-	return
 }
 
 //	func newTableFromJSONMetadata(jsonMetadataString string) (table *Table, err error) {
@@ -712,34 +684,34 @@ os.Exit(4)
 //	return table, nil
 //}
 
-/*
-	Unmarshal JSON documents to a *gotables.TableSet
-*/
-func NewTableSetFromJSON(jsonStrings []string) (tableSet *TableSet, err error) {
-
-	if jsonStrings == nil {
-		return nil, fmt.Errorf("jsonStrings == nil")
-	}
-
-	tableSet, err = NewTableSet("")
-	if err != nil {
-		return nil, err
-	}
-
-	for tableIndex := 0; tableIndex < len(jsonStrings); tableIndex++ {
-		table, err := NewTableFromJSON(jsonStrings[tableIndex])
-		if err != nil {
-			return nil, err
-		}
-
-		err = tableSet.AppendTable(table)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return
-}
+///*
+//	Unmarshal JSON documents to a *gotables.TableSet
+//*/
+//func NewTableSetFromJSON(jsonStrings []string) (tableSet *TableSet, err error) {
+//
+//	if jsonStrings == nil {
+//		return nil, fmt.Errorf("jsonStrings == nil")
+//	}
+//
+//	tableSet, err = NewTableSet("")
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	for tableIndex := 0; tableIndex < len(jsonStrings); tableIndex++ {
+//		table, err := NewTableFromJSON(jsonStrings[tableIndex])
+//		if err != nil {
+//			return nil, err
+//		}
+//
+//		err = tableSet.AppendTable(table)
+//		if err != nil {
+//			return nil, err
+//		}
+//	}
+//
+//	return
+//}
 
 func (table *Table) GetTableAsJSON() (json string, err error) {
 where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
@@ -1066,6 +1038,7 @@ func NewTableFromJSON(jsonString string) (table *Table, err error) {
 where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 const verbose bool = false
+
 if verbose {
 	var buf bytes.Buffer
 	err = json.Indent(&buf, []byte(jsonString), "", "\t")
@@ -1130,10 +1103,12 @@ where()
 	if err != nil {
 		return nil, err
 	}
+/*
 err = table.SetStructShape(true)
 if err != nil {
 	return nil, err
 }
+*/
 
 where()
 	// (2) Retrieve and process metadata.
@@ -1282,5 +1257,145 @@ where()
 where(table)
 
 where()
+	return
+}
+
+///*
+//	Marshal gotables TableSet to JSON
+//*/
+//func (tableSet *TableSet) GetTableSetAsJSON() (jsonStrings []string, err error) {
+//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+//
+//	if tableSet == nil {
+//		return nil, fmt.Errorf("%s %s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
+//	}
+//
+//	for tableIndex := 0; tableIndex < len(tableSet.tables); tableIndex++ {
+//
+//		var table *Table
+//		table, err = tableSet.TableByTableIndex(tableIndex)
+//		if err != nil {
+//			return nil, err
+//		}
+//
+//		var jsonString string
+//		jsonString, err = table.GetTableAsJSON()
+//		if err != nil {
+//			return nil, err
+//		}
+//		jsonStrings = append(jsonStrings, jsonString)
+//	}
+//
+//	return
+//}
+
+/*
+	Marshal gotables TableSet to JSON
+*/
+func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
+where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+
+	if tableSet == nil {
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	var buf bytes.Buffer
+
+	buf.WriteByte(123)	// Opening brace outermost
+	buf.WriteString(fmt.Sprintf(`"tableSetName":%q,`, tableSet.Name()))
+//	buf.WriteByte('[')	// Opening array of tables
+	buf.WriteString(`"tables":[`)	// Opening array of tables
+
+	var tableCount int = tableSet.TableCount()
+	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
+		table, err := tableSet.TableByTableIndex(tableIndex)
+		if err != nil {
+			return "", err
+		}
+
+where("***CALLING** getTableAsJSON()")
+		var jsonTable string
+		jsonTable, err = table.GetTableAsJSON()
+		if err != nil {
+			return "", err
+		}
+
+		buf.WriteString(jsonTable)
+
+		if tableIndex < tableCount-1 {
+			buf.WriteByte(',')	// Delimiter between tables
+		}
+	}
+
+	buf.WriteByte(']')	// Closing array of tables
+	buf.WriteByte(125)	// Closing brace outermost
+
+	jsonTableSet = buf.String()
+
+	return
+}
+
+/*
+	Unmarshal JSON documents to a *gotables.TableSet
+*/
+func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
+
+	if jsonTableSet == "" {
+		return nil, fmt.Errorf("%s: jsonTableSet is empty", UtilFuncName())
+	}
+
+	var m map[string]interface{}
+	err = json.Unmarshal([]byte(jsonTableSet), &m)
+	if err != nil {
+		return nil, err
+	}
+
+	// (1) Retrieve and process TableSet name.
+	var tableSetName string
+	var exists bool
+	tableSetName, exists = m["tableSetName"].(string)
+	if !exists {
+		return nil, fmt.Errorf("JSON is missing tableSet name")
+	}
+
+	tableSet, err = NewTableSet(tableSetName)
+	if err != nil {
+		return nil, err
+	}
+where(tableSet)
+
+	// (2) Retrieve and process tables.
+	var tablesMap []interface{}
+	tablesMap, exists = m["tables"].([]interface{})
+	if !exists {
+		return nil, fmt.Errorf("JSON is missing tables")
+	}
+where(tablesMap)
+where(fmt.Sprintf("tablesMap type %T", tablesMap))
+
+	var tableMap map[string]interface{}
+	var tableMapInterface interface{}
+	// Loop through the array of tables.
+	for _, tableMapInterface = range tablesMap {
+		tableMap = tableMapInterface.(map[string]interface{})
+where(tableMap)
+where(fmt.Sprintf("*** tableMap type: %T", tableMap))
+time.Sleep(1*1000)
+
+		var table *Table
+		table, err = newTableFromJSON_recursive(tableMap)
+		if err != nil {
+			return nil, err
+		}
+		where(table)
+
+		err = tableSet.Append(table)
+		if err != nil {
+			return nil, err
+		}
+where(tableSet)
+	}
+where(tableSet)
+
 	return
 }

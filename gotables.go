@@ -388,6 +388,10 @@ func (tableSet *TableSet) TableCount() int {
 	return len(tableSet.tables)
 }
 
+func (tableSet *TableSet) Append(newTable *Table) error {
+	return tableSet.AppendTable(newTable)
+}
+
 // Add a table to a table set.
 func (tableSet *TableSet) AppendTable(newTable *Table) error {
 
@@ -3113,19 +3117,13 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				equals, err := nestedTable1.Equals(nestedTable2)
 				if !equals {
 					if nestedTable1.parentTable != nil {
+						// Hmmm. Maybe the error message will be composed with each recursive call?
 						parentTableName := nestedTable1.parentTable.Name()
 						return equals, fmt.Errorf("%v (parent table [%s] colIndex=%d colName=%q rowIndex=%d)",
 							err, parentTableName, colIndex, colName, rowIndex)
 					} else {
 						return equals, fmt.Errorf("%v (nested table)", err)
 					}
-/*
-Hmmm. Maybe the error message will be composed with each recursive call?
-					var nesting *Table = nestedTable1	// Doesn't matter which of 1 and 2.
-					for nesting.parentTable != nil {
-						
-					}
-*/
 				}
 
 			} else {	// For all other (atomic) types.
