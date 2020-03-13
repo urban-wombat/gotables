@@ -662,9 +662,6 @@ func file_line() string {
 func (p *parser) getTableSetName(line string) (string, error) {
 
 	fields := strings.Fields(line)
-where("fields")
-where(fields)
-where(len(fields))
 	if len(fields) != 1 { // Note: len(fields) cannot be 0, because len(line) > 0 has been tested before call.
 		return "", fmt.Errorf("%s expecting a table set name in double square brackets but found: %s", p.gotFilePos(), fields[0])
 	}
