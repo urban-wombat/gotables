@@ -76,7 +76,14 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 
 	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
 
-//	buf.WriteString(fmt.Sprintf(`"%s%s":[`, metadataTableNamePrefix, table.tableName))
+	isStructShape, err := table.IsStructShape()
+	if err != nil {
+		return err
+	}
+	if isStructShape {
+		buf.WriteString(`"isStructShape":true,`)
+	}
+
 	buf.WriteString(`"metadata":[`)
 	for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 		buf.WriteByte(123) // Opening brace around heading element (name: type)
@@ -181,7 +188,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 	return
 }
 
-func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonStringIndented string, err error) {
+func (table *Table) GetTableAsJSONIndent() (jsonStringIndented string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	jsonString, err := table.GetTableAsJSON()
@@ -189,12 +196,10 @@ func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonStri
 		return "", err
 	}
 
-	var buf bytes.Buffer
-	err = json.Indent(&buf, []byte(jsonString), "", "\t")
+	jsonStringIndented, err = indentJSON(jsonString)
 	if err != nil {
 		return "", err
 	}
-	jsonStringIndented = buf.String()
 
 	return
 }
@@ -234,16 +239,19 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 	if err != nil {
 		return nil, err
 	}
-/*
-err = table.SetStructShape(true)
-if err != nil {
-	return nil, err
-}
-*/
+
+	// If this optional isStructShape element is present, use it.
+	var isStructShape bool
+	isStructShape, exists = m["isStructShape"].(bool)
+	if exists {
+		err = table.SetStructShape(isStructShape)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	// (2) Retrieve and process metadata.
 	var metadata []interface{}
-//	metadata, exists = m[fmt.Sprintf("metadata::%s", tableName)].([]interface{})
 	metadata, exists = m["metadata"].([]interface{})
 	if !exists {
 		return nil, fmt.Errorf("JSON is missing table metadata")
@@ -378,6 +386,25 @@ if err != nil {
 				}
 			}
 		}
+	}
+
+	return
+}
+
+func (tableSet *TableSet) GetTableSetAsJSONIndent() (jsonTableSetIndented string, err error) {
+
+	if tableSet == nil {
+		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	jsonTableSet, err := tableSet.GetTableSetAsJSON()
+	if err != nil {
+		return "", err
+	}
+
+	jsonTableSetIndented, err = indentJSON(jsonTableSet)
+	if err != nil {
+		return "", err
 	}
 
 	return
@@ -527,12 +554,16 @@ func NewTableFromJSONByTableName(jsonString string, tableName string) (table *Ta
 	return
 }
 
-func indentedJSON(jsonString string) (jsonStringIndented string) {
+func indentJSON(jsonString string) (jsonStringIndented string, err error) {
+
 	var buf bytes.Buffer
-	err := json.Indent(&buf, []byte(jsonString), "", "\t")
+
+	err = json.Indent(&buf, []byte(jsonString), "", "\t")
 	if err != nil {
-		return ""
+		return "", err
 	}
+
 	jsonStringIndented = buf.String()
+
 	return
 }

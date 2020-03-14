@@ -467,15 +467,13 @@ func TestNewTableFromJSONZeroCols(t *testing.T) {
 }
 
 func TestNewTableSetFromJSON(t *testing.T) {
-	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-/*
-TODO: RESTORE
-	var verbose bool = true
+	var verbose bool = false
 	var err error
 	var tableSet1 *TableSet // Input tableSet
 	var tableSet2 *TableSet // Output tableSet
 
 	var tableSetString string = `
+		[[LetsNameIt]]
 		[TypesGalore17]
 	    i   s      f       f32     t     b    ui    bb            uu8
 	    int string float64 float32 bool  byte uint8 []byte        []uint8
@@ -494,45 +492,43 @@ TODO: RESTORE
 		t.Fatal(err)
 	}
 
-	var jsonStrings []string
-	jsonStrings, err = tableSet1.GetTableSetAsJSON()
+	if verbose {
+		where(tableSet1)
+	}
+
+	var jsonString string
+	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if verbose {
-		var buf bytes.Buffer
-		// For readability.
-		for i := 0; i < len(jsonStrings); i++ {
-			err = json.Indent(&buf, []byte(jsonStrings[i]), "", "\t")
-			if err != nil {
-				t.Fatal(err)
-			}
-			_, _ = buf.WriteTo(os.Stdout)
-		}
+		where(jsonString)
 	}
 
-	tableSet2, err = NewTableSetFromJSON(jsonStrings)
+	tableSet2, err = NewTableSetFromJSON(jsonString)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if verbose {
+		where(tableSet2)
 	}
 
 	_, err = tableSet1.Equals(tableSet2)
 	if err != nil {
 		t.Fatal(err)
 	}
-*/
 }
 
 func TestAllJSON(t *testing.T) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-/* TODO: RESTORE
 	const verbose = false
 
 	var err error
 
 	tableString :=
-		`[MyTable]
+	`[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -605,28 +601,19 @@ func TestAllJSON(t *testing.T) {
 		fmt.Println()
 	}
 
-	var jsonSlice []string
+	var jsonTableSet string
 
-	jsonSlice, err = tableSet1.GetTableSetAsJSON()
+	jsonTableSet, err = tableSet1.GetTableSetAsJSONIndent()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if verbose {
-		for i := 0; i < len(jsonSlice); i++ {
-			// For readability.
-			err = json.Indent(&buf, []byte(jsonSlice[i]), "", "\t")
-			if err != nil {
-				t.Fatal(err)
-			}
-			_, _ = buf.WriteTo(os.Stdout)
-		}
-
-		fmt.Println()
+		fmt.Println(jsonTableSet)
 		fmt.Println()
 	}
 
-	tableSet2, err := NewTableSetFromJSON(jsonSlice)
+	tableSet2, err := NewTableSetFromJSON(jsonTableSet)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -640,7 +627,6 @@ func TestAllJSON(t *testing.T) {
 		where("\n" + tableSet2.String())
 		fmt.Println()
 	}
-*/
 }
 
 func ExampleNewTableFromJSON() {
@@ -754,8 +740,6 @@ func ExampleNewTableFromJSON() {
 
 /*
 	It is permitted to have zero rows.
-
-	There must always be columns defined -- name(s) and type(s).
 */
 func ExampleNewTableFromJSON_zeroRows() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
@@ -835,13 +819,72 @@ func ExampleNewTableFromJSON_zeroRows() {
 	// table2.Equals(table1) == true
 }
 
-func ExampleNewTableSetFromJSON() {
+/*
+	It is permitted to have zero cols.
+*/
+func ExampleNewTableFromJSON_zeroCols() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-/* TODO: RESTORE
 	var err error
 
-	tableSetString :=
-		`[MyTable]
+	tableString :=
+	`[MyTable]
+	`
+	table1, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table1)
+
+	var jsonString string
+	jsonString, err = table1.GetTableAsJSONIndent()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(jsonString)
+	fmt.Println()
+
+	table2, err := NewTableFromJSON(jsonString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(table2)
+
+	equals, err := table2.Equals(table1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+
+	// Output:
+	// [MyTable]
+	//
+	// {
+	// 	"tableSetName": "",
+	// 	"tables": [
+	// 		{
+	// 			"tableName": "MyTable",
+	// 			"metadata": [],
+	// 			"data": []
+	// 		}
+	// 	]
+	// }
+	//
+	// [MyTable]
+	//
+	// table2.Equals(table1) == true
+}
+
+func ExampleNewTableSetFromJSON() {
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	var err error
+
+	tableSetString := `
+	[[TwoTablesComingUp]]
+
+	[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -858,27 +901,16 @@ func ExampleNewTableSetFromJSON() {
 
 	fmt.Println(tableSet1)
 
-	var jsonSlice []string
-	var buf bytes.Buffer
-
-	jsonSlice, err = tableSet1.GetTableSetAsJSON()
+	var jsonString string
+	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
 	if err != nil {
 		log.Println(err)
 	}
 
-	for i := 0; i < len(jsonSlice); i++ {
-		// For readability.
-		err = json.Indent(&buf, []byte(jsonSlice[i]), "", "  ")
-		if err != nil {
-			log.Println(err)
-		}
-		_, _ = buf.WriteTo(os.Stdout)
-	}
-
-	fmt.Println()
+	fmt.Println(jsonString)
 	fmt.Println()
 
-	tableSet2, err := NewTableSetFromJSON(jsonSlice)
+	tableSet2, err := NewTableSetFromJSON(jsonString)
 	if err != nil {
 		log.Println(err)
 	}
@@ -890,6 +922,8 @@ func ExampleNewTableSetFromJSON() {
 	fmt.Printf("table2.Equals(table1) == %t\n", equals)
 
 	// Output:
+	// [[TwoTablesComingUp]]
+	//
 	// [MyTable]
 	// x int = 1
 	// y int = 2
@@ -901,73 +935,93 @@ func ExampleNewTableSetFromJSON() {
 	// c float32 = 3
 	//
 	// {
-	//   "MyTable": [
-	//     {
-	//       "x": "int"
-	//     },
-	//     {
-	//       "y": "int"
-	//     },
-	//     {
-	//       "z": "int"
-	//     }
-	//   ]
-	// }{
-	//   "MyTable": [
-	//     {
-	//       "x": 1,
-	//       "y": 2,
-	//       "z": 3
-	//     }
-	//   ]
-	// }{
-	//   "YourTable": [
-	//     {
-	//       "a": "float32"
-	//     },
-	//     {
-	//       "b": "float32"
-	//     },
-	//     {
-	//       "c": "float32"
-	//     }
-	//   ]
-	// }{
-	//   "YourTable": [
-	//     {
-	//       "a": 1,
-	//       "b": 2,
-	//       "c": 3
-	//     }
-	//   ]
+	// 	"tableSetName": "TwoTablesComingUp",
+	// 	"tables": [
+	// 		{
+	// 			"tableName": "MyTable",
+	// 			"isStructShape": true,
+	// 			"metadata": [
+	// 				{
+	// 					"x": "int"
+	// 				},
+	// 				{
+	// 					"y": "int"
+	// 				},
+	// 				{
+	// 					"z": "int"
+	// 				}
+	// 			],
+	// 			"data": [
+	// 				[
+	// 					{
+	// 						"x": 1
+	// 					},
+	// 					{
+	// 						"y": 2
+	// 					},
+	// 					{
+	// 						"z": 3
+	// 					}
+	// 				]
+	// 			]
+	// 		},
+	// 		{
+	// 			"tableName": "YourTable",
+	// 			"isStructShape": true,
+	// 			"metadata": [
+	// 				{
+	// 					"a": "float32"
+	// 				},
+	// 				{
+	// 					"b": "float32"
+	// 				},
+	// 				{
+	// 					"c": "float32"
+	// 				}
+	// 			],
+	// 			"data": [
+	// 				[
+	// 					{
+	// 						"a": 1
+	// 					},
+	// 					{
+	// 						"b": 2
+	// 					},
+	// 					{
+	// 						"c": 3
+	// 					}
+	// 				]
+	// 			]
+	// 		}
+	// 	]
 	// }
 	//
+	// [[TwoTablesComingUp]]
+	//
 	// [MyTable]
-	//   x   y   z
-	// int int int
-	//   1   2   3
+	// x int = 1
+	// y int = 2
+	// z int = 3
 	//
 	// [YourTable]
-	//       a       b       c
-	// float32 float32 float32
-	//       1       2       3
+	// a float32 = 1
+	// b float32 = 2
+	// c float32 = 3
 	//
 	// table2.Equals(table1) == true
-*/
 }
 
 /*
 	It is permitted to have zero rows.
-
-	There must always be columns defined -- name(s) and type(s).
 */
 func ExampleNewTableSetFromJSON_zeroRows() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
-/* TODO: RESTORE
 	var err error
 
 	tableSetString :=
-		`[MyTable]
+	`[[ZeroRowsTableSet]]
+
+	[MyTable]
 	x	y	z
 	int	int	int
 
@@ -982,27 +1036,16 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 
 	fmt.Println(tableSet1)
 
-	var jsonSlice []string
-	var buf bytes.Buffer
-
-	jsonSlice, err = tableSet1.GetTableSetAsJSON()
+	var jsonString string
+	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
 	if err != nil {
 		log.Println(err)
 	}
 
-	for i := 0; i < len(jsonSlice); i++ {
-		// For readability.
-		err = json.Indent(&buf, []byte(jsonSlice[i]), "", "  ")
-		if err != nil {
-			log.Println(err)
-		}
-		_, _ = buf.WriteTo(os.Stdout)
-	}
-
-	fmt.Println()
+	fmt.Println(jsonString)
 	fmt.Println()
 
-	tableSet2, err := NewTableSetFromJSON(jsonSlice)
+	tableSet2, err := NewTableSetFromJSON(jsonString)
 	if err != nil {
 		log.Println(err)
 	}
@@ -1011,9 +1054,11 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 
 	equals, err := tableSet2.Equals(tableSet1)
 
-	fmt.Printf("table2.Equals(table1) == %t\n", equals)
+	fmt.Printf("tableSet2.Equals(tableSet1) == %t\n", equals)
 
 	// Output:
+	// [[ZeroRowsTableSet]]
+	//
 	// [MyTable]
 	//   x   y   z
 	// int int int
@@ -1023,34 +1068,42 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	// float32 float32 float32
 	//
 	// {
-	//   "MyTable": [
-	//     {
-	//       "x": "int"
-	//     },
-	//     {
-	//       "y": "int"
-	//     },
-	//     {
-	//       "z": "int"
-	//     }
-	//   ]
-	// }{
-	//   "MyTable": []
-	// }{
-	//   "YourTable": [
-	//     {
-	//       "a": "float32"
-	//     },
-	//     {
-	//       "b": "float32"
-	//     },
-	//     {
-	//       "c": "float32"
-	//     }
-	//   ]
-	// }{
-	//   "YourTable": []
+	// 	"tableSetName": "ZeroRowsTableSet",
+	// 	"tables": [
+	// 		{
+	// 			"tableName": "MyTable",
+	// 			"metadata": [
+	// 				{
+	// 					"x": "int"
+	// 				},
+	// 				{
+	// 					"y": "int"
+	// 				},
+	// 				{
+	// 					"z": "int"
+	// 				}
+	// 			],
+	// 			"data": []
+	// 		},
+	// 		{
+	// 			"tableName": "YourTable",
+	// 			"metadata": [
+	// 				{
+	// 					"a": "float32"
+	// 				},
+	// 				{
+	// 					"b": "float32"
+	// 				},
+	// 				{
+	// 					"c": "float32"
+	// 				}
+	// 			],
+	// 			"data": []
+	// 		}
+	// 	]
 	// }
+	//
+	// [[ZeroRowsTableSet]]
 	//
 	// [MyTable]
 	//   x   y   z
@@ -1060,330 +1113,8 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	//       a       b       c
 	// float32 float32 float32
 	//
-	// table2.Equals(table1) == true
-*/
+	// tableSet2.Equals(tableSet1) == true
 }
-
-//func ExampleTable_GetTableMetadataAsJSON_nestedTables() {
-//	var err error
-//	var table *Table
-//
-//	var tableString string = `
-//	[TypesGalore20]
-//    i   s      f       f32     t     b    ui    bb            uu8        right
-//    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
-//    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
-//    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28] []
-//    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39] []
-//    3   "xxxx" 5.9     9.9     true  44   3     []            []         []
-//    `
-//	table, err = NewTableFromString(tableString)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	// Now create and set some table cell tables.
-//	right0 := `
-//	[right0]
-//	i int = 32`
-//
-//	right1 := `
-//	[right1]
-//	s string = "thirty-two"`
-//
-//	right2 := `
-//	[right2]
-//	x	y	z
-//	int	int	int
-//	1	2	3
-//	4	5	6
-//	7	8	9`
-//
-//	right3 := `
-//	[right3]
-//	f float32 = 88.8`
-//
-//	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
-//	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
-//	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
-//	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
-//
-//	var jsonString string
-//	jsonString, err = table.GetTableMetadataAsJSON()
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	fmt.Println()
-//	fmt.Println("NOTE: The following output is not what you would at first expect.")
-//	fmt.Println("      The metadata of only the top-level table is marshalled.")
-//	fmt.Println("      Nested table metadata is marshalled WITH the data itself.")
-//	fmt.Println()
-//
-//	fmt.Println("Print as is:")
-//	fmt.Println()
-//	fmt.Println(jsonString)
-//	fmt.Println()
-//
-//	fmt.Println("Print indented for readability:")
-//	fmt.Println()
-//
-//	var out bytes.Buffer
-//	err = json.Indent(&out, []byte(jsonString), "", "\t")
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	_, _ = out.WriteTo(os.Stdout)
-//	fmt.Println()
-//
-//	// Output:
-//	// NOTE: The following output is not what you would at first expect.
-//	//       The metadata of only the top-level table is marshalled.
-//	//       Nested table metadata is marshalled WITH the data itself.
-//	//
-//	// Print as is:
-//	//
-//	// {"TypesGalore20":[{"i":"int"},{"s":"string"},{"f":"float64"},{"f32":"float32"},{"t":"bool"},{"b":"byte"},{"ui":"uint8"},{"bb":"[]byte"},{"uu8":"[]uint8"},{"right":"*Table"}]}
-//	//
-//	// Print indented for readability:
-//	//
-//	// {
-//	// 	"TypesGalore20": [
-//	// 		{
-//	// 			"i": "int"
-//	// 		},
-//	// 		{
-//	// 			"s": "string"
-//	// 		},
-//	// 		{
-//	// 			"f": "float64"
-//	// 		},
-//	// 		{
-//	// 			"f32": "float32"
-//	// 		},
-//	// 		{
-//	// 			"t": "bool"
-//	// 		},
-//	// 		{
-//	// 			"b": "byte"
-//	// 		},
-//	// 		{
-//	// 			"ui": "uint8"
-//	// 		},
-//	// 		{
-//	// 			"bb": "[]byte"
-//	// 		},
-//	// 		{
-//	// 			"uu8": "[]uint8"
-//	// 		},
-//	// 		{
-//	// 			"right": "*Table"
-//	// 		}
-//	// 	]
-//	// }
-//}
-
-//func ExampleTable_GetTableDataAsJSON_nestedTables() {
-//	var err error
-//	var table *Table
-//
-//	var tableString string = `
-//	[TypesGalore21]
-//    i   s      f       f32     t     b    ui    bb            uu8        right
-//    int string float64 float32 bool  byte uint8 []byte        []uint8    *Table
-//    0   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17] []
-//    1   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28] []
-//    2   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39] []
-//    3   "xxxx" 5.9     9.9     true  44   3     []            []         []
-//    `
-//	table, err = NewTableFromString(tableString)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	// Now create and set some table cell tables.
-//	right0 := `
-//	[right0]
-//	i int = 32`
-//
-//	right1 := `
-//	[right1]
-//	s string = "thirty-two"`
-//
-//	right2 := `
-//	[right2]
-//	x	y	z
-//	int	int	int
-//	1	2	3
-//	4	5	6
-//	7	8	9`
-//
-//	right3 := `
-//	[right3]
-//	f float32 = 88.8`
-//
-//	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
-//	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
-//	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
-//	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
-//
-//	jsonString, err := table.GetTableDataAsJSON()
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	fmt.Println("Print as is:")
-//	fmt.Println()
-//	fmt.Println(jsonString)
-//	fmt.Println()
-//
-//	fmt.Println("Print indented for readability:")
-//	fmt.Println()
-//	var out bytes.Buffer
-//	err = json.Indent(&out, []byte(jsonString), "", "\t")
-//	if err != nil {
-//		log.Println(err)
-//	}
-//	_, _ = out.WriteTo(os.Stdout)
-//
-//	// Now let's get it back from JSON into *Table
-//
-//	// First, we need the table metadata as JSON to get the data back
-//	jsonMetadataString, err := table.GetTableMetadataAsJSON()
-//	if err != nil {
-//		log.Println(err)
-//	}
-//
-//	tableFromJSON, err := NewTableFromJSON(jsonMetadataString, jsonString)
-//	if err != nil {
-//		log.Println(err)
-//	}
-//	fmt.Println(tableFromJSON)
-//
-//	// Output:
-//	// Print as is:
-//	// 
-//	// {"TypesGalore21":[{"i":0,"s":"abc","f":2.3,"f32":6.6,"t":true,"b":11,"ui":0,"bb":[11,12,13,14],"uu8":[15,16,17],"right":{"right0":[{"i":32}]}},{"i":1,"s":"xyz","f":4.5,"f32":7.7,"t":false,"b":22,"ui":1,"bb":[22,23,24,25],"uu8":[26,27,28],"right":{"right1":[{"s":"thirty-two"}]}},{"i":2,"s":"ssss","f":4.9,"f32":8.8,"t":false,"b":33,"ui":2,"bb":[33,34,35,36],"uu8":[37,38,39],"right":{"right2":[{"x":1,"y":2,"z":3},{"x":4,"y":5,"z":6},{"x":7,"y":8,"z":9}]}},{"i":3,"s":"xxxx","f":5.9,"f32":9.9,"t":true,"b":44,"ui":3,"bb":[],"uu8":[],"right":{"right3":[{"f":88.8}]}}]}
-//	// 
-//	// Print indented for readability:
-//	//
-//	// {
-//	// 	"TypesGalore21": [
-//	// 		{
-//	// 			"i": 0,
-//	// 			"s": "abc",
-//	// 			"f": 2.3,
-//	// 			"f32": 6.6,
-//	// 			"t": true,
-//	// 			"b": 11,
-//	// 			"ui": 0,
-//	// 			"bb": [
-//	// 				11,
-//	// 				12,
-//	// 				13,
-//	// 				14
-//	// 			],
-//	// 			"uu8": [
-//	// 				15,
-//	// 				16,
-//	// 				17
-//	// 			],
-//	// 			"right": {
-//	// 				"right0": [
-//	// 					{
-//	// 						"i": 32
-//	// 					}
-//	// 				]
-//	// 			}
-//	// 		},
-//	// 		{
-//	// 			"i": 1,
-//	// 			"s": "xyz",
-//	// 			"f": 4.5,
-//	// 			"f32": 7.7,
-//	// 			"t": false,
-//	// 			"b": 22,
-//	// 			"ui": 1,
-//	// 			"bb": [
-//	// 				22,
-//	// 				23,
-//	// 				24,
-//	// 				25
-//	// 			],
-//	// 			"uu8": [
-//	// 				26,
-//	// 				27,
-//	// 				28
-//	// 			],
-//	// 			"right": {
-//	// 				"right1": [
-//	// 					{
-//	// 						"s": "thirty-two"
-//	// 					}
-//	// 				]
-//	// 			}
-//	// 		},
-//	// 		{
-//	// 			"i": 2,
-//	// 			"s": "ssss",
-//	// 			"f": 4.9,
-//	// 			"f32": 8.8,
-//	// 			"t": false,
-//	// 			"b": 33,
-//	// 			"ui": 2,
-//	// 			"bb": [
-//	// 				33,
-//	// 				34,
-//	// 				35,
-//	// 				36
-//	// 			],
-//	// 			"uu8": [
-//	// 				37,
-//	// 				38,
-//	// 				39
-//	// 			],
-//	// 			"right": {
-//	// 				"right2": [
-//	// 					{
-//	// 						"x": 1,
-//	// 						"y": 2,
-//	// 						"z": 3
-//	// 					},
-//	// 					{
-//	// 						"x": 4,
-//	// 						"y": 5,
-//	// 						"z": 6
-//	// 					},
-//	// 					{
-//	// 						"x": 7,
-//	// 						"y": 8,
-//	// 						"z": 9
-//	// 					}
-//	// 				]
-//	// 			}
-//	// 		},
-//	// 		{
-//	// 			"i": 3,
-//	// 			"s": "xxxx",
-//	// 			"f": 5.9,
-//	// 			"f32": 9.9,
-//	// 			"t": true,
-//	// 			"b": 44,
-//	// 			"ui": 3,
-//	// 			"bb": [],
-//	// 			"uu8": [],
-//	// 			"right": {
-//	// 				"right3": [
-//	// 					{
-//	// 						"f": 88.8
-//	// 					}
-//	// 				]
-//	// 			}
-//	// 		}
-//	// 	]
-//	// }
-//}
 
 func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
@@ -1458,7 +1189,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	fmt.Println()
 
 	fmt.Println("Print indented for readability:")
-	jsonString, err = table.GetTableAsJSONIndent("", "\t")
+	jsonString, err = table.GetTableAsJSONIndent()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -1583,7 +1314,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 func ExampleTable_GetTableAsJSON_nestedTables() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	var err error
-	var table *Table
+	var table1 *Table
 
 	var tableString string
 	tableString = `
@@ -1596,7 +1327,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
     3   "xxxx" []
     4   "yyyy" []
     `
-	table, err = NewTableFromString(tableString)
+	table1, err = NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
 	}
@@ -1627,20 +1358,18 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	t1 *Table = []
 	t2 *gotables.Table = []`
 
-	table.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
-	table.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
-	table.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
-	table.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
-	table.SetTableMustSet("right", 4, NewTableFromStringMustMake(right4))
+	table1.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
+	table1.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
+	table1.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
+	table1.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
+	table1.SetTableMustSet("right", 4, NewTableFromStringMustMake(right4))
 
 	var jsonString string
-//where("***CALLING** NewTableFromJSON() ...")
-	jsonString, err = table.GetTableAsJSON()
+	//where("***CALLING** NewTableFromJSON() ...")
+	jsonString, err = table1.GetTableAsJSON()
 	if err != nil {
 		log.Println(err)
 	}
-//where(table)
-//where(jsonString)
 
 	fmt.Println("Print as is:")
 	fmt.Println()
@@ -1657,11 +1386,16 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	_, _ = out.WriteTo(os.Stdout)
 
 	// Now let's get it back from JSON into *Table
+	table2, err := NewTableFromJSON(jsonString)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table2)
 
 	// Output:
 	// Print as is:
 	//
-	// {"tableSetName":"","tables":[{"tableName":"TypesGalore22","metadata":[{"i":"int"},{"s":"string"},{"right":"*Table"}],"data":[[{"i":0},{"s":"abc"},{"right":{"tableName":"right0","metadata":[{"i":"int"}],"data":[[{"i":32}]]}}],[{"i":1},{"s":"xyz"},{"right":{"tableName":"right1","metadata":[{"s":"string"}],"data":[[{"s":"thirty-two"}]]}}],[{"i":2},{"s":"ssss"},{"right":{"tableName":"right2","metadata":[{"x":"int"},{"y":"int"},{"z":"int"}],"data":[[{"x":1},{"y":2},{"z":3}],[{"x":4},{"y":5},{"z":6}],[{"x":7},{"y":8},{"z":9}]]}}],[{"i":3},{"s":"xxxx"},{"right":{"tableName":"right3","metadata":[{"f":"float32"}],"data":[[{"f":88.8}]]}}],[{"i":4},{"s":"yyyy"},{"right":{"tableName":"right4","metadata":[{"t1":"*Table"},{"t2":"*gotables.Table"}],"data":[[{"t1":null},{"t2":null}]]}}]]}]}
+	// {"tableSetName":"","tables":[{"tableName":"TypesGalore22","metadata":[{"i":"int"},{"s":"string"},{"right":"*Table"}],"data":[[{"i":0},{"s":"abc"},{"right":{"tableName":"right0","isStructShape":true,"metadata":[{"i":"int"}],"data":[[{"i":32}]]}}],[{"i":1},{"s":"xyz"},{"right":{"tableName":"right1","isStructShape":true,"metadata":[{"s":"string"}],"data":[[{"s":"thirty-two"}]]}}],[{"i":2},{"s":"ssss"},{"right":{"tableName":"right2","metadata":[{"x":"int"},{"y":"int"},{"z":"int"}],"data":[[{"x":1},{"y":2},{"z":3}],[{"x":4},{"y":5},{"z":6}],[{"x":7},{"y":8},{"z":9}]]}}],[{"i":3},{"s":"xxxx"},{"right":{"tableName":"right3","isStructShape":true,"metadata":[{"f":"float32"}],"data":[[{"f":88.8}]]}}],[{"i":4},{"s":"yyyy"},{"right":{"tableName":"right4","isStructShape":true,"metadata":[{"t1":"*Table"},{"t2":"*gotables.Table"}],"data":[[{"t1":null},{"t2":null}]]}}]]}]}
 	//
 	// Print indented for readability:
 	//
@@ -1692,6 +1426,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 					{
 	// 						"right": {
 	// 							"tableName": "right0",
+	// 							"isStructShape": true,
 	// 							"metadata": [
 	// 								{
 	// 									"i": "int"
@@ -1717,6 +1452,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 					{
 	// 						"right": {
 	// 							"tableName": "right1",
+	// 							"isStructShape": true,
 	// 							"metadata": [
 	// 								{
 	// 									"s": "string"
@@ -1801,6 +1537,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 					{
 	// 						"right": {
 	// 							"tableName": "right3",
+	// 							"isStructShape": true,
 	// 							"metadata": [
 	// 								{
 	// 									"f": "float32"
@@ -1826,6 +1563,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 					{
 	// 						"right": {
 	// 							"tableName": "right4",
+	// 							"isStructShape": true,
 	// 							"metadata": [
 	// 								{
 	// 									"t1": "*Table"
@@ -1850,5 +1588,12 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 			]
 	// 		}
 	// 	]
-	// }
+	// }[TypesGalore22]
+	//   i s      right
+	// int string *Table
+	//   0 "abc"  [right0]
+	//   1 "xyz"  [right1]
+	//   2 "ssss" [right2]
+	//   3 "xxxx" [right3]
+	//   4 "yyyy" [right4]
 }
