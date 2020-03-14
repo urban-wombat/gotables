@@ -1121,9 +1121,10 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	var err error
 	var table *Table
 
-	// Minor note: both nil and [] are acceptable empty table placeholders.
-	//             Each will result in a NilTable with no table name.
-	//             To make the table usable, give it a table name.
+	/*
+		A table with value [] will result in a NilTable with no table name.
+		To make the table usable, give it a table name.
+	*/
 
 	var tableString string
 	tableString = `
