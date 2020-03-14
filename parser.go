@@ -225,12 +225,12 @@ var globalNumericColTypesMap = map[string]int{
 	"complex": 0, // Not yet implemented.
 }
 
-var globalSliceColTypesMap = map[string]int {
+var globalSliceColTypesMap = map[string]int{
 	"[]byte":  0,
 	"[]uint8": 0,
 }
 
-var globalTableColTypesMap = map[string]int {
+var globalTableColTypesMap = map[string]int{
 	"*Table":          0,
 	"*gotables.Table": 0,
 }
@@ -321,15 +321,15 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			if len(line) > 0 {
 				// Skip blank lines before table.
 
-				if tableSetNameHasBeenSet == false {	// Test is for efficiency (not bench tested).
+				if tableSetNameHasBeenSet == false { // Test is for efficiency (not bench tested).
 					// Try to get tableSetName here.
 					tableSetName, err := p.getTableSetName(line)
-					if err == nil {	// No error means: got a TableSet name
+					if err == nil { // No error means: got a TableSet name
 						err = tables.SetName(tableSetName)
 						if err != nil {
 							return nil, err
 						}
-	
+
 						tableSetNameHasBeenSet = true
 
 						continue
@@ -404,7 +404,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					// Find the equals sign byte location within the string so we can locate the value data after equals.
 					// We know it's there (from the line split above), so don't check for nil returned.
 					var rangeFound []int = equalsRegexp.FindStringIndex(line)
-					if rangeFound == nil {	// This avoids a runtime error.
+					if rangeFound == nil { // This avoids a runtime error.
 						return nil, fmt.Errorf("%s expecting <name> <type> = <value> but found: %s", p.gotFilePos(), line)
 					}
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.

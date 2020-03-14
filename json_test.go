@@ -140,10 +140,10 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	const verbose = false
 
 	var err error
-	var tableSetInput *TableSet // Input TableSet
+	var tableSetInput *TableSet  // Input TableSet
 	var tableSetOutput *TableSet // Output TableSet
-	var tableInput *Table	// Input table
-	var tableOutput *Table	// Output table
+	var tableInput *Table        // Input table
+	var tableOutput *Table       // Output table
 
 	var tableString string = `
 		[[MyTableSet]]
@@ -177,7 +177,7 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 
 	// Nest a table and see what happens.
 	table4, err := NewTableFromString(
-	`[Table4]
+		`[Table4]
 	i int = 3
 	`)
 	if err != nil {
@@ -250,7 +250,7 @@ func TestNewTableFromJSON_bothDirections(t *testing.T) {
 	const verbose = false
 
 	var err error
-	var tableInput *Table // Input table
+	var tableInput *Table  // Input table
 	var tableOutput *Table // Output table
 
 	var tableString string = `
@@ -270,7 +270,7 @@ func TestNewTableFromJSON_bothDirections(t *testing.T) {
 
 	// Nest a table and see what happens.
 	table4, err := NewTableFromString(
-	`[Table4]
+		`[Table4]
 	i int = 3
 	`)
 	if err != nil {
@@ -348,7 +348,7 @@ func TestNewTableFromJSONZeroRows(t *testing.T) {
 	const verbose = false
 
 	var err error
-	var tableInput *Table // Input table
+	var tableInput *Table  // Input table
 	var tableOutput *Table // Output table
 
 	var tableString string = `
@@ -411,7 +411,7 @@ func TestNewTableFromJSONZeroCols(t *testing.T) {
 	const verbose = false
 
 	var err error
-	var tableInput *Table // Input table
+	var tableInput *Table  // Input table
 	var tableOutput *Table // Output table
 
 	var tableString string = `
@@ -528,7 +528,7 @@ func TestAllJSON(t *testing.T) {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	x int = 1
 	y int = 2
 	z int = 3
@@ -579,7 +579,7 @@ func TestAllJSON(t *testing.T) {
 	}
 
 	tableSetString :=
-	`[[MyTableSet]]
+		`[[MyTableSet]]
 
 	[MyTable]
 	x int = 1
@@ -634,7 +634,7 @@ func ExampleNewTableFromJSON() {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	i    u    f
 	int  uint float32
 	1    2    3.3
@@ -827,7 +827,7 @@ func ExampleNewTableFromJSON_zeroCols() {
 	var err error
 
 	tableString :=
-	`[MyTable]
+		`[MyTable]
 	`
 	table1, err := NewTableFromString(tableString)
 	if err != nil {
@@ -1019,7 +1019,7 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	var err error
 
 	tableSetString :=
-	`[[ZeroRowsTableSet]]
+		`[[ZeroRowsTableSet]]
 
 	[MyTable]
 	x	y	z
@@ -1138,7 +1138,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	}
 
 	fmt.Println("This should fail: We are assigning the same table as the parent.")
-	table.SetTableMustSet("right", 0, table)	// table already exists (at the top level)
+	table.SetTableMustSet("right", 0, table) // table already exists (at the top level)
 	fmt.Printf("%s", table)
 	_, err = table.GetTableAsJSON()
 	if err != nil {
@@ -1160,11 +1160,11 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		fmt.Println(err)
 	}
 	fmt.Println("By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.")
-	err = tableCopy.SetTable("right", 0, nil)	// Not allowed. Must use an actual *Table reference.
+	err = tableCopy.SetTable("right", 0, nil) // Not allowed. Must use an actual *Table reference.
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = tableCopy.SetTable("right", 0, NewNilTable())	// Otherwise this is another circular reference.
+	err = tableCopy.SetTable("right", 0, NewNilTable()) // Otherwise this is another circular reference.
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -1172,7 +1172,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	fmt.Println()
 
 	fmt.Println("This should succeed: We are assigning a DIFFERENT table (same contents doesn't matter).")
-	table.SetTableMustSet("right", 0, tableCopy)	// Different table reference.
+	table.SetTableMustSet("right", 0, tableCopy) // Different table reference.
 	fmt.Printf("%s", table)
 	jsonString, err = table.GetTableAsJSON()
 	if err != nil {
@@ -1198,7 +1198,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	fmt.Println()
 
 	fmt.Println("This should fail: We are assigning the same table to multiple cells.")
-	table.SetTableMustSet("left", 0, tableCopy)	// Different table reference.
+	table.SetTableMustSet("left", 0, tableCopy) // Different table reference.
 	fmt.Printf("%s", table)
 	jsonString, err = table.GetTableAsJSON()
 	if err != nil {

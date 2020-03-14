@@ -348,11 +348,11 @@ func (tableSet *TableSet) Name() string {
 }
 
 func (tableSet *TableSet) SetName(tableSetName string) error {
-//		if tableSet == nil {
-//			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", UtilFuncSource(), UtilFuncName()))
-//			UtilPrintCaller()
-//			return
-//		}
+	//		if tableSet == nil {
+	//			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: tableSet.%s tableSet is <nil>\n", UtilFuncSource(), UtilFuncName()))
+	//			UtilPrintCaller()
+	//			return
+	//		}
 	if tableSet == nil {
 		return fmt.Errorf("%s ERROR: tableSet.%s: tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -3097,7 +3097,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				return false, err
 			}
 
-			if isSlice {	// For slices.
+			if isSlice { // For slices.
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
@@ -3133,7 +3133,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 					}
 				}
 
-			} else {	// For all other (atomic) types.
+			} else { // For all other (atomic) types.
 				if val1 != val2 {
 					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)

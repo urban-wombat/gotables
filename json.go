@@ -10,6 +10,7 @@ import (
 )
 
 type circRefMap map[*Table]struct{}
+
 var empty struct{}
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
@@ -49,7 +50,7 @@ func (table *Table) getTableAsJSON_private() (json string, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 	var buf bytes.Buffer
 
-	buf.WriteByte(123)	// Opening brace outermost
+	buf.WriteByte(123) // Opening brace outermost
 
 	//where("***CALLING** getTableAsJSON_recursive()")
 	err = getTableAsJSON_recursive(table, &buf, refMap, table)
@@ -57,7 +58,7 @@ func (table *Table) getTableAsJSON_private() (json string, err error) {
 		return "", err
 	}
 
-	buf.WriteByte(125)	// Closing brace outermost
+	buf.WriteByte(125) // Closing brace outermost
 
 	json = buf.String()
 
@@ -98,14 +99,14 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 		}
 	}
 	buf.WriteByte(']')
-	buf.WriteByte(',')	// Between metadata and data.
+	buf.WriteByte(',') // Between metadata and data.
 
 	// Get data
 
-//	buf.WriteString(fmt.Sprintf(`"%s%s":[`, dataTableNamePrefix, table.Name()))	// Begin array of rows.
+	//	buf.WriteString(fmt.Sprintf(`"%s%s":[`, dataTableNamePrefix, table.Name()))	// Begin array of rows.
 	buf.WriteString(`"data":[`)
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
-		buf.WriteByte('[')	// Begin array of column cells.
+		buf.WriteByte('[') // Begin array of column cells.
 		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
 			buf.WriteByte(123) // Opening brace
 			buf.WriteString(fmt.Sprintf("%q:", table.colNames[colIndex]))
@@ -161,12 +162,12 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 				if isNilTable {
 					buf.WriteString("null")
 				} else {
-					buf.WriteByte(123)	// Begin nested table.
+					buf.WriteByte(123) // Begin nested table.
 					err = getTableAsJSON_recursive(nestedTable, buf, refMap, topTable)
 					if err != nil {
 						return err
 					}
-					buf.WriteByte(125)	// End nested table.
+					buf.WriteByte(125) // End nested table.
 				}
 
 			default:
@@ -178,12 +179,12 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 				buf.WriteByte(',')
 			}
 		}
-		buf.WriteByte(']')	// End array of column cells.
+		buf.WriteByte(']') // End array of column cells.
 		if rowIndex < len(table.rows)-1 {
 			buf.WriteByte(',')
 		}
 	}
-	buf.WriteByte(']')	// End array of rows.
+	buf.WriteByte(']') // End array of rows.
 
 	return
 }
@@ -303,8 +304,8 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 				switch cell.(type) {
 				case string:
 					err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
-				case float64:	// All JSON number values are stored as float64
-					switch colType {	// We need to convert them back to gotables numeric types
+				case float64: // All JSON number values are stored as float64
+					switch colType { // We need to convert them back to gotables numeric types
 					case "int":
 						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
 					case "uint":
@@ -349,9 +350,9 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 					if err != nil {
 						return nil, err
 					}
-				case map[string]interface{}:	// This cell is a table.
+				case map[string]interface{}: // This cell is a table.
 					switch colType {
-						case "*Table", "*gotables.Table":
+					case "*Table", "*gotables.Table":
 						tableNested, err := newTableFromJSON_recursive(cell.(map[string]interface{}))
 						if err != nil {
 							return nil, err
@@ -360,21 +361,21 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 						if err != nil {
 							return nil, err
 						}
-						default:
-							return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected cell value at [%s].(%d,%d)",
-								tableName, colIndex, rowIndex)
+					default:
+						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected cell value at [%s].(%d,%d)",
+							tableName, colIndex, rowIndex)
 					}
-				case nil:	// This cell is a nil table.
+				case nil: // This cell is a nil table.
 					switch colType {
-						case "*Table", "*gotables.Table":
-							var tableNested *Table = NewNilTable()
-							err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
-							if err != nil {
-								return nil, err
-							}
-						default:
-							return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
-								tableName, colIndex, rowIndex)
+					case "*Table", "*gotables.Table":
+						var tableNested *Table = NewNilTable()
+						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+						if err != nil {
+							return nil, err
+						}
+					default:
+						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
+							tableName, colIndex, rowIndex)
 					}
 				default:
 					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
@@ -422,9 +423,9 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
 
 	var buf bytes.Buffer
 
-	buf.WriteByte(123)	// Opening brace outermost
+	buf.WriteByte(123) // Opening brace outermost
 	buf.WriteString(fmt.Sprintf(`"tableSetName":%q,`, tableSet.Name()))
-	buf.WriteString(`"tables":[`)	// Opening array of tables
+	buf.WriteString(`"tables":[`) // Opening array of tables
 
 	var tableCount int = tableSet.TableCount()
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
@@ -442,12 +443,12 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
 		buf.WriteString(jsonTable)
 
 		if tableIndex < tableCount-1 {
-			buf.WriteByte(',')	// Delimiter between tables
+			buf.WriteByte(',') // Delimiter between tables
 		}
 	}
 
-	buf.WriteByte(']')	// Closing array of tables
-	buf.WriteByte(125)	// Closing brace outermost
+	buf.WriteByte(']') // Closing array of tables
+	buf.WriteByte(125) // Closing brace outermost
 
 	jsonTableSet = buf.String()
 
@@ -529,7 +530,7 @@ func NewTableFromJSON(jsonString string) (table *Table, err error) {
 	tableCount := tableSet.TableCount()
 	if tableCount != 1 {
 		return nil, fmt.Errorf("%s: expecting a JSON string containing 1 table but found %d table%s",
-			 UtilFuncName(), tableCount, plural(tableCount))
+			UtilFuncName(), tableCount, plural(tableCount))
 	}
 
 	table, err = tableSet.TableByTableIndex(0)
