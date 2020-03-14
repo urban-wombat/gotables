@@ -2502,6 +2502,8 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 		Valid sort keys (if any are set)?
 */
 func (table *Table) IsValidTable() (bool, error) {
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***CALLED BY %s", UtilFuncCaller()))
 
 	if table == nil {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -3025,10 +3027,10 @@ func isExportableName(name string) bool {
 func (table1 *Table) Equals(table2 *Table) (bool, error) {
 
 	if table1 == nil {
-		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table1 is nil")
+		return false, fmt.Errorf("table1.%s(table2): table1 is nil", UtilFuncNameNoParens())
 	}
 	if table2 == nil {
-		return false, fmt.Errorf("func (table1 *Table) Equals(table2 *Table): table2 is nil")
+		return false, fmt.Errorf("table1.%s(table2): table2 is nil", UtilFuncNameNoParens())
 	}
 
 	// Compare table names.

@@ -107,7 +107,6 @@ func ExampleTable_SetTable_cellTableInStructSetToNil() {
 		MyTable *Table = [CellTable]
 		MyNilTable *Table = []
 		`
-
 	table, err := NewTableFromString(tableString)
 	if err != nil {
 		log.Println(err)
@@ -115,11 +114,12 @@ func ExampleTable_SetTable_cellTableInStructSetToNil() {
 
 	fmt.Println(table)
 
-	var nilTable *Table = nil
-	err = table.SetTable("MyTable", 0, nilTable)
+	var nilReallyNilTable *Table = nil
+	err = table.SetTable("MyTable", 0, nilReallyNilTable)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
+	fmt.Println()
 
 	// Print the table with MyTable cell set to nil.
 	// MyNilTable will have the !nil value of an empty and unnamed table.
@@ -135,9 +135,7 @@ func ExampleTable_SetTable_cellTableInStructSetToNil() {
 	} else {
 		fmt.Println("MyTable != nil")
 	}
-	fmt.Printf("MyTable: %#v\n", MyTable)
-
-	fmt.Println()
+	fmt.Printf("MyTable: %v\n", MyTable)
 
 	// Here the table cell *Table is set to a kind of nil *Table table (with no name) that's not actually nil.
 
@@ -160,15 +158,17 @@ func ExampleTable_SetTable_cellTableInStructSetToNil() {
 	// MyTable *Table = [CellTable]
 	// MyNilTable *Table = []
 	//
+	// SetTable(): table [MyTable] col MyTable expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
+	//
 	// [MyTable]
 	// MyBool bool = true
 	// MyString string = "The answer to life, the universe and everything."
 	// MyInt int = 42
-	// MyTable *Table = []
+	// MyTable *Table = [CellTable]
 	// MyNilTable *Table = []
 	//
-	// MyTable == nil
-	// MyTable: (*gotables.Table)(nil)
+	// MyTable != nil
+	// MyTable: [CellTable]
 	//
 	// MyNilTable != nil
 	// MyNilTable: []

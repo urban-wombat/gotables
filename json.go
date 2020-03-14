@@ -15,7 +15,7 @@ var empty struct{}
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
 func (table *Table) GetTableAsJSON() (jsonString string, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -40,7 +40,7 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 }
 
 func (table *Table) getTableAsJSON_private() (json string, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -51,8 +51,8 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	buf.WriteByte(123)	// Opening brace outermost
 
-where("***CALLING** getTableAsJSON_recursive()")
-	err = getTableAsJSON_recursive(table, &buf, refMap)
+	//where("***CALLING** getTableAsJSON_recursive()")
+	err = getTableAsJSON_recursive(table, &buf, refMap, table)
 	if err != nil {
 		return "", err
 	}
@@ -64,8 +64,8 @@ where("***CALLING** getTableAsJSON_recursive()")
 	return
 }
 
-func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap) (err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap, topTable *Table) (err error) {
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -139,12 +139,11 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 				if err != nil {
 					return err
 				}
-//fmt.Printf("#3 getTableAsJSON_recursive(nestedTable) = %p\n", nestedTable)
 
 				_, exists := refMap[nestedTable]
 				if exists {
-					err = fmt.Errorf("%s: circular reference: a reference to table [%s] already exists",
-						UtilFuncName(), nestedTable.Name())
+					err = fmt.Errorf("%s: circular reference in table [%s]: a reference to table [%s] already exists",
+						UtilFuncName(), topTable.Name(), nestedTable.Name())
 					return
 				}
 
@@ -156,7 +155,7 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 					buf.WriteString("null")
 				} else {
 					buf.WriteByte(123)	// Begin nested table.
-					err = getTableAsJSON_recursive(nestedTable, buf, refMap)
+					err = getTableAsJSON_recursive(nestedTable, buf, refMap, topTable)
 					if err != nil {
 						return err
 					}
@@ -183,7 +182,7 @@ where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 }
 
 func (table *Table) GetTableAsJSONIndent(prefix string, indent string) (jsonStringIndented string, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	jsonString, err := table.GetTableAsJSON()
 	if err != nil {
@@ -213,7 +212,7 @@ func checkJsonDecodeError(checkErr error) (err error) {
 }
 
 func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	var exists bool
 
@@ -388,7 +387,7 @@ if err != nil {
 	Marshal gotables TableSet to JSON
 */
 func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if tableSet == nil {
 		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -487,7 +486,7 @@ func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
 }
 
 func NewTableFromJSON(jsonString string) (table *Table, err error) {
-where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	// This is similar to NewTableFromString which first gets a TableSet.
 
