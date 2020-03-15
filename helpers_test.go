@@ -34,11 +34,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Types are defined in helpersmain.go
+
+// Note: time.Type has been eliminated from helpers.test.go due to great difficulty automating it.
+
 //	-----------------------------------------------------------------------
-//	next group: TestSet<type>() TestGet<type>() functions for each of 19 types.
+//	next group: TestSet<type>() TestGet<type>() functions for each of 20 types.
 //	-----------------------------------------------------------------------
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []byte
+
 func TestSetAndGetByteSlice(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -50,7 +55,8 @@ func TestSetAndGetByteSlice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "[]byte")
+	var colType string = "[]byte"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,6 +94,7 @@ func TestSetAndGetByteSlice(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []uint8
+
 func TestSetAndGetUint8Slice(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -99,7 +106,8 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "[]uint8")
+	var colType string = "[]uint8"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -137,6 +145,7 @@ func TestSetAndGetUint8Slice(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue bool
+
 func TestSetAndGetBool(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -148,7 +157,8 @@ func TestSetAndGetBool(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "bool")
+	var colType string = "bool"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -186,6 +196,7 @@ func TestSetAndGetBool(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue byte
+
 func TestSetAndGetByte(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -197,7 +208,8 @@ func TestSetAndGetByte(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "byte")
+	var colType string = "byte"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -235,6 +247,7 @@ func TestSetAndGetByte(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float32
+
 func TestSetAndGetFloat32(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -246,7 +259,8 @@ func TestSetAndGetFloat32(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "float32")
+	var colType string = "float32"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -284,6 +298,7 @@ func TestSetAndGetFloat32(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float64
+
 func TestSetAndGetFloat64(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -295,7 +310,8 @@ func TestSetAndGetFloat64(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "float64")
+	var colType string = "float64"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -333,6 +349,7 @@ func TestSetAndGetFloat64(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int
+
 func TestSetAndGetInt(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -344,7 +361,8 @@ func TestSetAndGetInt(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "int")
+	var colType string = "int"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -382,6 +400,7 @@ func TestSetAndGetInt(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int16
+
 func TestSetAndGetInt16(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -393,7 +412,8 @@ func TestSetAndGetInt16(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "int16")
+	var colType string = "int16"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -431,6 +451,7 @@ func TestSetAndGetInt16(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int32
+
 func TestSetAndGetInt32(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -442,7 +463,8 @@ func TestSetAndGetInt32(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "int32")
+	var colType string = "int32"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -480,6 +502,7 @@ func TestSetAndGetInt32(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int64
+
 func TestSetAndGetInt64(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -491,7 +514,8 @@ func TestSetAndGetInt64(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "int64")
+	var colType string = "int64"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -529,6 +553,7 @@ func TestSetAndGetInt64(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int8
+
 func TestSetAndGetInt8(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -540,7 +565,8 @@ func TestSetAndGetInt8(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "int8")
+	var colType string = "int8"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -578,6 +604,7 @@ func TestSetAndGetInt8(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue rune
+
 func TestSetAndGetRune(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -589,7 +616,8 @@ func TestSetAndGetRune(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "rune")
+	var colType string = "rune"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -627,6 +655,7 @@ func TestSetAndGetRune(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue string
+
 func TestSetAndGetString(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -638,7 +667,8 @@ func TestSetAndGetString(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "string")
+	var colType string = "string"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -676,6 +706,7 @@ func TestSetAndGetString(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint
+
 func TestSetAndGetUint(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -687,7 +718,8 @@ func TestSetAndGetUint(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "uint")
+	var colType string = "uint"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -725,6 +757,7 @@ func TestSetAndGetUint(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint16
+
 func TestSetAndGetUint16(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -736,7 +769,8 @@ func TestSetAndGetUint16(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "uint16")
+	var colType string = "uint16"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -774,6 +808,7 @@ func TestSetAndGetUint16(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint32
+
 func TestSetAndGetUint32(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -785,7 +820,8 @@ func TestSetAndGetUint32(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "uint32")
+	var colType string = "uint32"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -823,6 +859,7 @@ func TestSetAndGetUint32(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint64
+
 func TestSetAndGetUint64(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -834,7 +871,8 @@ func TestSetAndGetUint64(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "uint64")
+	var colType string = "uint64"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -872,6 +910,7 @@ func TestSetAndGetUint64(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint8
+
 func TestSetAndGetUint8(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -883,7 +922,8 @@ func TestSetAndGetUint8(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "uint8")
+	var colType string = "uint8"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -921,6 +961,7 @@ func TestSetAndGetUint8(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue *Table
+
 func TestSetAndGetTable(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -932,7 +973,8 @@ func TestSetAndGetTable(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = table.AppendCol(colName, "*Table")
+	var colType string = "*Table"
+	err = table.AppendCol(colName, colType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -969,11 +1011,14 @@ func TestSetAndGetTable(t *testing.T) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue time.Time
+
 //	--------------------------------------------------------------------------------
-//	next group: TestSet<type>ByColIndex() TestGet<type>ByColIndex() functions for each of 19 types.
+//	next group: TestSet<type>ByColIndex() TestGet<type>ByColIndex() functions for each of 20 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
+
 func TestHelperSetAndGetByteSliceByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1023,6 +1068,7 @@ func TestHelperSetAndGetByteSliceByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []uint8
+
 func TestHelperSetAndGetUint8SliceByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1072,6 +1118,7 @@ func TestHelperSetAndGetUint8SliceByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue bool
+
 func TestHelperSetAndGetBoolByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1121,6 +1168,7 @@ func TestHelperSetAndGetBoolByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue byte
+
 func TestHelperSetAndGetByteByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1170,6 +1218,7 @@ func TestHelperSetAndGetByteByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float32
+
 func TestHelperSetAndGetFloat32ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1219,6 +1268,7 @@ func TestHelperSetAndGetFloat32ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float64
+
 func TestHelperSetAndGetFloat64ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1268,6 +1318,7 @@ func TestHelperSetAndGetFloat64ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int
+
 func TestHelperSetAndGetIntByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1317,6 +1368,7 @@ func TestHelperSetAndGetIntByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int16
+
 func TestHelperSetAndGetInt16ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1366,6 +1418,7 @@ func TestHelperSetAndGetInt16ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int32
+
 func TestHelperSetAndGetInt32ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1415,6 +1468,7 @@ func TestHelperSetAndGetInt32ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int64
+
 func TestHelperSetAndGetInt64ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1464,6 +1518,7 @@ func TestHelperSetAndGetInt64ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int8
+
 func TestHelperSetAndGetInt8ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1513,6 +1568,7 @@ func TestHelperSetAndGetInt8ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue rune
+
 func TestHelperSetAndGetRuneByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1562,6 +1618,7 @@ func TestHelperSetAndGetRuneByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue string
+
 func TestHelperSetAndGetStringByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1611,6 +1668,7 @@ func TestHelperSetAndGetStringByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint
+
 func TestHelperSetAndGetUintByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1660,6 +1718,7 @@ func TestHelperSetAndGetUintByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint16
+
 func TestHelperSetAndGetUint16ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1709,6 +1768,7 @@ func TestHelperSetAndGetUint16ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint32
+
 func TestHelperSetAndGetUint32ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1758,6 +1818,7 @@ func TestHelperSetAndGetUint32ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint64
+
 func TestHelperSetAndGetUint64ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1807,6 +1868,7 @@ func TestHelperSetAndGetUint64ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint8
+
 func TestHelperSetAndGetUint8ByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1856,6 +1918,7 @@ func TestHelperSetAndGetUint8ByColIndex(t *testing.T) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+
 func TestHelperSetAndGetTableByColIndex(t *testing.T) {
 
 	// See: TestSet<type>() functions
@@ -1904,12 +1967,15 @@ func TestHelperSetAndGetTableByColIndex(t *testing.T) {
 	}
 }
 
+//	Test Set and Get table cell in colIndex at rowIndex to newValue time.Time
+
 //	-----------------------------------------------------------------------
 //	bench test
-//	next group: BenchMarkHelpersSet<type>() functions for each of 19 types.
+//	next group: BenchMarkHelpersSet<type>() functions for each of 20 types.
 //	-----------------------------------------------------------------------
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []byte
+
 func BenchmarkHelperSetByteSlice(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -1954,6 +2020,7 @@ func BenchmarkHelperSetByteSlice(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []uint8
+
 func BenchmarkHelperSetUint8Slice(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -1998,6 +2065,7 @@ func BenchmarkHelperSetUint8Slice(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue bool
+
 func BenchmarkHelperSetBool(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2042,6 +2110,7 @@ func BenchmarkHelperSetBool(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue byte
+
 func BenchmarkHelperSetByte(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2086,6 +2155,7 @@ func BenchmarkHelperSetByte(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float32
+
 func BenchmarkHelperSetFloat32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2130,6 +2200,7 @@ func BenchmarkHelperSetFloat32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float64
+
 func BenchmarkHelperSetFloat64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2174,6 +2245,7 @@ func BenchmarkHelperSetFloat64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int
+
 func BenchmarkHelperSetInt(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2218,6 +2290,7 @@ func BenchmarkHelperSetInt(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int16
+
 func BenchmarkHelperSetInt16(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2262,6 +2335,7 @@ func BenchmarkHelperSetInt16(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int32
+
 func BenchmarkHelperSetInt32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2306,6 +2380,7 @@ func BenchmarkHelperSetInt32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int64
+
 func BenchmarkHelperSetInt64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2350,6 +2425,7 @@ func BenchmarkHelperSetInt64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int8
+
 func BenchmarkHelperSetInt8(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2394,6 +2470,7 @@ func BenchmarkHelperSetInt8(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue rune
+
 func BenchmarkHelperSetRune(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2438,6 +2515,7 @@ func BenchmarkHelperSetRune(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue string
+
 func BenchmarkHelperSetString(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2482,6 +2560,7 @@ func BenchmarkHelperSetString(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint
+
 func BenchmarkHelperSetUint(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2526,6 +2605,7 @@ func BenchmarkHelperSetUint(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint16
+
 func BenchmarkHelperSetUint16(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2570,6 +2650,7 @@ func BenchmarkHelperSetUint16(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint32
+
 func BenchmarkHelperSetUint32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2614,6 +2695,7 @@ func BenchmarkHelperSetUint32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint64
+
 func BenchmarkHelperSetUint64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2658,6 +2740,7 @@ func BenchmarkHelperSetUint64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint8
+
 func BenchmarkHelperSetUint8(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2702,6 +2785,7 @@ func BenchmarkHelperSetUint8(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue *Table
+
 func BenchmarkHelperSetTable(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2745,12 +2829,15 @@ func BenchmarkHelperSetTable(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue time.Time
+
 //	--------------------------------------------------------------------------------
 //	bench test
-//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 19 types.
+//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 20 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
+
 func BenchmarkHelperSetAndGetByteSliceByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2801,6 +2888,7 @@ func BenchmarkHelperSetAndGetByteSliceByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []uint8
+
 func BenchmarkHelperSetAndGetUint8SliceByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2851,6 +2939,7 @@ func BenchmarkHelperSetAndGetUint8SliceByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue bool
+
 func BenchmarkHelperSetAndGetBoolByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2901,6 +2990,7 @@ func BenchmarkHelperSetAndGetBoolByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue byte
+
 func BenchmarkHelperSetAndGetByteByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -2951,6 +3041,7 @@ func BenchmarkHelperSetAndGetByteByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float32
+
 func BenchmarkHelperSetAndGetFloat32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3001,6 +3092,7 @@ func BenchmarkHelperSetAndGetFloat32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float64
+
 func BenchmarkHelperSetAndGetFloat64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3051,6 +3143,7 @@ func BenchmarkHelperSetAndGetFloat64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int
+
 func BenchmarkHelperSetAndGetIntByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3101,6 +3194,7 @@ func BenchmarkHelperSetAndGetIntByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int16
+
 func BenchmarkHelperSetAndGetInt16ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3151,6 +3245,7 @@ func BenchmarkHelperSetAndGetInt16ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int32
+
 func BenchmarkHelperSetAndGetInt32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3201,6 +3296,7 @@ func BenchmarkHelperSetAndGetInt32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int64
+
 func BenchmarkHelperSetAndGetInt64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3251,6 +3347,7 @@ func BenchmarkHelperSetAndGetInt64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int8
+
 func BenchmarkHelperSetAndGetInt8ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3301,6 +3398,7 @@ func BenchmarkHelperSetAndGetInt8ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue rune
+
 func BenchmarkHelperSetAndGetRuneByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3351,6 +3449,7 @@ func BenchmarkHelperSetAndGetRuneByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue string
+
 func BenchmarkHelperSetAndGetStringByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3401,6 +3500,7 @@ func BenchmarkHelperSetAndGetStringByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint
+
 func BenchmarkHelperSetAndGetUintByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3451,6 +3551,7 @@ func BenchmarkHelperSetAndGetUintByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint16
+
 func BenchmarkHelperSetAndGetUint16ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3501,6 +3602,7 @@ func BenchmarkHelperSetAndGetUint16ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint32
+
 func BenchmarkHelperSetAndGetUint32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3551,6 +3653,7 @@ func BenchmarkHelperSetAndGetUint32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint64
+
 func BenchmarkHelperSetAndGetUint64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3601,6 +3704,7 @@ func BenchmarkHelperSetAndGetUint64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint8
+
 func BenchmarkHelperSetAndGetUint8ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3651,6 +3755,7 @@ func BenchmarkHelperSetAndGetUint8ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+
 func BenchmarkHelperSetAndGetTableByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3700,12 +3805,15 @@ func BenchmarkHelperSetAndGetTableByColIndex(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colIndex at rowIndex to newValue time.Time
+
 //	--------------------------------------------------------------------------------
 //	bench test
-//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 19 types.
+//	next group: BenchmarkHelperSetAndGet<type>ByColIndex() functions for each of 20 types.
 //	--------------------------------------------------------------------------------
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []byte
+
 func BenchmarkHelperSetByteSliceByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3748,6 +3856,7 @@ func BenchmarkHelperSetByteSliceByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue []uint8
+
 func BenchmarkHelperSetUint8SliceByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3790,6 +3899,7 @@ func BenchmarkHelperSetUint8SliceByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue bool
+
 func BenchmarkHelperSetBoolByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3832,6 +3942,7 @@ func BenchmarkHelperSetBoolByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue byte
+
 func BenchmarkHelperSetByteByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3874,6 +3985,7 @@ func BenchmarkHelperSetByteByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float32
+
 func BenchmarkHelperSetFloat32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3916,6 +4028,7 @@ func BenchmarkHelperSetFloat32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue float64
+
 func BenchmarkHelperSetFloat64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -3958,6 +4071,7 @@ func BenchmarkHelperSetFloat64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int
+
 func BenchmarkHelperSetIntByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4000,6 +4114,7 @@ func BenchmarkHelperSetIntByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int16
+
 func BenchmarkHelperSetInt16ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4042,6 +4157,7 @@ func BenchmarkHelperSetInt16ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int32
+
 func BenchmarkHelperSetInt32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4084,6 +4200,7 @@ func BenchmarkHelperSetInt32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int64
+
 func BenchmarkHelperSetInt64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4126,6 +4243,7 @@ func BenchmarkHelperSetInt64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue int8
+
 func BenchmarkHelperSetInt8ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4168,6 +4286,7 @@ func BenchmarkHelperSetInt8ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue rune
+
 func BenchmarkHelperSetRuneByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4210,6 +4329,7 @@ func BenchmarkHelperSetRuneByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue string
+
 func BenchmarkHelperSetStringByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4252,6 +4372,7 @@ func BenchmarkHelperSetStringByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint
+
 func BenchmarkHelperSetUintByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4294,6 +4415,7 @@ func BenchmarkHelperSetUintByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint16
+
 func BenchmarkHelperSetUint16ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4336,6 +4458,7 @@ func BenchmarkHelperSetUint16ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint32
+
 func BenchmarkHelperSetUint32ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4378,6 +4501,7 @@ func BenchmarkHelperSetUint32ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint64
+
 func BenchmarkHelperSetUint64ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4420,6 +4544,7 @@ func BenchmarkHelperSetUint64ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue uint8
+
 func BenchmarkHelperSetUint8ByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4462,6 +4587,7 @@ func BenchmarkHelperSetUint8ByColIndex(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colIndex at rowIndex to newValue *Table
+
 func BenchmarkHelperSetTableByColIndex(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4503,7 +4629,10 @@ func BenchmarkHelperSetTableByColIndex(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colIndex at rowIndex to newValue time.Time
+
 //	Test Set and Get table cell in colName at rowIndex to newValue []byte
+
 func BenchmarkHelperSetAndGetByteSlice(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4557,6 +4686,7 @@ func BenchmarkHelperSetAndGetByteSlice(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue []uint8
+
 func BenchmarkHelperSetAndGetUint8Slice(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4610,6 +4740,7 @@ func BenchmarkHelperSetAndGetUint8Slice(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue bool
+
 func BenchmarkHelperSetAndGetBool(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4663,6 +4794,7 @@ func BenchmarkHelperSetAndGetBool(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue byte
+
 func BenchmarkHelperSetAndGetByte(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4716,6 +4848,7 @@ func BenchmarkHelperSetAndGetByte(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float32
+
 func BenchmarkHelperSetAndGetFloat32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4769,6 +4902,7 @@ func BenchmarkHelperSetAndGetFloat32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue float64
+
 func BenchmarkHelperSetAndGetFloat64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4822,6 +4956,7 @@ func BenchmarkHelperSetAndGetFloat64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int
+
 func BenchmarkHelperSetAndGetInt(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4875,6 +5010,7 @@ func BenchmarkHelperSetAndGetInt(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int16
+
 func BenchmarkHelperSetAndGetInt16(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4928,6 +5064,7 @@ func BenchmarkHelperSetAndGetInt16(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int32
+
 func BenchmarkHelperSetAndGetInt32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -4981,6 +5118,7 @@ func BenchmarkHelperSetAndGetInt32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int64
+
 func BenchmarkHelperSetAndGetInt64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5034,6 +5172,7 @@ func BenchmarkHelperSetAndGetInt64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue int8
+
 func BenchmarkHelperSetAndGetInt8(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5087,6 +5226,7 @@ func BenchmarkHelperSetAndGetInt8(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue rune
+
 func BenchmarkHelperSetAndGetRune(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5140,6 +5280,7 @@ func BenchmarkHelperSetAndGetRune(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue string
+
 func BenchmarkHelperSetAndGetString(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5193,6 +5334,7 @@ func BenchmarkHelperSetAndGetString(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint
+
 func BenchmarkHelperSetAndGetUint(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5246,6 +5388,7 @@ func BenchmarkHelperSetAndGetUint(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint16
+
 func BenchmarkHelperSetAndGetUint16(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5299,6 +5442,7 @@ func BenchmarkHelperSetAndGetUint16(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint32
+
 func BenchmarkHelperSetAndGetUint32(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5352,6 +5496,7 @@ func BenchmarkHelperSetAndGetUint32(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint64
+
 func BenchmarkHelperSetAndGetUint64(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5405,6 +5550,7 @@ func BenchmarkHelperSetAndGetUint64(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue uint8
+
 func BenchmarkHelperSetAndGetUint8(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5458,6 +5604,7 @@ func BenchmarkHelperSetAndGetUint8(b *testing.B) {
 }
 
 //	Test Set and Get table cell in colName at rowIndex to newValue *Table
+
 func BenchmarkHelperSetAndGetTable(b *testing.B) {
 
 	// See: TestSet<type>() functions
@@ -5510,8 +5657,11 @@ func BenchmarkHelperSetAndGetTable(b *testing.B) {
 	}
 }
 
+//	Test Set and Get table cell in colName at rowIndex to newValue time.Time
+
 //	Test GetByteSliceMustGet()
 //  Test that the method panics on error.
+
 func TestGetByteSliceMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5587,6 +5737,7 @@ func TestGetByteSliceMustGet(t *testing.T) {
 
 //	Test GetUint8SliceMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint8SliceMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5662,6 +5813,7 @@ func TestGetUint8SliceMustGet(t *testing.T) {
 
 //	Test GetBoolMustGet()
 //  Test that the method panics on error.
+
 func TestGetBoolMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5734,6 +5886,7 @@ func TestGetBoolMustGet(t *testing.T) {
 
 //	Test GetByteMustGet()
 //  Test that the method panics on error.
+
 func TestGetByteMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5806,6 +5959,7 @@ func TestGetByteMustGet(t *testing.T) {
 
 //	Test GetFloat32MustGet()
 //  Test that the method panics on error.
+
 func TestGetFloat32MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5878,6 +6032,7 @@ func TestGetFloat32MustGet(t *testing.T) {
 
 //	Test GetFloat64MustGet()
 //  Test that the method panics on error.
+
 func TestGetFloat64MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -5950,6 +6105,7 @@ func TestGetFloat64MustGet(t *testing.T) {
 
 //	Test GetIntMustGet()
 //  Test that the method panics on error.
+
 func TestGetIntMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6022,6 +6178,7 @@ func TestGetIntMustGet(t *testing.T) {
 
 //	Test GetInt16MustGet()
 //  Test that the method panics on error.
+
 func TestGetInt16MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6094,6 +6251,7 @@ func TestGetInt16MustGet(t *testing.T) {
 
 //	Test GetInt32MustGet()
 //  Test that the method panics on error.
+
 func TestGetInt32MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6166,6 +6324,7 @@ func TestGetInt32MustGet(t *testing.T) {
 
 //	Test GetInt64MustGet()
 //  Test that the method panics on error.
+
 func TestGetInt64MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6238,6 +6397,7 @@ func TestGetInt64MustGet(t *testing.T) {
 
 //	Test GetInt8MustGet()
 //  Test that the method panics on error.
+
 func TestGetInt8MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6310,6 +6470,7 @@ func TestGetInt8MustGet(t *testing.T) {
 
 //	Test GetRuneMustGet()
 //  Test that the method panics on error.
+
 func TestGetRuneMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6382,6 +6543,7 @@ func TestGetRuneMustGet(t *testing.T) {
 
 //	Test GetStringMustGet()
 //  Test that the method panics on error.
+
 func TestGetStringMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6454,6 +6616,7 @@ func TestGetStringMustGet(t *testing.T) {
 
 //	Test GetUintMustGet()
 //  Test that the method panics on error.
+
 func TestGetUintMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6526,6 +6689,7 @@ func TestGetUintMustGet(t *testing.T) {
 
 //	Test GetUint16MustGet()
 //  Test that the method panics on error.
+
 func TestGetUint16MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6598,6 +6762,7 @@ func TestGetUint16MustGet(t *testing.T) {
 
 //	Test GetUint32MustGet()
 //  Test that the method panics on error.
+
 func TestGetUint32MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6670,6 +6835,7 @@ func TestGetUint32MustGet(t *testing.T) {
 
 //	Test GetUint64MustGet()
 //  Test that the method panics on error.
+
 func TestGetUint64MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6742,6 +6908,7 @@ func TestGetUint64MustGet(t *testing.T) {
 
 //	Test GetUint8MustGet()
 //  Test that the method panics on error.
+
 func TestGetUint8MustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6814,6 +6981,7 @@ func TestGetUint8MustGet(t *testing.T) {
 
 //	Test GetTableMustGet()
 //  Test that the method panics on error.
+
 func TestGetTableMustGet(t *testing.T) {
 
 	// See: TestGet<type>MustGet() functions
@@ -6884,8 +7052,12 @@ func TestGetTableMustGet(t *testing.T) {
 	table.GetTableMustGet(colName, minusIndex)
 }
 
+//	Test GetTimeMustGet()
+//  Test that the method panics on error.
+
 //	Test GetByteSliceByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -6962,6 +7134,7 @@ func TestGetByteSliceByColIndexMustGet(t *testing.T) {
 
 //	Test GetUint8SliceByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7038,6 +7211,7 @@ func TestGetUint8SliceByColIndexMustGet(t *testing.T) {
 
 //	Test GetBoolByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetBoolByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7111,6 +7285,7 @@ func TestGetBoolByColIndexMustGet(t *testing.T) {
 
 //	Test GetByteByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetByteByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7184,6 +7359,7 @@ func TestGetByteByColIndexMustGet(t *testing.T) {
 
 //	Test GetFloat32ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7257,6 +7433,7 @@ func TestGetFloat32ByColIndexMustGet(t *testing.T) {
 
 //	Test GetFloat64ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7330,6 +7507,7 @@ func TestGetFloat64ByColIndexMustGet(t *testing.T) {
 
 //	Test GetIntByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetIntByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7403,6 +7581,7 @@ func TestGetIntByColIndexMustGet(t *testing.T) {
 
 //	Test GetInt16ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetInt16ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7476,6 +7655,7 @@ func TestGetInt16ByColIndexMustGet(t *testing.T) {
 
 //	Test GetInt32ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetInt32ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7549,6 +7729,7 @@ func TestGetInt32ByColIndexMustGet(t *testing.T) {
 
 //	Test GetInt64ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetInt64ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7622,6 +7803,7 @@ func TestGetInt64ByColIndexMustGet(t *testing.T) {
 
 //	Test GetInt8ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetInt8ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7695,6 +7877,7 @@ func TestGetInt8ByColIndexMustGet(t *testing.T) {
 
 //	Test GetRuneByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetRuneByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7768,6 +7951,7 @@ func TestGetRuneByColIndexMustGet(t *testing.T) {
 
 //	Test GetStringByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetStringByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7841,6 +8025,7 @@ func TestGetStringByColIndexMustGet(t *testing.T) {
 
 //	Test GetUintByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUintByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7914,6 +8099,7 @@ func TestGetUintByColIndexMustGet(t *testing.T) {
 
 //	Test GetUint16ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint16ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -7987,6 +8173,7 @@ func TestGetUint16ByColIndexMustGet(t *testing.T) {
 
 //	Test GetUint32ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint32ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -8060,6 +8247,7 @@ func TestGetUint32ByColIndexMustGet(t *testing.T) {
 
 //	Test GetUint64ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint64ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -8133,6 +8321,7 @@ func TestGetUint64ByColIndexMustGet(t *testing.T) {
 
 //	Test GetUint8ByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetUint8ByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -8206,6 +8395,7 @@ func TestGetUint8ByColIndexMustGet(t *testing.T) {
 
 //	Test GetTableByColIndexMustGet()
 //  Test that the method panics on error.
+
 func TestGetTableByColIndexMustGet(t *testing.T) {
 
 	// See: TestGet<type>ByColIndexMustGet() functions
@@ -8276,3 +8466,6 @@ func TestGetTableByColIndexMustGet(t *testing.T) {
 
 	table.GetTableByColIndexMustGet(colIndex, minusIndex)
 }
+
+//	Test GetTimeByColIndexMustGet()
+//  Test that the method panics on error.

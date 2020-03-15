@@ -1340,6 +1340,7 @@ func (table *Table) StringPadded() string {
 			var f32Val float32
 			var f64Val float64
 			var tableVal *Table
+			var timeVal time.Time
 			buf.WriteString(horizontalSep)
 			switch table.colTypes[colIndex] {
 			case "string":
@@ -1409,6 +1410,9 @@ func (table *Table) StringPadded() string {
 				} else {
 					s = "[]"
 				}
+			case "time.Time":
+				timeVal = row[colIndex].(time.Time)
+				s = timeVal.Format(time.RFC3339)
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
@@ -2686,6 +2690,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 	var f32Val float32
 	var f64Val float64
 	var tableVal *Table
+	var timeVal time.Time
 
 	var interfaceType interface{}
 	var err error
@@ -2764,6 +2769,13 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 		buf.WriteByte(91) // Opening square bracket.
 		buf.WriteString(tableName)
 		buf.WriteByte(93) // Closing square bracket.
+	case "time.Time":
+		timeVal = interfaceType.(time.Time)
+		if timeVal.Nanosecond() > 0 {
+			buf.WriteString(timeVal.Format(time.RFC3339Nano))
+		} else {
+			buf.WriteString(timeVal.Format(time.RFC3339))
+		}
 	default:
 		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
 		return "", err
