@@ -1,9 +1,10 @@
 package gotables
 
 import (
-//	"fmt"
+	"fmt"
+	"log"
 	"testing"
-//	"time"
+	"time"
 )
 
 /*
@@ -36,7 +37,7 @@ func TestGetTime(t *testing.T) {
 
 	// ISO 8601 (RFC 3339)
 	var tableString string =
-	`[TimeTable01]
+	`[TimeTable]
 	t1 time.Time = 2020-03-15T14:22:30Z
 	t2 time.Time = 2020-03-15T14:22:30+17:00
 	t3 time.Time = 2020-03-15T14:22:30-17:00
@@ -49,6 +50,146 @@ func TestGetTime(t *testing.T) {
 		t.Fatal(err)
 	}
 	_ = table
+}
 
-//where(table)
+func ExampleTable_GetTime() {
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+
+	const rowIndex int = 0	// Always row 0 for struct shaped tables
+
+	var err error
+	var table *Table
+	var colIndex int
+
+	// ISO 8601 (RFC 3339)
+	var tableString string =
+	`[TimeTable]
+	t0 time.Time = 2020-03-15T14:22:30Z
+	t1 time.Time = 2020-03-15T14:22:30+17:00
+	t2 time.Time = 2020-03-15T14:22:30-17:00
+	t3 time.Time = 2020-03-15T14:22:30.12345Z
+	t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	`
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	err = table.AppendCol("t6", "time.Time")
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	// Here are the time.Date() function arguments:
+	// func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time
+
+	// 2020 last day at 10pm
+	err = table.SetTime("t6", rowIndex, time.Date(2020, time.December, 31, 22, 0, 0, 0, time.UTC))
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	fmt.Println("Add an hour")
+	var t time.Time
+	t, err = table.GetTime("t6", rowIndex)
+	if err != nil {
+		log.Println(err)
+	}
+	t = t.Add(time.Hour)
+	fmt.Printf("t = %v\n", t)
+	err = table.SetTime("t6", rowIndex, t)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	// 2020 last day at 11:59pm and 1 nanosecond before midnight
+	// There are 1,000,000,000 nanoseconds in a second
+	err = table.AppendCol("t7", "time.Time")
+	if err != nil {
+		log.Println(err)
+	}
+	colIndex = 7
+	err = table.SetTimeByColIndex(colIndex, rowIndex, time.Date(2020, time.December, 31, 23, 59, 59, 999999999, time.UTC))
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	fmt.Println("Add a nanosecond")
+	t, err = table.GetTimeByColIndex(colIndex, rowIndex)
+	if err != nil {
+		log.Println(err)
+	}
+	t = t.Add(time.Nanosecond)
+	fmt.Printf("t = %v\n", t)
+	err = table.SetTimeByColIndex(colIndex, rowIndex, t)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(table)
+
+	// Output:
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	//
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 0001-01-01T00:00:00Z
+	//
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T22:00:00Z
+	//
+	// Add an hour
+	// t = 2020-12-31 23:00:00 +0000 UTC
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T23:00:00Z
+	//
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T23:00:00Z
+	// t7 time.Time = 2020-12-31T23:59:59.999999999Z
+	//
+	// Add a nanosecond
+	// t = 2021-01-01 00:00:00 +0000 UTC
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T23:00:00Z
+	// t7 time.Time = 2021-01-01T00:00:00Z
 }

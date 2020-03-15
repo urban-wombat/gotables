@@ -7,6 +7,7 @@ import (
 	"io"
 	"reflect"
 	"regexp"
+	"time"
 )
 
 type circRefMap map[*Table]struct{}
@@ -170,6 +171,18 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 					buf.WriteByte(125) // End nested table.
 				}
 
+			case time.Time:
+				var timeVal time.Time = val.(time.Time)
+				if timeVal.Nanosecond() > 0 {
+					buf.WriteByte('"')
+					buf.WriteString(timeVal.Format(time.RFC3339Nano))
+					buf.WriteByte('"')
+				} else {
+					buf.WriteByte('"')
+					buf.WriteString(timeVal.Format(time.RFC3339))
+					buf.WriteByte('"')
+				}
+
 			default:
 				buf.WriteString(`"TYPE UNKNOWN"`)
 			}
@@ -303,9 +316,29 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 				var colType string = table.colTypes[colIndex]
 				switch cell.(type) {
 				case string:
-					err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
+					switch colType {	// We need to convert time string format to time.Time
+					case "time.Time":
+						var timeVal time.Time
+						timeVal, err = time.Parse(time.RFC3339, cell.(string))
+						if err != nil {	// We need this extra error check here
+							err := fmt.Errorf("could not convert JSON time string to gotables %s", colType)
+							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+						}
+						err = table.SetTimeByColIndex(colIndex, rowIndex, timeVal)
+						if err != nil {
+							err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
+							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+						}
+					default:	// Is a string
+						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
+					}
+					// Single error handler for all the calls in this switch statement.
+					if err != nil {
+						err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
+						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+					}
 				case float64: // All JSON number values are stored as float64
-					switch colType { // We need to convert them back to gotables numeric types
+					switch colType {	// We need to convert them back to gotables numeric types
 					case "int":
 						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
 					case "uint":
@@ -377,6 +410,10 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
 							tableName, colIndex, rowIndex)
 					}
+/*
+				case time.Time:
+					err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
+*/
 				default:
 					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
 						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))

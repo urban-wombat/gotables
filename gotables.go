@@ -1412,7 +1412,11 @@ func (table *Table) StringPadded() string {
 				}
 			case "time.Time":
 				timeVal = row[colIndex].(time.Time)
-				s = timeVal.Format(time.RFC3339)
+				if timeVal.Nanosecond() > 0 {
+					s = timeVal.Format(time.RFC3339Nano)
+				} else {
+					s = timeVal.Format(time.RFC3339)
+				}
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
 				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
@@ -3098,6 +3102,7 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 
 		isSlice, _ := IsSliceColType(colType)
 		isTable, _ := IsTableColType(colType)
+		isTime := colType == "time.Time"
 
 		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
 			val1, err := table1.GetValByColIndex(colIndex, rowIndex)
@@ -3144,7 +3149,13 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 						return equals, fmt.Errorf("%v (nested table)", err)
 					}
 				}
-
+			} else if isTime {
+				var t1 time.Time = val1.(time.Time)
+				var t2 time.Time = val2.(time.Time)
+				if !t1.Equal(t2) {
+					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, t1, t2)
+				}
 			} else { // For all other (atomic) types.
 				if val1 != val2 {
 					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
