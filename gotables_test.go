@@ -1949,6 +1949,8 @@ func BenchmarkTableSetToString_padded(b *testing.B) {
 }
 
 func BenchmarkTableSetToString_unpadded(b *testing.B) {
+	var err error
+
 	// Set up for benchmark.
 	// Note: It's irrelevant whether the input string is padded.
 	tableSet, err := NewTableSetFromString(planets_unpadded)
@@ -1962,26 +1964,65 @@ func BenchmarkTableSetToString_unpadded(b *testing.B) {
 	}
 }
 
-/*
+// GOB
 func BenchmarkGobEncode(b *testing.B) {
 	// Set up for benchmark.
+	tableSetString := `[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+
+	[Struct_With_Data]
+	Fred int = 42
+	Wilma int = 39
+	Pebbles int = 2
+
+	[Empty_Struct]
+	Fred int
+
+	[Empty_Table]
+	Fred
+	int
+	`
 	tableSet, err := NewTableSetFromString(tableSetString)
 	if err != nil {
 		b.Error(err)
 	}
 
+	var encoded []bytes.Buffer
 	for i := 0; i < b.N; i++ {
-		_, err := tableSet.GobEncode()
+		encoded, err = tableSet.GobEncode()
 		if err != nil {
 			b.Error(err)
 		}
 	}
+	_ = encoded
 }
-*/
 
-/*
+// GOB
 func BenchmarkGobDecode(b *testing.B) {
 	// Set up for benchmark.
+	tableSetString := `[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+
+	[Struct_With_Data]
+	Fred int = 42
+	Wilma int = 39
+	Pebbles int = 2
+
+	[Empty_Struct]
+	Fred int
+
+	[Empty_Table]
+	Fred
+	int
+	`
 	tableSet, err := NewTableSetFromString(tableSetString)
 	if err != nil {
 		b.Error(err)
@@ -2000,7 +2041,6 @@ func BenchmarkGobDecode(b *testing.B) {
 		}
 	}
 }
-*/
 
 func BenchmarkNewTableSetFromFile(b *testing.B) {
 	// Set up for benchmark.
@@ -3275,7 +3315,7 @@ func TestIsColType(t *testing.T) {
 	}
 }
 
-/*
+// GOB
 func ExampleTable_GobEncode_table() {
 	s := `[sable_fur]
     i   s      f       t     b    bb            ui8
@@ -3286,7 +3326,7 @@ func ExampleTable_GobEncode_table() {
     `
 	tableToBeEncoded, err := NewTableFromString(s)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println("(1) Table ready to encode into binary.")
 	fmt.Println(tableToBeEncoded)
@@ -3295,17 +3335,23 @@ func ExampleTable_GobEncode_table() {
     var binary []byte
     binary, err = tableToBeEncoded.GobEncode()
     if err != nil {
-		log.Println(err)
+		fmt.Println(err)
     }
 
 	// Now decode it back from binary to type *gotables.Table
 	// Note: NewTableFromGob(binary) is equivalent to GobDecodeTable(binary)
     tableDecoded, err := NewTableFromGob(binary)
     if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println("(2) Table decoded from binary.")
 	fmt.Println(tableDecoded)
+
+	equals, err := tableDecoded.Equals(tableToBeEncoded)
+    if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("tableDecoded.Equals(tableToBeEncoded) = %t\n", equals)
 
 	// Output:
 	// (1) Table ready to encode into binary.
@@ -3323,10 +3369,11 @@ func ExampleTable_GobEncode_table() {
 	//   1 "abc"      2.3 true    11 [11 12 13 14] [15 16 17]
 	//   2 "xyz"      4.5 false   22 [22 23 24 25] [26 27 28]
 	//   3 "ssss"     4.9 false   33 [33 34 35 36] [37 38 39]
+	//
+	// tableDecoded.Equals(tableToBeEncoded) = true
 }
-*/
 
-/*
+// GOB
 func ExampleTableSet_GobEncode_tableset() {
 	s := `[sable_fur]
     i   s       f           b
@@ -3369,6 +3416,12 @@ func ExampleTableSet_GobEncode_tableset() {
 	fmt.Println("(2) TableSet decoded from binary.")
 	fmt.Println(tableSetDecoded)
 
+	equals, err := tableSetDecoded.Equals(tableSetToEncode)
+    if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("tableSetDecoded.Equals(tableSetToEncode) = %t\n", equals)
+
 	// Output:
 	// (1) TableSet ready to encode into binary.
 	// [sable_fur]
@@ -3409,8 +3462,9 @@ func ExampleTableSet_GobEncode_tableset() {
 	// [Empty_Table]
 	// Fred
 	//  int
+	//
+	// tableSetDecoded.Equals(tableSetToEncode) = true
 }
-*/
 
 func ExampleTableSet_String() {
 	// Deliberately unpadded (by hand) for contrast.

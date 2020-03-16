@@ -102,7 +102,7 @@ type TableSet struct {
 	tables       []*Table
 }
 
-// Selected header information for exporting.
+// For GOB. Selected header information for exporting.
 type TableSetExported struct {
 	TableSetName string
 	FileName     string
@@ -483,14 +483,17 @@ type Table struct {
 	parentTable *Table
 }
 
+// For GOB.
 type TableExported struct {
-	TableName      string
-	ColNames       []string
-	ColTypes       []string
-	ColNamesLookup map[string]int // To look up a colNames index from a col name.
-	Rows           []tableRow
-	SortKeys       []SortKeyExported
-	StructShape    bool
+	TableName    string
+	ColNames    []string
+	ColTypes    []string
+	ColNamesMap map[string]int // To look up a colNames index from a col name.
+	Rows        []tableRow
+	SortKeys    []SortKeyExported
+	StructShape bool
+	IsNilTable  bool
+	ParentTable *TableExported
 }
 
 func (table *Table) getColTypes() []string {
@@ -564,6 +567,7 @@ func newNonZeroTable(tableName string) *Table {
 	return newTable
 }
 
+// GOB
 func newTableExported(tableName string) (*TableExported, error) {
 	var err error
 	var NewTableExported *TableExported = new(TableExported)
@@ -573,7 +577,7 @@ func newTableExported(tableName string) (*TableExported, error) {
 	}
 	NewTableExported.ColNames = []string{}
 	NewTableExported.ColTypes = []string{}
-	NewTableExported.ColNamesLookup = map[string]int{}
+	NewTableExported.ColNamesMap = map[string]int{}
 	NewTableExported.Rows = []tableRow{}
 	return NewTableExported, nil
 }

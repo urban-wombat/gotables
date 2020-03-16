@@ -1602,3 +1602,85 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	//   3 "xxxx" [right3]
 	//   4 "yyyy" [right4]
 }
+
+func BenchmarkGetTableSetAsJSON(b *testing.B) {
+	// Set up for benchmark.
+	tableSetString :=
+	`[[MySet]]
+	[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+
+	[Struct_With_Data]
+	Fred int = 42
+	Wilma int = 39
+	Pebbles int = 2
+
+	[Empty_Struct]
+	Fred int
+
+	[Empty_Table]
+	Fred
+	int
+	`
+	tableSet, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		b.Error(err)
+	}
+
+	var jsonTableSet string
+	for i := 0; i < b.N; i++ {
+		jsonTableSet, err = tableSet.GetTableSetAsJSON()
+		if err != nil {
+			b.Error(err)
+		}
+	}
+	_ = jsonTableSet
+}
+
+func BenchmarkNewTableSetFromJSON(b *testing.B) {
+	// Set up for benchmark.
+	tableSetString :=
+	`[[MyTableSet]]
+	[sable_fur]
+    i   s       f           b
+    int string  float64     bool
+    1   "abc"   2.3         true
+    2   "xyz"   4.5         false
+    3   "ssss"  4.9         false
+
+	[Struct_With_Data]
+	Fred int = 42
+	Wilma int = 39
+	Pebbles int = 2
+
+	[Empty_Struct]
+	Fred int
+
+	[Empty_Table]
+	Fred
+	int
+	`
+	tableSet, err := NewTableSetFromString(tableSetString)
+	if err != nil {
+		b.Error(err)
+	}
+
+	// Set up for benchmark.
+	jsonString, err := tableSet.GetTableSetAsJSON()
+	if err != nil {
+		b.Error(err)
+	}
+
+	var tableSet2 *TableSet
+	for i := 0; i < b.N; i++ {
+		_, err := NewTableSetFromJSON(jsonString)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+	_ = tableSet2
+}
