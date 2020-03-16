@@ -2,7 +2,6 @@ package gotables
 
 import (
 	"fmt"
-	"log"
 	"testing"
 	"time"
 )
@@ -73,13 +72,13 @@ func ExampleTable_GetTime() {
 	`
 	table, err = NewTableFromString(tableString)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println(table)
 
 	err = table.AppendCol("t6", "time.Time")
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println(table)
 
@@ -89,7 +88,7 @@ func ExampleTable_GetTime() {
 	// 2020 last day at 10pm
 	err = table.SetTime("t6", rowIndex, time.Date(2020, time.December, 31, 22, 0, 0, 0, time.UTC))
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println(table)
 
@@ -97,13 +96,13 @@ func ExampleTable_GetTime() {
 	var t time.Time
 	t, err = table.GetTime("t6", rowIndex)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	t = t.Add(time.Hour)
 	fmt.Printf("t = %v\n", t)
 	err = table.SetTime("t6", rowIndex, t)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println(table)
 
@@ -111,26 +110,41 @@ func ExampleTable_GetTime() {
 	// There are 1,000,000,000 nanoseconds in a second
 	err = table.AppendCol("t7", "time.Time")
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	colIndex = 7
 	err = table.SetTimeByColIndex(colIndex, rowIndex, time.Date(2020, time.December, 31, 23, 59, 59, 999999999, time.UTC))
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	fmt.Println(table)
 
 	fmt.Println("Add a nanosecond")
 	t, err = table.GetTimeByColIndex(colIndex, rowIndex)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	t = t.Add(time.Nanosecond)
 	fmt.Printf("t = %v\n", t)
 	err = table.SetTimeByColIndex(colIndex, rowIndex, t)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
+	fmt.Println(table)
+
+	// MinTime is a global variable defined in gotables.go
+	err = table.AppendCol("minTime", "time.Time")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = table.SetTime("minTime", 0, MinTime)
+
+	// MaxTime is a global variable defined in gotables.go
+	err = table.AppendCol("maxTime", "time.Time")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = table.SetTime("maxTime", 0, MaxTime)
 	fmt.Println(table)
 
 	// Output:
@@ -192,4 +206,16 @@ func ExampleTable_GetTime() {
 	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2021-01-01T00:00:00Z
+	//
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T23:00:00Z
+	// t7 time.Time = 2021-01-01T00:00:00Z
+	// minTime time.Time = 0001-01-01T00:00:00Z
+	// maxTime time.Time = 292277024627-12-07T02:30:07.999999999+11:00
 }

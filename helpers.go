@@ -4640,7 +4640,7 @@ func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int
 		case "*Table":
 			err = table.SetTableByColIndex(colIndex, rowIndex, NewNilTable())
 		case "time.Time":
-			err = table.SetTimeByColIndex(colIndex, rowIndex, )
+			err = table.SetTimeByColIndex(colIndex, rowIndex, MinTime)
 		default:
 			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
 			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
@@ -4686,48 +4686,31 @@ var zeroVal zeroVals
 
 func init() {
 	// This avoids relatively expensive assignments to a local variable in SetCellToZeroValueByColIndex()
-
 	zeroVal.byteSliceVal = []byte{}
-
 	zeroVal.uint8SliceVal = []uint8{}
-
 	zeroVal.boolVal = false
-
 	zeroVal.byteVal = 0
-
 	zeroVal.float32Val = 0.0
-
 	zeroVal.float64Val = 0.0
-
 	zeroVal.intVal = 0
-
 	zeroVal.int16Val = 0
-
 	zeroVal.int32Val = 0
-
 	zeroVal.int64Val = 0
-
 	zeroVal.int8Val = 0
-
 	zeroVal.runeVal = 0
-
 	zeroVal.stringVal = ""
-
 	zeroVal.uintVal = 0
-
 	zeroVal.uint16Val = 0
-
 	zeroVal.uint32Val = 0
-
 	zeroVal.uint64Val = 0
-
 	zeroVal.uint8Val = 0
-
 	zeroVal.tableVal = NewNilTable()
-
+	zeroVal.timeVal = MinTime
 }
 
 func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) error {
+
+	// Note: zeroVal is defined in the type zeroVals struct.
 
 	if table == nil {
 		return fmt.Errorf("table.%s: table is <nil>", UtilFuncName())
@@ -4794,7 +4777,7 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
 		table.rows[rowIndex][colIndex] = zeroVal.tableVal
 	case "time.Time":
-		// This is a x10 tuning strategy to avoid type conversion time.Time()
+		// This is a x10 tuning strategy to avoid type conversion time.Time(MinTime)
 		table.rows[rowIndex][colIndex] = zeroVal.timeVal
 	default:
 		//			return fmt.Errorf("invalid type: %s", "time.Time")
@@ -4806,6 +4789,8 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 }
 
 func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
+
+	// Note: zeroVal is defined in the type zeroVals struct.
 
 	if table == nil {
 		return fmt.Errorf("table.%s: table is <nil>", UtilFuncName())
@@ -4876,7 +4861,7 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 			// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
 			table.rows[rowIndex][colIndex] = zeroVal.tableVal
 		case "time.Time":
-			// This is a x10 tuning strategy to avoid type conversion time.Time()
+			// This is a x10 tuning strategy to avoid type conversion time.Time(MinTime)
 			table.rows[rowIndex][colIndex] = zeroVal.timeVal
 		default:
 			//				return fmt.Errorf("invalid type: %s", "time.Time")

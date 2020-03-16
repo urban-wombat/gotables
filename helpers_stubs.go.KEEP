@@ -1,5 +1,9 @@
 package gotables
 
+import (
+	"time"
+)
+
 func (table *Table) SetRowCellsToZeroValue(i int) error {return nil}
 
 func (table *Table) SetCellToZeroValueByColIndex(int, int) error {return nil}
@@ -36,6 +40,7 @@ func (*Table) SetInt64ByColIndex(int, int, int64) error {return nil}
 func (*Table) SetInt8ByColIndex(int, int, int8) error {return nil}
 func (*Table) SetStringByColIndex(int, int, string) error {return nil}
 func (*Table) SetTableByColIndex(int, int, *Table) error {return nil}
+func (*Table) SetTimeByColIndex(int, int, time.Time) error {return nil}
 func (*Table) SetUint16ByColIndex(int, int, uint16) error {return nil}
 func (*Table) SetUint32ByColIndex(int, int, uint32) error {return nil}
 func (*Table) SetUint64ByColIndex(int, int, uint64) error {return nil}

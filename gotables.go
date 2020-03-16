@@ -55,6 +55,11 @@ const printCaller = false
 const printstack bool = false
 const todo bool = false
 
+var MinTime time.Time = time.Time{}
+
+// This is correct as far as I know. The alternative posited time.Unix(1<<63-1, 0) is time.Before()
+var MaxTime time.Time = time.Unix(1<<63-62135596801, 999999999)
+
 func init() {
 	/*
 		if debugging {
@@ -694,7 +699,6 @@ func (table *Table) AppendRow() error {
 	var newRow tableRow = make(tableRow, len(table.colNames))
 	table.rows = append(table.rows, newRow)
 
-	// table.SetRowCellsToZeroValue() sets cells to their zero value. Otherwise cells would be left set to <nil>.
 	var rowIndex int
 	rowIndex, _ = table.lastRowIndex()
 	err = table.SetRowCellsToZeroValue(rowIndex)
@@ -3640,6 +3644,8 @@ func nonZeroValue(typeName string) (interface{}, error) {
 		return byte(1), nil
 	case "*Table", "*gotables.Table":
 		return newNonZeroTable("nonZeroTable"), nil
+	case "time.Time":
+		return MaxTime, nil
 	default:
 		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
