@@ -60,7 +60,7 @@ func ExampleTable_GetTime() {
 	var table *Table
 	var colIndex int
 
-	// ISO 8601 (RFC 3339)
+	// RFC 3339
 	var tableString string =
 	`[TimeTable]
 	t0 time.Time = 2020-03-15T14:22:30Z
@@ -76,6 +76,7 @@ func ExampleTable_GetTime() {
 	}
 	fmt.Println(table)
 
+	fmt.Println("AppendCol() initialises new col with the time.Time zero val: MinTime")
 	err = table.AppendCol("t6", "time.Time")
 	if err != nil {
 		fmt.Println(err)
@@ -85,6 +86,7 @@ func ExampleTable_GetTime() {
 	// Here are the time.Date() function arguments:
 	// func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time
 
+	fmt.Println("Set it to 2020 last day at 10pm")
 	// 2020 last day at 10pm
 	err = table.SetTime("t6", rowIndex, time.Date(2020, time.December, 31, 22, 0, 0, 0, time.UTC))
 	if err != nil {
@@ -106,6 +108,7 @@ func ExampleTable_GetTime() {
 	}
 	fmt.Println(table)
 
+	fmt.Println("Append col t7 and set it to 2020 last day at 11:59pm and 1 nanosecond before midnight")
 	// 2020 last day at 11:59pm and 1 nanosecond before midnight
 	// There are 1,000,000,000 nanoseconds in a second
 	err = table.AppendCol("t7", "time.Time")
@@ -132,6 +135,7 @@ func ExampleTable_GetTime() {
 	}
 	fmt.Println(table)
 
+	fmt.Println("AppendCol() and set it to gotables.MinTime")
 	// MinTime is a global variable defined in gotables.go
 	err = table.AppendCol("minTime", "time.Time")
 	if err != nil {
@@ -139,6 +143,7 @@ func ExampleTable_GetTime() {
 	}
 	err = table.SetTime("minTime", 0, MinTime)
 
+	fmt.Println("AppendCol() and set it to gotables.MaxTime")
 	// MaxTime is a global variable defined in gotables.go
 	err = table.AppendCol("maxTime", "time.Time")
 	if err != nil {
@@ -156,6 +161,7 @@ func ExampleTable_GetTime() {
 	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
 	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
 	//
+	// AppendCol() initialises new col with the time.Time zero val: MinTime
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
@@ -165,6 +171,7 @@ func ExampleTable_GetTime() {
 	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
 	// t6 time.Time = 0001-01-01T00:00:00Z
 	//
+	// Set it to 2020 last day at 10pm
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
@@ -185,6 +192,7 @@ func ExampleTable_GetTime() {
 	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	//
+	// Append col t7 and set it to 2020 last day at 11:59pm and 1 nanosecond before midnight
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
@@ -207,6 +215,8 @@ func ExampleTable_GetTime() {
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2021-01-01T00:00:00Z
 	//
+	// AppendCol() and set it to gotables.MinTime
+	// AppendCol() and set it to gotables.MaxTime
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
