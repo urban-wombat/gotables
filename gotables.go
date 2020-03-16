@@ -57,7 +57,7 @@ const todo bool = false
 
 var MinTime time.Time = time.Time{}
 
-// This is correct as far as I know. The alternative posited time.Unix(1<<63-1, 0) is time.Before()
+// This MaxTime value is correct as far as I know (the alternative posited time.Unix(1<<63-1, 0) is time.Before()).
 var MaxTime time.Time = time.Unix(1<<63-62135596801, 999999999)
 
 func init() {
