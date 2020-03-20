@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"testing"
+
+//	"gopkg.in/mgo.v2/bson"
 )
 
 /*
@@ -1202,12 +1204,21 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 
 	fmt.Println()
 
-	fmt.Println("This should fail: We are assigning the same table to multiple cells.")
+	fmt.Println("(1) This should fail: We are assigning the same table to multiple cells.")
 	table.SetTableMustSet("left", 0, tableCopy) // Different table reference.
 	fmt.Printf("%s", table)
 	jsonString, err = table.GetTableAsJSON()
 	if err != nil {
-		// Error prints here.
+		// Prints error.
+		fmt.Println(err)
+	}
+	fmt.Println()
+
+	fmt.Println("(2) This should fail: We are assigning the same table to multiple cells.")
+	valid, err := table.IsValidTableNesting()
+	fmt.Printf("table.IsValidTableNesting(): valid = %t\n", valid)
+	if err != nil {
+		// Prints error.
 		fmt.Println(err)
 	}
 
@@ -1308,12 +1319,16 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	// 	]
 	// }
 	//
-	// This should fail: We are assigning the same table to multiple cells.
+	// (1) This should fail: We are assigning the same table to multiple cells.
 	// [SameTableReference]
 	// left          i s      right
 	// *Table      int string *Table
 	// [TableCopy]  42 "abc"  [TableCopy]
 	// getTableAsJSON_recursive(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	//
+	// (2) This should fail: We are assigning the same table to multiple cells.
+	// table.IsValidTableNesting(): valid = false
+	// isValidTableNesting_recursive(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {
@@ -1684,3 +1699,77 @@ func BenchmarkNewTableSetFromJSON(b *testing.B) {
 	}
 	_ = tableSet2
 }
+
+/*
+func TestTable_GetTableAsBinary_nestedTable(t *testing.T) {
+	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+	var err error
+	var table1 *Table
+
+	var tableString string
+	tableString = `
+	[TypesGalore22]
+    i   s      right
+    int string *Table
+    0   "abc"  []
+    1   "xyz"  []
+    2   "ssss" []
+    3   "xxxx" []
+    4   "yyyy" []
+    `
+	table1, err = NewTableFromString(tableString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Now create and set some table cell tables.
+	right0 := `
+	[right0]
+	i int = 32`
+
+	right1 := `
+	[right1]
+	s string = "thirty-two"`
+
+	right2 := `
+	[right2]
+	x	y	z
+	int	int	int
+	1	2	3
+	4	5	6
+	7	8	9`
+
+	right3 := `
+	[right3]
+	f float32 = 88.8`
+
+	right4 := `
+	[right4]
+	t1 *Table = []
+	t2 *gotables.Table = []`
+
+	table1.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
+	table1.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
+	table1.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
+	table1.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
+	table1.SetTableMustSet("right", 4, NewTableFromStringMustMake(right4))
+
+	fmt.Printf("table1:\n%s\n", table1)
+
+	encoded, err := bson.Marshal(table1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("encoded type: %T\n", encoded)
+	fmt.Printf("len(encoded) = %d\n", len(encoded))
+
+	// Now let's get it back from JSON into *Table
+	var table2 *Table
+	err = bson.Unmarshal(encoded, &table2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("table2:\n%s\n", table2)
+}
+*/
