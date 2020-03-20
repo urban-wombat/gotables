@@ -4011,6 +4011,13 @@ func TypesList() string {
 	return strings.Join(typesSlice, " ")
 }
 
+
+/*
+	Returns false if ANY table (including the top level table) exists more than once in the top level table
+	or in any nested table. In other words: no duplicate tables whatsoever.
+
+	The purpose is to completely eliminate the possibility of circular references.
+*/
 func (table *Table) IsValidTableNesting() (valid bool, err error) {
 
 	if table == nil {
