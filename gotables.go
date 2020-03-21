@@ -2517,16 +2517,13 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 		Valid data in each cell of each row?
 		Valid sort keys (if any are set)?
 */
-func (table *Table) IsValidTable() (bool, error) {
+func (table *Table) IsValidTable() (isValid bool, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	//where(fmt.Sprintf("***CALLED BY %s", UtilFuncCaller()))
 
 	if table == nil {
 		return false, fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
-
-	var err error
-	var isValid bool
 
 	if printCaller {
 		UtilPrintCaller()
@@ -2598,6 +2595,11 @@ func (table *Table) IsValidTable() (bool, error) {
 		if isValidRow, err = table.IsValidRow(rowIndex); !isValidRow {
 			return false, err
 		}
+	}
+
+	isValid, err = table.IsValidTableNesting()
+	if err != nil {
+		return isValid, err
 	}
 
 	// should omit value from range; this loop is equivalent to `for keyIndex := range ...` (S1005)
