@@ -485,7 +485,7 @@ type Table struct {
 
 // For GOB.
 type TableExported struct {
-	TableName    string
+	TableName   string
 	ColNames    []string
 	ColTypes    []string
 	ColNamesMap map[string]int // To look up a colNames index from a col name.
@@ -4011,7 +4011,6 @@ func TypesList() string {
 	return strings.Join(typesSlice, " ")
 }
 
-
 /*
 	Returns false if ANY table (including the top level table) exists more than once in the top level table
 	or in any nested table. In other words: no duplicate tables whatsoever.
@@ -4040,7 +4039,7 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 	}
 
-	refMap[table] = empty	// Add this table to the map.
+	refMap[table] = empty // Add this table to the map.
 
 	// Compare cell values.
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
@@ -4063,17 +4062,17 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 				if err != nil {
 					return false, err
 				}
-	
+
 				// Have we already seen this table?
 				_, exists := refMap[nestedTable]
-				if exists {	// Invalid table with circular reference!
+				if exists { // Invalid table with circular reference!
 					err = fmt.Errorf("%s: circular reference in table [%s]: a reference to table [%s] already exists",
 						UtilFuncName(), topTable.Name(), nestedTable.Name())
 					return false, err
-				} else {	// No?
-					refMap[nestedTable] = empty	// Add this table to the map.
+				} else { // No?
+					refMap[nestedTable] = empty // Add this table to the map.
 				}
-	
+
 				// Recursive call to check nested tables.
 				valid, err := isValidTableNesting_recursive(topTable, nestedTable, refMap)
 				if valid == false {

@@ -152,7 +152,7 @@ const tableNameNilPattern string = `^(\[\])`
 // RFC3339     = "2006-01-02T15:04:05Z07:00"
 // const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|([+-]\d{2}:\d{2}))`
 // RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
-   const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))`
+const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))`
 
 var tableSetNameRegexp *regexp.Regexp = regexp.MustCompile(tableSetNamePattern)
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
@@ -161,7 +161,6 @@ var colNameRegexp *regexp.Regexp = regexp.MustCompile(namePattern)
 var whiteRegexp *regexp.Regexp = regexp.MustCompile(`\s+`)
 var equalsRegexp *regexp.Regexp = regexp.MustCompile(`=`)
 var rfc3339TimeRegexp *regexp.Regexp = regexp.MustCompile(rfc3339TimePattern)
-
 
 // Oct regular expression (for integral types)
 // Hex regular expression (for integral types)
@@ -215,7 +214,7 @@ var globalColTypesMap = map[string]int{
 	//	"complex":         0, // Not yet implemented.
 	"*Table":          0,
 	"*gotables.Table": 0,
-	"time.Time": 0,
+	"time.Time":       0,
 }
 
 var globalNumericColTypesMap = map[string]int{
@@ -1292,7 +1291,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 
 	if len(remaining) > 0 { // Still one or more columns to parse.
 		// This handles both table shape and struct shape columns.
-where()
+		where()
 		return nil, fmt.Errorf("%s expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
 
 	}

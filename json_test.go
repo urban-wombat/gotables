@@ -7,8 +7,7 @@ import (
 	"log"
 	"os"
 	"testing"
-
-//	"gopkg.in/mgo.v2/bson"
+	//	"gopkg.in/mgo.v2/bson"
 )
 
 /*
@@ -1621,7 +1620,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 func BenchmarkGetTableSetAsJSON(b *testing.B) {
 	// Set up for benchmark.
 	tableSetString :=
-	`[[MySet]]
+		`[[MySet]]
 	[sable_fur]
     i   s       f           b
     int string  float64     bool
@@ -1659,7 +1658,7 @@ func BenchmarkGetTableSetAsJSON(b *testing.B) {
 func BenchmarkNewTableSetFromJSON(b *testing.B) {
 	// Set up for benchmark.
 	tableSetString :=
-	`[[MyTableSet]]
+		`[[MyTableSet]]
 	[sable_fur]
     i   s       f           b
     int string  float64     bool

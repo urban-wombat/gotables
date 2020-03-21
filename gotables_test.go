@@ -3332,23 +3332,23 @@ func ExampleTable_GobEncode_table() {
 	fmt.Println(tableToBeEncoded)
 
 	// Encode into binary.
-    var binary []byte
-    binary, err = tableToBeEncoded.GobEncode()
-    if err != nil {
+	var binary []byte
+	binary, err = tableToBeEncoded.GobEncode()
+	if err != nil {
 		fmt.Println(err)
-    }
+	}
 
 	// Now decode it back from binary to type *gotables.Table
 	// Note: NewTableFromGob(binary) is equivalent to GobDecodeTable(binary)
-    tableDecoded, err := NewTableFromGob(binary)
-    if err != nil {
+	tableDecoded, err := NewTableFromGob(binary)
+	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("(2) Table decoded from binary.")
 	fmt.Println(tableDecoded)
 
 	equals, err := tableDecoded.Equals(tableToBeEncoded)
-    if err != nil {
+	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Printf("tableDecoded.Equals(tableToBeEncoded) = %t\n", equals)
@@ -3402,22 +3402,22 @@ func ExampleTableSet_GobEncode_tableset() {
 	fmt.Println(tableSetToEncode)
 
 	// Encode into binary.
-    var binary []bytes.Buffer
-    binary, err = tableSetToEncode.GobEncode()
-    if err != nil {
+	var binary []bytes.Buffer
+	binary, err = tableSetToEncode.GobEncode()
+	if err != nil {
 		log.Println(err)
-    }
+	}
 
 	// Now decode it back from binary to type *gotables.TableSet
-    tableSetDecoded, err := GobDecodeTableSet(binary)
-    if err != nil {
+	tableSetDecoded, err := GobDecodeTableSet(binary)
+	if err != nil {
 		log.Println(err)
 	}
 	fmt.Println("(2) TableSet decoded from binary.")
 	fmt.Println(tableSetDecoded)
 
 	equals, err := tableSetDecoded.Equals(tableSetToEncode)
-    if err != nil {
+	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Printf("tableSetDecoded.Equals(tableSetToEncode) = %t\n", equals)

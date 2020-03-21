@@ -19,20 +19,20 @@ var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 var ubjsonTypesMap map[string]byte
 
 func init() {
-	ubjsonTypesMap = map[string]byte {
-		"null":		'Z',
-		"no-op":	'N',	// no operation, to be ignored by the receiving end
-		"true":		'T',
-		"false":	'F',
-		"int8":		'i',
-		"uint8":	'U',
-		"int16":	'I',
-		"int32":	'l',
-		"int64":	'L',
-		"float32":	'd',
-		"float64":	'D',
-		"ASCII":	'C',	// ASCII character
-		"string":	'S',	// UTF-8 string
+	ubjsonTypesMap = map[string]byte{
+		"null":    'Z',
+		"no-op":   'N', // no operation, to be ignored by the receiving end
+		"true":    'T',
+		"false":   'F',
+		"int8":    'i',
+		"uint8":   'U',
+		"int16":   'I',
+		"int32":   'l',
+		"int64":   'L',
+		"float32": 'd',
+		"float64": 'D',
+		"ASCII":   'C', // ASCII character
+		"string":  'S', // UTF-8 string
 	}
 }
 
@@ -336,11 +336,11 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 				var colType string = table.colTypes[colIndex]
 				switch cell.(type) {
 				case string:
-					switch colType {	// We need to convert time string format to time.Time
+					switch colType { // We need to convert time string format to time.Time
 					case "time.Time":
 						var timeVal time.Time
 						timeVal, err = time.Parse(time.RFC3339, cell.(string))
-						if err != nil {	// We need this extra error check here
+						if err != nil { // We need this extra error check here
 							err := fmt.Errorf("could not convert JSON time string to gotables %s", colType)
 							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
@@ -349,7 +349,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 							err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
 							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
-					default:	// Is a string
+					default: // Is a string
 						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
 					}
 					// Single error handler for all the calls in this switch statement.
@@ -358,7 +358,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
 				case float64: // All JSON number values are stored as float64
-					switch colType {	// We need to convert them back to gotables numeric types
+					switch colType { // We need to convert them back to gotables numeric types
 					case "int":
 						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
 					case "uint":
@@ -430,10 +430,10 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
 							tableName, colIndex, rowIndex)
 					}
-/*
-				case time.Time:
-					err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
-*/
+					/*
+						case time.Time:
+							err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
+					*/
 				default:
 					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
 						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))

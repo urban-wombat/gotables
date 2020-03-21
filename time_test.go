@@ -35,8 +35,7 @@ func TestGetTime(t *testing.T) {
 	var table *Table
 
 	// ISO 8601 (RFC 3339)
-	var tableString string =
-	`[TimeTable]
+	var tableString string = `[TimeTable]
 	t1 time.Time = 2020-03-15T14:22:30Z
 	t2 time.Time = 2020-03-15T14:22:30+17:00
 	t3 time.Time = 2020-03-15T14:22:30-17:00
@@ -54,15 +53,14 @@ func TestGetTime(t *testing.T) {
 func ExampleTable_GetTime() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
-	const rowIndex int = 0	// Always row 0 for struct shaped tables
+	const rowIndex int = 0 // Always row 0 for struct shaped tables
 
 	var err error
 	var table *Table
 	var colIndex int
 
 	// RFC 3339
-	var tableString string =
-	`[TimeTable]
+	var tableString string = `[TimeTable]
 	t0 time.Time = 2020-03-15T14:22:30Z
 	t1 time.Time = 2020-03-15T14:22:30+17:00
 	t2 time.Time = 2020-03-15T14:22:30-17:00
