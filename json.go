@@ -16,6 +16,26 @@ var empty struct{}
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
+var ubjsonTypesMap map[string]byte
+
+func init() {
+	ubjsonTypesMap = map[string]byte {
+		"null":		'Z',
+		"no-op":	'N',	// no operation, to be ignored by the receiving end
+		"true":		'T',
+		"false":	'F',
+		"int8":		'i',
+		"uint8":	'U',
+		"int16":	'I',
+		"int32":	'l',
+		"int64":	'L',
+		"float32":	'd',
+		"float64":	'D',
+		"ASCII":	'C',	// ASCII character
+		"string":	'S',	// UTF-8 string
+	}
+}
+
 func (table *Table) GetTableAsJSON() (jsonString string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
@@ -41,7 +61,7 @@ func (table *Table) GetTableAsJSON() (jsonString string, err error) {
 	return
 }
 
-func (table *Table) getTableAsJSON_private() (json string, err error) {
+func (table *Table) getTableAsJSON_private() (jsonString string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
@@ -61,7 +81,7 @@ func (table *Table) getTableAsJSON_private() (json string, err error) {
 
 	buf.WriteByte(125) // Closing brace outermost
 
-	json = buf.String()
+	jsonString = buf.String()
 
 	return
 }
