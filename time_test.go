@@ -150,6 +150,33 @@ func ExampleTable_GetTime() {
 	err = table.SetTime("maxTime", 0, MaxTime)
 	fmt.Println(table)
 
+	fmt.Println("AppendCol() and set it to a parsed time literal string")
+	fmt.Println("time.RFC3339 is defined in the time package")
+	// From https://golang.org/pkg/time/#example_Parse:
+	// Some valid layouts are invalid time values, due to format specifiers
+	// such as _ for space padding and Z for zone information.
+	// For example the RFC3339 layout 2006-01-02T15:04:05Z07:00
+	// contains both Z and a time zone offset in order to handle both valid options:
+	// 2006-01-02T15:04:05Z
+	// 2006-01-02T15:04:05+07:00
+	// t, _ = time.Parse(time.RFC3339, "2006-01-02T15:04:05Z")
+	// t, _ = time.Parse(time.RFC3339, "2006-01-02T15:04:05+07:00")
+	err = table.AppendCol("myTime", "time.Time")
+	if err != nil {
+		fmt.Println(err)
+	}
+	var myTimeString string = "2020-03-22T13:30:00.0+11:00"
+	var myTime time.Time
+	myTime, err = time.Parse(time.RFC3339, myTimeString)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = table.SetTime("myTime", 0, myTime)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(table)
+
 	// Output:
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
@@ -226,4 +253,19 @@ func ExampleTable_GetTime() {
 	// t7 time.Time = 2021-01-01T00:00:00Z
 	// minTime time.Time = 0001-01-01T00:00:00Z
 	// maxTime time.Time = 292277024627-12-07T02:30:07.999999999+11:00
+	//
+	// AppendCol() and set it to a parsed time literal string
+	// time.RFC3339 is defined in the time package
+	// [TimeTable]
+	// t0 time.Time = 2020-03-15T14:22:30Z
+	// t1 time.Time = 2020-03-15T14:22:30+17:00
+	// t2 time.Time = 2020-03-15T14:22:30-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.12345Z
+	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t6 time.Time = 2020-12-31T23:00:00Z
+	// t7 time.Time = 2021-01-01T00:00:00Z
+	// minTime time.Time = 0001-01-01T00:00:00Z
+	// maxTime time.Time = 292277024627-12-07T02:30:07.999999999+11:00
+	// myTime time.Time = 2020-03-22T13:30:00+11:00
 }
