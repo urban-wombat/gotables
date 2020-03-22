@@ -609,8 +609,6 @@ func getTableShape(p *parser, line string, lineSplit []string, tableShapeIn _Tab
 			return
 		}
 	}
-
-	return "", false, errors.New("ERROR: 'unreachable' code!")
 }
 
 func (p *parser) parseFile(inputFileName string) (*TableSet, error) {

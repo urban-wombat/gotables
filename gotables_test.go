@@ -6363,7 +6363,7 @@ func stringSliceEquals(slice1, slice2 []string) bool {
 	to be placed in the Output area. A larger example
 	would have been very tedious to get right.
 */
-func ExampleGoFmtProgramString() {
+func ExampleUtilFormatSource() {
 	var err error
 
 	goProgramString :=

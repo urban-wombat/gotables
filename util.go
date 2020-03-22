@@ -465,8 +465,6 @@ func UtilGulpFromPipeWithTimeout(timeout time.Duration) (input string, err error
 	case <-time.After(timeout):
 		return "", fmt.Errorf("did not read any piped input from stdin after waiting %v", timeout)
 	}
-
-	return
 }
 
 /*

@@ -27,20 +27,20 @@ func TestFormatSource(t *testing.T) {
 	}
 }
 
-func ExampleFuncName() {
+func ExampleUtilFuncName() {
 	// Called from inside func ExampleFuncName()
 	fmt.Println(UtilFuncName())
 
 	// Output:
-	// ExampleFuncName()
+	// ExampleUtilFuncName()
 }
 
-func ExampleFuncNameNoParens() {
+func ExampleUtilFuncNameNoParens() {
 	// Called from inside func ExampleFuncNameNoParens()
 	fmt.Println(UtilFuncNameNoParens())
 
 	// Output:
-	// ExampleFuncNameNoParens
+	// ExampleUtilFuncNameNoParens
 }
 
 // Output can vary, so don't use as an example, such as:
