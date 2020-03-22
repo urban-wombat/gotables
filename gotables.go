@@ -55,10 +55,10 @@ const printCaller = false
 const printstack bool = false
 const todo bool = false
 
-var MinTime time.Time = time.Time{}
+var MinTime time.Time = time.Time{}	// 0001-01-01T00:00:00Z
 
 // This MaxTime value is correct as far as I know (the alternative posited time.Unix(1<<63-1, 0) is time.Before()).
-var MaxTime time.Time = time.Unix(1<<63-62135596801, 999999999)
+var MaxTime time.Time = time.Unix(1<<63-62135596801, 999999999)	// 292277024627-12-07T02:30:07.999999999+11:00
 
 func init() {
 	/*
