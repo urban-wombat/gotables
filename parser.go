@@ -427,7 +427,10 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 							return nil, err
 						}
 
-						table.SetStructShape(true)
+						// By default, if a parsed table is struct-shape, it will be set internally to struct-shape.
+						// Of course, if any further (than its single) rows are appended, it will display as table-shape,
+						// and will revert to struct-shape if it is reduced back to a single row.
+						err = table.SetStructShape(true)
 						if err != nil {
 							return nil, err
 						}

@@ -58,7 +58,10 @@ func TestGetTableSetAsJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tableSet1.SetName("MySet")
+	err = tableSet1.SetName("MySet")
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	var jsonTableSet string
 	jsonTableSet, err = tableSet1.GetTableSetAsJSON()
@@ -1200,6 +1203,8 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		fmt.Println(err)
 	}
 	fmt.Println(jsonString)
+	j, _ := table.GetTableAsJSON()
+	where(j)
 
 	fmt.Println()
 

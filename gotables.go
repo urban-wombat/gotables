@@ -1796,8 +1796,8 @@ func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}
 	case *Table:
 		if val.(*Table) == nil {
 			// Called directly by user of gotables? Or by gotables.SetVal()?
-			caller := UtilFuncCaller()	// Called by user of gotables
-			if caller == "SetVal()" {	// Called by gotables.SetVal()
+			caller := UtilFuncCaller() // Called by user of gotables
+			if caller == "SetVal()" {  // Called by gotables.SetVal()
 				caller = UtilFuncCallerCaller()
 			}
 			return fmt.Errorf("%s ERROR: table.%s: val of type *Table is <nil> [called by %s]",

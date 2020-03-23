@@ -2973,7 +2973,10 @@ func TestTableSet_SetName(t *testing.T) {
 	}
 
 	expected = "Musk"
-	tableSet.SetName(expected)
+	err = tableSet.SetName(expected)
+	if err != nil {
+		t.Fatal(err)
+	}
 	tableSetName = tableSet.Name()
 	if tableSetName != expected {
 		t.Fatalf("Expecting tableSetName = %q but found %q", expected, tableSetName)

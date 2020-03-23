@@ -48,7 +48,7 @@ func (table *Table) GetTableAsJSON() (jsonString string, err error) {
 		return "", err
 	}
 
-	tableSet.Append(table)
+	err = tableSet.Append(table)
 	if err != nil {
 		return "", err
 	}
