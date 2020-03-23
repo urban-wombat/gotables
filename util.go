@@ -319,8 +319,24 @@ func UtilFuncName() string {
 	return name + "()"
 }
 
+/*
+	Return the name of the function that called this function.
+*/
 func UtilFuncCaller() string {
-	pc, _, _, _ := runtime.Caller(2)
+	const stackFramesToSkip = 2
+	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
+	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	nameEnd := filepath.Ext(nameFull)        // .foo
+	name := strings.TrimPrefix(nameEnd, ".") // foo
+	return name + "()"
+}
+
+/*
+	Return the name of the function that called the caller of this function.
+*/
+func UtilFuncCallerCaller() string {
+	const stackFramesToSkip = 3
+	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo

@@ -1756,6 +1756,15 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	// Prevent nil value for type *Table
+	switch val.(type) {
+	case *Table:
+		if val.(*Table) == nil {
+			return fmt.Errorf("%s ERROR: table.%s: val of type *Table is <nil> [called by %s]",
+				UtilFuncSource(), UtilFuncName(), UtilFuncCaller())
+		}
+	}
+
 	if printCaller {
 		UtilPrintCaller()
 	}
@@ -1780,6 +1789,20 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil {
 		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	// Prevent nil value for type *Table
+	switch val.(type) {
+	case *Table:
+		if val.(*Table) == nil {
+			// Called directly by user of gotables? Or by gotables.SetVal()?
+			caller := UtilFuncCaller()	// Called by user of gotables
+			if caller == "SetVal()" {	// Called by gotables.SetVal()
+				caller = UtilFuncCallerCaller()
+			}
+			return fmt.Errorf("%s ERROR: table.%s: val of type *Table is <nil> [called by %s]",
+				UtilFuncSource(), UtilFuncName(), caller)
+		}
 	}
 
 	if printCaller {
