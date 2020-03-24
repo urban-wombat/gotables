@@ -40,7 +40,7 @@ func (table *Table) GetTableAsJSON() (jsonString string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	tableSet, err := NewTableSet("")
@@ -65,7 +65,7 @@ func (table *Table) getTableAsJSON_private() (jsonString string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var refMap circRefMap = map[*Table]struct{}{}
@@ -90,7 +90,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if table == nil {
-		return fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// Add this table to the circular reference map.
@@ -240,11 +240,11 @@ func (table *Table) GetTableAsJSONIndent() (jsonStringIndented string, err error
 
 func checkJsonDecodeError(checkErr error) (err error) {
 	if checkErr == io.EOF {
-		return fmt.Errorf("%s ERROR %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s %s: unexpected EOF", UtilFuncSource(), UtilFuncName())
 	}
 
 	if checkErr != nil {
-		return fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+		return fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 	}
 
 	return nil
@@ -342,12 +342,12 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 						timeVal, err = time.Parse(time.RFC3339, cell.(string))
 						if err != nil { // We need this extra error check here
 							err := fmt.Errorf("could not convert JSON time string to gotables %s", colType)
-							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
 						err = table.SetTimeByColIndex(colIndex, rowIndex, timeVal)
 						if err != nil {
 							err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
-							return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
 					default: // Is a string
 						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
@@ -355,7 +355,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 					// Single error handler for all the calls in this switch statement.
 					if err != nil {
 						err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
-						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
 				case float64: // All JSON number values are stored as float64
 					switch colType { // We need to convert them back to gotables numeric types
@@ -389,7 +389,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 					// Single error handler for all the calls in this switch statement.
 					if err != nil {
 						err := fmt.Errorf("could not convert JSON float64 to gotables %s", colType)
-						return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
 				case bool:
 					err = table.SetBoolByColIndex(colIndex, rowIndex, cell.(bool))
@@ -435,12 +435,12 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 							err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
 					*/
 				default:
-					return nil, fmt.Errorf("%s ERROR %s: unexpected value of type: %v",
+					return nil, fmt.Errorf("%s %s: unexpected value of type: %v",
 						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))
 				}
 				// Single error handler for all the calls in this switch statement.
 				if err != nil {
-					return nil, fmt.Errorf("%s ERROR %s: %v", UtilFuncSource(), UtilFuncName(), err)
+					return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 				}
 			}
 		}
@@ -452,7 +452,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 func (tableSet *TableSet) GetTableSetAsJSONIndent() (jsonTableSetIndented string, err error) {
 
 	if tableSet == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	jsonTableSet, err := tableSet.GetTableSetAsJSON()
@@ -475,7 +475,7 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if tableSet == nil {
-		return "", fmt.Errorf("%s ERROR: table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var buf bytes.Buffer

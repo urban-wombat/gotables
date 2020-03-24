@@ -269,7 +269,7 @@ func UtilPrintCaller() {
 	// Skip 1 level to get the called: the name of the function calling PrintCaller()
 	n = runtime.Callers(2, fpcs)
 	if n == 0 {
-		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: no called\n", UtilFuncName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: there was no called\n", UtilFuncName())
 		return
 	}
 	called := runtime.FuncForPC(fpcs[0] - 1)
@@ -283,7 +283,7 @@ func UtilPrintCaller() {
 	// Skip 2 levels to get the caller
 	n = runtime.Callers(3, fpcs)
 	if n == 0 {
-		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: no caller\n", UtilFuncName())
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: there was no caller\n", UtilFuncName())
 		return
 	}
 	caller := runtime.FuncForPC(fpcs[0] - 1)

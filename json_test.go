@@ -1203,8 +1203,6 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		fmt.Println(err)
 	}
 	fmt.Println(jsonString)
-	j, _ := table.GetTableAsJSON()
-	where(j)
 
 	fmt.Println()
 
@@ -1236,7 +1234,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	//
 	// Now try again with a COPY of the same table, which will have a new reference.
 	// By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.
-	// SetTable(): table [TableCopy] col right expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
+	// SetTable(right, 0, val): table [TableCopy] col right expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
 	// [TableCopy]
 	// left     i s      right
 	// *Table int string *Table

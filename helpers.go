@@ -843,8 +843,8 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 
 	// Do not allow <nil> for type *Table
 	if newVal == nil {
-		return fmt.Errorf("%s: table [%s] col %s expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
-			UtilFuncName(), table.Name(), colName)
+		return fmt.Errorf("%s(%s, %d, val): table [%s] col %s expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
+			UtilFuncNameNoParens(), colName, rowIndex, table.Name(), colName)
 	}
 
 	// This may help with reporting errors.
@@ -1587,8 +1587,8 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 
 	// Do not allow <nil> for type *Table
 	if newVal == nil {
-		return fmt.Errorf("%s: table [%s] col %d expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
-			UtilFuncName(), table.Name(), colIndex)
+		return fmt.Errorf("%s(%d, %d, val): table [%s] col %d expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
+			UtilFuncNameNoParens(), colIndex, rowIndex, table.Name(), colIndex)
 	}
 
 	// This may help with reporting errors.
@@ -2845,7 +2845,7 @@ func (table *Table) GetTimeMustGet(colName string, rowIndex int) (val time.Time)
 func (table *Table) SetByteSliceMustSet(colName string, rowIndex int, val []byte) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetByteSlice(colName, rowIndex, val)
@@ -2861,7 +2861,7 @@ func (table *Table) SetByteSliceMustSet(colName string, rowIndex int, val []byte
 func (table *Table) SetUint8SliceMustSet(colName string, rowIndex int, val []uint8) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint8Slice(colName, rowIndex, val)
@@ -2877,7 +2877,7 @@ func (table *Table) SetUint8SliceMustSet(colName string, rowIndex int, val []uin
 func (table *Table) SetBoolMustSet(colName string, rowIndex int, val bool) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetBool(colName, rowIndex, val)
@@ -2893,7 +2893,7 @@ func (table *Table) SetBoolMustSet(colName string, rowIndex int, val bool) {
 func (table *Table) SetByteMustSet(colName string, rowIndex int, val byte) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetByte(colName, rowIndex, val)
@@ -2909,7 +2909,7 @@ func (table *Table) SetByteMustSet(colName string, rowIndex int, val byte) {
 func (table *Table) SetFloat32MustSet(colName string, rowIndex int, val float32) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetFloat32(colName, rowIndex, val)
@@ -2925,7 +2925,7 @@ func (table *Table) SetFloat32MustSet(colName string, rowIndex int, val float32)
 func (table *Table) SetFloat64MustSet(colName string, rowIndex int, val float64) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetFloat64(colName, rowIndex, val)
@@ -2941,7 +2941,7 @@ func (table *Table) SetFloat64MustSet(colName string, rowIndex int, val float64)
 func (table *Table) SetIntMustSet(colName string, rowIndex int, val int) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetInt(colName, rowIndex, val)
@@ -2957,7 +2957,7 @@ func (table *Table) SetIntMustSet(colName string, rowIndex int, val int) {
 func (table *Table) SetInt16MustSet(colName string, rowIndex int, val int16) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetInt16(colName, rowIndex, val)
@@ -2973,7 +2973,7 @@ func (table *Table) SetInt16MustSet(colName string, rowIndex int, val int16) {
 func (table *Table) SetInt32MustSet(colName string, rowIndex int, val int32) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetInt32(colName, rowIndex, val)
@@ -2989,7 +2989,7 @@ func (table *Table) SetInt32MustSet(colName string, rowIndex int, val int32) {
 func (table *Table) SetInt64MustSet(colName string, rowIndex int, val int64) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetInt64(colName, rowIndex, val)
@@ -3005,7 +3005,7 @@ func (table *Table) SetInt64MustSet(colName string, rowIndex int, val int64) {
 func (table *Table) SetInt8MustSet(colName string, rowIndex int, val int8) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetInt8(colName, rowIndex, val)
@@ -3021,7 +3021,7 @@ func (table *Table) SetInt8MustSet(colName string, rowIndex int, val int8) {
 func (table *Table) SetRuneMustSet(colName string, rowIndex int, val rune) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetRune(colName, rowIndex, val)
@@ -3037,7 +3037,7 @@ func (table *Table) SetRuneMustSet(colName string, rowIndex int, val rune) {
 func (table *Table) SetStringMustSet(colName string, rowIndex int, val string) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetString(colName, rowIndex, val)
@@ -3053,7 +3053,7 @@ func (table *Table) SetStringMustSet(colName string, rowIndex int, val string) {
 func (table *Table) SetUintMustSet(colName string, rowIndex int, val uint) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint(colName, rowIndex, val)
@@ -3069,7 +3069,7 @@ func (table *Table) SetUintMustSet(colName string, rowIndex int, val uint) {
 func (table *Table) SetUint16MustSet(colName string, rowIndex int, val uint16) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint16(colName, rowIndex, val)
@@ -3085,7 +3085,7 @@ func (table *Table) SetUint16MustSet(colName string, rowIndex int, val uint16) {
 func (table *Table) SetUint32MustSet(colName string, rowIndex int, val uint32) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint32(colName, rowIndex, val)
@@ -3101,7 +3101,7 @@ func (table *Table) SetUint32MustSet(colName string, rowIndex int, val uint32) {
 func (table *Table) SetUint64MustSet(colName string, rowIndex int, val uint64) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint64(colName, rowIndex, val)
@@ -3117,7 +3117,7 @@ func (table *Table) SetUint64MustSet(colName string, rowIndex int, val uint64) {
 func (table *Table) SetUint8MustSet(colName string, rowIndex int, val uint8) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetUint8(colName, rowIndex, val)
@@ -3133,7 +3133,7 @@ func (table *Table) SetUint8MustSet(colName string, rowIndex int, val uint8) {
 func (table *Table) SetTableMustSet(colName string, rowIndex int, val *Table) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetTable(colName, rowIndex, val)
@@ -3149,7 +3149,7 @@ func (table *Table) SetTableMustSet(colName string, rowIndex int, val *Table) {
 func (table *Table) SetTimeMustSet(colName string, rowIndex int, val time.Time) {
 
 	if table == nil {
-		panic(fmt.Errorf("table.%s: table is <nil>", UtilFuncName()))
+		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
 	}
 
 	err := table.SetTime(colName, rowIndex, val)
