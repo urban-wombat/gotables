@@ -383,18 +383,21 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				// (1) Get the table struct (name, type and optional equals value) of this line.
 
 				table.structShape = true
-where(lineSplit)
-				var colName string = lineSplit[structNameIndex]
-				var colType string = lineSplit[structTypeIndex]
+				// Just because the first line is structShape doesn't mean subsequent lines are.
+				if len(lineSplit) < 2 {
+					return nil, fmt.Errorf("#2 %s looks like struct but found: %s", p.gotFilePos(), line)
+				}
+				var colName string = lineSplit[structNameIndex]	// 0
+				var colType string = lineSplit[structTypeIndex]	// 1
 
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
-					return nil, fmt.Errorf("#2 %s looks like struct but %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("#3 %s looks like struct but %s", p.gotFilePos(), err)
 				}
 
 				var colNameSlice []string = []string{colName}
 				if isValid, err = IsValidColType(colType); !isValid {
-					return nil, fmt.Errorf("#3 %s looks like struct but %s", p.gotFilePos(), err)
+					return nil, fmt.Errorf("#4 %s looks like struct but %s", p.gotFilePos(), err)
 				}
 				var colTypeSlice []string = []string{colType}
 
@@ -416,6 +419,10 @@ where(lineSplit)
 					var rangeFound []int = equalsRegexp.FindStringIndex(line)
 					if rangeFound == nil { // This avoids a runtime error.
 						return nil, fmt.Errorf("%s expecting <name> <type> = <value> but found: %s", p.gotFilePos(), line)
+					}
+					// Just because the first line is structShape with data doesn't mean subsequent lines are.
+					if len(lineSplit) < 4 {
+						return nil, fmt.Errorf("#5 %s looks like struct with data but found: %s", p.gotFilePos(), line)
 					}
 					var valueData string = line[rangeFound[1]:]        // Just after = equals sign.
 					valueData = strings.TrimLeft(valueData, " \t\r\n") // Remove leading space.

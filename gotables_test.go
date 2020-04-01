@@ -775,10 +775,14 @@ func ExampleNewTableSet() {
 	name := tableSet.Name()
 	fmt.Println(tableCount)
 	fmt.Println(name)
+	fmt.Println()
+	fmt.Println(tableSet)
 
 	// Output:
 	// 0
 	// MyTableSet
+	//
+	// [[MyTableSet]]
 }
 
 func ExampleRound() {
@@ -6879,5 +6883,62 @@ func BenchmarkSprintfType(b *testing.B) {
 	var val interface{}
 	for i := 0; i < b.N; i++ {
 		_ = fmt.Sprintf("%T", val)
+	}
+}
+
+func TestNewTableSetFromString_invalid(t *testing.T) {
+	var err error
+	var tableSetString string
+
+	// Invalid: No blank line before table [Module2]
+	tableSetString =
+	`[[MyModuleSet]]
+
+	[Module1]
+	song string = "This is my song!"
+	wordCount int = 4
+	[Module2]
+	x   y   z
+	int int int
+	`
+	_, err = NewTableSetFromString(tableSetString)
+	if err == nil {
+		t.Fatal(err)
+	}
+
+
+	// Invalid: No value after wordCount int =
+	tableSetString =
+	`[[MyModuleSet]]
+
+	[Module1]
+	song string = "This is my song!"
+	wordCount int =
+
+	[Module2]
+	x   y   z
+	int int int
+	`
+	_, err = NewTableSetFromString(tableSetString)
+	if err == nil {
+		t.Fatal(err)
+	}
+}
+
+func TestNewTableSetFromString_valid(t *testing.T) {
+	var err error
+	var tableSet *TableSet
+	var tableSetString string
+
+	tableSetString = `[[MyTableSetName]]`
+	tableSet, err = NewTableSetFromString(tableSetString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "MyTableSetName"
+	found := tableSet.Name()
+	if found != expected {
+		t.Fatalf("Expecting parsed tableset name to be %q, but found: %s", expected, found)
 	}
 }
