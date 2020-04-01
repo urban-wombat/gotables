@@ -383,6 +383,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				// (1) Get the table struct (name, type and optional equals value) of this line.
 
 				table.structShape = true
+where(lineSplit)
 				var colName string = lineSplit[structNameIndex]
 				var colType string = lineSplit[structTypeIndex]
 
