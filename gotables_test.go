@@ -6966,10 +6966,11 @@ func ExampleNewTableSetFromString_withTableSetName() {
 		fmt.Println(err)
 	}
 
+	// Note: this does not fail.
 	expected := "MyTableSetName"
 	found := tableSet.Name()
 	if found != expected {
-		fmt.Printf("Expecting parsed tableset name to be %q, but found: %s", expected, found)
+		fmt.Printf("Expecting parsed tableset name to be %q, but found: %q", expected, found)
 	}
 
 	fmt.Println(tableSet.String())
