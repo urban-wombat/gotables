@@ -6942,3 +6942,49 @@ func TestNewTableSetFromString_valid(t *testing.T) {
 		t.Fatalf("Expecting parsed tableset name to be %q, but found: %s", expected, found)
 	}
 }
+
+func ExampleNewTableSetFromString_withTableSetName() {
+	var err error
+	var tableSet *TableSet
+	var tableSetString string
+
+	tableSetString =
+	`[[MyTableSetName]]
+	[MyTable1]
+	x	y	z
+	int	int	int
+	1	3	9
+	5	10	15
+
+	[MyTable2]
+	a int = 1
+	b int = 2
+	c int = 3
+	`
+	tableSet, err = NewTableSetFromString(tableSetString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	expected := "MyTableSetName"
+	found := tableSet.Name()
+	if found != expected {
+		fmt.Printf("Expecting parsed tableset name to be %q, but found: %s", expected, found)
+	}
+
+	fmt.Println(tableSet.String())
+
+	// Output:
+	// [[MyTableSetName]]
+	//
+	// [MyTable1]
+	//   x   y   z
+	// int int int
+	//   1   3   9
+	//   5  10  15
+	//
+	// [MyTable2]
+	// a int = 1
+	// b int = 2
+	// c int = 3
+}
