@@ -649,7 +649,7 @@ func (table *Table) AppendRows(howMany int) error {
 	}
 
 	if howMany < 0 {
-		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be %d or more)", table.Name(), howMany, howMany, howMany)
+		return fmt.Errorf("table [%s] AppendRows(%d) cannot append %d rows (must be 0 or more)", table.Name(), howMany, howMany)
 	}
 
 	for i := 0; i < howMany; i++ {
