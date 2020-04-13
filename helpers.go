@@ -53,8 +53,8 @@ const (
 	Uint32         = "uint32"
 	Uint64         = "uint64"
 	Uint8          = "uint8"
-	gotables_Table = "*gotables.Table"
-	time_Time      = "time.Time"
+	Gotables_Table = "*gotables.Table" // "*Table" is also acceptable as an alias of "*gotables.Table"
+	Time_Time      = "time.Time"
 )
 
 //	------------------------------------------------------------------
