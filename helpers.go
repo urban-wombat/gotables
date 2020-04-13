@@ -33,7 +33,29 @@ SOFTWARE.
 
 // Types are defined in helpersmain.go
 
-// Note: time.Type has been eliminated from helpers.test.go due to great difficulty automating it.
+// gotables column type constants.
+const (
+	ByteSlice      = "[]byte"
+	Uint8Slice     = "[]uint8"
+	Bool           = "bool"
+	Byte           = "byte"
+	Float32        = "float32"
+	Float64        = "float64"
+	Int            = "int"
+	Int16          = "int16"
+	Int32          = "int32"
+	Int64          = "int64"
+	Int8           = "int8"
+	Rune           = "rune"
+	String         = "string"
+	Uint           = "uint"
+	Uint16         = "uint16"
+	Uint32         = "uint32"
+	Uint64         = "uint64"
+	Uint8          = "uint8"
+	gotables_Table = "*gotables.Table"
+	time_Time      = "time.Time"
+)
 
 //	------------------------------------------------------------------
 //	next group: Set<type>() functions for each of 20 types

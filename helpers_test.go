@@ -8733,3 +8733,144 @@ func TestGetTimeByColIndexMustGet(t *testing.T) {
 
 	table.GetTimeByColIndexMustGet(colIndex, minusIndex)
 }
+
+//  Test that the gotables column type constants are correct.
+func TestColumnConstants(t *testing.T) {
+
+	var err error
+	var table *Table
+
+	table, err = NewTable("MyTable")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var colName rune = 'a'
+
+	err = table.AppendCol(string(colName), ByteSlice)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint8Slice)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Bool)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Byte)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Float32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Float64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Int)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Int16)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Int32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Int64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Int8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Rune)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), String)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint16)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), Uint8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), gotables_Table)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	err = table.AppendCol(string(colName), time_Time)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colName++
+
+	// println(table.String())
+}

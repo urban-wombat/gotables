@@ -628,7 +628,11 @@ func (table *Table) appendRowOfNil() error {
 	return nil
 }
 
-// Note: Can append rows to an empty (no columns) table, and later append columns - but not for long!
+/*
+	Note: Can append rows to an empty (no columns) table, and later append columns.
+
+	howMany may be 0 or more rows.
+*/
 func (table *Table) AppendRows(howMany int) error {
 
 	if table == nil {
