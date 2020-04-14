@@ -53,7 +53,7 @@ const (
 	Uint32        = "uint32"
 	Uint64        = "uint64"
 	Uint8         = "uint8"
-	GotablesTable = "*gotables.Table" // "*Table" is also an alias of "*gotables.Table (hence 21 types and 20 constants)."
+	GotablesTable = "*gotables.Table" // "*Table" is also an alias of "*gotables.Table (hence 21 nominal types and 20 constants)."
 	TimeTime      = "time.Time"
 )
 
