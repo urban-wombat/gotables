@@ -8860,13 +8860,13 @@ func TestColumnConstants(t *testing.T) {
 	}
 	colName++
 
-	err = table.AppendCol(string(colName), Gotables_Table)
+	err = table.AppendCol(string(colName), GotablesTable)
 	if err != nil {
 		t.Fatal(err)
 	}
 	colName++
 
-	err = table.AppendCol(string(colName), Time_Time)
+	err = table.AppendCol(string(colName), TimeTime)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -33,28 +33,28 @@ SOFTWARE.
 
 // Types are defined in helpersmain.go
 
-// gotables column type constants.
+// The 20 gotables column type constants.
 const (
-	ByteSlice      = "[]byte"
-	Uint8Slice     = "[]uint8"
-	Bool           = "bool"
-	Byte           = "byte"
-	Float32        = "float32"
-	Float64        = "float64"
-	Int            = "int"
-	Int16          = "int16"
-	Int32          = "int32"
-	Int64          = "int64"
-	Int8           = "int8"
-	Rune           = "rune"
-	String         = "string"
-	Uint           = "uint"
-	Uint16         = "uint16"
-	Uint32         = "uint32"
-	Uint64         = "uint64"
-	Uint8          = "uint8"
-	Gotables_Table = "*gotables.Table" // "*Table" is also accepted as an alias of "*gotables.Table"
-	Time_Time      = "time.Time"
+	ByteSlice     = "[]byte"
+	Uint8Slice    = "[]uint8"
+	Bool          = "bool"
+	Byte          = "byte"
+	Float32       = "float32"
+	Float64       = "float64"
+	Int           = "int"
+	Int16         = "int16"
+	Int32         = "int32"
+	Int64         = "int64"
+	Int8          = "int8"
+	Rune          = "rune"
+	String        = "string"
+	Uint          = "uint"
+	Uint16        = "uint16"
+	Uint32        = "uint32"
+	Uint64        = "uint64"
+	Uint8         = "uint8"
+	GotablesTable = "*gotables.Table" // "*Table" is also an alias of "*gotables.Table (hence 21 types and 20 constants)."
+	TimeTime      = "time.Time"
 )
 
 //	------------------------------------------------------------------
