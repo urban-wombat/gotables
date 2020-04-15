@@ -6169,16 +6169,16 @@ func ExampleTable_ShuffleDeterministic() {
 	// [planets]
 	// name            mass distance moons index mnemonic
 	// string       float64  float64   int   int string
+	// "Earth"        1.0        1.0     1     3 "elegant"
+	// "Uranus"      15.0       19.2    27     7 "upon"
+	// "Mars"         0.107      1.5     2     4 "mother"
+	// "Saturn"      95.0        9.5    82     6 "sat"
+	// "Mercury"      0.055      0.4     0     1 "my"
 	// "Neptune"     17.0       30.6    13     8 "nine"
 	// "Sun"     333333.0        0.0     0     0 ""
-	// "Mars"         0.107      1.5     2     4 "mother"
-	// "Venus"        0.815      0.7     0     2 "very"
-	// "Earth"        1.0        1.0     1     3 "elegant"
-	// "Pluto"        0.002     39.4     5     9 "porcupines"
-	// "Mercury"      0.055      0.4     0     1 "my"
 	// "Jupiter"    318.0        5.2    79     5 "just"
-	// "Uranus"      15.0       19.2    27     7 "upon"
-	// "Saturn"      95.0        9.5    82     6 "sat"
+	// "Venus"        0.815      0.7     0     2 "very"
+	// "Pluto"        0.002     39.4     5     9 "porcupines"
 }
 
 func ExampleTable_ShuffleRandom() {

@@ -4007,6 +4007,10 @@ func (table *Table) ShuffleDeterministic() error {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	// This forces rand.Shuffle() to start from scratch on each call.
+	// Otherwise there is a surprise side effect if a rand function is called elsewhere.
+	rand.Seed(0)
+
 	rand.Shuffle(len(table.rows), func(i, j int) {
 		table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 	})
@@ -4016,7 +4020,7 @@ func (table *Table) ShuffleDeterministic() error {
 
 /*
 	Shuffle the rows in this table "randomly", meaning you will be unable
-	to predict the resulting shuffled order.
+	to predict the resulting shuffled order. Non-deterministic.
 */
 func (table *Table) ShuffleRandom() error {
 	if table == nil {
