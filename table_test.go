@@ -284,3 +284,62 @@ func ExampleNewNilTable_createAndUse() {
 	// [NilTableNoLonger]
 	// my_col string = "my_string_value"
 }
+
+func ExampleTable_GetTable_cellTableInTabular() {
+	// A table literal. Sometimes easier than constructing a table programmatically.
+	tableString := `[MyTable]
+		MyBool MyString                                           MyInt MyTable     MyTable2
+		bool   string                                               int *Table      *gotables.Table
+		true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
+		`
+	// Note 1: The only string form of a table cell containing a *Table is its table name in square brackets.
+	// Note 2: To get a table cell *Table as a string, first retrieve it to a variable.
+	// Note 3: It is parsed into an empty table with the name specified.
+
+	table, err := NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	table.SetStructShape(false)
+
+	fmt.Println(table)
+
+	myTable, err := table.GetTable("MyTable", 0)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.AppendRow()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.AppendCol("msg", "string")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.SetString("msg", 0, "I am in a table in a cell!")
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = myTable.SetStructShape(true)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(myTable)
+
+	// Note: The struct/tabular shape is for readability and has no impact on its internal structure.
+
+	// Output:
+	// [MyTable]
+	// MyBool MyString                                           MyInt MyTable     MyTable2
+	// bool   string                                               int *Table      *gotables.Table
+	// true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
+	//
+	// [CellTable]
+	// msg string = "I am in a table in a cell!"
+}

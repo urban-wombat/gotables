@@ -145,8 +145,8 @@ var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\
 
 const tableSetNamePattern string = `^\[\[[a-zA-Z_][a-zA-Z0-9_]*\]\]$`
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
-const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]$`
-const tableNameNilPattern string = `^(\[\])`
+const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]`	// Don't add $ at end of this regular expression.
+const tableNameNilPattern string = `^(\[\])`					// Don't add $ at end of this regular expression.
 
 // From: https://golang.org/pkg/time
 // RFC3339     = "2006-01-02T15:04:05Z07:00"
