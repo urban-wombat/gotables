@@ -42,7 +42,7 @@ func ExampleTable_GetTable_cellTableInStruct() {
 		MyString string = "The answer to life, the universe and everything."
 		MyInt int = 42
 		MyTable *Table = [CellTable]
-		MyTable2 *gotables.Table = [CellTable2]
+		MyTable2 *Table = [CellTable2]
 		`
 	// Note 1: The only string form of a table cell containing a *Table is its table name in square brackets.
 	// Note 2: To get a table cell *Table as a string, first retrieve it to a variable.
@@ -90,7 +90,7 @@ func ExampleTable_GetTable_cellTableInStruct() {
 	// MyString string = "The answer to life, the universe and everything."
 	// MyInt int = 42
 	// MyTable *Table = [CellTable]
-	// MyTable2 *gotables.Table = [CellTable2]
+	// MyTable2 *Table = [CellTable2]
 	//
 	// [CellTable]
 	// msg string = "I am in a table in a cell!"
@@ -289,7 +289,7 @@ func ExampleTable_GetTable_cellTableInTabular() {
 	// A table literal. Sometimes easier than constructing a table programmatically.
 	tableString := `[MyTable]
 		MyBool MyString                                           MyInt MyTable     MyTable2
-		bool   string                                               int *Table      *gotables.Table
+		bool   string                                               int *Table      *Table
 		true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
 		`
 	// Note 1: The only string form of a table cell containing a *Table is its table name in square brackets.
@@ -301,7 +301,10 @@ func ExampleTable_GetTable_cellTableInTabular() {
 		log.Println(err)
 	}
 
-	table.SetStructShape(false)
+	err = table.SetStructShape(false)
+	if err != nil {
+		log.Println(err)
+	}
 
 	fmt.Println(table)
 
@@ -337,7 +340,7 @@ func ExampleTable_GetTable_cellTableInTabular() {
 	// Output:
 	// [MyTable]
 	// MyBool MyString                                           MyInt MyTable     MyTable2
-	// bool   string                                               int *Table      *gotables.Table
+	// bool   string                                               int *Table      *Table
 	// true   "The answer to life, the universe and everything."    42 [CellTable] [CellTable2]
 	//
 	// [CellTable]

@@ -64,8 +64,6 @@ func init() {
 		"int32":   "rune",
 		"rune":    "int32",
 		//		"[]int32" : "[]rune",	// Proposed?
-		"*Table":          "*gotables.Table",
-		"*gotables.Table": "*Table",
 	}
 
 	if go_1_13_number_literals {
@@ -213,7 +211,6 @@ var globalColTypesMap = map[string]int{
 	"uint8":   0,
 	//	"complex":         0, // Not yet implemented.
 	"*Table":          0,
-	"*gotables.Table": 0,
 	"time.Time":       0,
 }
 
@@ -241,7 +238,6 @@ var globalSliceColTypesMap = map[string]int{
 
 var globalTableColTypesMap = map[string]int{
 	"*Table":          0,
-	"*gotables.Table": 0,
 }
 
 const structNameIndex = 0
@@ -1253,7 +1249,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 					p.gotFilePos(), colNames[i], colTypes[i], textFound)
 			}
 			rowSlice[i] = float64Val
-		case "*Table", "*gotables.Table":
+		case "*Table":
 			rangeFound = tableNameRegexp.FindStringIndex(remaining)
 			if rangeFound == nil {
 				// See if it's a nil table.

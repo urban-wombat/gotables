@@ -37,8 +37,6 @@ SOFTWARE.
 
 // Types are defined in helpersmain.go
 
-// Note: time.Type has been eliminated from helpers.test.go due to great difficulty automating it.
-
 //	-----------------------------------------------------------------------
 //	next group: TestSet<type>() TestGet<type>() functions for each of 20 types.
 //	-----------------------------------------------------------------------

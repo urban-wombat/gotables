@@ -3,11 +3,13 @@ package gotables_test
 // Note: This is a black box test (different package name: not gotables).
 
 import (
-	_ "fmt"
+	"fmt"
+	"log"
 	"math/rand"
 	"testing"
+	"time"
 
-	_ "github.com/urban-wombat/gotables"
+	"github.com/urban-wombat/gotables"
 )
 
 /*
@@ -32,46 +34,118 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+var where = log.Print
+
+var typesMap = map[int]string {
+	 0: "bool",
+	 1: "byte",
+	 2: "float32",
+	 3: "float64",
+	 4: "int",
+	 5: "int16",
+	 6: "int32",
+	 7: "rune",
+	 8: "int64",
+	 9: "int8",
+	10: "string",
+	11: "uint",
+	12: "uint16",
+	13: "uint32",
+	14: "uint64",
+	15: "uint8",
+	16: "[]byte",
+	17: "[]uint8",
+	18: "*Table",
+	19: "time.Time",
+}
+
 func TestNewTableFromString_random(t *testing.T) {
-/*
+
+	const deterministic bool = true
+
 	var err error
 	var table *gotables.Table
-	var setupName string = "Fred"
 
-	var tests3 = []struct {
-		input    string
-		succeeds bool
-		output   string
-	}{
-		{"Barney", true, "Barney"},
-		{"", false, "Fred"},
-		{"$&*", false, "Fred"},
+	var random *rand.Rand
+	if deterministic {
+		random = rand.New(rand.NewSource(0))
+	} else {
+		// Make it non-deterministic.
+		random = rand.New(rand.NewSource(time.Now().UnixNano()))
 	}
+	var r *rand.Rand = rand.New(random)
 
-	const testCount int = 20
-	const maxCols int = 5
-	const maxRows int = 5
+	const testCount int = 10
+	const MaxCols int = 20
+	const MaxRows int = 10
 
 	for testIndex := 0; testIndex < testCount; testIndex++ {
 
-		table, err = gotables.NewTable(setupName)
+		tableName := fmt.Sprintf("t%d", testIndex)
+		// where(tableName)
+		table, err = gotables.NewTable(tableName)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = table.IsValidTable()
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		for colIndex := 0; colIndex < rand.Intn(10); colIndex++ {
+		colCount := r.Intn(MaxCols)
+		// fmt.Printf("colCount = %d\n", colCount)
+		for colIndex := 0; colIndex < colCount; colIndex++ {
+			colName := fmt.Sprintf("c%d", colIndex)	
+			colTypeIndex := r.Intn(len(typesMap))
+			colType := typesMap[colTypeIndex]
+			err = table.AppendCol(colName, colType)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = table.IsValidTable()
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 
+		rowCount := r.Intn(MaxRows)
+		// fmt.Printf("rowCount = %d\n", rowCount)
+		err = table.AppendRows(rowCount)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = table.IsValidTable()
+		if err != nil {
+			t.Fatal(err)
+		}
 
+		for colIndex := 0; colIndex < colCount; colIndex++ {
+			err = table.SetColCellsToZeroValueByColIndex(colIndex)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = table.IsValidTable()
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		_, err = table.IsValidTable()
+		if err != nil {
+			t.Fatal(err)
+		}
+		// fmt.Println(table.String())
+
+		_, err = gotables.NewTableFromString(table.String())
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
-	if isValid, err := table.IsValidTable(); !isValid {
-		t.Fatal(err)
-	}
-*/
-
+	/*
+	//	Return a number within a range.
 	min := 10
 	max := 30
-//	fmt.Println(rand.Intn(max - min) + min)
-	rand.Intn((max - min) + min)
+	fmt.Println(r.Intn(max - min) + min)
+	*/
 }

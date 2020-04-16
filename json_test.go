@@ -1377,8 +1377,7 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 
 	right4 := `
 	[right4]
-	t1 *Table = []
-	t2 *gotables.Table = []`
+	t1 *Table = []`
 
 	table1.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
 	table1.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
@@ -1412,13 +1411,16 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	if err != nil {
 		log.Println(err)
 	}
+
+	fmt.Println()
+	fmt.Println()
 	fmt.Println(table2)
 
 	// Output:
 	// Print as is:
-	//
-	// {"tableSetName":"","tables":[{"tableName":"TypesGalore22","metadata":[{"i":"int"},{"s":"string"},{"right":"*Table"}],"data":[[{"i":0},{"s":"abc"},{"right":{"tableName":"right0","isStructShape":true,"metadata":[{"i":"int"}],"data":[[{"i":32}]]}}],[{"i":1},{"s":"xyz"},{"right":{"tableName":"right1","isStructShape":true,"metadata":[{"s":"string"}],"data":[[{"s":"thirty-two"}]]}}],[{"i":2},{"s":"ssss"},{"right":{"tableName":"right2","metadata":[{"x":"int"},{"y":"int"},{"z":"int"}],"data":[[{"x":1},{"y":2},{"z":3}],[{"x":4},{"y":5},{"z":6}],[{"x":7},{"y":8},{"z":9}]]}}],[{"i":3},{"s":"xxxx"},{"right":{"tableName":"right3","isStructShape":true,"metadata":[{"f":"float32"}],"data":[[{"f":88.8}]]}}],[{"i":4},{"s":"yyyy"},{"right":{"tableName":"right4","isStructShape":true,"metadata":[{"t1":"*Table"},{"t2":"*gotables.Table"}],"data":[[{"t1":null},{"t2":null}]]}}]]}]}
-	//
+	// 
+	// {"tableSetName":"","tables":[{"tableName":"TypesGalore22","metadata":[{"i":"int"},{"s":"string"},{"right":"*Table"}],"data":[[{"i":0},{"s":"abc"},{"right":{"tableName":"right0","isStructShape":true,"metadata":[{"i":"int"}],"data":[[{"i":32}]]}}],[{"i":1},{"s":"xyz"},{"right":{"tableName":"right1","isStructShape":true,"metadata":[{"s":"string"}],"data":[[{"s":"thirty-two"}]]}}],[{"i":2},{"s":"ssss"},{"right":{"tableName":"right2","metadata":[{"x":"int"},{"y":"int"},{"z":"int"}],"data":[[{"x":1},{"y":2},{"z":3}],[{"x":4},{"y":5},{"z":6}],[{"x":7},{"y":8},{"z":9}]]}}],[{"i":3},{"s":"xxxx"},{"right":{"tableName":"right3","isStructShape":true,"metadata":[{"f":"float32"}],"data":[[{"f":88.8}]]}}],[{"i":4},{"s":"yyyy"},{"right":{"tableName":"right4","isStructShape":true,"metadata":[{"t1":"*Table"}],"data":[[{"t1":null}]]}}]]}]}
+	// 
 	// Print indented for readability:
 	//
 	// {
@@ -1589,18 +1591,12 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 							"metadata": [
 	// 								{
 	// 									"t1": "*Table"
-	// 								},
-	// 								{
-	// 									"t2": "*gotables.Table"
 	// 								}
 	// 							],
 	// 							"data": [
 	// 								[
 	// 									{
 	// 										"t1": null
-	// 									},
-	// 									{
-	// 										"t2": null
 	// 									}
 	// 								]
 	// 							]
@@ -1610,7 +1606,9 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 	// 			]
 	// 		}
 	// 	]
-	// }[TypesGalore22]
+	// }
+	//
+	// [TypesGalore22]
 	//   i s      right
 	// int string *Table
 	//   0 "abc"  [right0]
@@ -1747,8 +1745,7 @@ func TestTable_GetTableAsBinary_nestedTable(t *testing.T) {
 
 	right4 := `
 	[right4]
-	t1 *Table = []
-	t2 *gotables.Table = []`
+	t1 *Table = []`
 
 	table1.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
 	table1.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))

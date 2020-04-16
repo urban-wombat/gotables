@@ -303,6 +303,94 @@ func UtilPrintCaller() {
 }
 
 /*
+	BEWARE: NOT PROPERLY TESTED!
+
+	See 1: https://stackoverflow.com/questions/35212985/is-it-possible-get-information-about-caller-function-in-golang
+
+	See 2: http://moazzam-khan.com/blog/golang-get-the-function-callers-name
+
+	This is a blend of both (above URLs) examples. Provides:-
+
+	(1) The function name called.
+
+	(2) The function name of the caller's caller.
+
+	(2) The file name[line number] at the call.
+
+	This is intentionally a print-only function because calling it from another function (other than the one being
+	tracked) will change the calling information by nesting to an additional level.
+*/
+func UtilPrintCallerCaller() {
+	var calledName string
+	var callerName string
+	var callerCallerFile string
+	var callerCallerName string
+
+	var n int // number of callers
+	var lastIndex int
+
+	// Remove package name from function name and append ().
+	var funcBaseName = func(longName string) (baseName string) {
+		lastIndex = strings.LastIndex(longName, ".")
+		if lastIndex >= 0 {
+			baseName = longName[lastIndex+1:] + "()"
+		}
+		return baseName
+	}
+
+	fpcs := make([]uintptr, 1)
+
+	// Skip 1 level to get the called: the name of the function calling PrintCaller()
+	n = runtime.Callers(2, fpcs)
+	if n == 0 {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: there was no called\n", UtilFuncName())
+		return
+	}
+	called := runtime.FuncForPC(fpcs[0] - 1)
+	if called == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: called was nil\n", UtilFuncName())
+		return
+	}
+	calledName = called.Name()
+	calledName = funcBaseName(calledName)
+
+	// Skip 2 levels to get the caller
+	n = runtime.Callers(3, fpcs)
+	if n == 0 {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: there was no caller\n", UtilFuncName())
+		return
+	}
+	caller := runtime.FuncForPC(fpcs[0] - 1)
+	if caller == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: caller was nil\n", UtilFuncName())
+		return
+	}
+	callerName = caller.Name()
+	callerName = funcBaseName(callerName)
+
+	// Skip 3 levels to get the caller's caller
+	n = runtime.Callers(4, fpcs)
+	if n == 0 {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: there was no caller\n", UtilFuncName())
+		return
+	}
+	callerCaller := runtime.FuncForPC(fpcs[0] - 1)
+	if caller == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s ERROR: caller was nil\n", UtilFuncName())
+		return
+	}
+	callerCallerName = callerCaller.Name()
+	callerCallerName = funcBaseName(callerCallerName)
+
+	// Get the file name and line number
+	fileName, lineNum := callerCaller.FileLine(fpcs[0] - 1)
+	fileName = filepath.Base(fileName)
+	callerCallerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+
+	_, _ = fmt.Fprintf(os.Stderr, "UtilPrintCallerCaller(): %s called by %s at %s\n", calledName, callerCallerName, callerCallerFile)
+}
+
+/*
 	Short function name with parentheses.
 
 		pkgName.funcName

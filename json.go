@@ -405,7 +405,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 					}
 				case map[string]interface{}: // This cell is a table.
 					switch colType {
-					case "*Table", "*gotables.Table":
+					case "*Table":
 						tableNested, err := newTableFromJSON_recursive(cell.(map[string]interface{}))
 						if err != nil {
 							return nil, err
@@ -420,7 +420,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 					}
 				case nil: // This cell is a nil table.
 					switch colType {
-					case "*Table", "*gotables.Table":
+					case "*Table":
 						var tableNested *Table = NewNilTable()
 						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
 						if err != nil {

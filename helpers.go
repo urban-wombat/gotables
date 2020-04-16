@@ -33,7 +33,7 @@ SOFTWARE.
 
 // Types are defined in helpersmain.go
 
-// The 20 gotables column type constants.
+// The 19 gotables column type constants.
 const (
 	ByteSlice     = "[]byte"
 	Uint8Slice    = "[]uint8"
@@ -53,14 +53,13 @@ const (
 	Uint32        = "uint32"
 	Uint64        = "uint64"
 	Uint8         = "uint8"
-	GotablesTable = "*gotables.Table" // "*Table" is also an alias of "*gotables.Table" (hence 21 nominal types and 20 constants).
+	GotablesTable = "*Table"
 	TimeTime      = "time.Time"
 )
 
 //	------------------------------------------------------------------
 //	next group: Set<type>() functions for each of 20 types
-//	21 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
-//	21 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
+//	20 types: *Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
 //  NOTE: Types are defined in helpersmain.go AND parser.go
 //	------------------------------------------------------------------
 
@@ -947,8 +946,7 @@ func (table *Table) SetTime(colName string, rowIndex int, newVal time.Time) erro
 
 //	----------------------------------------------------------------------------
 //	next group: Set<type>ByColIndex() functions for each of 20 types
-//	21 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
-//	21 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
+//	20 types: *Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
 //  NOTE: Types are defined in helpersmain.go AND parser.go
 //	----------------------------------------------------------------------------
 
@@ -1675,8 +1673,7 @@ func (table *Table) SetTimeByColIndex(colIndex int, rowIndex int, newVal time.Ti
 
 //	------------------------------------------------------------------
 //	next group: Get<type>() functions for each of 20 types
-//	21 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
-//	21 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
+//	20 types: *Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
 //  NOTE: Types are defined in helpersmain.go AND parser.go
 //	------------------------------------------------------------------
 
@@ -3502,8 +3499,7 @@ func (table *Table) SetTimeByColIndexMustSet(colIndex int, rowIndex int, val tim
 
 //	----------------------------------------------------------------------------
 //	next group: Get<type>ByColIndex() functions for each of 20 types
-//	21 types are listed, but *gotables.Table is syntactically equivalent to *Table and we use only *Table
-//	21 types: *Table *gotables.Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
+//	20 types: *Table []byte []uint8 bool byte float32 float64 int int16 int32 int64 int8 rune string time.Time uint uint16 uint32 uint64 uint8
 //  NOTE: Types are defined in helpersmain.go AND parser.go
 //	----------------------------------------------------------------------------
 
@@ -4608,77 +4604,98 @@ func (table *Table) GetTimeByColIndexMustGet(colIndex int, rowIndex int) (val ti
 }
 
 /*
-func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int) error {
-// This is the MUCH SLOWER previous version. Is there any safety advantage in using it? Perhaps not.
-	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
-
-	if table == nil { return fmt.Errorf("table.%s: table is <nil>", UtilFuncName()) }
-
-	var err error
-	var colType string
-
-	colType, err = table.ColTypeByColIndex(colIndex)
-	if err != nil {
-		return err
-	}
-
-	switch colType {
-		case "[]byte":
-			err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
-		case "[]uint8":
-			err = table.SetUint8SliceByColIndex(colIndex, rowIndex, []uint8{})
-		case "bool":
-			err = table.SetBoolByColIndex(colIndex, rowIndex, false)
-		case "byte":
-			err = table.SetByteByColIndex(colIndex, rowIndex, 0)
-		case "float32":
-			err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
-		case "float64":
-			err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
-		case "int":
-			err = table.SetIntByColIndex(colIndex, rowIndex, 0)
-		case "int16":
-			err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
-		case "int32":
-			err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
-		case "int64":
-			err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
-		case "int8":
-			err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
-		case "rune":
-			err = table.SetRuneByColIndex(colIndex, rowIndex, 0)
-		case "string":
-			err = table.SetStringByColIndex(colIndex, rowIndex, "")
-		case "uint":
-			err = table.SetUintByColIndex(colIndex, rowIndex, 0)
-		case "uint16":
-			err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
-		case "uint32":
-			err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
-		case "uint64":
-			err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
-		case "uint8":
-			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
-		case "*Table":
-			err = table.SetTableByColIndex(colIndex, rowIndex, NewNilTable())
-		case "time.Time":
-			err = table.SetTimeByColIndex(colIndex, rowIndex, MinTime)
-		default:
-			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
-			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-			for typeName, _ := range globalColTypesMap {
-				msg += fmt.Sprintf(" %s", typeName)
-			}
-			msg += ")"
-			err = errors.New(msg)
-			return err
-	}
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
+//func (table *Table) setCellToZeroValueByColIndexCheck(colIndex int, rowIndex int) error {
+//// This is the MUCH SLOWER previous version. Is there any safety advantage in using it? Perhaps not.
+//	// TODO: Test for colIndex or rowIndex out of range? Or is this done by underlying functions?
+//
+//	if table == nil { return fmt.Errorf("table.%s: table is <nil>", UtilFuncName()) }
+//
+//	var err error
+//	var colType string
+//
+//	colType, err = table.ColTypeByColIndex(colIndex)
+//	if err != nil {
+//		return err
+//	}
+//
+//	switch colType {
+//
+//		case "[]byte":
+//			err = table.SetByteSliceByColIndex(colIndex, rowIndex, []byte{})
+//
+//		case "[]uint8":
+//			err = table.SetUint8SliceByColIndex(colIndex, rowIndex, []uint8{})
+//
+//		case "bool":
+//			err = table.SetBoolByColIndex(colIndex, rowIndex, false)
+//
+//		case "byte":
+//			err = table.SetByteByColIndex(colIndex, rowIndex, 0)
+//
+//		case "float32":
+//			err = table.SetFloat32ByColIndex(colIndex, rowIndex, 0.0)
+//
+//		case "float64":
+//			err = table.SetFloat64ByColIndex(colIndex, rowIndex, 0.0)
+//
+//		case "int":
+//			err = table.SetIntByColIndex(colIndex, rowIndex, 0)
+//
+//		case "int16":
+//			err = table.SetInt16ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "int32":
+//			err = table.SetInt32ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "int64":
+//			err = table.SetInt64ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "int8":
+//			err = table.SetInt8ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "rune":
+//			err = table.SetRuneByColIndex(colIndex, rowIndex, 0)
+//
+//		case "string":
+//			err = table.SetStringByColIndex(colIndex, rowIndex, "")
+//
+//		case "uint":
+//			err = table.SetUintByColIndex(colIndex, rowIndex, 0)
+//
+//		case "uint16":
+//			err = table.SetUint16ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "uint32":
+//			err = table.SetUint32ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "uint64":
+//			err = table.SetUint64ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "uint8":
+//			err = table.SetUint8ByColIndex(colIndex, rowIndex, 0)
+//
+//		case "*Table":
+//			err = table.SetTableByColIndex(colIndex, rowIndex, NewNilTable())
+//
+//		case "time.Time":
+//			err = table.SetTimeByColIndex(colIndex, rowIndex, MinTime)
+//
+//		default:
+//			msg := fmt.Sprintf("invalid type: %s (Valid types:", colType)
+//			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+//			for typeName, _ := range globalColTypesMap {
+//				msg += fmt.Sprintf(" %s", typeName)
+//			}
+//			msg += ")"
+//			err = errors.New(msg)
+//			return err
+//	}
+//	if err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}
 */
 
 type zeroVals struct {
@@ -4708,25 +4725,45 @@ var zeroVal zeroVals
 
 func init() {
 	// This avoids relatively expensive assignments to a local variable in SetCellToZeroValueByColIndex()
+
 	zeroVal.byteSliceVal = []byte{}
+
 	zeroVal.uint8SliceVal = []uint8{}
+
 	zeroVal.boolVal = false
+
 	zeroVal.byteVal = 0
+
 	zeroVal.float32Val = 0.0
+
 	zeroVal.float64Val = 0.0
+
 	zeroVal.intVal = 0
+
 	zeroVal.int16Val = 0
+
 	zeroVal.int32Val = 0
+
 	zeroVal.int64Val = 0
+
 	zeroVal.int8Val = 0
+
 	zeroVal.runeVal = 0
+
 	zeroVal.stringVal = ""
+
 	zeroVal.uintVal = 0
+
 	zeroVal.uint16Val = 0
+
 	zeroVal.uint32Val = 0
+
 	zeroVal.uint64Val = 0
+
 	zeroVal.uint8Val = 0
-	zeroVal.tableVal = NewNilTable()
+
+	zeroVal.tableVal = NewNilTable() // Beware: to avoid circular reference, this can be used just once.
+
 	zeroVal.timeVal = MinTime
 }
 
@@ -4797,14 +4834,12 @@ func (table *Table) SetCellToZeroValueByColIndex(colIndex int, rowIndex int) err
 		table.rows[rowIndex][colIndex] = zeroVal.uint8Val
 	case "*Table":
 		// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
-		table.rows[rowIndex][colIndex] = zeroVal.tableVal
+		table.rows[rowIndex][colIndex] = NewNilTable() // Avoid circular reference.
 	case "time.Time":
 		// This is a x10 tuning strategy to avoid type conversion time.Time(MinTime)
 		table.rows[rowIndex][colIndex] = zeroVal.timeVal
 	default:
-		//			return fmt.Errorf("invalid type: %s", "time.Time")
-		// User-defined interface type.
-		table.rows[rowIndex][colIndex] = nil
+		return fmt.Errorf("invalid type: %s", colType)
 	}
 
 	return nil
@@ -4881,14 +4916,12 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
 		case "*Table":
 			// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
-			table.rows[rowIndex][colIndex] = zeroVal.tableVal
+			table.rows[rowIndex][colIndex] = NewNilTable() // Avoid circular reference.
 		case "time.Time":
 			// This is a x10 tuning strategy to avoid type conversion time.Time(MinTime)
 			table.rows[rowIndex][colIndex] = zeroVal.timeVal
 		default:
-			//				return fmt.Errorf("invalid type: %s", "time.Time")
-			// User-defined interface type.
-			table.rows[rowIndex][colIndex] = nil
+			return fmt.Errorf("invalid type: %s", colType)
 		}
 	}
 
