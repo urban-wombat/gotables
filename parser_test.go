@@ -2,6 +2,8 @@ package gotables_test
 
 // Note: This is a black box test (different package name: not gotables).
 
+// Also, it's not REALLY a parser test. I thought it would be.
+
 import (
 	"fmt"
 	"log"
@@ -61,7 +63,7 @@ var typesMap = map[int]string {
 
 func TestNewTableFromString_random(t *testing.T) {
 
-	// Set false to test testCount random tables wit each test.
+	// Set false to test testCount random tables with each test.
 	const deterministic bool = false
 
 	var err error
@@ -76,9 +78,9 @@ func TestNewTableFromString_random(t *testing.T) {
 	}
 	var r *rand.Rand = rand.New(random)
 
-	const testCount int = 10
-	const MaxCols int = 20
-	const MaxRows int = 10
+	const testCount int = 50
+	const MaxCols int = 15
+	const MaxRows int = 5
 
 	for testIndex := 0; testIndex < testCount; testIndex++ {
 
@@ -93,7 +95,7 @@ func TestNewTableFromString_random(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		colCount := r.Intn(MaxCols)
+		colCount := r.Intn(MaxCols+1)
 		// fmt.Printf("colCount = %d\n", colCount)
 		for colIndex := 0; colIndex < colCount; colIndex++ {
 			colName := fmt.Sprintf("c%d", colIndex)	
@@ -109,7 +111,7 @@ func TestNewTableFromString_random(t *testing.T) {
 			}
 		}
 
-		rowCount := r.Intn(MaxRows)
+		rowCount := r.Intn(MaxRows+1)
 		// fmt.Printf("rowCount = %d\n", rowCount)
 		err = table.AppendRows(rowCount)
 		if err != nil {
@@ -118,6 +120,14 @@ func TestNewTableFromString_random(t *testing.T) {
 		_, err = table.IsValidTable()
 		if err != nil {
 			t.Fatal(err)
+		}
+
+		// Randomly set to struct shape.
+		if rowCount <= 1 && (colCount % 2) == 0 {
+			err = table.SetStructShape(true)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 
 		for colIndex := 0; colIndex < colCount; colIndex++ {
@@ -131,11 +141,7 @@ func TestNewTableFromString_random(t *testing.T) {
 			}
 		}
 
-		_, err = table.IsValidTable()
-		if err != nil {
-			t.Fatal(err)
-		}
-		// fmt.Println(table.String())
+		fmt.Println(table.String())
 
 		_, err = gotables.NewTableFromString(table.String())
 		if err != nil {
