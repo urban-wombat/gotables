@@ -61,7 +61,8 @@ var typesMap = map[int]string {
 
 func TestNewTableFromString_random(t *testing.T) {
 
-	const deterministic bool = true
+	// Set false to test testCount random tables wit each test.
+	const deterministic bool = false
 
 	var err error
 	var table *gotables.Table

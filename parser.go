@@ -767,7 +767,11 @@ func IsValidColType(colType string) (bool, error) {
 
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		err := fmt.Errorf("invalid col type: %s (allowed: most Go built-in types, except complex)", colType)
+/*
+		err := fmt.Errorf("invalid type: %s (allowed: most Go built-in types (expect complex) plus *Table and time.Time)", colType)
+*/
+		msg := invalidColTypeMsg(colType)
+		err := errors.New(msg)
 		return false, err
 	}
 
