@@ -141,7 +141,7 @@ func TestNewTableFromString_random(t *testing.T) {
 			}
 		}
 
-		fmt.Println(table.String())
+		// fmt.Println(table.String())
 
 		_, err = gotables.NewTableFromString(table.String())
 		if err != nil {
