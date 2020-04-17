@@ -150,7 +150,8 @@ const tableNameNilPattern string = `^(\[\])`					// Don't add $ at end of this r
 // RFC3339     = "2006-01-02T15:04:05Z07:00"
 // const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|([+-]\d{2}:\d{2}))`
 // RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
-const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))`
+// const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))`
+   const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{9})?(Z|([+-]\d{2}:\d{2}))`
 
 var tableSetNameRegexp *regexp.Regexp = regexp.MustCompile(tableSetNamePattern)
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
@@ -1292,6 +1293,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 			log.Printf("Managed to reach unreachable code in getRowCol()") // Need to define another type?
 			return nil, fmt.Errorf("line %s Unreachable code in getRowCol(): Need to define another type?", p.gotFilePos())
 		}
+
 		remaining = remaining[rangeFound[1]:]
 		//		remaining = strings.TrimLeft(remaining, " \t\r\n") // Remove leading whitespace. Is \t\r\n overkill?
 		remaining = strings.TrimLeft(remaining, " \t") // Remove leading whitespace.
@@ -1300,8 +1302,11 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 
 	if len(remaining) > 0 { // Still one or more columns to parse.
 		// This handles both table shape and struct shape columns.
-		where()
-		return nil, fmt.Errorf("%s expecting %d value%s but found more: %s", p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
+		// searchable examples:-
+		// expecting 8 only values but found more:
+		// expecting 1 only value but found more:
+		return nil, fmt.Errorf("%s expecting only %d value%s but found more text: %s",
+			p.gotFilePos(), lenColTypes, plural(lenColTypes), remaining)
 
 	}
 

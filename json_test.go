@@ -640,7 +640,7 @@ func ExampleNewTableFromJSON() {
 	i    u    f       t
 	int  uint float32 time.Time
 	1    2    3.3     2020-03-15T14:22:30Z
-	4    5    6.6     2020-03-15T14:22:30.12345+17:00
+	4    5    6.6     2020-03-15T14:22:30.123456789+17:00
 	`
 	table1, err := NewTableFromString(tableString)
 	if err != nil {
@@ -682,7 +682,7 @@ func ExampleNewTableFromJSON() {
 	//   i    u       f t
 	// int uint float32 time.Time
 	//   1    2     3.3 2020-03-15T14:22:30Z
-	//   4    5     6.6 2020-03-15T14:22:30.12345+17:00
+	//   4    5     6.6 2020-03-15T14:22:30.123456789+17:00
 	//
 	// {
 	//   "tableSetName": "",
@@ -729,7 +729,7 @@ func ExampleNewTableFromJSON() {
 	//             "f": 6.6
 	//           },
 	//           {
-	//             "t": "2020-03-15T14:22:30.12345+17:00"
+	//             "t": "2020-03-15T14:22:30.123456789+17:00"
 	//           }
 	//         ]
 	//       ]
@@ -741,7 +741,7 @@ func ExampleNewTableFromJSON() {
 	//   i    u       f t
 	// int uint float32 time.Time
 	//   1    2     3.3 2020-03-15T14:22:30Z
-	//   4    5     6.6 2020-03-15T14:22:30.12345+17:00
+	//   4    5     6.6 2020-03-15T14:22:30.123456789+17:00
 	//
 	// table2.Equals(table1) == true
 }

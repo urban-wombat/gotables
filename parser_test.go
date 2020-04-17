@@ -2,7 +2,7 @@ package gotables_test
 
 // Note: This is a black box test (different package name: not gotables).
 
-// Also, it's not REALLY a parser test. I thought it would be.
+// Also, it's not REALLY a parser test. I thought it was going to be.
 
 import (
 	"fmt"
@@ -142,9 +142,10 @@ func TestNewTableFromString_random(t *testing.T) {
 		}
 
 		// fmt.Println(table.String())
-
-		_, err = gotables.NewTableFromString(table.String())
+		tableString := table.String()
+		_, err = gotables.NewTableFromString(tableString)
 		if err != nil {
+			where(fmt.Sprintf("\n\n%s\n", tableString))
 			t.Fatal(err)
 		}
 	}

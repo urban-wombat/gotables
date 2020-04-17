@@ -39,9 +39,9 @@ func TestGetTime(t *testing.T) {
 	t1 time.Time = 2020-03-15T14:22:30Z
 	t2 time.Time = 2020-03-15T14:22:30+17:00
 	t3 time.Time = 2020-03-15T14:22:30-17:00
-	t4 time.Time = 2020-03-15T14:22:30.12345Z
-	t5 time.Time = 2020-03-15T14:22:30.12345+17:00
-	t6 time.Time = 2020-03-15T14:22:30.12345-17:00
+	t4 time.Time = 2020-03-15T14:22:30.123456789Z
+	t5 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	t6 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	`
 	table, err = NewTableFromString(tableString)
 	if err != nil {
@@ -64,9 +64,9 @@ func ExampleTable_GetTime() {
 	t0 time.Time = 2020-03-15T14:22:30Z
 	t1 time.Time = 2020-03-15T14:22:30+17:00
 	t2 time.Time = 2020-03-15T14:22:30-17:00
-	t3 time.Time = 2020-03-15T14:22:30.12345Z
-	t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	`
 	table, err = NewTableFromString(tableString)
 	if err != nil {
@@ -182,18 +182,18 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	//
 	// AppendCol() initialises new col with the time.Time zero val: MinTime
 	// [TimeTable]
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 0001-01-01T00:00:00Z
 	//
 	// Set it to 2020 last day at 10pm
@@ -201,9 +201,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T22:00:00Z
 	//
 	// Add an hour
@@ -212,9 +212,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	//
 	// Append col t7 and set it to 2020 last day at 11:59pm and 1 nanosecond before midnight
@@ -222,9 +222,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2020-12-31T23:59:59.999999999Z
 	//
@@ -234,9 +234,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2021-01-01T00:00:00Z
 	//
@@ -246,9 +246,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2021-01-01T00:00:00Z
 	// minTime time.Time = 0001-01-01T00:00:00Z
@@ -260,9 +260,9 @@ func ExampleTable_GetTime() {
 	// t0 time.Time = 2020-03-15T14:22:30Z
 	// t1 time.Time = 2020-03-15T14:22:30+17:00
 	// t2 time.Time = 2020-03-15T14:22:30-17:00
-	// t3 time.Time = 2020-03-15T14:22:30.12345Z
-	// t4 time.Time = 2020-03-15T14:22:30.12345+17:00
-	// t5 time.Time = 2020-03-15T14:22:30.12345-17:00
+	// t3 time.Time = 2020-03-15T14:22:30.123456789Z
+	// t4 time.Time = 2020-03-15T14:22:30.123456789+17:00
+	// t5 time.Time = 2020-03-15T14:22:30.123456789-17:00
 	// t6 time.Time = 2020-12-31T23:00:00Z
 	// t7 time.Time = 2021-01-01T00:00:00Z
 	// minTime time.Time = 0001-01-01T00:00:00Z
