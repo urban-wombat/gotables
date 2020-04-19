@@ -6989,3 +6989,105 @@ func ExampleNewTableSetFromString_withTableSetName() {
 	// b int = 2
 	// c int = 3
 }
+
+func ExampleTable_SetColFloatCellsToNaN() {
+	var err error
+	var tableString string
+	var table *Table
+
+	tableString =
+	`[MyTable]
+	i	j	k	f32		f64		f32b
+	int	int	int	float32	float64	float32
+	1	3	9	1.1		3.3		9.9
+	5	10	15	5.5		10.1	15.15
+	0	0	0	NaN		NaN		NaN
+	20	40	60	20.2	40.4	60.6
+	`
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(table.String())
+
+	err = table.SetColFloatCellsToNaN("f32")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = table.SetColFloatCellsToNaN("f64")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = table.SetFloatCellToNaN("f32b", 0)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(table.String())
+
+	// Output:
+	// [MyTable]
+	//   i   j   k     f32     f64    f32b
+	// int int int float32 float64 float32
+	//   1   3   9     1.1     3.3    9.9
+	//   5  10  15     5.5    10.1   15.15
+	//   0   0   0     NaN     NaN     NaN
+	//  20  40  60    20.2    40.4   60.6
+	//
+	// [MyTable]
+	//   i   j   k     f32     f64    f32b
+	// int int int float32 float64 float32
+	//   1   3   9     NaN     NaN     NaN
+	//   5  10  15     NaN     NaN   15.15
+	//   0   0   0     NaN     NaN     NaN
+	//  20  40  60     NaN     NaN   60.6
+}
+
+func ExampleTable_SetAllFloatCellsToNaN() {
+	var err error
+	var tableString string
+	var table *Table
+
+	tableString =
+	`[MyTable]
+	i	j	k	f32		f64		f32b
+	int	int	int	float32	float64	float32
+	1	3	9	1.1		3.3		9.9
+	5	10	15	5.5		10.1	15.15
+	0	0	0	NaN		NaN		NaN
+	20	40	60	20.2	40.4	60.6
+	`
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(table.String())
+
+	err = table.SetAllFloatCellsToNaN()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(table.String())
+
+	// Output:
+	// [MyTable]
+	//   i   j   k     f32     f64    f32b
+	// int int int float32 float64 float32
+	//   1   3   9     1.1     3.3    9.9
+	//   5  10  15     5.5    10.1   15.15
+	//   0   0   0     NaN     NaN     NaN
+	//  20  40  60    20.2    40.4   60.6
+	//
+	// [MyTable]
+	//   i   j   k     f32     f64    f32b
+	// int int int float32 float64 float32
+	//   1   3   9     NaN     NaN     NaN
+	//   5  10  15     NaN     NaN     NaN
+	//   0   0   0     NaN     NaN     NaN
+	//  20  40  60     NaN     NaN     NaN
+}

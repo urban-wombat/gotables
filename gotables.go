@@ -750,39 +750,31 @@ func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 	return nil
 }
 
-// Set all float cells in this table to NaN. This is a convenience function to use NaN as a proxy for a missing value.
+// Set all float cells in this table to NaN
 func (table *Table) SetAllFloatCellsToNaN() error {
+
 	if table == nil {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
-	var err error
 
-	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
-		err = table.SetRowFloatCellsToNaN(rowIndex)
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+
+		colType, err := table.ColTypeByColIndex(colIndex)
 		if err != nil {
 			return err
 		}
+
+		switch colType {
+		case "float32", "float64":
+			err = table.SetColFloatCellsToNaNByColIndex(colIndex)
+			if err != nil {
+				return err
+			}
+		}
 	}
+
 	return nil
 }
-
-/*
-// Set all cells in this row to their zero value, such as 0, "", or false.
-//func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
-//	var err error
-//
-//	if table == nil { return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName()) }
-//
-//	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-//		err = table.SetCellToZeroValueByColIndex(colIndex, rowIndex)
-//		if err != nil {
-//			return err
-//		}
-//	}
-//
-//	return nil
-//}
-*/
 
 // Set all cells in this col to their zero value, such as 0, "", or false.
 func (table *Table) SetColCellsToZeroValue(colName string) error {
@@ -804,6 +796,7 @@ func (table *Table) SetColCellsToZeroValueByColIndex(colIndex int) error {
 	if printCaller {
 		UtilPrintCaller()
 	}
+
 	if table == nil {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -816,6 +809,94 @@ func (table *Table) SetColCellsToZeroValueByColIndex(colIndex int) error {
 	}
 
 	return nil
+}
+
+// Set all float cells in this col to NaN (Not a Number)
+func (table *Table) SetColFloatCellsToNaN(colName string) error {
+
+	if printCaller {
+		UtilPrintCaller()
+	}
+
+	if table == nil {
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return err
+	}
+
+	return table.SetColFloatCellsToNaNByColIndex(colIndex)
+}
+
+// Set all float cells in this col to NaN (Not a Number)
+func (table *Table) SetColFloatCellsToNaNByColIndex(colIndex int) error {
+
+	if printCaller {
+		UtilPrintCaller()
+	}
+
+	if table == nil {
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+		err := table.SetFloatCellToNaNByColIndex(colIndex, rowIndex)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (table *Table) SetFloatCellToNaN(colName string, rowIndex int) (err error) {
+
+	if table == nil {
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	var colIndex int
+	colIndex, err = table.ColIndex(colName)
+	if err != nil {
+		return
+	}
+	
+	return table.SetFloatCellToNaNByColIndex(colIndex, rowIndex)
+}
+
+func (table *Table) SetFloatCellToNaNByColIndex(colIndex int, rowIndex int) (err error) {
+
+	if table == nil {
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+	
+	var colType string
+	colType, err = table.ColTypeByColIndex(colIndex)
+	if err != nil {
+		return
+	}
+
+	switch colType {
+	case "float32":
+		err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(math.NaN()))
+	case "float64":
+		err = table.SetFloat64ByColIndex(colIndex, rowIndex, math.NaN())
+	default:
+		// Return a more generous error message so callers of calling methods can see the colName
+		colName,err := table.ColName(colIndex)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("%s: [%s] colIndex=%d colName=%s coltype=%s expecting colType float32 or float64 but found: %s",
+			UtilFuncName(), table.Name(), colIndex, colName, colType, colType)
+	}
+	if err != nil {
+		return
+	}
+
+	return
 }
 
 func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
