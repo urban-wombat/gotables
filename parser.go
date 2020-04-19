@@ -379,8 +379,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 
 				// (1) Get the table struct (name, type and optional equals value) of this line.
 
-				table.structShape = true
-				// Just because the first line is structShape doesn't mean subsequent lines are.
+				table.isStructShape = true
+				// Just because the first line is isStructShape doesn't mean subsequent lines are.
 				if len(lineSplit) < 2 {
 					return nil, fmt.Errorf("#2 %s looks like struct but found: %s", p.gotFilePos(), line)
 				}
@@ -417,7 +417,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 					if rangeFound == nil { // This avoids a runtime error.
 						return nil, fmt.Errorf("%s expecting <name> <type> = <value> but found: %s", p.gotFilePos(), line)
 					}
-					// Just because the first line is structShape with data doesn't mean subsequent lines are.
+					// Just because the first line is isStructShape with data doesn't mean subsequent lines are.
 					if len(lineSplit) < 4 {
 						return nil, fmt.Errorf("#5 %s looks like struct with data but found: %s", p.gotFilePos(), line)
 					}

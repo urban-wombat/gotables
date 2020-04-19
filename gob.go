@@ -77,7 +77,7 @@ func (table *Table) exportTable() (*TableExported, error) {
 		tableExported.SortKeys[keyIndex].SortFunc = table.sortKeys[keyIndex].sortFunc
 	}
 
-	tableExported.StructShape = table.structShape
+	tableExported.StructShape = table.isStructShape
 
 	return tableExported, nil
 }
@@ -140,7 +140,7 @@ func (tableExported *TableExported) importTable() (*Table, error) {
 		table.sortKeys[keyIndex].sortFunc = tableExported.SortKeys[keyIndex].SortFunc
 	}
 
-	table.structShape = tableExported.StructShape
+	table.isStructShape = tableExported.StructShape
 
 	isValid, err = table.IsValidTable()
 	if !isValid {

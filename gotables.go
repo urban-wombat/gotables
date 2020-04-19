@@ -478,7 +478,7 @@ type Table struct {
 	colNamesMap map[string]int // To look up a colNames index from a col name.
 	rows        []tableRow
 	sortKeys    []sortKey
-	structShape bool
+	isStructShape bool
 	isNilTable  bool
 	parentTable *Table
 }
@@ -1034,7 +1034,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 	var buf bytes.Buffer
 
 	// Print as struct shape or table shape.
-	if table.structShape && table.RowCount() <= 1 {
+	if table.isStructShape && table.RowCount() <= 1 {
 		s = printStruct(table)
 	} else {
 		// Table name
@@ -1462,7 +1462,7 @@ func (table *Table) StringPadded() string {
 	}
 
 	// Print as struct shape or table shape.
-	if table.structShape && table.RowCount() <= 1 {
+	if table.isStructShape && table.RowCount() <= 1 {
 		s = printStruct(table)
 	} else {
 		s = printMatrix(table.tableName, matrix, width, precis, alignRight, table.colTypes)
@@ -2876,7 +2876,7 @@ func (table *Table) IsStructShape() (bool, error) {
 		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	return table.structShape, nil
+	return table.isStructShape, nil
 }
 
 // Will be ignored (when writing table as string) if table RowCount() is more than 1
@@ -2885,7 +2885,7 @@ func (table *Table) SetStructShape(isStructShape bool) error {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	table.structShape = isStructShape
+	table.isStructShape = isStructShape
 
 	return nil
 }
