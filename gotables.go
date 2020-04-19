@@ -1338,9 +1338,9 @@ Return a parsable table as a string with numbers format aligned right.
 */
 func (table *Table) String() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(UtilFuncSource() + " ")
 		UtilPrintCaller()
-		// UtilPrintCallerCaller()
 		return ""
 	}
 

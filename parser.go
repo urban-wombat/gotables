@@ -862,7 +862,7 @@ func IsValidColName(colName string) (bool, error) {
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(colName)
 	if !isValid {
-		return false, fmt.Errorf("#1 invalid col name: %q (valid example: \"_Foo2Bar3\")", colName)
+		return false, fmt.Errorf("#1 invalid col name: %s (valid example: _Foo2Bar3)", colName)
 	}
 
 	_, contains := globalColTypesMap[colName]
@@ -883,7 +883,7 @@ func IsValidTableName(tableName string) (bool, error) {
 	// Following Rob Pike and avoiding a regular expression where a simple loop will do.
 	isValid, _ := isValidName(tableName)
 	if !isValid {
-		return false, fmt.Errorf("invalid table name: %q (valid example: \"_Foo1Bar2\")", tableName)
+		return false, fmt.Errorf("invalid table name: %s (valid example: _Foo1Bar2)", tableName)
 	}
 
 	_, contains := globalColTypesMap[tableName]

@@ -6997,12 +6997,12 @@ func ExampleTable_SetColFloatCellsToNaN() {
 
 	tableString =
 	`[MyTable]
-	i	j	k	f32		f64		f32b
-	int	int	int	float32	float64	float32
-	1	3	9	1.1		3.3		9.9
-	5	10	15	5.5		10.1	15.15
-	0	0	0	NaN		NaN		NaN
-	20	40	60	20.2	40.4	60.6
+	i   j   k     f32     f64    f32b
+	int int int float32 float64 float32
+	  1   3   9     1.1     3.3    9.9
+	  5  10  15     5.5    10.1   15.15
+	  0   0   0     NaN     NaN     NaN
+	 20  40  60    20.2    40.4   60.6
 	`
 	table, err = NewTableFromString(tableString)
 	if err != nil {
@@ -7053,13 +7053,13 @@ func ExampleTable_SetAllFloatCellsToNaN() {
 
 	tableString =
 	`[MyTable]
-	i	j	k	f32		f64		f32b
-	int	int	int	float32	float64	float32
-	1	3	9	1.1		3.3		9.9
-	5	10	15	5.5		10.1	15.15
-	0	0	0	NaN		NaN		NaN
-	20	40	60	20.2	40.4	60.6
-	`
+	  i   j   k     f32     f64    f32b
+	int int int float32 float64 float32
+	  1   3   9     1.1     3.3    9.9
+	  5  10  15     5.5    10.1   15.15
+	  0   0   0     NaN     NaN     NaN
+	 20  40  60    20.2    40.4   60.6
+		`
 	table, err = NewTableFromString(tableString)
 	if err != nil {
 		fmt.Println(err)
