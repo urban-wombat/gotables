@@ -822,12 +822,7 @@ func IsTableColType(colType string) (bool, error) {
 	_, contains := globalTableColTypesMap[colType]
 
 	if !contains {
-		msg := fmt.Sprintf("non-table col type: %s (table types:", colType)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalTableColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-		msg += ")"
+		msg := invalidColTypeMsg(colType)
 		err := errors.New(msg)
 		return false, err
 	}
