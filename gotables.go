@@ -472,15 +472,15 @@ Table
 */
 
 type Table struct {
-	tableName   string
-	colNames    []string
-	colTypes    []string
-	colNamesMap map[string]int // To look up a colNames index from a col name.
-	rows        []tableRow
-	sortKeys    []sortKey
+	tableName     string
+	colNames      []string
+	colTypes      []string
+	colNamesMap   map[string]int // To look up a colNames index from a col name.
+	rows          []tableRow
+	sortKeys      []sortKey
 	isStructShape bool
-	isNilTable  bool
-	parentTable *Table
+	isNilTable    bool
+	parentTable   *Table
 }
 
 // For GOB.
@@ -862,7 +862,7 @@ func (table *Table) SetFloatCellToNaN(colName string, rowIndex int) (err error) 
 	if err != nil {
 		return
 	}
-	
+
 	return table.SetFloatCellToNaNByColIndex(colIndex, rowIndex)
 }
 
@@ -871,7 +871,7 @@ func (table *Table) SetFloatCellToNaNByColIndex(colIndex int, rowIndex int) (err
 	if table == nil {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
-	
+
 	var colType string
 	colType, err = table.ColTypeByColIndex(colIndex)
 	if err != nil {
@@ -885,7 +885,7 @@ func (table *Table) SetFloatCellToNaNByColIndex(colIndex int, rowIndex int) (err
 		err = table.SetFloat64ByColIndex(colIndex, rowIndex, math.NaN())
 	default:
 		// Return a more generous error message so callers of calling methods can see the colName
-		colName,err := table.ColName(colIndex)
+		colName, err := table.ColName(colIndex)
 		if err != nil {
 			return err
 		}
@@ -3726,14 +3726,14 @@ func zeroValue(typeName string) (interface{}, error) {
 	case "*Table":
 		return "[]", nil
 	default:
-/*
-		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-		msg += ")"
-*/
+		/*
+			msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
+			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+			for typeName, _ := range globalColTypesMap {
+				msg += fmt.Sprintf(" %s", typeName)
+			}
+			msg += ")"
+		*/
 		msg := invalidColTypeMsg(typeName)
 		err := errors.New(msg)
 		return nil, err
@@ -3784,14 +3784,14 @@ func nonZeroValue(typeName string) (interface{}, error) {
 	case "time.Time":
 		return MaxTime, nil
 	default:
-/*
-		msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-		msg += ")"
-*/
+		/*
+			msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
+			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
+			for typeName, _ := range globalColTypesMap {
+				msg += fmt.Sprintf(" %s", typeName)
+			}
+			msg += ")"
+		*/
 		msg := invalidColTypeMsg(typeName)
 		err := errors.New(msg)
 		return nil, err
@@ -4228,14 +4228,14 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 }
 
 func invalidColTypeMsg(typeName string) (msg string) {
-		msg = fmt.Sprintf("invalid col type: %s (Valid types: ", typeName)
-		/*
+	msg = fmt.Sprintf("invalid col type: %s (Valid types: ", typeName)
+	/*
 		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
 		for typeName, _ := range globalColTypesMap {
 			msg += fmt.Sprintf(" %s", typeName)
 		}
-		*/
-		msg += typesList()
-		msg += ")"
-		return
+	*/
+	msg += typesList()
+	msg += ")"
+	return
 }

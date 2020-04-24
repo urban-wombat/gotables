@@ -38,17 +38,17 @@ SOFTWARE.
 
 var where = log.Print
 
-var typesMap = map[int]string {
-	 0: "bool",
-	 1: "byte",
-	 2: "float32",
-	 3: "float64",
-	 4: "int",
-	 5: "int16",
-	 6: "int32",
-	 7: "rune",
-	 8: "int64",
-	 9: "int8",
+var typesMap = map[int]string{
+	0:  "bool",
+	1:  "byte",
+	2:  "float32",
+	3:  "float64",
+	4:  "int",
+	5:  "int16",
+	6:  "int32",
+	7:  "rune",
+	8:  "int64",
+	9:  "int8",
 	10: "string",
 	11: "uint",
 	12: "uint16",
@@ -95,10 +95,10 @@ func TestNewTableFromString_random(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		colCount := r.Intn(MaxCols+1)
+		colCount := r.Intn(MaxCols + 1)
 		// fmt.Printf("colCount = %d\n", colCount)
 		for colIndex := 0; colIndex < colCount; colIndex++ {
-			colName := fmt.Sprintf("c%d", colIndex)	
+			colName := fmt.Sprintf("c%d", colIndex)
 			colTypeIndex := r.Intn(len(typesMap))
 			colType := typesMap[colTypeIndex]
 			err = table.AppendCol(colName, colType)
@@ -111,7 +111,7 @@ func TestNewTableFromString_random(t *testing.T) {
 			}
 		}
 
-		rowCount := r.Intn(MaxRows+1)
+		rowCount := r.Intn(MaxRows + 1)
 		// fmt.Printf("rowCount = %d\n", rowCount)
 		err = table.AppendRows(rowCount)
 		if err != nil {
@@ -123,7 +123,7 @@ func TestNewTableFromString_random(t *testing.T) {
 		}
 
 		// Randomly set to struct shape.
-		if rowCount <= 1 && (colCount % 2) == 0 {
+		if rowCount <= 1 && (colCount%2) == 0 {
 			err = table.SetStructShape(true)
 			if err != nil {
 				t.Fatal(err)
@@ -151,9 +151,9 @@ func TestNewTableFromString_random(t *testing.T) {
 	}
 
 	/*
-	//	Return a number within a range.
-	min := 10
-	max := 30
-	fmt.Println(r.Intn(max - min) + min)
+		//	Return a number within a range.
+		min := 10
+		max := 30
+		fmt.Println(r.Intn(max - min) + min)
 	*/
 }

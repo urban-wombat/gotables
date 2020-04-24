@@ -6892,7 +6892,7 @@ func TestNewTableSetFromString_invalid(t *testing.T) {
 
 	// Invalid: No blank line before table [Module2]
 	tableSetString =
-	`[[MyModuleSet]]
+		`[[MyModuleSet]]
 
 	[Module1]
 	song string = "This is my song!"
@@ -6906,10 +6906,9 @@ func TestNewTableSetFromString_invalid(t *testing.T) {
 		t.Fatal(err)
 	}
 
-
 	// Invalid: No value after wordCount int =
 	tableSetString =
-	`[[MyModuleSet]]
+		`[[MyModuleSet]]
 
 	[Module1]
 	song string = "This is my song!"
@@ -6949,7 +6948,7 @@ func ExampleNewTableSetFromString_withTableSetName() {
 	var tableSetString string
 
 	tableSetString =
-	`[[MyTableSetName]]
+		`[[MyTableSetName]]
 	[MyTable1]
 	x	y	z
 	int	int	int
@@ -6996,7 +6995,7 @@ func ExampleTable_SetColFloatCellsToNaN() {
 	var table *Table
 
 	tableString =
-	`[MyTable]
+		`[MyTable]
 	i   j   k     f32     f64    f32b
 	int int int float32 float64 float32
 	  1   3   9     1.1     3.3    9.9
@@ -7052,7 +7051,7 @@ func ExampleTable_SetAllFloatCellsToNaN() {
 	var table *Table
 
 	tableString =
-	`[MyTable]
+		`[MyTable]
 	  i   j   k     f32     f64    f32b
 	int int int float32 float64 float32
 	  1   3   9     1.1     3.3    9.9

@@ -143,15 +143,15 @@ var floatRegexp *regexp.Regexp = regexp.MustCompile(`^([-+]?([0-9]+(\.[0-9]*)?|\
 
 const tableSetNamePattern string = `^\[\[[a-zA-Z_][a-zA-Z0-9_]*\]\]$`
 const namePattern string = `^[a-zA-Z_][a-zA-Z0-9_]*$`
-const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]`	// Don't add $ at end of this regular expression.
-const tableNameNilPattern string = `^(\[\])`					// Don't add $ at end of this regular expression.
+const tableNamePattern string = `^\[[a-zA-Z_][a-zA-Z0-9_]*\]` // Don't add $ at end of this regular expression.
+const tableNameNilPattern string = `^(\[\])`                  // Don't add $ at end of this regular expression.
 
 // From: https://golang.org/pkg/time
 // RFC3339     = "2006-01-02T15:04:05Z07:00"
 // const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|([+-]\d{2}:\d{2}))`
 // RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
 // const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))`
-   const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{9})?(Z|([+-]\d{2}:\d{2}))`
+const rfc3339TimePattern string = `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{9})?(Z|([+-]\d{2}:\d{2}))`
 
 var tableSetNameRegexp *regexp.Regexp = regexp.MustCompile(tableSetNamePattern)
 var tableNameRegexp *regexp.Regexp = regexp.MustCompile(tableNamePattern)
@@ -211,8 +211,8 @@ var globalColTypesMap = map[string]int{
 	"uint64":  0,
 	"uint8":   0,
 	//	"complex":         0, // Not yet implemented.
-	"*Table":          0,
-	"time.Time":       0,
+	"*Table":    0,
+	"time.Time": 0,
 }
 
 var globalNumericColTypesMap = map[string]int{
@@ -238,7 +238,7 @@ var globalSliceColTypesMap = map[string]int{
 }
 
 var globalTableColTypesMap = map[string]int{
-	"*Table":          0,
+	"*Table": 0,
 }
 
 const structNameIndex = 0
@@ -384,8 +384,8 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 				if len(lineSplit) < 2 {
 					return nil, fmt.Errorf("#2 %s looks like struct but found: %s", p.gotFilePos(), line)
 				}
-				var colName string = lineSplit[structNameIndex]	// 0
-				var colType string = lineSplit[structTypeIndex]	// 1
+				var colName string = lineSplit[structNameIndex] // 0
+				var colType string = lineSplit[structTypeIndex] // 1
 
 				var isValid bool
 				if isValid, err = IsValidColName(colName); !isValid {
@@ -768,9 +768,9 @@ func IsValidColType(colType string) (bool, error) {
 
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-/*
-		err := fmt.Errorf("invalid type: %s (allowed: most Go built-in types (expect complex) plus *Table and time.Time)", colType)
-*/
+		/*
+			err := fmt.Errorf("invalid type: %s (allowed: most Go built-in types (expect complex) plus *Table and time.Time)", colType)
+		*/
 		msg := invalidColTypeMsg(colType)
 		err := errors.New(msg)
 		return false, err
