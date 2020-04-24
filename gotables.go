@@ -512,7 +512,7 @@ type tableRow []interface{}
 /*
 	Factory function to create an empty *Table that is not yet ready to use
 
-	The table is for use as zero value, a *Table that is a placeholder without being a Go nil
+	The table is for use as zero value, a *Table that is a placeholder without being a Go <nil>
 
 	To make it usable, give it a table name: table.SetTableName("MyTableName")
 
