@@ -161,18 +161,18 @@ func TestNewTableFromString_random(t *testing.T) {
 func TestTable_Visit(t *testing.T) {
 	var visitTable func(cell *gotables.Table) (err error)
 	visitTable = func(table *gotables.Table) (err error) {
-	/*
-		fmt.Printf("***** table.Name() = %s *****\n", table.Name())
-		fmt.Printf("table.ColCount() = %d\n", table.ColCount())
-		fmt.Printf("table.RowCount() = %d\n", table.RowCount())
-		fmt.Printf("table.String() = \n%s\n", table.String())
+		/*
+			fmt.Printf("***** table.Name() = %s *****\n", table.Name())
+			fmt.Printf("table.ColCount() = %d\n", table.ColCount())
+			fmt.Printf("table.RowCount() = %d\n", table.RowCount())
+			fmt.Printf("table.String() = \n%s\n", table.String())
 
-		if table.ParentTable() != nil {
-			fmt.Printf("*** table.ParentTable.Name() = %s ***\n", table.ParentTable().Name())
-		} else {
-			fmt.Printf("*** table.ParentTable.Name() = NOTHING ***\n")
-		}
-	*/
+			if table.ParentTable() != nil {
+				fmt.Printf("*** table.ParentTable.Name() = %s ***\n", table.ParentTable().Name())
+			} else {
+				fmt.Printf("*** table.ParentTable.Name() = NOTHING ***\n")
+			}
+		*/
 
 		// Test whether parentTable has been populated.
 		if table.Name() == "RootTable" {
@@ -196,9 +196,9 @@ func TestTable_Visit(t *testing.T) {
 				if err != nil {
 					return err
 				}
-	
-				lastRowIndex := table.RowCount()-1
-	
+
+				lastRowIndex := table.RowCount() - 1
+
 				nested, err := table.GetTable("nested", lastRowIndex)
 				if err != nil {
 					return err
@@ -221,17 +221,17 @@ func TestTable_Visit(t *testing.T) {
 
 	var visitCell func(cell gotables.Cell) (err error)
 	visitCell = func(cell gotables.Cell) (err error) {
-	/*
-		fmt.Printf("cell.Table.Name() = %s\n", cell.Table.Name())
-		fmt.Printf("cell.ColName = %s\n", cell.ColName)
-		fmt.Printf("cell.ColIndex = %d\n", cell.ColIndex)
-		fmt.Printf("cell.ColType = %s\n", cell.ColType)
-	*/
+		/*
+			fmt.Printf("cell.Table.Name() = %s\n", cell.Table.Name())
+			fmt.Printf("cell.ColName = %s\n", cell.ColName)
+			fmt.Printf("cell.ColIndex = %d\n", cell.ColIndex)
+			fmt.Printf("cell.ColType = %s\n", cell.ColType)
+		*/
 		return
 	}
 
 	tableString :=
-	`[RootTable]
+		`[RootTable]
 	i int = 22
 	j int = 33
 	k int = 44
@@ -248,7 +248,7 @@ func TestTable_Visit(t *testing.T) {
 	}
 
 	nestedTableString :=
-	`[Nested]
+		`[Nested]
 	t bool = true
 	f bool = false
 	`
