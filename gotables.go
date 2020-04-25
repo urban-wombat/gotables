@@ -515,6 +515,14 @@ func (table *Table) getColTypes() []string {
 
 type tableRow []interface{}
 
+type Cell struct {
+	Table    *Table
+	ColName  string
+	ColIndex int
+	RowIndex int
+	ColType  string
+}
+
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
 
 /*
@@ -640,6 +648,8 @@ func (table *Table) appendRowOfNil() error {
 	Note: Can append rows to an empty (no columns) table, and later append columns.
 
 	howMany may be 0 or more rows.
+
+	Gotcha: colType *Table cells will be populated with nil [] tables: must be named being used.
 */
 func (table *Table) AppendRows(howMany int) error {
 
@@ -681,8 +691,13 @@ func (table *Table) AppendRows(howMany int) error {
 	return nil
 }
 
-// All cells in the new added row will be set to their zero value, such as 0, "", or false.
-// Note: Can append rows to an empty (no columns) table, and later append columns.
+/*
+	All cells in the new added row will be set to their zero value, such as 0, "", or false.
+
+	Note: Can append rows to an empty (no columns) table, and later append columns.
+
+	Gotcha: colType *Table cells will be populated with nil [] tables: must be named being used.
+*/
 func (table *Table) AppendRow() error {
 
 	if table == nil {
@@ -4246,4 +4261,14 @@ func invalidColTypeMsg(typeName string) (msg string) {
 	msg += typesList()
 	msg += ")"
 	return
+}
+
+func (table *Table) ParentTable() (parentTable *Table) {
+	if table == nil {
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		UtilPrintCaller()
+		return nil
+	}
+
+	return table.parentTable
 }
