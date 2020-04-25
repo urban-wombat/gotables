@@ -4,6 +4,17 @@ import (
 	"fmt"
 )
 
+/*
+	Visit each table in tableSet.
+
+	Visit the root table and any nested child tables: run visitTable on each table.
+
+	Visit all cells in each table: run visitCell on each cell.
+
+	Define func variables visitTable and visitCell (see Example).
+
+	If visitTable or visitCell are nil, no action will be taken in the nil case.
+*/
 func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
 
 	if tableSet == nil {
@@ -26,6 +37,15 @@ func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cel
 	return
 }
 
+/*
+	Visit the root table and any nested child tables: run visitTable on each table.
+
+	Visit all cells in each table: run visitCell on each cell.
+
+	Define func variables visitTable and visitCell (see Example).
+
+	If visitTable or visitCell are nil, no action will be taken in the nil case.
+*/
 func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
 
 	if table == nil {

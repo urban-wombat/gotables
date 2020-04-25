@@ -4159,6 +4159,8 @@ func (table *Table) ShuffleRandom() error {
 
 	Conspicuously absent are the complex types (complex64 complex128).
 
+	Type time.Time is supported.
+
 	Custom type *Table is not a Go type
 	but is supported by gotables to allow nested tables within table cells.
 
