@@ -696,7 +696,11 @@ func (table *Table) AppendRows(howMany int) error {
 
 	Note: Can append rows to an empty (no columns) table, and later append columns.
 
-	Gotcha: colType *Table cells will be populated with nil [] tables: must be named being used.
+	Gotcha: colType *Table cells will be populated with nil [] tables: must be named being used:
+
+		err = table.AppendRow()
+		lastRowIndex = table.RowCount()-1
+		err = table.SetName("AnyNameYouLike")
 */
 func (table *Table) AppendRow() error {
 
@@ -4161,7 +4165,7 @@ func (table *Table) ShuffleRandom() error {
 	The list includes some aliases:-
 		[]byte and []uint8
 */
-func typesList() string {
+func TypesList() string {
 	var typesSlice []string
 
 	for key, _ := range globalColTypesMap {
@@ -4258,7 +4262,7 @@ func invalidColTypeMsg(typeName string) (msg string) {
 			msg += fmt.Sprintf(" %s", typeName)
 		}
 	*/
-	msg += typesList()
+	msg += TypesList()
 	msg += ")"
 	return
 }

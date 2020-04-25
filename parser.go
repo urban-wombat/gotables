@@ -446,7 +446,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 						// where(fmt.Sprintf("len(table.rows) = %d\n", len(table.rows)))
 					}
 
-					rowSliceOfStructTable, err = p.getRowSlice(valueData, colNameSlice, colTypeSlice)
+					rowSliceOfStructTable, err = p.getRowSlice(valueData, table, colNameSlice, colTypeSlice)
 					if err != nil {
 						return nil, err
 					}
@@ -506,7 +506,7 @@ func (p *parser) parseString(s string) (*TableSet, error) {
 			lenColTypes := len(parserColTypes)
 
 			var rowSlice tableRow
-			rowSlice, err = p.getRowSlice(line, parserColNames, parserColTypes)
+			rowSlice, err = p.getRowSlice(line, table, parserColNames, parserColTypes)
 			if err != nil {
 				return nil, err
 			}
@@ -889,7 +889,7 @@ func IsValidTableName(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) (tableRow, error) {
+func (p *parser) getRowSlice(line string, table *Table, colNames []string, colTypes []string) (tableRow, error) {
 	var err error
 	rowSlice := make(tableRow, len(colNames))
 
@@ -1270,6 +1270,7 @@ func (p *parser) getRowSlice(line string, colNames []string, colTypes []string) 
 						p.gotFilePos(), remaining)
 				}
 			}
+			tableVal.parentTable = table
 			rowSlice[i] = tableVal
 		case "time.Time":
 			rangeFound = rfc3339TimeRegexp.FindStringIndex(remaining)

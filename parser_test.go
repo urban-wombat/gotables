@@ -157,3 +157,113 @@ func TestNewTableFromString_random(t *testing.T) {
 		fmt.Println(r.Intn(max - min) + min)
 	*/
 }
+
+func TestTable_Visit(t *testing.T) {
+	var visitTable func(cell *gotables.Table) (err error)
+	visitTable = func(table *gotables.Table) (err error) {
+	/*
+		fmt.Printf("***** table.Name() = %s *****\n", table.Name())
+		fmt.Printf("table.ColCount() = %d\n", table.ColCount())
+		fmt.Printf("table.RowCount() = %d\n", table.RowCount())
+		fmt.Printf("table.String() = \n%s\n", table.String())
+
+		if table.ParentTable() != nil {
+			fmt.Printf("*** table.ParentTable.Name() = %s ***\n", table.ParentTable().Name())
+		} else {
+			fmt.Printf("*** table.ParentTable.Name() = NOTHING ***\n")
+		}
+	*/
+
+		// Test whether parentTable has been populated.
+		if table.Name() == "RootTable" {
+			// This table is the root table and must not have a parent.
+			if table.ParentTable() != nil {
+				t.Fatalf("expecting root-table [%s] parentTable to be nil, but found: %v",
+					table.Name(), table.ParentTable())
+			}
+		} else {
+			// This table is a child (nested) table and must have a parent.
+			if table.ParentTable() == nil {
+				t.Fatalf("expecting NON-root-table [%s] parentTable to be NOT nil, but found: %v",
+					table.Name(), table.ParentTable())
+			}
+		}
+
+		if table.Name() == "RootTable" {
+			// Top-level table which we know has a "nested" *Table col.
+			for i := 0; i < 3; i++ {
+				err = table.AppendRow()
+				if err != nil {
+					return err
+				}
+	
+				lastRowIndex := table.RowCount()-1
+	
+				nested, err := table.GetTable("nested", lastRowIndex)
+				if err != nil {
+					return err
+				}
+				if nested.ParentTable() == nil {
+					t.Fatalf("expecting NON-root-table [%s] parentTable to be NOT nil, but found: %v",
+						table.Name(), table.ParentTable())
+				}
+
+				err = nested.SetName("AnyNameYouLike")
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		//fmt.Printf("\n%s\n", table)
+		return
+	}
+
+	var visitCell func(cell gotables.Cell) (err error)
+	visitCell = func(cell gotables.Cell) (err error) {
+	/*
+		fmt.Printf("cell.Table.Name() = %s\n", cell.Table.Name())
+		fmt.Printf("cell.ColName = %s\n", cell.ColName)
+		fmt.Printf("cell.ColIndex = %d\n", cell.ColIndex)
+		fmt.Printf("cell.ColType = %s\n", cell.ColType)
+	*/
+		return
+	}
+
+	tableString :=
+	`[RootTable]
+	i int = 22
+	j int = 33
+	k int = 44
+	nested *Table = []
+
+	[MyName2]
+	x		y		z
+	float32	float64	uint
+	1		3		9
+	`
+	table, err := gotables.NewTableFromStringByTableIndex(tableString, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	nestedTableString :=
+	`[Nested]
+	t bool = true
+	f bool = false
+	`
+	nestedTable, err := gotables.NewTableFromString(nestedTableString)
+	if err != nil {
+		panic(err)
+	}
+
+	err = table.SetTable("nested", 0, nestedTable)
+	if err != nil {
+		panic(err)
+	}
+
+	err = table.Walk(visitTable, visitCell)
+	if err != nil {
+		panic(err)
+	}
+}

@@ -4916,7 +4916,9 @@ func (table *Table) SetRowCellsToZeroValue(rowIndex int) error {
 			table.rows[rowIndex][colIndex] = zeroVal.uint8Val
 		case "*Table":
 			// This is a x10 tuning strategy to avoid type conversion *Table(NewNilTable())
-			table.rows[rowIndex][colIndex] = NewNilTable() // Avoid circular reference.
+			var nilTable *Table = NewNilTable() // New table each time to avoid circular reference.
+			nilTable.parentTable = table
+			table.rows[rowIndex][colIndex] = nilTable
 		case "time.Time":
 			// This is a x10 tuning strategy to avoid type conversion time.Time(MinTime)
 			table.rows[rowIndex][colIndex] = zeroVal.timeVal
