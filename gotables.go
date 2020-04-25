@@ -73,12 +73,6 @@ func init() {
 	// log.SetOutput(os.Stderr)
 }
 
-/*
-func releaseVersionNumber() string {
-	return "v0.7.1-alpha"
-}
-*/
-
 var where = log.Print
 
 /*
@@ -228,6 +222,20 @@ func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 	table, err := tableSet.Table(tableName)
 	if err != nil {
 		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
+	}
+
+	return table, nil
+}
+
+func NewTableFromStringByTableIndex(s string, tableIndex int) (*Table, error) {
+	tableSet, err := NewTableSetFromString(s)
+	if err != nil {
+		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
+	}
+
+	table, err := tableSet.TableByTableIndex(tableIndex)
+	if err != nil {
+		return nil, fmt.Errorf("NewTableFromStringByTableIndex() %v", err)
 	}
 
 	return table, nil
