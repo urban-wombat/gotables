@@ -15,22 +15,24 @@ import (
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
+func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cell) error, in interface{}) (out interface{}, err error) {
 
 	if tableSet == nil {
-		return fmt.Errorf("TableSet.%s(): tableSet is nil", UtilFuncNameNoParens())
+		err = fmt.Errorf("TableSet.%s(): tableSet is nil", UtilFuncNameNoParens())
+		return
 	}
 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
 
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		var table *Table
+		table, err = tableSet.TableByTableIndex(tableIndex)
 		if err != nil {
-			return err
+			return
 		}
 
-		err = table.Walk(visitTable, visitCell)
+		out, err = table.Walk(visitTable, visitCell, in)
 		if err != nil {
-			return err
+			return
 		}
 	}
 
@@ -46,17 +48,18 @@ func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cel
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
+func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error, in interface{}) (out interface{}, err error) {
 
 	if table == nil {
-		return fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+		err = fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+		return
 	}
 
 	// Visit table.
 	if visitTable != nil {
 		err = visitTable(table)
 		if err != nil {
-			return err
+			return
 		}
 	}
 
@@ -66,16 +69,16 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 
 			var cell Cell
-			cell, err := table.CellByColIndex(colIndex, rowIndex)
+			cell, err = table.CellByColIndex(colIndex, rowIndex)
 			if err != nil {
-				return err
+				return
 			}
 
 			// Visit cell.
 			if visitCell != nil {
 				err = visitCell(cell)
 				if err != nil {
-					return err
+					return
 				}
 			}
 
@@ -83,15 +86,16 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 
 			if isTable {
 
-				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
+				var nestedTable *Table
+				nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
-					return err
+					return
 				}
 
 				// Recursive call to visit nested tables.
-				err = nestedTable.Walk(visitTable, visitCell)
+				out, err = nestedTable.Walk(visitTable, visitCell, in)
 				if err != nil {
-					return err
+					return
 				}
 			}
 		}
@@ -178,7 +182,7 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 		return nil
 	}
 
-	err = rootTable.Walk(nil, visitCell)
+	_, err = rootTable.Walk(nil, visitCell, nil)
 	if err != nil {
 		// Found a circular reference!
 		return false, err
