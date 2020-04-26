@@ -4207,7 +4207,7 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 	}
 
-	refMap[table] = empty // Add this table to the map. Empty struct: struct{}
+	refMap[table] = EmptyStruct // Add this table to the map. Empty struct: struct{}
 
 	// Compare cell values.
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
@@ -4238,7 +4238,7 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 						UtilFuncName(), topTable.Name(), nestedTable.Name())
 					return false, err
 				} else { // No?
-					refMap[nestedTable] = empty // Add this table to the map.
+					refMap[nestedTable] = EmptyStruct // Add this table to the map.
 				}
 
 				// Recursive call to check nested tables.

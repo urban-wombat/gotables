@@ -1223,6 +1223,15 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		// Prints error.
 		fmt.Println(err)
 	}
+	fmt.Println()
+
+	fmt.Println("(3) This should fail: We are assigning the same table to multiple cells.")
+	valid, err = table.IsValidTableNesting2()
+	fmt.Printf("table.IsValidTableNesting2(): valid = %t\n", valid)
+	if err != nil {
+		// Prints error.
+		fmt.Println(err)
+	}
 
 	// Output:
 	// This should fail: We are assigning the same table as the parent.
@@ -1331,6 +1340,10 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	// (2) This should fail: We are assigning the same table to multiple cells.
 	// table.IsValidTableNesting(): valid = false
 	// isValidTableNesting_recursive(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	//
+	// (3) This should fail: We are assigning the same table to multiple cells.
+	// table.IsValidTableNesting2(): valid = false
+	// IsValidTableNesting2(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {

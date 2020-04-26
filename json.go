@@ -12,7 +12,7 @@ import (
 
 type circRefMap map[*Table]struct{}
 
-var empty struct{}
+var EmptyStruct struct{}
 
 var replaceSpaces *regexp.Regexp = regexp.MustCompile(` `)
 
@@ -94,7 +94,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 	}
 
 	// Add this table to the circular reference map.
-	refMap[table] = empty
+	refMap[table] = EmptyStruct
 
 	buf.WriteString(fmt.Sprintf(`"tableName":%q,`, table.Name()))
 

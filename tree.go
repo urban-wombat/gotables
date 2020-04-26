@@ -143,22 +143,46 @@ func (cell Cell) TableName() string {
 	return cell.Table.Name()
 }
 
-/*
-func (table *Table) IsValidTableNesting2() (valid bool, err error) {
+func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 
-	if table == nil {
-		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+	const funcName = "IsValidTableNesting2()"
+
+	if rootTable == nil {
+		return false, fmt.Errorf("rootTable.%s(): rootTable is nil", UtilFuncNameNoParens())
 	}
 
 	var refMap circRefMap = map[*Table]struct{}{}
 
 	// Add the root table to the map.
-	refMap[table] = struct{}	// empty struct
+	refMap[rootTable] = EmptyStruct
 
 	var visitCell func (cell Cell) (err error)
 	visitCell = func (cell Cell) (err error) {
 		if IsTableColType(cell.ColType) {
+			var nestedTable *Table
+			nestedTable, err = rootTable.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+			if err != nil {
+				return err
+			}
+
+			// Have we already seen this table?
+			_, exists := refMap[nestedTable]
+			if exists { // Invalid table with circular reference!
+				err = fmt.Errorf("%s: circular reference in table [%s]: a reference to table [%s] already exists",
+					funcName, rootTable.Name(), nestedTable.Name())
+				return err
+			} else {
+				refMap[nestedTable] = EmptyStruct // Add this table to the map.
+			}
 		}
+		return nil
 	}
+
+	err = rootTable.Walk(nil, visitCell)
+	if err != nil {
+		// Found a circular reference!
+		return false, err
+	}
+
+	return true, nil
 }
-*/
