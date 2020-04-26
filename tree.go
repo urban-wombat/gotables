@@ -79,7 +79,7 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 				}
 			}
 
-			isTable, _ := IsTableColType(cell.ColType)
+			isTable := IsTableColType(cell.ColType)
 
 			if isTable {
 
@@ -142,3 +142,23 @@ func (table *Table) Cell(colName string, rowIndex int) (cell Cell, err error) {
 func (cell Cell) TableName() string {
 	return cell.Table.Name()
 }
+
+/*
+func (table *Table) IsValidTableNesting2() (valid bool, err error) {
+
+	if table == nil {
+		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+	}
+
+	var refMap circRefMap = map[*Table]struct{}{}
+
+	// Add the root table to the map.
+	refMap[table] = struct{}	// empty struct
+
+	var visitCell func (cell Cell) (err error)
+	visitCell = func (cell Cell) (err error) {
+		if IsTableColType(cell.ColType) {
+		}
+	}
+}
+*/

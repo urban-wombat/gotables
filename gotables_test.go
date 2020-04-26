@@ -2122,7 +2122,7 @@ func TestIsNumericColType(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		isNumeric, _ := IsNumericColType(colType)
+		isNumeric := IsNumericColType(colType)
 
 		hasPrefixT := strings.HasPrefix(colName, "T_")
 		hasPrefixF := strings.HasPrefix(colName, "F_")

@@ -232,15 +232,6 @@ var globalNumericColTypesMap = map[string]int{
 	"complex": 0, // Not yet implemented.
 }
 
-var globalSliceColTypesMap = map[string]int{
-	"[]byte":  0,
-	"[]uint8": 0,
-}
-
-var globalTableColTypesMap = map[string]int{
-	"*Table": 0,
-}
-
 const structNameIndex = 0
 const structTypeIndex = 1
 const structEqualsIndex = 2
@@ -784,50 +775,30 @@ Returns true for those Go types that are numeric.
 
 Go types NOT supported: complex64 complex128
 */
-func IsNumericColType(colType string) (bool, error) {
-	_, contains := globalNumericColTypesMap[colType]
+func IsNumericColType(colType string) bool {
 
-	if !contains {
-		msg := fmt.Sprintf("non-numeric col type: %s (numeric types:", colType)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalNumericColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-		msg += ")"
-		err := errors.New(msg)
-		return false, err
+	if _, contains := globalNumericColTypesMap[colType]; contains {
+		return true
 	}
 
-	return true, nil
+	return false
 }
 
-func IsSliceColType(colType string) (bool, error) {
-	_, contains := globalSliceColTypesMap[colType]
-
-	if !contains {
-		msg := fmt.Sprintf("non-slice col type: %s (slice types:", colType)
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalSliceColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-		msg += ")"
-		err := errors.New(msg)
-		return false, err
+func IsSliceColType(colType string) bool {
+	if colType == "[]byte" || colType == "[]uint8" {
+		return true
 	}
 
-	return true, nil
+	return false
 }
 
-func IsTableColType(colType string) (bool, error) {
-	_, contains := globalTableColTypesMap[colType]
+func IsTableColType(colType string) bool {
 
-	if !contains {
-		msg := invalidColTypeMsg(colType)
-		err := errors.New(msg)
-		return false, err
+	if colType == "*Table" {
+		return true
 	}
 
-	return true, nil
+	return false
 }
 
 /*

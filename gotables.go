@@ -1433,7 +1433,7 @@ func (table *Table) StringPadded() string {
 		for colIndex, colType := range table.colTypes {
 			matrix[colIndex][colTypeRowIndex] = colType
 			width[colIndex] = max(width[colIndex], len(colType))
-			alignRight[colIndex], _ = IsNumericColType(colType)
+			alignRight[colIndex] = IsNumericColType(colType)
 		}
 	}
 
@@ -3265,8 +3265,8 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 			return false, err
 		}
 
-		isSlice, _ := IsSliceColType(colType)
-		isTable, _ := IsTableColType(colType)
+		isSlice := IsSliceColType(colType)
+		isTable := IsTableColType(colType)
 		isTime := colType == "time.Time"
 
 		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
@@ -4207,7 +4207,7 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 	}
 
-	refMap[table] = empty // Add this table to the map.
+	refMap[table] = empty // Add this table to the map. Empty struct: struct{}
 
 	// Compare cell values.
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
@@ -4221,7 +4221,7 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 			return false, err
 		}
 
-		isTable, _ := IsTableColType(colType)
+		isTable := IsTableColType(colType)
 
 		if isTable {
 			for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
