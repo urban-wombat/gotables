@@ -1233,9 +1233,6 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		fmt.Println(err)
 
 		// Now check to see if there is a wrapped CircRefError inside err.
-		// second argument to errors.As must be a pointer to an interface or a type implementing error
-//		var circError *CircRefError
-//		if errors.As(err, &circError) {
 		has, circError := HasGetCircRefError(err)
 		if has {
 			fmt.Println("Yes, there is a wrapped CircRefError inside err:")

@@ -143,9 +143,11 @@ func (table *Table) Cell(colName string, rowIndex int) (cell Cell, err error) {
 	return cell, nil
 }
 
+/*
 func (cell Cell) TableName() string {
 	return cell.Table.Name()
 }
+*/
 
 func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 
@@ -177,7 +179,8 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
 				return err
 			} else {
-				refMap[nestedTable] = EmptyStruct // Add this table to the map.
+				// Add this nested table to the map.
+				refMap[nestedTable] = EmptyStruct
 			}
 		}
 		return nil

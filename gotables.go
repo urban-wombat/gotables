@@ -518,9 +518,9 @@ type tableRow []interface{}
 type Cell struct {
 	Table    *Table
 	ColName  string
+	ColType  string
 	ColIndex int
 	RowIndex int
-	ColType  string
 }
 
 // Note: Reimplement this as a slice of byte for each row and a master map and/or slice to track offset.
