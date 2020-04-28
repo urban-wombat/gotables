@@ -4,6 +4,26 @@ import (
 	"fmt"
 )
 
+type CircRefError struct {
+	rootTable string
+	circTable string
+	msg       string
+}
+
+func (circError *CircRefError) Error() string {
+	return circError.msg
+}
+
+func NewCircRefError(rootTable string, circTable string) *CircRefError {
+	var circError CircRefError
+	circError.rootTable = rootTable
+	circError.circTable = circTable
+	circError.msg = fmt.Sprintf("circular reference in table [%s]: a reference to table [%s] already exists",
+		circError.rootTable,
+		circError.circTable)
+	return &circError
+}
+
 /*
 	Visit each table in tableSet.
 
@@ -160,8 +180,8 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 	// Add the root table to the map.
 	refMap[rootTable] = EmptyStruct
 
-	var visitCell func (cell Cell) (err error)
-	visitCell = func (cell Cell) (err error) {
+	var visitCell func(cell Cell) (err error)
+	visitCell = func(cell Cell) (err error) {
 		if IsTableColType(cell.ColType) {
 			var nestedTable *Table
 			nestedTable, err = rootTable.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
@@ -172,8 +192,9 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 			// Have we already seen this table?
 			_, exists := refMap[nestedTable]
 			if exists { // Invalid table with circular reference!
-				err = fmt.Errorf("%s: circular reference in table [%s]: a reference to table [%s] already exists",
-					funcName, rootTable.Name(), nestedTable.Name())
+				// Construct CircRefError.
+				circError := NewCircRefError(rootTable.Name(), nestedTable.Name())
+				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
 				return err
 			} else {
 				refMap[nestedTable] = EmptyStruct // Add this table to the map.

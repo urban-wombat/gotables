@@ -3,6 +3,7 @@ package gotables
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -1231,6 +1232,14 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	if err != nil {
 		// Prints error.
 		fmt.Println(err)
+
+		// Now check to see if there is a wrapped CircRefError inside err.
+		// second argument to errors.As must be a pointer to an interface or a type implementing error
+		var circError *CircRefError
+		if errors.As(err, &circError) {
+			fmt.Println("Yes, there is a wrapped CircRefError inside err:")
+			fmt.Printf("circError.msg: %s\n", circError.msg)
+		}
 	}
 
 	// Output:
@@ -1344,6 +1353,8 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	// (3) This should fail: We are assigning the same table to multiple cells.
 	// table.IsValidTableNesting2(): valid = false
 	// IsValidTableNesting2(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// Yes, there is a wrapped CircRefError inside err:
+	// circError.msg: circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {
