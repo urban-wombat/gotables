@@ -4,26 +4,6 @@ import (
 	"fmt"
 )
 
-type CircRefError struct {
-	rootTable string
-	circTable string
-	msg       string
-}
-
-func (circError *CircRefError) Error() string {
-	return circError.msg
-}
-
-func NewCircRefError(rootTable string, circTable string) *CircRefError {
-	var circError CircRefError
-	circError.rootTable = rootTable
-	circError.circTable = circTable
-	circError.msg = fmt.Sprintf("circular reference in table [%s]: a reference to table [%s] already exists",
-		circError.rootTable,
-		circError.circTable)
-	return &circError
-}
-
 /*
 	Visit each table in tableSet.
 
