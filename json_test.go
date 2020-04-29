@@ -1233,8 +1233,19 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		fmt.Println(err)
 
 		// Now check to see if there is a wrapped CircRefError inside err.
-		has, circError := HasGetCircRefError(err)
+		// Method 1: Just see if it is there.
+		var has bool = HasCircRefError(err)
 		if has {
+			var circError *CircRefError = GetCircRefError(err)
+			// Now Get the error.
+			fmt.Println("Yes, there is a wrapped CircRefError inside err:")
+			fmt.Printf("circError.Error(): %s\n", circError.Error())
+			fmt.Printf("circError.RootTable(): %s\n", circError.RootTable())
+			fmt.Printf("circError.CircTable(): %s\n", circError.CircTable())
+		}
+		// Method 2: Just try to get the error and test if it is there.
+		var circError *CircRefError = GetCircRefError(err)
+		if circError != nil {
 			fmt.Println("Yes, there is a wrapped CircRefError inside err:")
 			fmt.Printf("circError.Error(): %s\n", circError.Error())
 			fmt.Printf("circError.RootTable(): %s\n", circError.RootTable())
@@ -1353,6 +1364,10 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	// (3) This should fail: We are assigning the same table to multiple cells.
 	// table.IsValidTableNesting2(): valid = false
 	// IsValidTableNesting2(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// Yes, there is a wrapped CircRefError inside err:
+	// circError.Error(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// circError.RootTable(): SameTableReference
+	// circError.CircTable(): TableCopy
 	// Yes, there is a wrapped CircRefError inside err:
 	// circError.Error(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 	// circError.RootTable(): SameTableReference

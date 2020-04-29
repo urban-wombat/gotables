@@ -39,10 +39,18 @@ func NewCircRefError(rootTable string, circTable string) *CircRefError {
 	return &circError
 }
 
-// Check to see if err has a wrapped CircRefError inside, and get CircRefError if inside.
-func HasGetCircRefError(err error) (has bool, circError *CircRefError) {
+// Check to see if err has a wrapped CircRefError inside.
+func HasCircRefError(err error) (has bool) {
 	// second argument to errors.As must be a pointer to an interface or a type implementing error
+	var circError *CircRefError
 	has = errors.As(err, &circError)
+	return
+}
+
+// Check to see if err has a wrapped CircRefError inside, and get CircRefError if inside.
+func GetCircRefError(err error) (circError *CircRefError) {
+	// second argument to errors.As must be a pointer to an interface or a type implementing error
+	errors.As(err, &circError)
 	return
 }
 
