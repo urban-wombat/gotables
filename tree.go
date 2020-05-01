@@ -2,6 +2,7 @@ package gotables
 
 import (
 	"fmt"
+	"os"
 )
 
 /*
@@ -158,9 +159,7 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 	}
 
 	var refMap circRefMap = map[*Table]struct{}{}
-
-	// Add the root table to the map.
-	refMap[rootTable] = EmptyStruct
+	refMap[rootTable] = EmptyStruct	// Add the root table to the map.
 
 	var visitCell func(cell Cell) (err error)
 	visitCell = func(cell Cell) (err error) {
@@ -175,7 +174,9 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 			_, exists := refMap[nestedTable]
 			if exists { // Invalid table with circular reference!
 				// Construct CircRefError.
-				circError := NewCircRefError(rootTable.Name(), nestedTable.Name())
+				isCircular, depth := rootTable.isCircularReference(nestedTable)
+where(fmt.Sprintf("xxxx isCircular:%t rootTable:%p nestedTable %p", isCircular, rootTable, nestedTable))
+				circError := NewCircRefError(rootTable, nestedTable, depth)
 				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
 				return err
 			} else {
@@ -193,4 +194,30 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 	}
 
 	return true, nil
+}
+
+func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCircular bool, depth int) {
+where(fmt.Sprintf("isCircularReference(parentTable:%p, candidateChildTable:%p)", parentTable, candidateChildTable))
+	depth = 1	// Can only have a circular reference with depth 1 or more.
+	if parentTable == candidateChildTable {
+where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
+		return true, depth
+	}
+where(fmt.Sprintf("parentTable.parentTable:%p", parentTable.parentTable))
+	for depth = 1; parentTable.parentTable != nil; depth++ {
+where(fmt.Sprintf("fff depth:%d parentTable:%p candidateChildTable:%p", depth, parentTable, candidateChildTable))
+		if parentTable == candidateChildTable {
+where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
+			return true, depth
+		}
+		parentTable = parentTable.parentTable
+where(parentTable.String())
+where(fmt.Sprintf("*** depth:%d parentTable ref:%p parentTable name:%s parentTable ref:%p", depth, parentTable, parentTable.Name(), parentTable.parentTable))
+		if depth >= 9 {
+			os.Exit(44)
+		}
+	}
+
+where(fmt.Sprintf("depth:%d return -1", depth))
+	return false, -1
 }

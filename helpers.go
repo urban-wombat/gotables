@@ -868,7 +868,17 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 			UtilFuncNameNoParens(), colName, rowIndex, table.Name(), colName)
 	}
 
-	// This may help with reporting errors.
+where(UtilFuncName())
+where("calling isCircularReference(newVal)")
+	isCircular, depth := table.isCircularReference(newVal)
+where(fmt.Sprintf("isCircular:%t depth:%d\n", isCircular, depth))
+fmt.Println()
+	if isCircular {
+		circError := NewCircRefError(table, newVal, depth)
+where(fmt.Sprintf("%v", circError))
+where()
+		return circError
+	}
 	newVal.parentTable = table
 
 	colType, err := table.ColType(colName)
@@ -1609,6 +1619,18 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 	if newVal == nil {
 		return fmt.Errorf("%s(%d, %d, val): table [%s] col %d expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]",
 			UtilFuncNameNoParens(), colIndex, rowIndex, table.Name(), colIndex)
+	}
+
+where(UtilFuncName())
+where("calling isCircularReference(newVal)")
+	isCircular, depth := table.isCircularReference(newVal)
+where(fmt.Sprintf("isCircular:%t depth:%d\n", isCircular, depth))
+fmt.Println()
+	if isCircular {
+		circError := NewCircRefError(table, newVal, depth)
+where(fmt.Sprintf("%v", circError))
+where()
+		panic(circError)
 	}
 
 	// This may help with reporting errors.
@@ -3153,6 +3175,18 @@ func (table *Table) SetTableMustSet(colName string, rowIndex int, val *Table) {
 
 	if table == nil {
 		panic(fmt.Errorf("table.%s(%s, %d, val): table is <nil>", UtilFuncNameNoParens(), colName, rowIndex))
+	}
+
+where(UtilFuncName())
+where("calling isCircularReference(val)")
+	isCircular, depth := table.isCircularReference(val)
+where(fmt.Sprintf("isCircular:%t depth:%d\n", isCircular, depth))
+fmt.Println()
+	if isCircular {
+		circError := NewCircRefError(table, val, depth)
+where(fmt.Sprintf("%v", circError))
+where()
+		panic(circError)
 	}
 
 	err := table.SetTable(colName, rowIndex, val)

@@ -20,8 +20,9 @@ import (
 */
 
 type CircRefError struct {
-	rootTable string
-	circTable string
+	rootTable *Table
+	circTable *Table
+	depth     int
 	msg       string
 }
 
@@ -29,13 +30,15 @@ func (circError *CircRefError) Error() string {
 	return circError.msg
 }
 
-func NewCircRefError(rootTable string, circTable string) *CircRefError {
+func NewCircRefError(rootTable *Table, circTable *Table, depth int) *CircRefError {
 	var circError CircRefError
 	circError.rootTable = rootTable
 	circError.circTable = circTable
-	circError.msg = fmt.Sprintf("circular reference in table [%s]: a reference to table [%s] already exists",
-		circError.rootTable,
-		circError.circTable)
+	circError.depth = depth
+	circError.msg = fmt.Sprintf("CircRefError: circular reference in table [%s]: a reference to table [%s] (depth %d) already exists",
+		circError.rootTable.Name(),
+		circError.circTable.Name(),
+		circError.depth)
 	return &circError
 }
 
@@ -54,10 +57,10 @@ func GetCircRefError(err error) (circError *CircRefError) {
 	return
 }
 
-func (circError *CircRefError) RootTable() string {
+func (circError *CircRefError) RootTable() *Table {
 	return circError.rootTable
 }
 
-func (circError *CircRefError) CircTable() string {
+func (circError *CircRefError) CircTable() *Table {
 	return circError.circTable
 }

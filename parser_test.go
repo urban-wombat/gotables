@@ -159,8 +159,7 @@ func TestNewTableFromString_random(t *testing.T) {
 }
 
 func TestTable_Visit(t *testing.T) {
-	var visitTable func(cell *gotables.Table) (err error)
-	visitTable = func(table *gotables.Table) (err error) {
+	var visitTable = func(table *gotables.Table) (err error) {
 		/*
 			fmt.Printf("***** table.Name() = %s *****\n", table.Name())
 			fmt.Printf("table.ColCount() = %d\n", table.ColCount())
@@ -219,8 +218,7 @@ func TestTable_Visit(t *testing.T) {
 		return
 	}
 
-	var visitCell func(cell gotables.Cell) (err error)
-	visitCell = func(cell gotables.Cell) (err error) {
+	var visitCell = func(cell gotables.Cell) (err error) {
 		/*
 			fmt.Printf("cell.Table.Name() = %s\n", cell.Table.Name())
 			fmt.Printf("cell.ColName = %s\n", cell.ColName)
@@ -272,9 +270,7 @@ func ExampleTable_Walk() {
 
 	// Define the visitTable function.
 
-	var visitTable func(cell *gotables.Table) (err error)
-
-	visitTable = func(table *gotables.Table) (err error) {
+	var visitTable = func(table *gotables.Table) (err error) {
 
 		fmt.Printf("[%s].visitTable()\n", table.Name())
 
@@ -316,8 +312,7 @@ func ExampleTable_Walk() {
 
 	// Define the visitCell function.
 
-	var visitCell func(cell gotables.Cell) (err error)
-	visitCell = func(cell gotables.Cell) (err error) {
+	var visitCell = func(cell gotables.Cell) (err error) {
 
 		fmt.Printf("[%s].visitCell(colName=%s, colIndex=%d, rowIndex=%d)\n",
 			cell.Table.Name(), cell.ColName, cell.ColIndex, cell.RowIndex)

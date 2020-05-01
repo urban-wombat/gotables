@@ -489,6 +489,7 @@ type Table struct {
 	isStructShape bool
 	isNilTable    bool
 	parentTable   *Table
+	depth         int
 }
 
 // For GOB.

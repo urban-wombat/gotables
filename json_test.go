@@ -12,17 +12,14 @@ import (
 
 /*
 Copyright (c) 2018 Malcolm Gorman
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -123,14 +120,12 @@ func TestGetTableMetadataAsJSON(t *testing.T) {
 
 	/*
 		fmt.Println(jsonString)
-
 		var out bytes.Buffer
 		// For readability.
 		err = json.Indent(&out, []byte(jsonString), "", "\t")
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		_, _ = out.WriteTo(os.Stdout)
 		fmt.Println()
 	*/
@@ -149,7 +144,6 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 
 	var tableString string = `
 		[[MyTableSet]]
-
 		[TypesGalore16]
 	    i   s      f       f32     t     b    ui    bb            uu8			table
 	    int string float64 float32 bool  byte uint8 []byte        []uint8		*Table
@@ -582,7 +576,6 @@ func TestAllJSON(t *testing.T) {
 
 	tableSetString :=
 		`[[MyTableSet]]
-
 	[MyTable]
 	x int = 1
 	y int = 2
@@ -1146,8 +1139,16 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		log.Println(err)
 	}
 
+where()
 	fmt.Println("This should fail: We are assigning the same table as the parent.")
-	table.SetTableMustSet("right", 0, table) // table already exists (at the top level)
+	err = table.SetTable("right", 0, table) // table already exists (at the top level)
+	if err != nil {
+		log.Println(err)
+		/*
+var t *testing.T
+t.Error(err)
+		*/
+	}
 	fmt.Printf("%s", table)
 	_, err = table.GetTableAsJSON()
 	if err != nil {
@@ -1206,7 +1207,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 
 	fmt.Println()
 
-	fmt.Println("(1) This should fail: We are assigning the same table to multiple cells.")
+	fmt.Println("(1) This should (NOT?) fail: We are assigning the same table to multiple cells.")
 	table.SetTableMustSet("left", 0, tableCopy) // Different table reference.
 	fmt.Printf("%s", table)
 	jsonString, err = table.GetTableAsJSON()
@@ -1228,6 +1229,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	fmt.Println("(3) This should fail: We are assigning the same table to multiple cells.")
 	valid, err = table.IsValidTableNesting2()
 	fmt.Printf("table.IsValidTableNesting2(): valid = %t\n", valid)
+where(fmt.Sprintf("table.IsValidTableNesting2(): valid = %t\n", valid))
 	if err != nil {
 		// Prints error.
 		fmt.Println(err)
@@ -1254,6 +1256,28 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	}
 
 	// Output:
+	// This should fail: We are assigning the same table as the parent.
+	// [SameTableReference]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  [SameTableReference]
+	// getTableAsJSON_recursive(): circular reference in table [SameTableReference]: a reference to table [SameTableReference] already exists
+	//
+	// Now try again with a COPY of the same table, which will have a new reference.
+	// By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.
+	// SetTable(right, 0, val): table [TableCopy] col right expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
+	// [TableCopy]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  []
+	//
+	// This should succeed: We are assigning a DIFFERENT table (same contents doesn't matter).
+	// [SameTableReference]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  [TableCopy]
+	//
+	// Print as is:
 	// This should fail: We are assigning the same table as the parent.
 	// [SameTableReference]
 	// left     i s      right
@@ -1669,15 +1693,12 @@ func BenchmarkGetTableSetAsJSON(b *testing.B) {
     1   "abc"   2.3         true
     2   "xyz"   4.5         false
     3   "ssss"  4.9         false
-
 	[Struct_With_Data]
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
-
 	[Empty_Struct]
 	Fred int
-
 	[Empty_Table]
 	Fred
 	int
@@ -1707,15 +1728,12 @@ func BenchmarkNewTableSetFromJSON(b *testing.B) {
     1   "abc"   2.3         true
     2   "xyz"   4.5         false
     3   "ssss"  4.9         false
-
 	[Struct_With_Data]
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
-
 	[Empty_Struct]
 	Fred int
-
 	[Empty_Table]
 	Fred
 	int
@@ -1746,7 +1764,6 @@ func TestTable_GetTableAsBinary_nestedTable(t *testing.T) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	var err error
 	var table1 *Table
-
 	var tableString string
 	tableString = `
 	[TypesGalore22]
@@ -1762,16 +1779,13 @@ func TestTable_GetTableAsBinary_nestedTable(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	// Now create and set some table cell tables.
 	right0 := `
 	[right0]
 	i int = 32`
-
 	right1 := `
 	[right1]
 	s string = "thirty-two"`
-
 	right2 := `
 	[right2]
 	x	y	z
@@ -1779,37 +1793,94 @@ func TestTable_GetTableAsBinary_nestedTable(t *testing.T) {
 	1	2	3
 	4	5	6
 	7	8	9`
-
 	right3 := `
 	[right3]
 	f float32 = 88.8`
-
 	right4 := `
 	[right4]
 	t1 *Table = []`
-
 	table1.SetTableMustSet("right", 0, NewTableFromStringMustMake(right0))
 	table1.SetTableMustSet("right", 1, NewTableFromStringMustMake(right1))
 	table1.SetTableMustSet("right", 2, NewTableFromStringMustMake(right2))
 	table1.SetTableMustSet("right", 3, NewTableFromStringMustMake(right3))
 	table1.SetTableMustSet("right", 4, NewTableFromStringMustMake(right4))
-
 	fmt.Printf("table1:\n%s\n", table1)
-
 	encoded, err := bson.Marshal(table1)
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Printf("encoded type: %T\n", encoded)
 	fmt.Printf("len(encoded) = %d\n", len(encoded))
-
 	// Now let's get it back from JSON into *Table
 	var table2 *Table
 	err = bson.Unmarshal(encoded, &table2)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	fmt.Printf("table2:\n%s\n", table2)
 }
 */
+
+func TestTable_isCircularReference(t *testing.T) {
+
+	var err error
+
+	t0string := `
+	[T0]
+	t0 *Table = [t0]`
+	table0, err := NewTableFromString(t0string)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t1string := `
+	[T1]
+	t1 *Table = [t1]`
+	table1, err := NewTableFromString(t1string)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t2string := `
+	[T2]
+	t2 *Table = [t2]`
+	table2, err := NewTableFromString(t2string)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t3string := `
+	[T3]
+	t3 *Table = [t3]`
+	table3, err := NewTableFromString(t3string)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assign to table-cell.
+	err = table0.SetTableByColIndex(0, 0, table1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = table1.SetTableByColIndex(0, 0, table2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = table2.SetTableByColIndex(0, 0, table3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = table3.SetTableByColIndex(0, 0, table0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+where(fmt.Sprintf("%p", table0))
+where(fmt.Sprintf("\n%s", table0))
+
+where(fmt.Sprintf("%p", table1))
+where(fmt.Sprintf("\n%s", table1))
+
+where(fmt.Sprintf("%p", table2))
+where(fmt.Sprintf("\n%s", table2))
+
+where(fmt.Sprintf("%p", table3))
+where(fmt.Sprintf("\n%s", table3))
+}

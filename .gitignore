@@ -242,3 +242,5 @@ temp.got
 cmd/gotecho/cpu.pprof
 cmd/gotecho/mem.pprof
 *.pprof
+*.DELETE
+*.KEEP
