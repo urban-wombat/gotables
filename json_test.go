@@ -1139,15 +1139,10 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 		log.Println(err)
 	}
 
-where()
 	fmt.Println("This should fail: We are assigning the same table as the parent.")
 	err = table.SetTable("right", 0, table) // table already exists (at the top level)
 	if err != nil {
 		log.Println(err)
-		/*
-var t *testing.T
-t.Error(err)
-		*/
 	}
 	fmt.Printf("%s", table)
 	_, err = table.GetTableAsJSON()
@@ -1227,9 +1222,9 @@ t.Error(err)
 	fmt.Println()
 
 	fmt.Println("(3) This should fail: We are assigning the same table to multiple cells.")
-	valid, err = table.IsValidTableNesting2()
-	fmt.Printf("table.IsValidTableNesting2(): valid = %t\n", valid)
-where(fmt.Sprintf("table.IsValidTableNesting2(): valid = %t\n", valid))
+	valid, err = table.IsValidTableNesting()
+	fmt.Printf("table.IsValidTableNesting(): valid = %t\n", valid)
+	// where(fmt.Sprintf("table.IsValidTableNesting(): valid = %t\n", valid))
 	if err != nil {
 		// Prints error.
 		fmt.Println(err)
@@ -1256,28 +1251,6 @@ where(fmt.Sprintf("table.IsValidTableNesting2(): valid = %t\n", valid))
 	}
 
 	// Output:
-	// This should fail: We are assigning the same table as the parent.
-	// [SameTableReference]
-	// left     i s      right
-	// *Table int string *Table
-	// []      42 "abc"  [SameTableReference]
-	// getTableAsJSON_recursive(): circular reference in table [SameTableReference]: a reference to table [SameTableReference] already exists
-	//
-	// Now try again with a COPY of the same table, which will have a new reference.
-	// By the way, don't try to set table 'right' to <nil>. Not allowed. Must use an actual *Table reference.
-	// SetTable(right, 0, val): table [TableCopy] col right expecting val of type *Table, not: <nil> [use NewNilTable() instead of <nil>]
-	// [TableCopy]
-	// left     i s      right
-	// *Table int string *Table
-	// []      42 "abc"  []
-	//
-	// This should succeed: We are assigning a DIFFERENT table (same contents doesn't matter).
-	// [SameTableReference]
-	// left     i s      right
-	// *Table int string *Table
-	// []      42 "abc"  [TableCopy]
-	//
-	// Print as is:
 	// This should fail: We are assigning the same table as the parent.
 	// [SameTableReference]
 	// left     i s      right
@@ -1374,7 +1347,7 @@ where(fmt.Sprintf("table.IsValidTableNesting2(): valid = %t\n", valid))
 	// 	]
 	// }
 	//
-	// (1) This should fail: We are assigning the same table to multiple cells.
+	// (1) This should (NOT?) fail: We are assigning the same table to multiple cells.
 	// [SameTableReference]
 	// left          i s      right
 	// *Table      int string *Table
@@ -1383,19 +1356,34 @@ where(fmt.Sprintf("table.IsValidTableNesting2(): valid = %t\n", valid))
 	//
 	// (2) This should fail: We are assigning the same table to multiple cells.
 	// table.IsValidTableNesting(): valid = false
-	// isValidTableNesting_recursive(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// IsValidTableNesting(): CircRefError: circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 	//
 	// (3) This should fail: We are assigning the same table to multiple cells.
-	// table.IsValidTableNesting2(): valid = false
-	// IsValidTableNesting2(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// table.IsValidTableNesting(): valid = false
+	// IsValidTableNesting(): CircRefError: circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
 	// Yes, there is a wrapped CircRefError inside err:
-	// circError.Error(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
-	// circError.RootTable(): SameTableReference
-	// circError.CircTable(): TableCopy
+	// circError.Error(): CircRefError: circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// circError.RootTable(): [SameTableReference]
+	// left          i s      right
+	// *Table      int string *Table
+	// [TableCopy]  42 "abc"  [TableCopy]
+	//
+	// circError.CircTable(): [TableCopy]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  []
+	//
 	// Yes, there is a wrapped CircRefError inside err:
-	// circError.Error(): circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
-	// circError.RootTable(): SameTableReference
-	// circError.CircTable(): TableCopy
+	// circError.Error(): CircRefError: circular reference in table [SameTableReference]: a reference to table [TableCopy] already exists
+	// circError.RootTable(): [SameTableReference]
+	// left          i s      right
+	// *Table      int string *Table
+	// [TableCopy]  42 "abc"  [TableCopy]
+	//
+	// circError.CircTable(): [TableCopy]
+	// left     i s      right
+	// *Table int string *Table
+	// []      42 "abc"  []
 }
 
 func ExampleTable_GetTableAsJSON_nestedTables() {
@@ -1872,15 +1860,17 @@ func TestTable_isCircularReference(t *testing.T) {
 		t.Fatal(err)
 	}
 
-where(fmt.Sprintf("%p", table0))
-where(fmt.Sprintf("\n%s", table0))
+	/*
+	   where(fmt.Sprintf("%p", table0))
+	   where(fmt.Sprintf("\n%s", table0))
 
-where(fmt.Sprintf("%p", table1))
-where(fmt.Sprintf("\n%s", table1))
+	   where(fmt.Sprintf("%p", table1))
+	   where(fmt.Sprintf("\n%s", table1))
 
-where(fmt.Sprintf("%p", table2))
-where(fmt.Sprintf("\n%s", table2))
+	   where(fmt.Sprintf("%p", table2))
+	   where(fmt.Sprintf("\n%s", table2))
 
-where(fmt.Sprintf("%p", table3))
-where(fmt.Sprintf("\n%s", table3))
+	   where(fmt.Sprintf("%p", table3))
+	   where(fmt.Sprintf("\n%s", table3))
+	*/
 }

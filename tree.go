@@ -150,16 +150,16 @@ func (cell Cell) TableName() string {
 }
 */
 
-func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
+func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 
-	const funcName = "IsValidTableNesting2()"
+	const funcName = "IsValidTableNesting()"
 
 	if rootTable == nil {
 		return false, fmt.Errorf("rootTable.%s(): rootTable is nil", UtilFuncNameNoParens())
 	}
 
 	var refMap circRefMap = map[*Table]struct{}{}
-	refMap[rootTable] = EmptyStruct	// Add the root table to the map.
+	refMap[rootTable] = EmptyStruct // Add the root table to the map.
 
 	var visitCell func(cell Cell) (err error)
 	visitCell = func(cell Cell) (err error) {
@@ -174,9 +174,7 @@ func (rootTable *Table) IsValidTableNesting2() (valid bool, err error) {
 			_, exists := refMap[nestedTable]
 			if exists { // Invalid table with circular reference!
 				// Construct CircRefError.
-				isCircular, depth := rootTable.isCircularReference(nestedTable)
-where(fmt.Sprintf("xxxx isCircular:%t rootTable:%p nestedTable %p", isCircular, rootTable, nestedTable))
-				circError := NewCircRefError(rootTable, nestedTable, depth)
+				circError := NewCircRefError(rootTable, nestedTable)
 				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
 				return err
 			} else {
@@ -197,27 +195,28 @@ where(fmt.Sprintf("xxxx isCircular:%t rootTable:%p nestedTable %p", isCircular, 
 }
 
 func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCircular bool, depth int) {
-where(fmt.Sprintf("isCircularReference(parentTable:%p, candidateChildTable:%p)", parentTable, candidateChildTable))
-	depth = 1	// Can only have a circular reference with depth 1 or more.
+	UtilPrintCaller()
+	// where(fmt.Sprintf("isCircularReference(parentTable:%p, candidateChildTable:%p)", parentTable, candidateChildTable))
+	depth = 1 // Can only have a circular reference with depth 1 or more.
 	if parentTable == candidateChildTable {
-where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
+		// where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
 		return true, depth
 	}
-where(fmt.Sprintf("parentTable.parentTable:%p", parentTable.parentTable))
+	// where(fmt.Sprintf("parentTable.parentTable:%p", parentTable.parentTable))
 	for depth = 1; parentTable.parentTable != nil; depth++ {
-where(fmt.Sprintf("fff depth:%d parentTable:%p candidateChildTable:%p", depth, parentTable, candidateChildTable))
+		// where(fmt.Sprintf("fff depth:%d parentTable:%p candidateChildTable:%p", depth, parentTable, candidateChildTable))
 		if parentTable == candidateChildTable {
-where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
+			// where(fmt.Sprintf("depth:%d parentTable == candidateChildTable", depth))
 			return true, depth
 		}
 		parentTable = parentTable.parentTable
-where(parentTable.String())
-where(fmt.Sprintf("*** depth:%d parentTable ref:%p parentTable name:%s parentTable ref:%p", depth, parentTable, parentTable.Name(), parentTable.parentTable))
+		// where(parentTable.String())
+		// where(fmt.Sprintf("*** depth:%d parentTable ref:%p parentTable name:%s parentTable ref:%p", depth, parentTable, parentTable.Name(), parentTable.parentTable))
 		if depth >= 9 {
 			os.Exit(44)
 		}
 	}
 
-where(fmt.Sprintf("depth:%d return -1", depth))
+	// where(fmt.Sprintf("depth:%d return -1", depth))
 	return false, -1
 }

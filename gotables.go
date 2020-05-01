@@ -4186,7 +4186,7 @@ func TypesList() string {
 
 	The purpose is to completely eliminate the possibility of circular references.
 */
-func (table *Table) IsValidTableNesting() (valid bool, err error) {
+func (table *Table) isValidTableNesting1() (valid bool, err error) {
 
 	if table == nil {
 		return false, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())

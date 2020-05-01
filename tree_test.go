@@ -1,7 +1,6 @@
 package gotables_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/urban-wombat/gotables"
@@ -80,11 +79,11 @@ func TestTable_Walk_countInts(t *testing.T) {
 	table1.SetTableMustSet("right", 3, gotables.NewTableFromStringMustMake(right3))
 	table1.SetTableMustSet("right", 4, gotables.NewTableFromStringMustMake(right4))
 
-	fmt.Printf("table1:\n%s\n", table1)
+	// fmt.Printf("table1:\n%s\n", table1)
 
 	var tableCount int
 	var visitTable = func(table *gotables.Table) (err error) {
-		fmt.Printf("visiting:\n%s\n", table)
+		// fmt.Printf("visiting:\n%s\n", table)
 		tableCount++
 		return
 	}
@@ -109,9 +108,31 @@ func TestTable_Walk_countInts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("tableCount = %d\n", tableCount)
-	fmt.Printf("cellCount = %d\n", cellCount)
-	fmt.Printf("intCount = %d\n", intCount)
-	fmt.Printf("intSum = %d\n", intSum)
-	fmt.Printf("float32Count = %d\n", float32Count)
+
+	var expecting int = 7
+
+	expecting = 7
+	if tableCount != expecting {
+		t.Fatalf("expecting tableCount %d, not %d", expecting, tableCount)
+	}
+
+	expecting = 28
+	if cellCount != expecting {
+		t.Fatalf("expecting cellCount %d, not %d", expecting, cellCount)
+	}
+
+	expecting = 15
+	if intCount != expecting {
+		t.Fatalf("expecting intCount %d, not %d", expecting, intCount)
+	}
+
+	expecting = 87
+	if intSum != expecting {
+		t.Fatalf("expecting intSum %d, not %d", expecting, intSum)
+	}
+
+	expecting = 1
+	if float32Count != expecting {
+		t.Fatalf("expecting float32Count %d, not %d", expecting, float32Count)
+	}
 }
