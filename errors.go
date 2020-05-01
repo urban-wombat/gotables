@@ -29,13 +29,20 @@ func (circError *CircRefError) Error() string {
 	return circError.msg
 }
 
-func NewCircRefError(rootTable *Table, circTable *Table) *CircRefError {
+func NewCircRefError(rootTable *Table, circTable *Table, userMsg string) *CircRefError {
 	var circError CircRefError
 	circError.rootTable = rootTable
 	circError.circTable = circTable
-	circError.msg = fmt.Sprintf("CircRefError: circular reference in table [%s]: a reference to table [%s] already exists",
-		circError.rootTable.Name(),
-		circError.circTable.Name())
+
+	if userMsg == "" {
+		circError.msg = fmt.Sprintf("CircRefError: circular reference in table [%s]: a reference to table [%s] already exists",
+			circError.rootTable.Name(),
+			circError.circTable.Name())
+	} else {
+		// Use user-defined msg.
+		circError.msg = "CircRefError: " + userMsg
+	}
+
 	return &circError
 }
 

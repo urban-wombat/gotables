@@ -158,6 +158,12 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 		return false, fmt.Errorf("rootTable.%s(): rootTable is nil", UtilFuncNameNoParens())
 	}
 
+	if rootTable.parentTable != nil {
+		msg := fmt.Sprintf("rootTable.parentTable should be <nil> but found: %q", rootTable.parentTable.Name())
+		circError := NewCircRefError(rootTable, nil, msg)
+		err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
+	}
+
 	var refMap circRefMap = map[*Table]struct{}{}
 	refMap[rootTable] = EmptyStruct // Add the root table to the map.
 
@@ -170,11 +176,17 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 				return err
 			}
 
+			if nestedTable.parentTable == nil {
+				msg := fmt.Sprintf("nestedTable.parentTable should not be <nil>")
+				circError := NewCircRefError(rootTable, nestedTable, msg)
+				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
+			}
+
 			// Have we already seen this table?
 			_, exists := refMap[nestedTable]
 			if exists { // Invalid table with circular reference!
 				// Construct CircRefError.
-				circError := NewCircRefError(rootTable, nestedTable)
+				circError := NewCircRefError(rootTable, nestedTable, "")
 				err = fmt.Errorf("%s: %w", funcName, circError) // Wrap circError in err.
 				return err
 			} else {
