@@ -1681,12 +1681,15 @@ func BenchmarkGetTableSetAsJSON(b *testing.B) {
     1   "abc"   2.3         true
     2   "xyz"   4.5         false
     3   "ssss"  4.9         false
+
 	[Struct_With_Data]
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
+
 	[Empty_Struct]
 	Fred int
+
 	[Empty_Table]
 	Fred
 	int
@@ -1716,12 +1719,15 @@ func BenchmarkNewTableSetFromJSON(b *testing.B) {
     1   "abc"   2.3         true
     2   "xyz"   4.5         false
     3   "ssss"  4.9         false
+
 	[Struct_With_Data]
 	Fred int = 42
 	Wilma int = 39
 	Pebbles int = 2
+
 	[Empty_Struct]
 	Fred int
+
 	[Empty_Table]
 	Fred
 	int
