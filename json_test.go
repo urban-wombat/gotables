@@ -1393,6 +1393,9 @@ func ExampleTable_GetTableAsJSON_nestedTables() {
 
 	var tableString string
 	tableString = `
+
+	[[MyTableSetName]]
+
 	[TypesGalore22]
     i   s      right
     int string *Table

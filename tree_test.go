@@ -104,7 +104,7 @@ func TestTable_Walk_countInts(t *testing.T) {
 		return
 	}
 
-	_, err = table1.Walk(visitTable, visitCell, nil)
+	err = table1.Walk(visitTable, visitCell)
 	if err != nil {
 		t.Fatal(err)
 	}

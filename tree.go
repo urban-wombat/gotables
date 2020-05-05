@@ -16,11 +16,19 @@ import (
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cell) error, in interface{}) (out interface{}, err error) {
+func (tableSet *TableSet) Walk(visitTableSet func(*TableSet) error, visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
 
 	if tableSet == nil {
 		err = fmt.Errorf("TableSet.%s(): tableSet is nil", UtilFuncNameNoParens())
 		return
+	}
+
+	// Visit tableSet.
+	if visitTableSet != nil {
+		err = visitTableSet(tableSet)
+		if err != nil {
+			return
+		}
 	}
 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
@@ -31,7 +39,7 @@ func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cel
 			return
 		}
 
-		out, err = table.Walk(visitTable, visitCell, in)
+		err = table.Walk(visitTable, visitCell)
 		if err != nil {
 			return
 		}
@@ -49,7 +57,7 @@ func (tableSet *TableSet) Walk(visitTable func(*Table) error, visitCell func(Cel
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error, in interface{}) (out interface{}, err error) {
+func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
@@ -94,10 +102,12 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 				}
 
 				// Recursive call to visit nested tables.
-				out, err = nestedTable.Walk(visitTable, visitCell, in)
+				nestedTable.depth++
+				err = nestedTable.Walk(visitTable, visitCell)
 				if err != nil {
 					return
 				}
+				nestedTable.depth--
 			}
 		}
 	}
@@ -197,7 +207,7 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 		return nil
 	}
 
-	_, err = rootTable.Walk(nil, visitCell, nil)
+	err = rootTable.Walk(nil, visitCell)
 	if err != nil {
 		// Found a circular reference!
 		return false, err
