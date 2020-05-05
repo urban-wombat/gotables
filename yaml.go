@@ -13,6 +13,7 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 	}
 
 	const twoSpaces string = "  "	// Two spaces
+	var indent string = ""
 
 	var buf bytes.Buffer
 
@@ -28,32 +29,26 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 	}
 
 	var visitTable = func(table *Table) (err error) {
-		var indent string = strings.Repeat(twoSpaces, table.depth)
+
 		buf.WriteString(indent + "- tableName: ")
 		buf.WriteString(table.Name())
 		buf.WriteByte('\n')
 
 		indent = strings.Repeat(twoSpaces, table.depth+1)
 		buf.WriteString(indent + "metadata:\n")
-		for colIndex := 0; colIndex < len(table.colNames); colIndex++ {
-			buf.WriteString(indent)
-			buf.WriteString(fmt.Sprintf("- %s: %s\n", table.colNames[colIndex], table.colTypes[colIndex]))
-/*
-			buf.WriteString(table.colNames[colIndex])
-			buf.WriteString(`":"`)
-			buf.WriteString(table.colTypes[colIndex])
-			buf.WriteByte('"')
-			if colIndex < len(table.colNames)-1 {
-				buf.WriteByte(',')
-			}
-*/
-		}
-		indent = strings.Repeat(twoSpaces, table.depth)
 
 		return
 	}
 
-	err = tableSet.Walk(visitTableSet, visitTable, nil)
+	var visitCell = func(cell Cell) (err error) {
+
+		buf.WriteString(indent)
+		buf.WriteString(fmt.Sprintf("- %s: %s\n", cell.ColName, cell.ColType))
+
+		return
+	}
+
+	err = tableSet.Walk(visitTableSet, visitTable, visitCell)
 	if err != nil {
 		return "", nil
 	}

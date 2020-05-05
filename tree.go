@@ -72,10 +72,11 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 		}
 	}
 
-	// Visit cell values.
-	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+	// Visit cell values, row by row.
 
-		for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+
+		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 
 			var cell Cell
 			cell, err = table.CellByColIndex(colIndex, rowIndex)

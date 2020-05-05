@@ -124,7 +124,6 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 
 	// Get data
 
-	//	buf.WriteString(fmt.Sprintf(`"%s%s":[`, dataTableNamePrefix, table.Name()))	// Begin array of rows.
 	buf.WriteString(`"data":[`)
 	for rowIndex := 0; rowIndex < len(table.rows); rowIndex++ {
 		buf.WriteByte('[') // Begin array of column cells.
