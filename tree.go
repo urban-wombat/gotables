@@ -16,7 +16,8 @@ import (
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (tableSet *TableSet) Walk(visitTableSet func(*TableSet) error, visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
+func (tableSet *TableSet) Walk(
+	visitTableSet func(*TableSet) error, visitTable func(*Table) error, visitRow func(Row) error, visitCell func(Cell) error) (err error) {
 
 	if tableSet == nil {
 		err = fmt.Errorf("TableSet.%s(): tableSet is nil", UtilFuncNameNoParens())
@@ -39,7 +40,7 @@ func (tableSet *TableSet) Walk(visitTableSet func(*TableSet) error, visitTable f
 			return
 		}
 
-		err = table.Walk(visitTable, visitCell)
+		err = table.Walk(visitTable, visitRow, visitCell)
 		if err != nil {
 			return
 		}
@@ -57,7 +58,7 @@ func (tableSet *TableSet) Walk(visitTableSet func(*TableSet) error, visitTable f
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
-func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) error) (err error) {
+func (table *Table) Walk(visitTable func(*Table) error, visitRow func(Row) error, visitCell func(Cell) error) (err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
@@ -75,6 +76,20 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 	// Visit cell values, row by row.
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+
+		var row Row
+		row, err = table.RowByRowIndex(rowIndex)
+		if err != nil {
+			return
+		}
+
+		// Visit row.
+		if visitRow != nil {
+			err = visitRow(row)
+			if err != nil {
+				return
+			}
+		}
 
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 
@@ -102,12 +117,16 @@ func (table *Table) Walk(visitTable func(*Table) error, visitCell func(Cell) err
 					return
 				}
 
-				// Recursive call to visit nested tables.
+				// Down into nested table.
 				nestedTable.depth++
-				err = nestedTable.Walk(visitTable, visitCell)
+
+				// Recursive call to visit nested tables.
+				err = nestedTable.Walk(visitTable, visitRow, visitCell)
 				if err != nil {
 					return
 				}
+
+				// Back up from nested table.
 				nestedTable.depth--
 			}
 		}
@@ -153,6 +172,18 @@ func (table *Table) Cell(colName string, rowIndex int) (cell Cell, err error) {
 	}
 
 	return cell, nil
+}
+
+func (table *Table) RowByRowIndex(rowIndex int) (row Row, err error) {
+
+	if table == nil {
+		return row, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+	}
+
+	row.Table = table
+	row.RowIndex = rowIndex
+
+	return row, nil
 }
 
 /*
@@ -208,7 +239,7 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 		return nil
 	}
 
-	err = rootTable.Walk(nil, visitCell)
+	err = rootTable.Walk(nil, nil, visitCell)
 	if err != nil {
 		// Found a circular reference!
 		return false, err

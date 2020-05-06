@@ -516,6 +516,11 @@ func (table *Table) getColTypes() []string {
 
 type tableRow []interface{}
 
+type Row struct {
+	Table    *Table
+	RowIndex int
+}
+
 type Cell struct {
 	Table    *Table
 	ColName  string
@@ -1252,7 +1257,7 @@ func (table *Table) _String(horizontalSeparator byte) string {
 					buf.WriteString(tableName)
 					buf.WriteByte(93) // Closing square bracket.
 				default:
-					log.Printf("%s #1 ERROR IN %s: Unknown type: %s\n",
+					log.Printf("%s #1 ERROR IN %s: unknown type: %s\n",
 						UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
 					return ""
 				}
@@ -1541,7 +1546,7 @@ func (table *Table) StringPadded() string {
 				}
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
-				log.Printf("#2 %s ERROR IN %s: Unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
+				log.Printf("#2 %s ERROR IN %s: unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s

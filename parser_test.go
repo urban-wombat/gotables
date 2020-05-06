@@ -260,7 +260,7 @@ func TestTable_Visit(t *testing.T) {
 		panic(err)
 	}
 
-	err = table.Walk(visitTable, visitCell)
+	err = table.Walk(visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}
@@ -359,7 +359,7 @@ func ExampleTable_Walk() {
 		panic(err)
 	}
 
-	err = table.Walk(visitTable, visitCell)
+	err = table.Walk(visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}
