@@ -47,7 +47,7 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 			buf.WriteString(fmt.Sprintf("%s- %s: %s\n", metadataIndent, table.colNames[i], table.colTypes[i]))
 		}
 
-		buf.WriteString(tableIndent + "data:\n")
+		buf.WriteString(tableIndent + metadataIndent + "data:\n")
 
 /*
 //		var valString string

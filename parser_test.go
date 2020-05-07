@@ -390,27 +390,6 @@ func ExampleTable_Walk() {
 	// cell.RowIndex = 0
 	// cell.ColType = int
 	//
-	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=1)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = i
-	// cell.ColIndex = 0
-	// cell.RowIndex = 1
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=2)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = i
-	// cell.ColIndex = 0
-	// cell.RowIndex = 2
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=3)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = i
-	// cell.ColIndex = 0
-	// cell.RowIndex = 3
-	// cell.ColType = int
-	//
 	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=0)
 	// cell.Table.Name() = RootTable
 	// cell.ColName = j
@@ -418,53 +397,11 @@ func ExampleTable_Walk() {
 	// cell.RowIndex = 0
 	// cell.ColType = int
 	//
-	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=1)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = j
-	// cell.ColIndex = 1
-	// cell.RowIndex = 1
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=2)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = j
-	// cell.ColIndex = 1
-	// cell.RowIndex = 2
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=3)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = j
-	// cell.ColIndex = 1
-	// cell.RowIndex = 3
-	// cell.ColType = int
-	//
 	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=0)
 	// cell.Table.Name() = RootTable
 	// cell.ColName = k
 	// cell.ColIndex = 2
 	// cell.RowIndex = 0
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=1)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = k
-	// cell.ColIndex = 2
-	// cell.RowIndex = 1
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=2)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = k
-	// cell.ColIndex = 2
-	// cell.RowIndex = 2
-	// cell.ColType = int
-	//
-	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=3)
-	// cell.Table.Name() = RootTable
-	// cell.ColName = k
-	// cell.ColIndex = 2
-	// cell.RowIndex = 3
 	// cell.ColType = int
 	//
 	// [RootTable].visitCell(colName=nested, colIndex=3, rowIndex=0)
@@ -501,6 +438,27 @@ func ExampleTable_Walk() {
 	// cell.RowIndex = 0
 	// cell.ColType = bool
 	//
+	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=1)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = i
+	// cell.ColIndex = 0
+	// cell.RowIndex = 1
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=1)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = j
+	// cell.ColIndex = 1
+	// cell.RowIndex = 1
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=1)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = k
+	// cell.ColIndex = 2
+	// cell.RowIndex = 1
+	// cell.ColType = int
+	//
 	// [RootTable].visitCell(colName=nested, colIndex=3, rowIndex=1)
 	// cell.Table.Name() = RootTable
 	// cell.ColName = nested
@@ -517,6 +475,27 @@ func ExampleTable_Walk() {
 	//
 	// [AnyNameYouLike]
 	//
+	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=2)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = i
+	// cell.ColIndex = 0
+	// cell.RowIndex = 2
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=2)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = j
+	// cell.ColIndex = 1
+	// cell.RowIndex = 2
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=2)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = k
+	// cell.ColIndex = 2
+	// cell.RowIndex = 2
+	// cell.ColType = int
+	//
 	// [RootTable].visitCell(colName=nested, colIndex=3, rowIndex=2)
 	// cell.Table.Name() = RootTable
 	// cell.ColName = nested
@@ -532,6 +511,27 @@ func ExampleTable_Walk() {
 	// table.ParentTable.Name() = RootTable
 	//
 	// [AnyNameYouLike]
+	//
+	// [RootTable].visitCell(colName=i, colIndex=0, rowIndex=3)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = i
+	// cell.ColIndex = 0
+	// cell.RowIndex = 3
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=j, colIndex=1, rowIndex=3)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = j
+	// cell.ColIndex = 1
+	// cell.RowIndex = 3
+	// cell.ColType = int
+	//
+	// [RootTable].visitCell(colName=k, colIndex=2, rowIndex=3)
+	// cell.Table.Name() = RootTable
+	// cell.ColName = k
+	// cell.ColIndex = 2
+	// cell.RowIndex = 3
+	// cell.ColType = int
 	//
 	// [RootTable].visitCell(colName=nested, colIndex=3, rowIndex=3)
 	// cell.Table.Name() = RootTable
