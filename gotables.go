@@ -2681,6 +2681,7 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 func (table *Table) IsValidTable() (isValid bool, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	//where(fmt.Sprintf("***CALLED BY %s", UtilFuncCaller()))
+//UtilPrintCaller()
 
 	if table == nil {
 		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())

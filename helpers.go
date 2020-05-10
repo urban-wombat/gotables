@@ -868,6 +868,7 @@ func (table *Table) SetTable(colName string, rowIndex int, newVal *Table) error 
 			UtilFuncNameNoParens(), colName, rowIndex, table.Name(), colName)
 	}
 
+	// This may help with reporting errors.
 	newVal.parentTable = table
 
 	colType, err := table.ColType(colName)
@@ -1694,8 +1695,8 @@ func (table *Table) GetByteSlice(colName string, rowIndex int) (val []byte, err 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type []byte",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1735,8 +1736,8 @@ func (table *Table) GetUint8Slice(colName string, rowIndex int) (val []uint8, er
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type []uint8",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1776,8 +1777,8 @@ func (table *Table) GetBool(colName string, rowIndex int) (val bool, err error) 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type bool",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1817,8 +1818,8 @@ func (table *Table) GetByte(colName string, rowIndex int) (val byte, err error) 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type byte",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1858,8 +1859,8 @@ func (table *Table) GetFloat32(colName string, rowIndex int) (val float32, err e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type float32",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1899,8 +1900,8 @@ func (table *Table) GetFloat64(colName string, rowIndex int) (val float64, err e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type float64",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1940,8 +1941,8 @@ func (table *Table) GetInt(colName string, rowIndex int) (val int, err error) {
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type int",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -1981,8 +1982,8 @@ func (table *Table) GetInt16(colName string, rowIndex int) (val int16, err error
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type int16",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2022,8 +2023,8 @@ func (table *Table) GetInt32(colName string, rowIndex int) (val int32, err error
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type int32",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2063,8 +2064,8 @@ func (table *Table) GetInt64(colName string, rowIndex int) (val int64, err error
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type int64",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2104,8 +2105,8 @@ func (table *Table) GetInt8(colName string, rowIndex int) (val int8, err error) 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type int8",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2145,8 +2146,8 @@ func (table *Table) GetRune(colName string, rowIndex int) (val rune, err error) 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type rune",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2186,8 +2187,8 @@ func (table *Table) GetString(colName string, rowIndex int) (val string, err err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type string",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2227,8 +2228,8 @@ func (table *Table) GetUint(colName string, rowIndex int) (val uint, err error) 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type uint",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2268,8 +2269,8 @@ func (table *Table) GetUint16(colName string, rowIndex int) (val uint16, err err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type uint16",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2309,8 +2310,8 @@ func (table *Table) GetUint32(colName string, rowIndex int) (val uint32, err err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type uint32",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2350,8 +2351,8 @@ func (table *Table) GetUint64(colName string, rowIndex int) (val uint64, err err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type uint64",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2391,8 +2392,8 @@ func (table *Table) GetUint8(colName string, rowIndex int) (val uint8, err error
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type uint8",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2432,8 +2433,8 @@ func (table *Table) GetTable(colName string, rowIndex int) (val *Table, err erro
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type *Table",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -2473,8 +2474,8 @@ func (table *Table) GetTime(colName string, rowIndex int) (val time.Time, err er
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col %s is not type %s",
-				UtilFuncName(), table.Name(), colName, colType)
+			return val, fmt.Errorf("%s: table [%s] col %s is not type time.Time",
+				UtilFuncName(), table.Name(), colName)
 		}
 	}
 
@@ -3521,8 +3522,8 @@ func (table *Table) GetByteSliceByColIndex(colIndex int, rowIndex int) (val []by
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type []byte",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3558,8 +3559,8 @@ func (table *Table) GetUint8SliceByColIndex(colIndex int, rowIndex int) (val []u
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type []uint8",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3595,8 +3596,8 @@ func (table *Table) GetBoolByColIndex(colIndex int, rowIndex int) (val bool, err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type bool",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3632,8 +3633,8 @@ func (table *Table) GetByteByColIndex(colIndex int, rowIndex int) (val byte, err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type byte",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3669,8 +3670,8 @@ func (table *Table) GetFloat32ByColIndex(colIndex int, rowIndex int) (val float3
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type float32",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3706,8 +3707,8 @@ func (table *Table) GetFloat64ByColIndex(colIndex int, rowIndex int) (val float6
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type float64",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3743,8 +3744,8 @@ func (table *Table) GetIntByColIndex(colIndex int, rowIndex int) (val int, err e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type int",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3780,8 +3781,8 @@ func (table *Table) GetInt16ByColIndex(colIndex int, rowIndex int) (val int16, e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type int16",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3817,8 +3818,8 @@ func (table *Table) GetInt32ByColIndex(colIndex int, rowIndex int) (val int32, e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type int32",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3854,8 +3855,8 @@ func (table *Table) GetInt64ByColIndex(colIndex int, rowIndex int) (val int64, e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type int64",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3891,8 +3892,8 @@ func (table *Table) GetInt8ByColIndex(colIndex int, rowIndex int) (val int8, err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type int8",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3928,8 +3929,8 @@ func (table *Table) GetRuneByColIndex(colIndex int, rowIndex int) (val rune, err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type rune",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -3965,8 +3966,8 @@ func (table *Table) GetStringByColIndex(colIndex int, rowIndex int) (val string,
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type string",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4002,8 +4003,8 @@ func (table *Table) GetUintByColIndex(colIndex int, rowIndex int) (val uint, err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type uint",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4039,8 +4040,8 @@ func (table *Table) GetUint16ByColIndex(colIndex int, rowIndex int) (val uint16,
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type uint16",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4076,8 +4077,8 @@ func (table *Table) GetUint32ByColIndex(colIndex int, rowIndex int) (val uint32,
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type uint32",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4113,8 +4114,8 @@ func (table *Table) GetUint64ByColIndex(colIndex int, rowIndex int) (val uint64,
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type uint64",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4150,8 +4151,8 @@ func (table *Table) GetUint8ByColIndex(colIndex int, rowIndex int) (val uint8, e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type uint8",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4187,8 +4188,8 @@ func (table *Table) GetTableByColIndex(colIndex int, rowIndex int) (val *Table, 
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type *Table",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 
@@ -4224,8 +4225,8 @@ func (table *Table) GetTimeByColIndex(colIndex int, rowIndex int) (val time.Time
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return val, fmt.Errorf("%s: table [%s] col index %d is not type %s",
-				UtilFuncName(), table.Name(), colIndex, colType)
+			return val, fmt.Errorf("%s: table [%s] col index %d is not type time.Time",
+				UtilFuncName(), table.Name(), colIndex)
 		}
 	}
 

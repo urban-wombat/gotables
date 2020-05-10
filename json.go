@@ -257,8 +257,9 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 	/*
 		We don't know the order map values will be returned if we iterate of the map:
 		(1) tableName
-		(2) metadata
-		(3) data (if any)
+		(2) isStructShape (if there)
+		(3) metadata
+		(4) data (if any)
 		So we retrieve each of the 3 (possibly 2) top-level map values individually.
 	*/
 
@@ -448,18 +449,18 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 	return
 }
 
-func (tableSet *TableSet) GetTableSetAsJSONIndent() (jsonTableSetIndented string, err error) {
+func (tableSet *TableSet) GetTableSetAsJSONIndent() (jsonTableSetStringIndented string, err error) {
 
 	if tableSet == nil {
 		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	jsonTableSet, err := tableSet.GetTableSetAsJSON()
+	jsonTableSetString, err := tableSet.GetTableSetAsJSON()
 	if err != nil {
 		return "", err
 	}
 
-	jsonTableSetIndented, err = indentJSON(jsonTableSet)
+	jsonTableSetStringIndented, err = indentJSON(jsonTableSetString)
 	if err != nil {
 		return "", err
 	}
@@ -470,7 +471,7 @@ func (tableSet *TableSet) GetTableSetAsJSONIndent() (jsonTableSetIndented string
 /*
 	Marshal gotables TableSet to JSON
 */
-func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
+func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSetString string, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	if tableSet == nil {
@@ -506,7 +507,7 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
 	buf.WriteByte(']') // Closing array of tables
 	buf.WriteByte(125) // Closing brace outermost
 
-	jsonTableSet = buf.String()
+	jsonTableSetString = buf.String()
 
 	return
 }
@@ -514,14 +515,14 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSet string, err error) {
 /*
 	Unmarshal JSON documents to a *gotables.TableSet
 */
-func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
+func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err error) {
 
-	if jsonTableSet == "" {
-		return nil, fmt.Errorf("%s: jsonTableSet is empty", UtilFuncName())
+	if jsonTableSetString == "" {
+		return nil, fmt.Errorf("%s: jsonTableSetString is empty", UtilFuncName())
 	}
 
 	var m map[string]interface{}
-	err = json.Unmarshal([]byte(jsonTableSet), &m)
+	err = json.Unmarshal([]byte(jsonTableSetString), &m)
 	if err != nil {
 		return nil, err
 	}
@@ -531,7 +532,7 @@ func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
 	var exists bool
 	tableSetName, exists = m["tableSetName"].(string)
 	if !exists {
-		return nil, fmt.Errorf("JSON is missing tableSet name")
+		return nil, fmt.Errorf("%s: JSON is missing tableSet name", UtilFuncName())
 	}
 
 	tableSet, err = NewTableSet(tableSetName)
@@ -543,13 +544,13 @@ func NewTableSetFromJSON(jsonTableSet string) (tableSet *TableSet, err error) {
 	var tablesMap []interface{}
 	tablesMap, exists = m["tables"].([]interface{})
 	if !exists {
-		return nil, fmt.Errorf("JSON is missing tables")
+		return nil, fmt.Errorf("%s: JSON is missing tables", UtilFuncName())
 	}
 
 	var tableMap map[string]interface{}
 	var tableMapInterface interface{}
 
-	// Loop through the array of tables.
+	// (3) Loop through the array of tables.
 	for _, tableMapInterface = range tablesMap {
 
 		tableMap = tableMapInterface.(map[string]interface{})

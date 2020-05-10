@@ -103,6 +103,8 @@ func (table *Table) Walk(visitTable func(*Table) error, visitRow func(Row) error
 			if visitCell != nil {
 				err = visitCell(cell)
 				if err != nil {
+where(err)
+UtilPrintCallerCaller()
 					return
 				}
 			}
@@ -193,6 +195,7 @@ func (cell Cell) TableName() string {
 */
 
 func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
+//UtilPrintCaller()
 
 	const funcName = "IsValidTableNesting()"
 
@@ -249,7 +252,7 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 }
 
 func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCircular bool, depth int) {
-	UtilPrintCaller()
+	//UtilPrintCaller()
 	// where(fmt.Sprintf("isCircularReference(parentTable:%p, candidateChildTable:%p)", parentTable, candidateChildTable))
 	depth = 1 // Can only have a circular reference with depth 1 or more.
 	if parentTable == candidateChildTable {
