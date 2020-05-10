@@ -211,7 +211,7 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 
 	var err error
 	var tableSet1 *gotables.TableSet
-//	var tableSet2 *gotables.TableSet
+	var tableSet2 *gotables.TableSet
 	var tableSetString string
 	var yamlString string
 
@@ -228,6 +228,28 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	b int = 2
 	c int = 3
 	y int = 4
+	s []byte = [4 3 2 1]
+	u []uint8 = [42 44 48 50 52]
+	t time.Time = 2020-03-15T14:22:30.123456789+17:00
+	Y float32 = 66.666
+	e int = 1
+	f int = 1
+	g int = 1
+	h int = 1
+	i int = 1
+	j int = 1
+	k int = 1
+	l int = 1
+	m int = 1
+	n int = 1
+	N int = 1
+	o int = 1
+	p int = 1
+	r int = 1
+	v int = 1
+	w int = 1
+	x int = 1
+	z int = 1
 
 	[T2]
 	x		y		s
@@ -253,11 +275,9 @@ where()
 println()
 where("\n" + yamlString)
 
-/*
 	tableSet2, err = gotables.NewTableSetFromYAML(yamlString)
 	if err != nil {
 		t.Fatal(err)
 	}
 	_ = tableSet2
-*/
 }

@@ -131,8 +131,8 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 	if err != nil {
 		return
 	}
-println()
-where("\n" + printMap(m))
+//println()
+//where("\n" + printMap(m))
 
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
@@ -472,80 +472,75 @@ where()
 
 	var visitCell = func(cell Cell) (err error) {
 
-		var valString string
 		var anyVal interface{}
 		yamlObject = make(map[string]interface{}, 1)
 
 		switch cell.ColType {
 		case "string":
-			var s1 string
-//			var s2 string
-			s1, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
-//			s2 = fmt.Sprintf("%q", s1)
-			anyVal = s1
-//			anyVal = s2
-			yamlObject[cell.ColName] = anyVal
-		case "uint", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "float32", "float64":
-			valString, err = cell.Table.GetValAsStringByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlObject[cell.ColName] = valString
+			anyVal, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
 		case "bool":
 			anyVal, err = cell.Table.GetBoolByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlObject[cell.ColName] = anyVal
 		case "byte":
 			anyVal, err = cell.Table.GetByteByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlObject[cell.ColName] = anyVal
 		case "int":
 			anyVal, err = cell.Table.GetIntByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlObject[cell.ColName] = anyVal
-/*
+		case "int8":
+			anyVal, err = cell.Table.GetInt8ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "int16":
+			anyVal, err = cell.Table.GetInt16ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "int32":
+			anyVal, err = cell.Table.GetInt32ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "int64":
+			anyVal, err = cell.Table.GetInt64ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "uint":
+			anyVal, err = cell.Table.GetUintByColIndex(cell.ColIndex, cell.RowIndex)
+		case "uint8":
+			anyVal, err = cell.Table.GetUint8ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "uint16":
+			anyVal, err = cell.Table.GetUint16ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "uint32":
+			anyVal, err = cell.Table.GetUint32ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "uint64":
+			anyVal, err = cell.Table.GetUint64ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "float32":
+			anyVal, err = cell.Table.GetFloat32ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "float64":
-			float64Val, err = cell.Table.GetFloat64ByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlTableRow[cell.ColName] = float64Val
-*/
+			anyVal, err = cell.Table.GetFloat64ByColIndex(cell.ColIndex, cell.RowIndex)
+		case "[]uint8":
+			anyVal, err = cell.Table.GetUint8SliceByColIndex(cell.ColIndex, cell.RowIndex)
+		case "[]byte":
+			anyVal, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
+		case "time.Time":
+			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 		case "*Table":
 where()
 		default:
-where()
 			err = fmt.Errorf("%s: ERROR IN visitCell(): unknown type: %s\n", UtilFuncSource(), cell.ColType)
 		}
-where(err)
 		// All errors in this switch are handled here.
 		if err != nil {
 			return err
 		}
 
+		yamlObject[cell.ColName] = anyVal
 		yamlTableRow[cell.ColIndex] = yamlObject
+/*
 where("yamlTableRow")
 where(printSlice(yamlTableRow))
+where("yamlObject")
 printYaml(nil, nil, yamlObject)
 printYaml(nil, yamlTableRow, nil)
 println()
+*/
 
 		return
 	}
 
 	err = tableSet.Walk(visitTableSet, visitTable, visitRow, visitCell)
-where(err)
 	if err != nil {
 		return "", nil
 	}
 
-where()
 	var yamlBytes []byte
 	yamlBytes, err = yaml.Marshal(yamlDoc)
 	if err != nil {
@@ -553,7 +548,6 @@ where()
 	}
 	yamlString = string(yamlBytes)
 
-where()
 	return
 }
 
