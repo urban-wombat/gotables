@@ -29,184 +29,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//func TestTableSet_GetTableSetAsYAML(t *testing.T) {
-//
-//	var err error
-//
-//	// Cheat and get our test TableSet from JSON.
-//	var jsonString string = `
-//	{"tableSetName":"MyTableSetName","tables":[{"tableName":"TypesGalore22","metadata":[{"i":"int"},{"s":"string"},{"right":"*Table"}],"data":[[{"i":0},{"s":"abc"},{"right":{"tableName":"right0","isStructShape":true,"metadata":[{"i":"int"}],"data":[[{"i":32}]]}}],[{"i":1},{"s":"xyz"},{"right":{"tableName":"right1","isStructShape":true,"metadata":[{"s":"string"}],"data":[[{"s":"thirty-two"}]]}}],[{"i":2},{"s":"ssss"},{"right":{"tableName":"right2","metadata":[{"x":"int"},{"y":"int"},{"z":"int"}],"data":[[{"x":1},{"y":2},{"z":3}],[{"x":4},{"y":5},{"z":6}],[{"x":7},{"y":8},{"z":9}]]}}],[{"i":3},{"s":"xxxx"},{"right":{"tableName":"right3","isStructShape":true,"metadata":[{"f":"float32"}],"data":[[{"f":88.8}]]}}],[{"i":4},{"s":"yyyy"},{"right":{"tableName":"right4","isStructShape":true,"metadata":[{"t1":"*Table"}],"data":[[{"t1":null}]]}}]]}]}
-//`
-//	var tableSet *gotables.TableSet
-//	tableSet, err = gotables.NewTableSetFromJSON(jsonString)
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//	// fmt.Println(tableSet.String())
-//
-//	var yaml string
-//	yaml, err = tableSet.GetTableSetAsYAML()
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//	// fmt.Println(yaml)
-//
-//	expected := `---
-//tableSetName: "MyTableSetName"
-//tables:
-//- tableName: TypesGalore22
-//  metadata:
-//  - i: int
-//  - s: string
-//  - right: "*Table"
-//  data:
-//  - - i: 0
-//    - s: "abc"
-//    - right:
-//        - tableName: right0
-//          isStructShape: true
-//          metadata:
-//          - i: int
-//          data:
-//          - - i: 32
-//          - - i: 1
-//            - s: "xyz"
-//            - right:
-//        - tableName: right1
-//          isStructShape: true
-//          metadata:
-//          - s: string
-//          data:
-//          - - s: "thirty-two"
-//          - - i: 2
-//            - s: "ssss"
-//            - right:
-//        - tableName: right2
-//          metadata:
-//          - x: int
-//          - y: int
-//          - z: int
-//          data:
-//          - - x: 1
-//            - y: 2
-//            - z: 3
-//          - - x: 4
-//            - y: 5
-//            - z: 6
-//          - - x: 7
-//            - y: 8
-//            - z: 9
-//          - - i: 3
-//            - s: "xxxx"
-//            - right:
-//        - tableName: right3
-//          isStructShape: true
-//          metadata:
-//          - f: float32
-//          data:
-//          - - f: 88.8
-//          - - i: 4
-//            - s: "yyyy"
-//            - right:
-//        - tableName: right4
-//          isStructShape: true
-//          metadata:
-//          - t1: "*Table"
-//          data:
-//          - - t1:
-//        - tableName: 
-//          metadata:
-//          data:
-//`
-//
-//	if yaml != expected {
-//		t.Errorf("yaml (long document) does not match expected yaml (long document)")
-//	}
-//}
-
-/*
-//func Test_NewTableSetFromYAML(t *testing.T) {
-//
-//	var tableSet *gotables.TableSet
-//	var err error
-//
-//	var yaml string = `---
-//tableSetName: "MyTableSetName"
-//tables:
-//- tableName: TypesGalore22
-//  metadata:
-//  - i: int
-//  - s: string
-//  - right: "*Table"
-//  data:
-//  - - i: 0
-//    - s: "abc"
-//    - right:
-//        - tableName: right0
-//          isStructShape: true
-//          metadata:
-//          - i: int
-//          data:
-//          - - i: 32
-//          - - i: 1
-//            - s: "xyz"
-//            - right:
-//        - tableName: right1
-//          isStructShape: true
-//          metadata:
-//          - s: string
-//          data:
-//          - - s: "thirty-two"
-//          - - i: 2
-//            - s: "ssss"
-//            - right:
-//        - tableName: right2
-//          metadata:
-//          - x: int
-//          - y: int
-//          - z: int
-//          data:
-//          - - x: 1
-//            - y: 2
-//            - z: 3
-//          - - x: 4
-//            - y: 5
-//            - z: 6
-//          - - x: 7
-//            - y: 8
-//            - z: 9
-//          - - i: 3
-//            - s: "xxxx"
-//            - right:
-//        - tableName: right3
-//          isStructShape: true
-//          metadata:
-//          - f: float32
-//          data:
-//          - - f: 88.8
-//          - - i: 4
-//            - s: "yyyy"
-//            - right:
-//        - tableName: right4
-//          isStructShape: true
-//          metadata:
-//          - t1: "*Table"
-//          data:
-//          - - t1:
-//        - tableName: 
-//          metadata:
-//          data:
-//`
-//
-//	tableSet, err = gotables.NewTableSetFromYAML(yaml)
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//
-//where(tableSet.String())
-//}
-*/
-
 func Test_NewTableSetFromYAML(t *testing.T) {
 
 	var err error
@@ -217,6 +39,18 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 
 	tableSetString = `
 	[[TipTopName]]
+
+	[ColOrder]
+	c0 int = 0
+	c1 int = 1
+	c2 int = 2
+	c3 int = 3
+	c4 int = 4
+	c5 int = 5
+	c6 int = 6
+	c7 int = 7
+	c8 int = 8
+	c9 int = 9
 
 	[T0]
 	f float64 = 99.90001
@@ -257,6 +91,9 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	true	42		"forty two"
 	false	55		"fifty-five"
 	true	66		"sixty six"
+
+	[T3]
+	t *Table = []
 	`
 	tableSet1, err = gotables.NewTableSetFromString(tableSetString)
 	if err != nil {
@@ -264,6 +101,28 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	}
 where("\n" + tableSet1.String())
 println()
+
+	var nestedString string = `
+	[NestedTable]
+	empty *Table = []
+	noByte []byte = []
+	noUint8 []uint8 = []
+	r rune = '^'
+	`
+	nestedTable, err := gotables.NewTableFromString(nestedString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t3, err := tableSet1.Table("T3")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = t3.SetTable("t", 0, nestedTable)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 where()
 	yamlString, err = tableSet1.GetTableSetAsYAML()
@@ -279,5 +138,10 @@ where("\n" + yamlString)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_ = tableSet2
+where("\n" + tableSet2.String())
+	equals, err := tableSet1.Equals(tableSet2)
+	if err != nil {
+		t.Fatal(err)
+	}
+where(equals)
 }

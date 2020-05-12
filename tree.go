@@ -103,8 +103,8 @@ func (table *Table) Walk(visitTable func(*Table) error, visitRow func(Row) error
 			if visitCell != nil {
 				err = visitCell(cell)
 				if err != nil {
-where(err)
-UtilPrintCallerCaller()
+//where()
+//UtilPrintCallerCaller()
 					return
 				}
 			}

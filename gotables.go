@@ -3818,14 +3818,6 @@ func nonZeroValue(typeName string) (interface{}, error) {
 	case "time.Time":
 		return MaxTime, nil
 	default:
-		/*
-			msg := fmt.Sprintf("invalid type: %s (Valid types:", typeName)
-			// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-			for typeName, _ := range globalColTypesMap {
-				msg += fmt.Sprintf(" %s", typeName)
-			}
-			msg += ")"
-		*/
 		msg := invalidColTypeMsg(typeName)
 		err := errors.New(msg)
 		return nil, err

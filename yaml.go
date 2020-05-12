@@ -3,7 +3,6 @@ package gotables
 import (
 	_ "bytes"
 	"fmt"
-	"reflect"
 	"time"
 
 	yaml "gopkg.in/yaml.v3"
@@ -246,12 +245,11 @@ func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err err
 		// Zero rows in this table. That's okay.
 		return table, nil
 	}
-//where(printMap(data))
+where("\n" + table.String())
 
 	// Loop through the array of rows.
 	for rowIndex, rowVal := range data {
-//where(printMap(rowVal))
-		// where(fmt.Sprintf("rowIndex=%d: %v", rowIndex, rowVal))
+where(fmt.Sprintf("rowIndex=%d: %v", rowIndex, rowVal))
 		err = table.AppendRow()
 		if err != nil {
 			return nil, err
@@ -259,148 +257,230 @@ func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err err
 
 		var row []interface{} = rowVal.([]interface{})
 where(fmt.Sprintf("rowVal type: %T", rowVal))
+where(fmt.Sprintf("rowVal     : %#v", rowVal))
 where(fmt.Sprintf("row    type: %T", row))
 //where(printMap(row))
-		for colIndex, val := range row {
+//		for colIndex, val := range row {
+		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 			// where(fmt.Sprintf("\t\tcol [%d] %v", colIndex, val))
-			var cell interface{}
-			var colName string
-			for colName, cell = range val.(map[string]interface{}) {
-where(fmt.Sprintf("colName  = %q", colName))
-where(fmt.Sprintf("colIndex = %d", colIndex))
-where(fmt.Sprintf("rowIndex = %d", rowIndex))
-				// There's only one map element here: colName and colType.
-				// where(fmt.Sprintf("\t\t\tcol=%d row=%d celltype=%T cell=%v", colIndex, rowIndex, cell, cell))
 
-				var colType string = table.colTypes[colIndex]
-where(fmt.Sprintf("colType  = %q", colType))
-where(fmt.Sprintf("cell type: %T", cell))
-println()
-//				switch cell.(type) {
-				switch colType {
-				case "string":
-					switch colType { // We need to convert time string format to time.Time
-					case "time.Time":
-						var timeVal time.Time
-						timeVal, err = time.Parse(time.RFC3339, cell.(string))
-						if err != nil { // We need this extra error check here
-							err := fmt.Errorf("could not convert YAML time string to gotables %s", colType)
-							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
-						}
-						err = table.SetTimeByColIndex(colIndex, rowIndex, timeVal)
-						if err != nil {
-							err := fmt.Errorf("could not convert YAML string to gotables %s", colType)
-							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
-						}
-					default: // Is a string
-						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
-					}
-					// Single error handler for all the calls in this switch statement.
-					if err != nil {
-						err := fmt.Errorf("could not convert YAML string to gotables %s", colType)
-						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
-					}
-				case "int":
-					err = table.SetIntByColIndex(colIndex, rowIndex, cell.(int))
-				case "float64":
-					switch colType { // We need to convert them back to gotables numeric types
-					case "int":
-						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
-					case "uint":
-						err = table.SetUintByColIndex(colIndex, rowIndex, uint(cell.(float64)))
-					case "byte":
-						err = table.SetByteByColIndex(colIndex, rowIndex, byte(cell.(float64)))
-					case "int8":
-						err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(cell.(float64)))
-					case "int16":
-						err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(cell.(float64)))
-					case "int32":
-						err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(cell.(float64)))
-					case "int64":
-						err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(cell.(float64)))
-					case "uint8":
-						err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(cell.(float64)))
-					case "uint16":
-						err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(cell.(float64)))
-					case "uint32":
-						err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(cell.(float64)))
-					case "uint64":
-						err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(cell.(float64)))
-					case "float32":
-						err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(cell.(float64)))
-					case "float64":
-						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(cell.(float64)))
-					}
-					// Single error handler for all the calls in this switch statement.
-					if err != nil {
-						err := fmt.Errorf("could not convert YAML float64 to gotables %s", colType)
-						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
-					}
-				case "bool":
-where(cell.(bool))
-					err = table.SetBoolByColIndex(colIndex, rowIndex, cell.(bool))
-//				case []interface{}: // This cell is a slice
-				case "[]byte", "[]uint": // This cell is a slice
-					var interfaceSlice []interface{} = cell.([]interface{})
-					var byteSlice []byte = []byte{}
-					for _, sliceVal := range interfaceSlice {
-						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
-					}
-					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
-					if err != nil {
-						return nil, err
-					}
-//				case map[string]interface{}: // This cell is a table.
-//				case *Table: // This cell is a table.
-				case "*Table":
-where("*Table")
-					switch colType {
-					case "*Table":
-where()
-						tableNested, err := newTableFromYAML_recursive(cell.(map[string]interface{}))
-						if err != nil {
-where()
-							return nil, err
-						}
-where()
-						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
-						if err != nil {
-where()
-							return nil, err
-						}
-					default:
-where()
-						return nil, fmt.Errorf("newTableFromYAML_recursive(): unexpected cell value at [%s].(%d,%d)",
-							tableName, colIndex, rowIndex)
-					}
-				case "nil": // This cell is a nil table.
-where()
-					switch colType {
-					case "*Table":
-						var tableNested *Table = NewNilTable()
-						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
-						if err != nil {
-							return nil, err
-						}
-					default:
-						return nil, fmt.Errorf("newTableFromYAML_recursive(): unexpected nil value at [%s].(%d,%d)",
-							tableName, colIndex, rowIndex)
-					}
-					/*
-						case time.Time:
-							err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
-					*/
-				default:
-where(fmt.Sprintf("val type: %T", val))
-					return nil, fmt.Errorf("%s %s: unexpected value of type: %v",
-						UtilFuncSource(), TopFuncName, reflect.TypeOf(val))
+			switch table.colTypes[colIndex] {
+			case "int":
+				err = table.SetIntByColIndex(colIndex, rowIndex, row[colIndex].(int))
+			case "int8":
+				err = table.SetInt8ByColIndex(colIndex, rowIndex, row[colIndex].(int8))
+			case "int16":
+				err = table.SetInt16ByColIndex(colIndex, rowIndex, row[colIndex].(int16))
+			case "int32":
+				err = table.SetInt32ByColIndex(colIndex, rowIndex, row[colIndex].(int32))
+			case "int64":
+				err = table.SetInt64ByColIndex(colIndex, rowIndex, row[colIndex].(int64))
+			case "uint":
+				err = table.SetUintByColIndex(colIndex, rowIndex, row[colIndex].(uint))
+			case "uint8":
+				// We know this is safe because the encoding was from a uint8 value.
+				var intVal int = row[colIndex].(int)
+				var uint8Val uint8 = uint8(intVal)
+				err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8Val)
+			case "byte":
+				// We know this is safe because the encoding was from a byte value.
+				var intVal int = row[colIndex].(int)
+				var byteVal byte = byte(intVal)
+				err = table.SetByteByColIndex(colIndex, rowIndex, byteVal)
+			case "uint16":
+				err = table.SetUint16ByColIndex(colIndex, rowIndex, row[colIndex].(uint16))
+			case "uint32":
+				err = table.SetUint32ByColIndex(colIndex, rowIndex, row[colIndex].(uint32))
+			case "uint64":
+				err = table.SetUint64ByColIndex(colIndex, rowIndex, row[colIndex].(uint64))
+			case "float32":
+				// We know this is safe because the encoding was from a float32 value.
+				var float64Val float64 = row[colIndex].(float64)
+				var float32Val float32 = float32(float64Val)
+				err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32Val)
+			case "float64":
+				err = table.SetFloat64ByColIndex(colIndex, rowIndex, row[colIndex].(float64))
+			case "string":
+				err = table.SetStringByColIndex(colIndex, rowIndex, row[colIndex].(string))
+			case "bool":
+				err = table.SetBoolByColIndex(colIndex, rowIndex, row[colIndex].(bool))
+			case "time.Time":
+				err = table.SetTimeByColIndex(colIndex, rowIndex, row[colIndex].(time.Time))
+			case "*Table":
+				err = table.SetTableByColIndex(colIndex, rowIndex, row[colIndex].(*Table))
+			case "[]byte":
+where(table.Name())
+where(rowIndex)
+where(colIndex)
+where(table.colNames[colIndex])
+where(fmt.Sprintf("row[%d] = %v  type = %T", colIndex, row[colIndex], row[colIndex]))
+				var sliceVal []interface{} = row[colIndex].([]interface{})
+				var byteSliceVal []byte = make([]byte, len(sliceVal))
+				for i := 0; i < len(sliceVal); i++ {
+					var intVal = sliceVal[i].(int)
+					var byteVal = byte(intVal)
+					byteSliceVal[i] = byteVal
 				}
-				// Single error handler for all the calls in this switch statement.
-				if err != nil {
-					return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+				err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
+			case "[]uint8":
+				var sliceVal []interface{} = row[colIndex].([]interface{})
+				var uint8SliceVal []uint8 = make([]uint8, len(sliceVal))
+				for i := 0; i < len(sliceVal); i++ {
+					var intVal = sliceVal[i].(int)
+					var uint8Val = uint8(intVal)
+					uint8SliceVal[i] = uint8Val
 				}
+				err = table.SetUint8SliceByColIndex(colIndex, rowIndex, uint8SliceVal)
+			default:
+where()
+				msg := invalidColTypeMsg(table.colTypes[colIndex])
+				err = fmt.Errorf("YAML: %s", msg)
+				return nil, err
+			}
+			// Error handler for all cases.
+			if err != nil {
+				return nil, err
 			}
 		}
+where("\n" + table.String())
+
+//			for colName, cell = range val.(map[string]interface{}) {
+//where(fmt.Sprintf("colName  = %q", colName))
+//where(fmt.Sprintf("colIndex = %d", colIndex))
+//where(fmt.Sprintf("rowIndex = %d", rowIndex))
+//where(fmt.Sprintf("cell     = %v", cell))
+//				// There's only one map element here: colName and colType.
+//				// where(fmt.Sprintf("\t\t\tcol=%d row=%d celltype=%T cell=%v", colIndex, rowIndex, cell, cell))
+//
+//				var colType string = table.colTypes[colIndex]
+//where(fmt.Sprintf("colType  = %q", colType))
+//where(fmt.Sprintf("cell type: %T", cell))
+//println()
+////				switch cell.(type) {
+//				switch colType {
+//				case "string":
+//					switch colType { // We need to convert time string format to time.Time
+//					case "time.Time":
+//						var timeVal time.Time
+//						timeVal, err = time.Parse(time.RFC3339, cell.(string))
+//						if err != nil { // We need this extra error check here
+//							err := fmt.Errorf("could not convert YAML time string to gotables %s", colType)
+//							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+//						}
+//						err = table.SetTimeByColIndex(colIndex, rowIndex, timeVal)
+//						if err != nil {
+//							err := fmt.Errorf("could not convert YAML string to gotables %s", colType)
+//							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+//						}
+//					default: // Is a string
+//						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
+//					}
+//					// Single error handler for all the calls in this switch statement.
+//					if err != nil {
+//						err := fmt.Errorf("could not convert YAML string to gotables %s", colType)
+//						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+//					}
+//				case "int":
+//					err = table.SetIntByColIndex(colIndex, rowIndex, cell.(int))
+//				case "float64":
+//					switch colType { // We need to convert them back to gotables numeric types
+//					case "int":
+//						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
+//					case "uint":
+//						err = table.SetUintByColIndex(colIndex, rowIndex, uint(cell.(float64)))
+//					case "byte":
+//						err = table.SetByteByColIndex(colIndex, rowIndex, byte(cell.(float64)))
+//					case "int8":
+//						err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(cell.(float64)))
+//					case "int16":
+//						err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(cell.(float64)))
+//					case "int32":
+//						err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(cell.(float64)))
+//					case "int64":
+//						err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(cell.(float64)))
+//					case "uint8":
+//						err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(cell.(float64)))
+//					case "uint16":
+//						err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(cell.(float64)))
+//					case "uint32":
+//						err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(cell.(float64)))
+//					case "uint64":
+//						err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(cell.(float64)))
+//					case "float32":
+//						err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(cell.(float64)))
+//					case "float64":
+//						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(cell.(float64)))
+//					}
+//					// Single error handler for all the calls in this switch statement.
+//					if err != nil {
+//						err := fmt.Errorf("could not convert YAML float64 to gotables %s", colType)
+//						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+//					}
+//				case "bool":
+//where(cell.(bool))
+//					err = table.SetBoolByColIndex(colIndex, rowIndex, cell.(bool))
+////				case []interface{}: // This cell is a slice
+//				case "[]byte", "[]uint": // This cell is a slice
+//					var interfaceSlice []interface{} = cell.([]interface{})
+//					var byteSlice []byte = []byte{}
+//					for _, sliceVal := range interfaceSlice {
+//						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
+//					}
+//					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
+//					if err != nil {
+//						return nil, err
+//					}
+////				case map[string]interface{}: // This cell is a table.
+////				case *Table: // This cell is a table.
+//				case "*Table":
+//where("*Table")
+//					switch colType {
+//					case "*Table":
+//where()
+//						tableNested, err := newTableFromYAML_recursive(cell.(map[string]interface{}))
+//						if err != nil {
+//where()
+//							return nil, err
+//						}
+//where()
+//						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+//						if err != nil {
+//where()
+//							return nil, err
+//						}
+//					default:
+//where()
+//						return nil, fmt.Errorf("newTableFromYAML_recursive(): unexpected cell value at [%s].(%d,%d)",
+//							tableName, colIndex, rowIndex)
+//					}
+//				case "nil": // This cell is a nil table.
+//where()
+//					switch colType {
+//					case "*Table":
+//						var tableNested *Table = NewNilTable()
+//						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+//						if err != nil {
+//							return nil, err
+//						}
+//					default:
+//						return nil, fmt.Errorf("newTableFromYAML_recursive(): unexpected nil value at [%s].(%d,%d)",
+//							tableName, colIndex, rowIndex)
+//					}
+//					/*
+//						case time.Time:
+//							err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
+//					*/
+//				default:
+//where(fmt.Sprintf("val type: %T", val))
+//					return nil, fmt.Errorf("%s %s: unexpected value of type: %v",
+//						UtilFuncSource(), TopFuncName, reflect.TypeOf(val))
+//				}
+//				// Single error handler for all the calls in this switch statement.
+//				if err != nil {
+//					return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), TopFuncName, err)
+//				}
+//			}
+//		}
 	}
 
 	return
@@ -415,8 +495,10 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 	var yamlDoc map[string]interface{} = make(map[string]interface{}, 0)
 	var yamlTables []map[string]interface{} = make([]map[string]interface{}, 0)
 	var yamlObject map[string]interface{}	// Cell name and value pair.
-	var yamlTableData [][]map[string]interface{}
-	var yamlTableRow []map[string]interface{}
+//	var yamlTableData [][]map[string]interface{}
+	var yamlTableData [][]interface{}
+//	var yamlTableRow []map[string]interface{}
+	var yamlTableRow []interface{}
 	var yamlTable map[string]interface{}
 
 	var visitTableSet = func(tableSet *TableSet) (err error) {
@@ -432,7 +514,8 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 		var yamlTableMetadata = make([]interface{}, table.ColCount())
 
 		yamlTable = make(map[string]interface{}, 0)
-		yamlTableData = make([][]map[string]interface{}, table.RowCount())
+//		yamlTableData = make([][]map[string]interface{}, table.RowCount())
+		yamlTableData = make([][]interface{}, table.RowCount())
 
 		yamlTable["tableName"] = table.Name()
 		yamlTable["data"] = yamlTableData
@@ -464,7 +547,8 @@ where()
 
 	var visitRow = func(row Row) (err error) {
 
-		yamlTableRow = make([]map[string]interface{}, row.Table.ColCount())
+//		yamlTableRow = make([]map[string]interface{}, row.Table.ColCount())
+		yamlTableRow = make([]interface{}, row.Table.ColCount())
 		yamlTableData[row.RowIndex] = yamlTableRow
 
 		return
@@ -496,6 +580,7 @@ where()
 			anyVal, err = cell.Table.GetUintByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint8":
 			anyVal, err = cell.Table.GetUint8ByColIndex(cell.ColIndex, cell.RowIndex)
+where(fmt.Sprintf("uint8 anyVal %v type %T", anyVal, anyVal))
 		case "uint16":
 			anyVal, err = cell.Table.GetUint16ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint32":
@@ -510,20 +595,27 @@ where()
 			anyVal, err = cell.Table.GetUint8SliceByColIndex(cell.ColIndex, cell.RowIndex)
 		case "[]byte":
 			anyVal, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
+where(fmt.Sprintf("[]byte anyVal %v type %T", anyVal, anyVal))
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 		case "*Table":
 where()
 		default:
-			err = fmt.Errorf("%s: ERROR IN visitCell(): unknown type: %s\n", UtilFuncSource(), cell.ColType)
+where()
+			msg := invalidColTypeMsg(cell.ColType)
+			err = fmt.Errorf("visitCell() YAML: %s", msg)
+			return err
 		}
 		// All errors in this switch are handled here.
 		if err != nil {
 			return err
 		}
 
+		/*
 		yamlObject[cell.ColName] = anyVal
 		yamlTableRow[cell.ColIndex] = yamlObject
+		*/
+		yamlTableRow[cell.ColIndex] = anyVal
 /*
 where("yamlTableRow")
 where(printSlice(yamlTableRow))
