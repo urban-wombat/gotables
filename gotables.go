@@ -3769,7 +3769,7 @@ func zeroValue(typeName string) (interface{}, error) {
 			msg += ")"
 		*/
 		msg := invalidColTypeMsg(typeName)
-		err := errors.New(msg)
+		err := fmt.Errorf("%s: %s", UtilFuncName(), msg)
 		return nil, err
 	}
 }
@@ -3819,7 +3819,7 @@ func nonZeroValue(typeName string) (interface{}, error) {
 		return MaxTime, nil
 	default:
 		msg := invalidColTypeMsg(typeName)
-		err := errors.New(msg)
+		err := fmt.Errorf("%s: %s", UtilFuncName(), msg)
 		return nil, err
 	}
 }
@@ -3836,8 +3836,8 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	}
 
 	if tableSet2.TableCount() != tableSet1.TableCount() {
-		return false, fmt.Errorf("tableSet2.TableCount() %d != tableSet1.TableCount() %d",
-			tableSet2.TableCount(), tableSet1.TableCount())
+		return false, fmt.Errorf("tableSet1.TableCount() %d != tableSet2.TableCount() %d",
+			tableSet1.TableCount(), tableSet2.TableCount())
 	}
 
 	for tableIndex := 0; tableIndex < tableSet1.TableCount(); tableIndex++ {

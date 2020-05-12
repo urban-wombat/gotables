@@ -107,7 +107,8 @@ println()
 	empty *Table = []
 	noByte []byte = []
 	noUint8 []uint8 = []
-	r rune = '^'
+	runeVal rune = '^'
+	float32Val float32 = 94
 	`
 	nestedTable, err := gotables.NewTableFromString(nestedString)
 	if err != nil {
@@ -123,22 +124,32 @@ println()
 	if err != nil {
 		t.Fatal(err)
 	}
+where(tableSet1.TableCount())
+where("\n" + tableSet1.String())
 
 where()
 	yamlString, err = tableSet1.GetTableSetAsYAML()
-where(err)
 	if err != nil {
 		t.Fatal(err)
 	}
 where()
 println()
-where("\n" + yamlString)
+//where("\n" + yamlString)
 
+where()
 	tableSet2, err = gotables.NewTableSetFromYAML(yamlString)
 	if err != nil {
+where()
 		t.Fatal(err)
 	}
+where(tableSet2.TableCount())
 where("\n" + tableSet2.String())
+
+jsonStr, err := tableSet1.GetTableSetAsJSONIndent()
+if err != nil {
+	t.Fatal(err)
+}
+where("\n" + jsonStr)
 	equals, err := tableSet1.Equals(tableSet2)
 	if err != nil {
 		t.Fatal(err)

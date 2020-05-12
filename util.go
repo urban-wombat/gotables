@@ -400,7 +400,8 @@ func UtilPrintCallerCaller() {
 		funcName()
 */
 func UtilFuncName() string {
-	pc, _, _, _ := runtime.Caller(1)
+	const stackFramesToSkip = 1
+	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo
@@ -426,6 +427,36 @@ func UtilFuncCallerCaller() string {
 	const stackFramesToSkip = 3
 	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	nameEnd := filepath.Ext(nameFull)        // .foo
+	name := strings.TrimPrefix(nameEnd, ".") // foo
+	return name + "()"
+}
+
+/*
+	Return the name of the top-most function that ultimately called this function.
+
+	Warning: Cannot control for relevant top caller.
+*/
+func utilFuncTopCaller() string {
+	var nameFull string
+	var pcSlice []uintptr
+	var pc uintptr
+	var ok bool
+	var skip int
+
+	pc, _, _, ok = runtime.Caller(skip)
+	for skip = 0; ok; skip++ {
+		pc, _, _, ok = runtime.Caller(skip)
+		pcSlice = append(pcSlice, pc)
+nameFull = runtime.FuncForPC(pc).Name() // main.foo
+where(fmt.Sprintf("xxxx %d %s", skip, nameFull))
+	}
+	const minSliceLen = 7
+	if len(pcSlice) >= minSliceLen {
+		pc = pcSlice[len(pcSlice) - (minSliceLen - 2)]
+	}
+	nameFull = runtime.FuncForPC(pc).Name() // main.foo
+where(nameFull)
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo
 	return name + "()"

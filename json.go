@@ -141,13 +141,29 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 			case string:
 				buf.WriteString(fmt.Sprintf("%q", val.(string)))
 
-			case bool, int, uint, int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64:
+			case bool, int, uint, int8, int16, int64, uint8, uint16, uint32, uint64, float32, float64:
 				var valStr string
 				valStr, err = table.GetValAsStringByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return err
 				}
 				buf.WriteString(valStr)
+
+			case int32:
+				var valStr string
+				valStr, err = table.GetValAsStringByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return err
+				}
+				switch table.colTypes[colIndex] {
+					case "int32":
+						buf.WriteString(valStr)
+					case "rune":
+						buf.WriteString(fmt.Sprintf("%q", valStr))
+					default:
+						msg := invalidColTypeMsg(fmt.Sprintf("%s: %s", UtilFuncName(), table.colTypes[colIndex]))
+						buf.WriteString(msg)
+				}
 
 			case []byte:
 				var valStr string
@@ -161,7 +177,6 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 				buf.WriteString(valStr)
 
 			case *Table:
-
 				var nestedTable *Table
 				nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {

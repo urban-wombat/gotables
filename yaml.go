@@ -133,6 +133,7 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 //println()
 //where("\n" + printMap(m))
 
+where()
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
 	var exists bool
@@ -141,11 +142,13 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: YAML is missing tableSet name", UtilFuncName())
 	}
 
+where()
 	tableSet, err = NewTableSet(tableSetName)
 	if err != nil {
 		return
 	}
 
+where()
 	// (2) Retrieve and process tables.
 	var tablesMap []interface{}
 	tablesMap, exists = m["tables"].([]interface{})
@@ -153,36 +156,45 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: YAML is missing tables", UtilFuncName())
 	}
 
+where()
 	var tableMap map[string]interface{}
 	var tableMapInterface interface{}
 
+where()
 	// (3) Loop through the array of tables.
 	for _, tableMapInterface = range tablesMap {
 
+where()
 		tableMap = tableMapInterface.(map[string]interface{})
 // where(printMap(tableMap))
 
+where()
 		var table *Table
 		table, err = newTableFromYAML_recursive(tableMap)
 		if err != nil {
 			return
 		}
 
+where()
 		err = tableSet.Append(table)
 		if err != nil {
+where(err)
 			return
 		}
 	}
 
+where()
 	return
 }
 
 func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err error) {
 
-	const TopFuncName string = "NewTableFromYAML()"
+//	const TopFuncName string = "NewTableFromYAML()"
 
+where()
 	var exists bool
 
+where()
 	/*
 		We don't know the order map values will be returned if we iterate of the map:
 		(1) tableName
@@ -192,17 +204,27 @@ func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err err
 		So we retrieve each of the 3 (possibly 2) top-level map values individually.
 	*/
 
+where()
 	// (1) Retrieve and process table name.
 	var tableName string
 	tableName, exists = m["tableName"].(string)
+where(tableName)
 	if !exists {
+where()
 		return nil, fmt.Errorf("YAML is missing table name")
 	}
-	table, err = NewTable(tableName)
-	if err != nil {
-		return nil, err
+where()
+	if len(tableName) > 0 {
+		table, err = NewTable(tableName)
+		if err != nil {
+where()
+			return nil, err
+		}
+	} else {
+		table = NewNilTable()
 	}
 
+where()
 	// If this optional isStructShape element is present, use it.
 	var isStructShape bool
 	isStructShape, exists = m["isStructShape"].(bool)
@@ -213,6 +235,7 @@ func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err err
 		}
 	}
 
+where()
 	// (2) Retrieve and process metadata.
 	var metadata []interface{}
 	metadata, exists = m["metadata"].([]interface{})
@@ -232,12 +255,18 @@ func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err err
 			return nil, fmt.Errorf("expecting col type value from YAML string value but got type %T: %v", typeVal, typeVal)
 		}
 
+where()
+where(fmt.Sprintf("[%s].AppendCol(%q, %q)", table.Name(), colName, colType))
+		colType = trimQuote(colType)	// YAML likes to quote some strings.
+where(fmt.Sprintf("[%s].AppendCol(%q, %q)", table.Name(), colName, colType))
 		err = table.AppendCol(colName, colType)
+where(err)
 		if err != nil {
 			return nil, err
 		}
 	}
 
+where()
 	// (3) Retrieve and process data (if any).
 	var data []interface{}
 	data, exists = m["data"].([]interface{})
@@ -255,6 +284,7 @@ where(fmt.Sprintf("rowIndex=%d: %v", rowIndex, rowVal))
 			return nil, err
 		}
 
+where()
 		var row []interface{} = rowVal.([]interface{})
 where(fmt.Sprintf("rowVal type: %T", rowVal))
 where(fmt.Sprintf("rowVal     : %#v", rowVal))
@@ -264,6 +294,7 @@ where(fmt.Sprintf("row    type: %T", row))
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 			// where(fmt.Sprintf("\t\tcol [%d] %v", colIndex, val))
 
+where()
 			switch table.colTypes[colIndex] {
 			case "int":
 				err = table.SetIntByColIndex(colIndex, rowIndex, row[colIndex].(int))
@@ -295,9 +326,21 @@ where(fmt.Sprintf("row    type: %T", row))
 				err = table.SetUint64ByColIndex(colIndex, rowIndex, row[colIndex].(uint64))
 			case "float32":
 				// We know this is safe because the encoding was from a float32 value.
-				var float64Val float64 = row[colIndex].(float64)
-				var float32Val float32 = float32(float64Val)
-				err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32Val)
+				var float64Val float64
+				var float32Val float32
+				var intVal int
+				switch row[colIndex].(type) {
+				case float64:
+					float64Val = row[colIndex].(float64)
+					float32Val = float32(float64Val)
+				case int:	// I don't know why sometimes YAML stores a float32 as an int. But it does.
+					intVal = row[colIndex].(int)
+					float32Val = float32(intVal)
+				default:
+					err = fmt.Errorf("%s: invalid type from YAML", UtilFuncName())
+					return nil, err
+				}
+					err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32Val)
 			case "float64":
 				err = table.SetFloat64ByColIndex(colIndex, rowIndex, row[colIndex].(float64))
 			case "string":
@@ -306,8 +349,32 @@ where(fmt.Sprintf("row    type: %T", row))
 				err = table.SetBoolByColIndex(colIndex, rowIndex, row[colIndex].(bool))
 			case "time.Time":
 				err = table.SetTimeByColIndex(colIndex, rowIndex, row[colIndex].(time.Time))
+			case "rune":
+				var intVal int = row[colIndex].(int)
+				var runeVal rune = rune(intVal)
+				err = table.SetRuneByColIndex(colIndex, rowIndex, runeVal)
 			case "*Table":
-				err = table.SetTableByColIndex(colIndex, rowIndex, row[colIndex].(*Table))
+where(fmt.Sprintf("table [%s]", table.Name()))
+where(fmt.Sprintf("row[%d] %v type %T", colIndex, row[colIndex], row[colIndex]))
+where(row[colIndex])
+				var tableNested *Table
+				if row[colIndex] == nil {
+					tableNested = NewNilTable()
+				} else {
+					var mapVal map[string]interface{} = row[colIndex].(map[string]interface{})
+					tableNested, err = newTableFromYAML_recursive(mapVal)
+					if err != nil {
+where()
+						return nil, err
+					}
+				}
+where()
+				err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
+				if err != nil {
+where()
+					return nil, err
+				}
+where()
 			case "[]byte":
 where(table.Name())
 where(rowIndex)
@@ -334,11 +401,12 @@ where(fmt.Sprintf("row[%d] = %v  type = %T", colIndex, row[colIndex], row[colInd
 			default:
 where()
 				msg := invalidColTypeMsg(table.colTypes[colIndex])
-				err = fmt.Errorf("YAML: %s", msg)
+				err = fmt.Errorf("%s: %s", UtilFuncName(), msg)
 				return nil, err
 			}
 			// Error handler for all cases.
 			if err != nil {
+where()
 				return nil, err
 			}
 		}
@@ -564,6 +632,8 @@ where()
 			anyVal, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
 		case "bool":
 			anyVal, err = cell.Table.GetBoolByColIndex(cell.ColIndex, cell.RowIndex)
+		case "rune":
+			anyVal, err = cell.Table.GetRuneByColIndex(cell.ColIndex, cell.RowIndex)
 		case "byte":
 			anyVal, err = cell.Table.GetByteByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int":
@@ -599,10 +669,20 @@ where(fmt.Sprintf("[]byte anyVal %v type %T", anyVal, anyVal))
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 		case "*Table":
+/*
+			var nestedTable *Table
+			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+			if err != nil {
+				return err
+			}
+*/
+
+// TO DO:
 where()
 		default:
 where()
 			msg := invalidColTypeMsg(cell.ColType)
+where(msg)
 			err = fmt.Errorf("visitCell() YAML: %s", msg)
 			return err
 		}
@@ -677,4 +757,16 @@ func printSliceOfSlice(s []map[string][]map[string]interface{}) string {
 
 func printMap(m map[string]interface{}) string {
 	return fmt.Sprintf("len=%d %v\n", len(m), m)
+}
+
+func trimQuote(s string) string {
+	// From: https://stackoverflow.com/questions/44222554/how-to-remove-quotes-from-around-a-string-in-golang
+
+	if len(s) > 0 && s[0] == '"' {
+		s = s[1:]
+	}
+	if len(s) > 0 && s[len(s)-1] == '"' {
+		s = s[:len(s)-1]
+	}
+	return s
 }
