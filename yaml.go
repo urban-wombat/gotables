@@ -610,8 +610,21 @@ where()
 		yamlTables = append(yamlTables, yamlTable)
 		yamlDoc["tables"] = yamlTables
 
+/*
+// DOING
+		if table.parentTable != nil {	// Not a top-level table.
+			// Add this to the parent table's cell?
+			var nestedTable *Table
+			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+			if err != nil {
+				return err
+			}
+			yamlTableRow[cell.ColIndex] = anyVal
+		}
+
 		return
 	}
+*/
 
 	var visitRow = func(row Row) (err error) {
 
@@ -677,7 +690,7 @@ where(fmt.Sprintf("[]byte anyVal %v type %T", anyVal, anyVal))
 			}
 */
 
-// TO DO:
+// DOING:
 where()
 		default:
 where()
@@ -691,10 +704,6 @@ where(msg)
 			return err
 		}
 
-		/*
-		yamlObject[cell.ColName] = anyVal
-		yamlTableRow[cell.ColIndex] = yamlObject
-		*/
 		yamlTableRow[cell.ColIndex] = anyVal
 /*
 where("yamlTableRow")
