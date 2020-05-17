@@ -35,7 +35,7 @@ func (tableSet *TableSet) Walk(
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
 
 		var table *Table
-		table, err = tableSet.TableByTableIndex(tableIndex)
+		table, err = tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return
 		}

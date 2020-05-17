@@ -102,7 +102,7 @@ func (tableSet *TableSet) generateTypeStructSet() (string, error) {
 	var delim string = ""
 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		table, err := tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return "", err
 		}
@@ -294,7 +294,7 @@ func (tableSet *TableSet) generateTypeStructSliceFromTableSet() (string, error) 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
 		tableSetGenerated += sep
 		sep = "\n"
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		table, err := tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return "", err
 		}

@@ -191,7 +191,7 @@ func NewTableFromString(s string) (*Table, error) {
 			UtilFuncName(), tableCount, plural(tableCount))
 	}
 
-	table, err := tableSet.TableByTableIndex(0)
+	table, err := tableSet.GetTableByTableIndex(0)
 	if err != nil {
 		return nil, fmt.Errorf("NewTableFromString() %v", err)
 	}
@@ -219,7 +219,7 @@ func NewTableFromStringByTableName(s string, tableName string) (*Table, error) {
 		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
 	}
 
-	table, err := tableSet.Table(tableName)
+	table, err := tableSet.GetTable(tableName)
 	if err != nil {
 		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
 	}
@@ -233,7 +233,7 @@ func NewTableFromStringByTableIndex(s string, tableIndex int) (*Table, error) {
 		return nil, fmt.Errorf("NewTableFromStringByTableName() %v", err)
 	}
 
-	table, err := tableSet.TableByTableIndex(tableIndex)
+	table, err := tableSet.GetTableByTableIndex(tableIndex)
 	if err != nil {
 		return nil, fmt.Errorf("NewTableFromStringByTableIndex() %v", err)
 	}
@@ -257,7 +257,7 @@ func NewTableFromFile(fileName string) (*Table, error) {
 			UtilFuncName(), tableCount, plural(tableCount), fileName)
 	}
 
-	table, err := tableSet.TableByTableIndex(0)
+	table, err := tableSet.GetTableByTableIndex(0)
 	if err != nil {
 		return nil, err
 	}
@@ -271,7 +271,7 @@ func NewTableFromFileByTableName(fileName string, tableName string) (*Table, err
 		return nil, err
 	}
 
-	table, err := tableSet.Table(tableName)
+	table, err := tableSet.GetTable(tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -443,7 +443,7 @@ func (tableSet *TableSet) HasTable(tableName string) (bool, error) {
 	return false, fmt.Errorf("table [%s] does not exist", tableName)
 }
 
-func (tableSet *TableSet) Table(tableName string) (*Table, error) {
+func (tableSet *TableSet) GetTable(tableName string) (*Table, error) {
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -457,7 +457,7 @@ func (tableSet *TableSet) Table(tableName string) (*Table, error) {
 	return nil, fmt.Errorf("table [%s] does not exist", tableName)
 }
 
-func (tableSet *TableSet) TableByTableIndex(tableIndex int) (*Table, error) {
+func (tableSet *TableSet) GetTableByTableIndex(tableIndex int) (*Table, error) {
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -2569,7 +2569,7 @@ func (tableSet *TableSet) RenameTable(renameFrom string, renameTo string) error 
 		return fmt.Errorf("table [%s] already exists", renameTo)
 	}
 
-	table, err := tableSet.Table(renameFrom)
+	table, err := tableSet.GetTable(renameFrom)
 	if err != nil {
 		return err
 	}
@@ -3564,7 +3564,7 @@ func (tableSet *TableSet) Copy(copyRowsAlso bool) (*TableSet, error) {
 	tableSetCopy.SetFileName(tableSet.FileName())
 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		table, err := tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return nil, err
 		}
@@ -3651,7 +3651,7 @@ func (tableSet *TableSet) TableIndex(tableName string) (int, error) {
 	}
 
 	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		table, err := tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return -1, err
 		}
@@ -3841,12 +3841,12 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	}
 
 	for tableIndex := 0; tableIndex < tableSet1.TableCount(); tableIndex++ {
-		table1, err := tableSet1.TableByTableIndex(tableIndex)
+		table1, err := tableSet1.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return false, err
 		}
 
-		table2, err := tableSet2.TableByTableIndex(tableIndex)
+		table2, err := tableSet2.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return false, err
 		}

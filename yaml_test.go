@@ -115,7 +115,7 @@ println()
 		t.Fatal(err)
 	}
 
-	t3, err := tableSet1.Table("T3")
+	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}

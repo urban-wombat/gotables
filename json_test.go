@@ -166,7 +166,7 @@ func TestNewTableSetFromJSON_bothDirectionsRecursive(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	tableInput, err = tableSetInput.Table("TypesGalore16")
+	tableInput, err = tableSetInput.GetTable("TypesGalore16")
 	if err != nil {
 		t.Fatal(err)
 	}

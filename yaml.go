@@ -621,10 +621,10 @@ where()
 			}
 			yamlTableRow[cell.ColIndex] = anyVal
 		}
+*/
 
 		return
 	}
-*/
 
 	var visitRow = func(row Row) (err error) {
 

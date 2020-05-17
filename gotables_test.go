@@ -154,7 +154,7 @@ func TestNewTableFromString01(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		table, err := tableSet.Table(test.tableName)
+		table, err := tableSet.GetTable(test.tableName)
 		if err != nil {
 			t.Fatalf("[%d] %v", i, err)
 		}
@@ -242,7 +242,7 @@ func TestNewTableFromString05(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		table, err := tableSet.Table(test.tableName)
+		table, err := tableSet.GetTable(test.tableName)
 		if err != nil {
 			t.Fatalf("[%d] %v", i, err)
 		}
@@ -291,7 +291,7 @@ func TestNewTableFromString06(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		table, err := tableSet.Table(test.tableName)
+		table, err := tableSet.GetTable(test.tableName)
 		if err != nil {
 			t.Fatalf("[%d] %v", i, err)
 		}
@@ -2105,7 +2105,7 @@ func TestIsNumericColType(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("tbl")
+	table, err := tableSet.GetTable("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2167,7 +2167,7 @@ func TestTable_AppendRow_DeleteRow(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("my_table")
+	table, err := tableSet.GetTable("my_table")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2231,7 +2231,7 @@ func TestColCount(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("tbl")
+	table, err := tableSet.GetTable("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2329,7 +2329,7 @@ func TestDeleteCol(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table, err := tableSet.Table("tbl")
+	table, err := tableSet.GetTable("tbl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -4357,7 +4357,7 @@ func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
 	}
 
 	tableName := "Table2"
-	_, err = tableSet.Table(tableName)
+	_, err = tableSet.GetTable(tableName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -4378,7 +4378,7 @@ func TestTableSet_DeleteTableByTableIndex(t *testing.T) {
 		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
-	_, err = tableSet.Table(tableName)
+	_, err = tableSet.GetTable(tableName)
 	if err == nil {
 		t.Fatalf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
 	}
@@ -4409,7 +4409,7 @@ func TestTableSet_DeleteTable(t *testing.T) {
 	}
 
 	tableName := "Table2"
-	_, err = tableSet.Table(tableName)
+	_, err = tableSet.GetTable(tableName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -4429,7 +4429,7 @@ func TestTableSet_DeleteTable(t *testing.T) {
 		t.Fatalf("expecting tableSet.TableCount() = %d, not %d", expecting, tableCount)
 	}
 
-	_, err = tableSet.Table(tableName)
+	_, err = tableSet.GetTable(tableName)
 	if err == nil {
 		t.Fatalf("expecting table [%s] to be deleted from tableSet, but it's still there", tableName)
 	}

@@ -501,7 +501,7 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSetString string, err er
 
 	var tableCount int = tableSet.TableCount()
 	for tableIndex := 0; tableIndex < tableCount; tableIndex++ {
-		table, err := tableSet.TableByTableIndex(tableIndex)
+		table, err := tableSet.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return "", err
 		}
@@ -605,7 +605,7 @@ func NewTableFromJSON(jsonString string) (table *Table, err error) {
 			UtilFuncName(), tableCount, plural(tableCount))
 	}
 
-	table, err = tableSet.TableByTableIndex(0)
+	table, err = tableSet.GetTableByTableIndex(0)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
 	}
@@ -619,7 +619,7 @@ func NewTableFromJSONByTableName(jsonString string, tableName string) (table *Ta
 		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
 	}
 
-	table, err = tableSet.Table(tableName)
+	table, err = tableSet.GetTable(tableName)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %v", UtilFuncName(), err)
 	}
