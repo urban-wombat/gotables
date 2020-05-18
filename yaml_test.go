@@ -1,6 +1,7 @@
 package gotables_test
 
 import (
+	"os"
 	_ "fmt"
 	"testing"
 
@@ -150,8 +151,11 @@ if err != nil {
 	t.Fatal(err)
 }
 where("\n" + jsonStr)
+where()
 	equals, err := tableSet1.Equals(tableSet2)
 	if err != nil {
+where(err)
+os.Exit(22)
 		t.Fatal(err)
 	}
 where(equals)

@@ -125,6 +125,7 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: yamlTableSetString is empty", UtilFuncName())
 	}
 
+where()
 	var m map[string]interface{}
 	err = yaml.Unmarshal([]byte(yamlTableSetString), &m)
 	if err != nil {
@@ -139,7 +140,7 @@ where()
 	var exists bool
 	tableSetName, exists = m["tableSetName"].(string)
 	if !exists {
-		return nil, fmt.Errorf("%s: YAML is missing tableSet name", UtilFuncName())
+		return nil, fmt.Errorf("%s: in YAML doc 'tableSetName' name is missing", UtilFuncName())
 	}
 
 where()
@@ -153,7 +154,7 @@ where()
 	var tablesMap []interface{}
 	tablesMap, exists = m["tables"].([]interface{})
 	if !exists {
-		return nil, fmt.Errorf("%s: YAML is missing tables", UtilFuncName())
+		return nil, fmt.Errorf("%s: in YAML doc 'tables' is missing", UtilFuncName())
 	}
 
 where()
@@ -189,8 +190,6 @@ where()
 
 func newTableFromYAML_recursive(m map[string]interface{}) (table *Table, err error) {
 
-//	const TopFuncName string = "NewTableFromYAML()"
-
 where()
 	var exists bool
 
@@ -210,8 +209,8 @@ where()
 	tableName, exists = m["tableName"].(string)
 where(tableName)
 	if !exists {
-where()
-		return nil, fmt.Errorf("YAML is missing table name")
+where(m)
+		return nil, fmt.Errorf("in YAML doc table is missing 'tableName'")
 	}
 where()
 	if len(tableName) > 0 {
@@ -240,7 +239,7 @@ where()
 	var metadata []interface{}
 	metadata, exists = m["metadata"].([]interface{})
 	if !exists {
-		return nil, fmt.Errorf("YAML is missing table metadata")
+		return nil, fmt.Errorf("in YAML doc table 'metadata' is missing")
 	}
 	// Loop through the array of metadata.
 	for _, colNameAndType := range metadata {
@@ -355,18 +354,21 @@ where()
 				err = table.SetRuneByColIndex(colIndex, rowIndex, runeVal)
 			case "*Table":
 where(fmt.Sprintf("table [%s]", table.Name()))
-where(fmt.Sprintf("row[%d] %v type %T", colIndex, row[colIndex], row[colIndex]))
+where(fmt.Sprintf("row[%d] %#v type %T", colIndex, row[colIndex], row[colIndex]))
 where(row[colIndex])
 				var tableNested *Table
 				if row[colIndex] == nil {
+where()
 					tableNested = NewNilTable()
 				} else {
+where()
 					var mapVal map[string]interface{} = row[colIndex].(map[string]interface{})
 					tableNested, err = newTableFromYAML_recursive(mapVal)
 					if err != nil {
 where()
 						return nil, err
 					}
+where(fmt.Sprintf("tableNested = %s\n", tableNested.String()))
 				}
 where()
 				err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
@@ -561,20 +563,42 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 	}
 
 	var yamlDoc map[string]interface{} = make(map[string]interface{}, 0)
+	yamlDoc["tableSetName"] = tableSet.Name()
+
 	var yamlTables []map[string]interface{} = make([]map[string]interface{}, 0)
-	var yamlObject map[string]interface{}	// Cell name and value pair.
-//	var yamlTableData [][]map[string]interface{}
-	var yamlTableData [][]interface{}
-//	var yamlTableRow []map[string]interface{}
-	var yamlTableRow []interface{}
-	var yamlTable map[string]interface{}
+	for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
+		var table *Table
+		table, err = tableSet.GetTableByTableIndex(tableIndex)
+		if err != nil {
+			return
+		}
 
-	var visitTableSet = func(tableSet *TableSet) (err error) {
+		var yamlTable map[string]interface{}
+		yamlTable, err = table.getTableAsYAML()
+		if err != nil {
+			return
+		}
 
-		yamlDoc["tableSetName"] = tableSet.Name()
-
-		return
+		yamlTables = append(yamlTables, yamlTable)
 	}
+
+	yamlDoc["tables"] = yamlTables
+
+	var yamlBytes []byte
+	yamlBytes, err = yaml.Marshal(yamlDoc)
+	if err != nil {
+		return "", nil
+	}
+	yamlString = string(yamlBytes)
+
+	return
+}
+
+func (table *Table) getTableAsYAML() (yamlTable map[string]interface{}, err error) {
+
+	var yamlObject map[string]interface{}	// Cell name and value pair.
+	var yamlTableData [][]interface{}
+	var yamlTableRow []interface{}
 
 	var visitTable = func(table *Table) (err error) {
 
@@ -607,11 +631,13 @@ where()
 		}
 
 		yamlTable["metadata"] = yamlTableMetadata
+/*
 		yamlTables = append(yamlTables, yamlTable)
 		yamlDoc["tables"] = yamlTables
+*/
 
+// DOING:
 /*
-// DOING
 		if table.parentTable != nil {	// Not a top-level table.
 			// Add this to the parent table's cell?
 			var nestedTable *Table
@@ -628,7 +654,6 @@ where()
 
 	var visitRow = func(row Row) (err error) {
 
-//		yamlTableRow = make([]map[string]interface{}, row.Table.ColCount())
 		yamlTableRow = make([]interface{}, row.Table.ColCount())
 		yamlTableData[row.RowIndex] = yamlTableRow
 
@@ -682,15 +707,19 @@ where(fmt.Sprintf("[]byte anyVal %v type %T", anyVal, anyVal))
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 		case "*Table":
-/*
+// DOING:
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+where(cell.Table.Name())
+where(nestedTable)
+where(err)
 			if err != nil {
 				return err
 			}
+			anyVal = nestedTable
+/*
 */
 
-// DOING:
 where()
 		default:
 where()
@@ -717,17 +746,19 @@ println()
 		return
 	}
 
-	err = tableSet.Walk(visitTableSet, visitTable, visitRow, visitCell)
+	err = table.Walk(visitTable, visitRow, visitCell)
 	if err != nil {
-		return "", nil
+		return
 	}
 
+/*
 	var yamlBytes []byte
 	yamlBytes, err = yaml.Marshal(yamlDoc)
 	if err != nil {
 		return "", nil
 	}
 	yamlString = string(yamlBytes)
+*/
 
 	return
 }

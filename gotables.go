@@ -3212,94 +3212,149 @@ func isExportableName(name string) bool {
 
 	Useful for testing.
 */
-func (table1 *Table) Equals(table2 *Table) (bool, error) {
+func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 
+where()
 	if table1 == nil {
 		return false, fmt.Errorf("table1.%s(table2): table1 is nil", UtilFuncNameNoParens())
 	}
+
+where()
 	if table2 == nil {
 		return false, fmt.Errorf("table1.%s(table2): table2 is nil", UtilFuncNameNoParens())
 	}
 
+	// Check for NilTable
+
+where()
+	var table1IsNil bool
+	var table2IsNil bool
+	table1IsNil, err = table1.IsNilTable()
+	if err != nil {
+		return false, err
+	}
+	table2IsNil, err = table2.IsNilTable()
+	if err != nil {
+		return false, err
+	}
+	if table1IsNil && !table2IsNil {
+		return false, fmt.Errorf("table1.Equals(table2): table1 is a NilTable")
+	}
+
+where()
+	if !table1IsNil && table2IsNil {
+		return false, fmt.Errorf("table1.Equals(table2): table2 is a NilTable")
+	}
+
+where()
 	// Compare table names.
 	if table1.Name() != table2.Name() {
-		return false, fmt.Errorf("[%s].Equals([%s]): table names: %s != %s",
+		return false, fmt.Errorf("[%s].Equals([%s]): table1.Name() %q != table2.Name() %q",
 			table1.Name(), table2.Name(), table1.Name(), table2.Name())
 	}
 
+where()
 	// Compare number of rows.
 	if table1.RowCount() != table2.RowCount() {
 		return false, fmt.Errorf("[%s].Equals([%s]): row count: %d != %d",
 			table1.Name(), table2.Name(), table1.RowCount(), table2.RowCount())
 	}
 
+where()
 	// Compare number of columns.
 	if table1.ColCount() != table2.ColCount() {
 		return false, fmt.Errorf("[%s].Equals([%s]): col count: %d != %d",
 			table1.Name(), table2.Name(), table1.ColCount(), table2.ColCount())
 	}
 
+where()
 	// Compare column types.
 	// This has the side-effect of comparing all column names.
 	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
+
+where()
 		colName, err := table1.ColName(colIndex)
 		if err != nil {
 			return false, err
 		}
+
+where()
 		type1, err := table1.ColTypeByColIndex(colIndex)
 		if err != nil {
 			return false, err
 		}
+
+where()
 		type2, err := table2.ColType(colName)
 		if err != nil {
 			return false, err
 		}
+
+where()
 		if type1 != type2 {
 			return false, fmt.Errorf("[%s].Equals([%s]): col %q type: %s != %s",
 				table1.Name(), table2.Name(), colName, type1, type2)
 		}
 	}
 
+where()
 	// Compare cell values.
 	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
+
+where()
 		colName, err := table1.ColName(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		colType, err := table1.ColTypeByColIndex(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		isSlice := IsSliceColType(colType)
 		isTable := IsTableColType(colType)
 		isTime := colType == "time.Time"
 
 		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
+
+where()
 			val1, err := table1.GetValByColIndex(colIndex, rowIndex)
 			if err != nil {
 				return false, err
 			}
+
+where()
 			val2, err := table2.GetVal(colName, rowIndex)
 			if err != nil {
 				return false, err
 			}
 
-			if isSlice { // For slices.
+where()
+			if isSlice { // For slice.
+
+where()
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
 					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 				}
+
+where()
 				for i := 0; i < len(slice1); i++ {
 					if slice1[i] != slice2[i] {
 						return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex%d: %v != %v",
 							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}
+
+where()
 			} else if isTable {
+
+where()
 				nestedTable1, err := table1.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return false, err
@@ -3309,9 +3364,12 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 					return false, err
 				}
 
+where()
 				// Recursive call to compare nested tables.
 				equals, err := nestedTable1.Equals(nestedTable2)
 				if !equals {
+
+where()
 					if nestedTable1.parentTable != nil {
 						// Hmmm. Maybe the error message will be composed with each recursive call?
 						parentTableName := nestedTable1.parentTable.Name()
@@ -3335,9 +3393,11 @@ func (table1 *Table) Equals(table2 *Table) (bool, error) {
 				}
 			}
 
+where()
 		}
 	}
 
+where()
 	return true, nil
 }
 
@@ -3828,35 +3888,44 @@ func nonZeroValue(typeName string) (interface{}, error) {
 	Check whether tableSet1 and tableSet2 are the same.
 */
 func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
+
 	if tableSet1 == nil {
 		return false, fmt.Errorf("%s tableSet.%s tableSet1 is <nil>", UtilFuncSource(), UtilFuncName())
 	}
+
+where()
 	if tableSet2 == nil {
 		return false, fmt.Errorf("%s tableSet.%s tableSet2 is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+where()
 	if tableSet2.TableCount() != tableSet1.TableCount() {
 		return false, fmt.Errorf("tableSet1.TableCount() %d != tableSet2.TableCount() %d",
 			tableSet1.TableCount(), tableSet2.TableCount())
 	}
 
+where()
 	for tableIndex := 0; tableIndex < tableSet1.TableCount(); tableIndex++ {
+
 		table1, err := tableSet1.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		table2, err := tableSet2.GetTableByTableIndex(tableIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		_, err = table1.Equals(table2)
 		if err != nil {
 			return false, err
 		}
 	}
 
+where()
 	return true, nil
 }
 
