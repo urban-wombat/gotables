@@ -1,7 +1,7 @@
 package gotables_test
 
 import (
-	"os"
+	_ "os"
 	_ "fmt"
 	"testing"
 
@@ -41,121 +41,133 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	tableSetString = `
 	[[TipTopName]]
 
-	[ColOrder]
-	c0 int = 0
-	c1 int = 1
-	c2 int = 2
-	c3 int = 3
-	c4 int = 4
-	c5 int = 5
-	c6 int = 6
-	c7 int = 7
-	c8 int = 8
-	c9 int = 9
+	[Tminus1]
+	f32 float32 = 27
+	f64 float64 = 3.402823e+38
+	u8 uint8 = 99
+	u16 uint16 = 116
+	u32 uint32 = 500
+	u64 uint64 = 900
+	i int = 9223372036854775807
+	i8 int8 = -128
+	i16 int16 = -32768
+	i32 int32 = 66
+	i64 int64 = 900
+	s string = "something"
+	bo bool = true
+	r rune = 'F'
+	bt byte = 65
+	bta []byte = [1 2 3]
+	u8a []uint8 = [4 5 6]
+	t time.Time = 2020-03-15T14:22:30.123456789+17:00
 
 	[T0]
-	f float64 = 99.90001
-	u uint8 = 8
-	c byte = 100
+	f		u		c		k
+	float64	uint16	rune	int
+	11.1	2		'a'		3
+	22.2	4		'b'		4
+	33.3	6		'c'		5
 
 	[T1]
 	a int = 1
-	b int = 2
-	c int = 3
 	y int = 4
 	s []byte = [4 3 2 1]
 	u []uint8 = [42 44 48 50 52]
 	t time.Time = 2020-03-15T14:22:30.123456789+17:00
 	Y float32 = 66.666
-	e int = 1
-	f int = 1
-	g int = 1
-	h int = 1
-	i int = 1
-	j int = 1
-	k int = 1
-	l int = 1
-	m int = 1
-	n int = 1
-	N int = 1
-	o int = 1
-	p int = 1
-	r int = 1
-	v int = 1
-	w int = 1
-	x int = 1
-	z int = 1
 
 	[T2]
 	x		y		s
 	bool	byte	string
 	true	42		"forty two"
 	false	55		"fifty-five"
-	true	66		"sixty six"
-
-	[T3]
-	t *Table = []
 	`
+//	[T3]
+//	t *Table = []
 	tableSet1, err = gotables.NewTableSetFromString(tableSetString)
 	if err != nil {
 		t.Fatal(err)
 	}
-where("\n" + tableSet1.String())
-println()
+//where("\n" + tableSet1.String())
+//println()
 
+/*
+//	empty *Table = [EmptyTable]
 	var nestedString string = `
 	[NestedTable]
-	empty *Table = []
-	noByte []byte = []
-	noUint8 []uint8 = []
+	noByte []byte = [1 3 5]
+	noUint8 []uint8 = [2 4 6]
 	runeVal rune = '^'
-	float32Val float32 = 94
+	float32Val float32 = 66.6
 	`
 	nestedTable, err := gotables.NewTableFromString(nestedString)
 	if err != nil {
 		t.Fatal(err)
 	}
+//where(nestedTable.String())
 
 	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}
 
+//where(tableSet1.String())
 	err = t3.SetTable("t", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
-where(tableSet1.TableCount())
-where("\n" + tableSet1.String())
+*/
+//where(tableSet1.String())
+//println()
+//os.Exit(55)
+//where(tableSet1.TableCount())
+//where("\n" + tableSet1.String())
 
-where()
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
 	}
-where()
-println()
+//where("\n" + tableSet1.String())
 //where("\n" + yamlString)
 
-where()
+	var yamlMap map[string]interface{}
+	yamlMap, err = tableSet1.GetTableSetAsMap()
+	if err != nil {
+		t.Fatal(err)
+	}
+// DATA PRESENT
+//println()
+//where(yamlMap)
+_ = yamlMap
+
 	tableSet2, err = gotables.NewTableSetFromYAML(yamlString)
 	if err != nil {
 where()
 		t.Fatal(err)
 	}
+// DATA MISSING
+where("DATA MISSING")
 where(tableSet2.TableCount())
 where("\n" + tableSet2.String())
 
-jsonStr, err := tableSet1.GetTableSetAsJSONIndent()
+jsonStr1, err := tableSet1.GetTableSetAsJSONIndent()
 if err != nil {
 	t.Fatal(err)
 }
-where("\n" + jsonStr)
-where()
+where("tableSet1:\n" + jsonStr1)
+
+jsonStr2, err := tableSet2.GetTableSetAsJSONIndent()
+if err != nil {
+	t.Fatal(err)
+}
+where("tableSet2:\n" + jsonStr2)
+
 	equals, err := tableSet1.Equals(tableSet2)
 	if err != nil {
+where("\ntableSet1:\n------------\n" + tableSet1.String() + "------------\n")
+where("\ntableSet2:\n------------\n" + tableSet2.String() + "------------\n")
 where(err)
-os.Exit(22)
+//os.Exit(22)
 		t.Fatal(err)
 	}
 where(equals)

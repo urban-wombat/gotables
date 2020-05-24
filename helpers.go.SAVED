@@ -973,8 +973,8 @@ func (table *Table) SetByteSliceByColIndex(colIndex int, rowIndex int, newVal []
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1014,8 +1014,8 @@ func (table *Table) SetUint8SliceByColIndex(colIndex int, rowIndex int, newVal [
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1049,8 +1049,8 @@ func (table *Table) SetBoolByColIndex(colIndex int, rowIndex int, newVal bool) e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1084,8 +1084,8 @@ func (table *Table) SetByteByColIndex(colIndex int, rowIndex int, newVal byte) e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1119,8 +1119,8 @@ func (table *Table) SetFloat32ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1154,8 +1154,8 @@ func (table *Table) SetFloat64ByColIndex(colIndex int, rowIndex int, newVal floa
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1189,8 +1189,8 @@ func (table *Table) SetIntByColIndex(colIndex int, rowIndex int, newVal int) err
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1224,8 +1224,8 @@ func (table *Table) SetInt16ByColIndex(colIndex int, rowIndex int, newVal int16)
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1259,8 +1259,8 @@ func (table *Table) SetInt32ByColIndex(colIndex int, rowIndex int, newVal int32)
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1294,8 +1294,8 @@ func (table *Table) SetInt64ByColIndex(colIndex int, rowIndex int, newVal int64)
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1329,8 +1329,8 @@ func (table *Table) SetInt8ByColIndex(colIndex int, rowIndex int, newVal int8) e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1364,8 +1364,8 @@ func (table *Table) SetRuneByColIndex(colIndex int, rowIndex int, newVal rune) e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1399,8 +1399,8 @@ func (table *Table) SetStringByColIndex(colIndex int, rowIndex int, newVal strin
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1434,8 +1434,8 @@ func (table *Table) SetUintByColIndex(colIndex int, rowIndex int, newVal uint) e
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1469,8 +1469,8 @@ func (table *Table) SetUint16ByColIndex(colIndex int, rowIndex int, newVal uint1
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1504,8 +1504,8 @@ func (table *Table) SetUint32ByColIndex(colIndex int, rowIndex int, newVal uint3
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1539,8 +1539,8 @@ func (table *Table) SetUint64ByColIndex(colIndex int, rowIndex int, newVal uint6
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1574,8 +1574,8 @@ func (table *Table) SetUint8ByColIndex(colIndex int, rowIndex int, newVal uint8)
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1618,8 +1618,8 @@ func (table *Table) SetTableByColIndex(colIndex int, rowIndex int, newVal *Table
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 
@@ -1653,8 +1653,8 @@ func (table *Table) SetTimeByColIndex(colIndex int, rowIndex int, newVal time.Ti
 
 	if valType != colType {
 		if !isAlias(colType, valType) {
-			return fmt.Errorf("%s: table [%s] colName:%s colIndex:%d expecting val of type %s, not type %s: %v",
-				UtilFuncName(), table.Name(), table.colNames[colIndex], colIndex, colType, valType, newVal)
+			return fmt.Errorf("%s: table [%s] col %d expecting val of type %s, not type %s: %v",
+				UtilFuncName(), table.Name(), colIndex, colType, valType, newVal)
 		}
 	}
 

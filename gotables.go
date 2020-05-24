@@ -2440,18 +2440,14 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 	}
 
 	rowCount := len(table.rows)
-	/*
-		if rowCount == 0 {
-			return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range: %d",
-				table.Name(), rowCount, plural(rowCount), rowIndex)
-		} else if rowIndex < 0 || rowIndex > rowCount-1 {
-			return false, fmt.Errorf("#2a table [%s] has %d row%s. Row index is out of range (0..%d): %d",
-				table.Name(), rowCount, plural(rowCount), rowCount-1, rowIndex)
-		}
-	*/
 	if rowIndex < 0 || rowIndex > rowCount-1 {
-		return false, fmt.Errorf("table [%s] has %d row%s. Row index is out of range (0..%d): %d",
-			table.Name(), rowCount, plural(rowCount), rowCount-1, rowIndex)
+		if rowCount == 0 {
+			return false, fmt.Errorf("in table [%s] with %d row%s row index %d is out of range",
+				table.Name(), rowCount, plural(rowCount), rowIndex)
+		} else {
+			return false, fmt.Errorf("in table [%s] with %d row%s row index %d is out of range (0..%d)",
+				table.Name(), rowCount, plural(rowCount),  rowIndex, rowCount-1)
+		}
 	}
 
 	return true, nil
@@ -3234,10 +3230,10 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 		return false, err
 	}
 	if table1IsNil && !table2IsNil {
-		return false, fmt.Errorf("table1.Equals(table2): table1 is a NilTable")
+		return false, fmt.Errorf("table1[].Equals(table2[%s]): table1 is a NilTable", table2.Name())
 	}
 	if !table1IsNil && table2IsNil {
-		return false, fmt.Errorf("table1.Equals(table2): table2 is a NilTable")
+		return false, fmt.Errorf("table1[%s].Equals(table2[]): table2 is a NilTable", table1.Name())
 	}
 
 	// Compare table names.
@@ -3317,7 +3313,7 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
-					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName%q rowIndex=%d: %v != %v",
+					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 				}
 
@@ -3361,8 +3357,13 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 				}
 			} else { // For all other (atomic) types.
 				if val1 != val2 {
+					if colType == "string" {
+					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
+					} else {
 					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
+					}
 				}
 			}
 
