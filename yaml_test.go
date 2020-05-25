@@ -1,8 +1,8 @@
 package gotables_test
 
 import (
-	_ "os"
-	_ "fmt"
+	"os"
+	_"fmt"
 	"testing"
 
 	"github.com/urban-wombat/gotables"
@@ -82,16 +82,18 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	true	42		"forty two"
 	false	55		"fifty-five"
 	`
-//	[T3]
-//	t *Table = []
+
+	tableSetString = `
+	[T3]
+	t *Table = []
+	`
 	tableSet1, err = gotables.NewTableSetFromString(tableSetString)
 	if err != nil {
 		t.Fatal(err)
 	}
-//where("\n" + tableSet1.String())
-//println()
+where("\n" + tableSet1.String())
+println()
 
-/*
 //	empty *Table = [EmptyTable]
 	var nestedString string = `
 	[NestedTable]
@@ -104,31 +106,33 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-//where(nestedTable.String())
+where("\n" + nestedTable.String())
+println()
 
 	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-//where(tableSet1.String())
+where("\n" + tableSet1.String())
+println()
 	err = t3.SetTable("t", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
-*/
-//where(tableSet1.String())
-//println()
-//os.Exit(55)
-//where(tableSet1.TableCount())
-//where("\n" + tableSet1.String())
+where(tableSet1.TableCount())
+where("\n" + tableSet1.String())
+println()
 
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
 	}
-//where("\n" + tableSet1.String())
-//where("\n" + yamlString)
+where("\n" + tableSet1.String())
+where("\n" + yamlString)
+println()
+//os.Exit(55)
+_, _ = os.Hostname()
 
 	var yamlMap map[string]interface{}
 	yamlMap, err = tableSet1.GetTableSetAsMap()

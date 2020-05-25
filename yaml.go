@@ -12,6 +12,7 @@ import (
 	Unmarshal YAML document to a *gotables.TableSet
 */
 func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err error) {
+where("func NewTableSetFromYAML()")
 
 /*
 	Note: Although the yamlTableSetString may (or may not) be the same in each case:
@@ -96,7 +97,7 @@ where("\n" + table.String())
 }
 
 func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, err error) {
-//where("LOOP newTableFromYAML_recursive")
+where("func newTableFromYAML_recursive()")
 
 // DATA PRESENT
 //where(fmt.Sprintf("\n%v", tableMap))
@@ -104,7 +105,7 @@ func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, 
 	var exists bool
 
 	/*
-		We don't know the order map values will be returned if we iterate of the map:
+		We don't know the order map values will be returned if we iterate over the map:
 		(1) tableName
 		(2) isStructShape (if there)
 		(3) metadata
@@ -284,7 +285,7 @@ where(intVal)
 				default:
 where(intVal)
 					msg := invalidColTypeMsg(table.colTypes[colIndex])
-					err = fmt.Errorf("%s: %s", UtilFuncName(), msg)
+					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
 				}
@@ -304,7 +305,7 @@ where(fmt.Sprintf("%T", row[colIndex]))
 					err = table.SetFloat64ByColIndex(colIndex, rowIndex, row[colIndex].(float64))
 				default:
 					msg := invalidColTypeMsg(table.colTypes[colIndex])
-					err = fmt.Errorf("%s: %s", UtilFuncName(), msg)
+					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
 				}
@@ -344,7 +345,7 @@ where()
 				default:
 where()
 					msg := invalidColTypeMsg(table.colTypes[colIndex])
-					err = fmt.Errorf("%s: %s", UtilFuncName(), msg)
+					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
 				}
@@ -357,11 +358,13 @@ where()
 where(fmt.Sprintf("%9s fac is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
 			case []byte:
 where(fmt.Sprintf("%9s []b is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
+			case *Table:
+where(fmt.Sprintf("%9s []b is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
 			default:
 where(fmt.Sprintf("default is type %9s %9T %v", table.colTypes[colIndex], row[colIndex], row[colIndex]))
 where()
 				msg := invalidColTypeMsg(table.colTypes[colIndex])
-				err = fmt.Errorf("%s: %s", UtilFuncName(), msg)
+				err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 				table = nil
 				return
 			}
@@ -379,11 +382,13 @@ if err != nil {
 //where(i)
 }
 */
+where("END")
 
 	return
 }
 
 func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
+where("func GetTableSetAsYAML()")
 
 	if tableSet == nil {
 		return "", fmt.Errorf("%s tableSet.%s: table set is <nil>", UtilFuncSource(), UtilFuncName())
@@ -407,6 +412,7 @@ func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
 }
 
 func (tableSet *TableSet) GetTableSetAsMap() (yamlMap map[string]interface{}, err error) {
+where("func GetTableSetAsMap()")
 
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s: table set is <nil>", UtilFuncSource(), UtilFuncName())
@@ -458,45 +464,55 @@ if err != nil {
 }
 
 func (table *Table) getTableAsYAML() (yamlTable map[string]interface{}, err error) {
-//where("getTableAsYAML()")
-//where("\n" + table.String() + "\n")
+where("func getTableAsYAML()")
+where("BEGIN")
+where("\n" + table.String() + "\n")
 
 	var yamlObject map[string]interface{}	// Cell name and value pair.
 	var yamlTableData [][]interface{}
 	var yamlTableRow []interface{}
 
+where()
 	var visitTable = func(table *Table) (err error) {
+where("visitTable()")
 
+where()
 		// Used only in visitTable() function.
 		var yamlTableMetadata = make([]interface{}, table.ColCount())
 
+where()
 		yamlTable = make(map[string]interface{}, 0)
 		yamlTableData = make([][]interface{}, table.RowCount())
 
+where()
 		yamlTable["tableName"] = table.Name()
 		yamlTable["data"] = yamlTableData
 
+where()
 		if table.isStructShape {
 			yamlTable["isStructShape"] = true
 		}
 
+where()
+		// Build metadata map.
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-//where(fmt.Sprintf("table: [%s] colName: %s colIndex: %d colType: %q", table.Name(), table.colNames[colIndex], colIndex, table.colTypes[colIndex]))
+where(fmt.Sprintf("table: [%s] colName: %s colIndex: %d colType: %q", table.Name(), table.colNames[colIndex], colIndex, table.colTypes[colIndex]))
 			yamlObject = make(map[string]interface{}, 0)
 			if table.colTypes[colIndex] == "*Table" {
 				// Quote "*Table" to avoid YAML interpreting it as an alias.
-//where()
+where()
 				yamlObject[table.colNames[colIndex]] = fmt.Sprintf("%q", table.colTypes[colIndex])
-//where(yamlObject[table.colNames[colIndex]])
+where(yamlObject[table.colNames[colIndex]])
 			} else {
+where()
 				yamlObject[table.colNames[colIndex]] = table.colTypes[colIndex]
 			}
 			yamlTableMetadata[colIndex] = yamlObject
 		}
 
-//where(yamlTableMetadata)
+where(yamlTableMetadata)
 		yamlTable["metadata"] = yamlTableMetadata
-//where(yamlTable)
+where(yamlTable)
 /*
 		yamlTables = append(yamlTables, yamlTable)
 		yamlDoc["tables"] = yamlTables
@@ -519,67 +535,91 @@ func (table *Table) getTableAsYAML() (yamlTable map[string]interface{}, err erro
 	}
 
 	var visitRow = func(row Row) (err error) {
+where("visitRow()")
 
 		yamlTableRow = make([]interface{}, row.Table.ColCount())
 		yamlTableData[row.RowIndex] = yamlTableRow
+where(fmt.Sprintf("yamlTableRow = %v", yamlTableRow))
 
 		return
 	}
 
 	var visitCell = func(cell Cell) (err error) {
+where("visitCell()")
+where(table.Name())
 
 		var anyVal interface{}
 //		yamlObject = make(map[string]interface{}, 1)
 
 		switch cell.ColType {
 		case "string":
+where()
 			anyVal, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
 		case "bool":
+where()
 			anyVal, err = cell.Table.GetBoolByColIndex(cell.ColIndex, cell.RowIndex)
 		case "rune":
+where()
 			anyVal, err = cell.Table.GetRuneByColIndex(cell.ColIndex, cell.RowIndex)
 		case "byte":
+where()
 			anyVal, err = cell.Table.GetByteByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int":
+where()
 			anyVal, err = cell.Table.GetIntByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int8":
+where()
 			anyVal, err = cell.Table.GetInt8ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int16":
+where()
 			anyVal, err = cell.Table.GetInt16ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int32":
+where()
 			anyVal, err = cell.Table.GetInt32ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "int64":
+where()
 			anyVal, err = cell.Table.GetInt64ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint":
+where()
 			anyVal, err = cell.Table.GetUintByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint8":
+where()
 			anyVal, err = cell.Table.GetUint8ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint16":
+where()
 			anyVal, err = cell.Table.GetUint16ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint32":
+where()
 			anyVal, err = cell.Table.GetUint32ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "uint64":
+where()
 			anyVal, err = cell.Table.GetUint64ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "float32":
+where()
 			anyVal, err = cell.Table.GetFloat32ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "float64":
+where()
 			anyVal, err = cell.Table.GetFloat64ByColIndex(cell.ColIndex, cell.RowIndex)
 		case "[]uint8":
+where()
 			anyVal, err = cell.Table.GetUint8SliceByColIndex(cell.ColIndex, cell.RowIndex)
 		case "[]byte":
+where()
 			anyVal, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
 		case "time.Time":
+where()
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 		case "*Table":
+where(`case "*Table":`)
 // DOING:
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
-//where(cell.Table.Name())
-//where(nestedTable.Name())
+where(fmt.Sprintf("cell.Table.Name() = %s", cell.Table.Name()))
+where(fmt.Sprintf("nestedTable.Name() = %s", nestedTable.Name()))
 println()
-//where("\n" + nestedTable.String())
+where("\n" + nestedTable.String())
 println()
-//where(err)
+where(err)
 			if err != nil {
 				return err
 			}
@@ -589,22 +629,20 @@ println()
 			if err != nil {
 				return err
 			}
-/*
-//where(fmt.Sprintf("%v", nestedTableYAML))
+where(fmt.Sprintf("%v", nestedTableYAML))
 var t *Table
 t, err = newTableFromYAML_recursive(nestedTableYAML)
 if err != nil {
 	return err
 }
-if cell.Table.Name() == "T3" {
-//where("WHAT? \n" + cell.Table.String() + "\n")
-//where("WHAT? \n" + t.String() + "\n")
+if cell.Table.Name() == "T3" || cell.Table.Name() == "Nested" {
+where("WHAT? \n" + cell.Table.String() + "\n")
+where("WHAT? \n" + t.String() + "\n")
 //os.Exit(66)
 }
-*/
 			anyVal = nestedTableYAML
 
-//where()
+where()
 		default:
 //where()
 			msg := invalidColTypeMsg(cell.ColType)
@@ -618,7 +656,7 @@ if cell.Table.Name() == "T3" {
 		}
 
 		yamlTableRow[cell.ColIndex] = anyVal
-//where(yamlTableRow)
+where(yamlTableRow)
 /*
 //where(printSlice(yamlTableRow))
 //where("yamlObject")
