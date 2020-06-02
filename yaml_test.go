@@ -84,14 +84,23 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	`
 
 	tableSetString = `
+	[[TwoTables]]
+
+	[T2]
+	x		y		s				sss
+	bool	byte	string			string
+	true	42		"forty two"		"sss0"
+	false	55		"fifty-five"	"sss1"
+	`
+/*
 	[T3]
 	t *Table = []
-	`
+*/
 	tableSet1, err = gotables.NewTableSetFromString(tableSetString)
 	if err != nil {
 		t.Fatal(err)
 	}
-where("\n" + tableSet1.String())
+where("tableSet1.String()\n" + tableSet1.String())
 println()
 
 //	empty *Table = [EmptyTable]
@@ -99,37 +108,40 @@ println()
 	[NestedTable]
 	noByte []byte = [1 3 5]
 	noUint8 []uint8 = [2 4 6]
-	runeVal rune = '^'
+	runeVal rune = 'A'
 	float32Val float32 = 66.6
 	`
 	nestedTable, err := gotables.NewTableFromString(nestedString)
 	if err != nil {
 		t.Fatal(err)
 	}
-where("\n" + nestedTable.String())
+where("nestedTable.String()\n" + nestedTable.String())
 println()
 
+/*
 	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-where("\n" + tableSet1.String())
-println()
+*/
+//where("tableSet1.String()\n" + tableSet1.String())
+//println()
+/*
 	err = t3.SetTable("t", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
-where(tableSet1.TableCount())
-where("\n" + tableSet1.String())
+*/
+//where(tableSet1.TableCount())
+//where("tableSet1.String()\n" + tableSet1.String())
 println()
 
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
 	}
-where("\n" + tableSet1.String())
-where("\n" + yamlString)
+where("tableSet1.String()\n" + tableSet1.String())
+where("yamlString\n" + yamlString)
 println()
 //os.Exit(55)
 _, _ = os.Hostname()
@@ -152,19 +164,22 @@ where()
 // DATA MISSING
 where("DATA MISSING")
 where(tableSet2.TableCount())
-where("\n" + tableSet2.String())
+where("tableSet2.String()\n" + tableSet2.String())
+println()
 
 jsonStr1, err := tableSet1.GetTableSetAsJSONIndent()
 if err != nil {
 	t.Fatal(err)
 }
-where("tableSet1:\n" + jsonStr1)
+where("tableSet1 jsonStr1:\n" + jsonStr1)
+println()
 
 jsonStr2, err := tableSet2.GetTableSetAsJSONIndent()
 if err != nil {
 	t.Fatal(err)
 }
-where("tableSet2:\n" + jsonStr2)
+where("tableSet2 jsonStr2:\n" + jsonStr2)
+println()
 
 	equals, err := tableSet1.Equals(tableSet2)
 	if err != nil {

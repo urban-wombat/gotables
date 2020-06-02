@@ -299,7 +299,7 @@ func UtilPrintCaller() {
 	fileName = filepath.Base(fileName)
 	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
 
-	_, _ = fmt.Fprintf(os.Stderr, "UtilPrintCaller(): %s called by %s at %s\n", calledName, callerName, callerFile)
+	_, _ = fmt.Fprintf(os.Stderr, "ttt UtilPrintCaller(): %s called by %s at %s\n", calledName, callerName, callerFile)
 }
 
 /*
@@ -505,6 +505,19 @@ func UtilFuncSource() string {
 	}
 	sourceBase := filepath.Base(sourceFile)
 	return fmt.Sprintf("%s[%d]", sourceBase, lineNumber)
+}
+
+/*
+	Current source line number. A bit like the C preprocessor macro:
+		__LINE__
+*/
+func UtilLineNumber() (lineNumber int) {
+	_, _, lineNumber, ok := runtime.Caller(1)
+	if !ok {
+		// Could not obtain func name and source file information.
+		return -1
+	}
+	return lineNumber
 }
 
 /*
