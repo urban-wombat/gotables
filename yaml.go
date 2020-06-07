@@ -424,31 +424,15 @@ UtilPrintCaller()
 			// #3 Error handler for all cases.
 			if err != nil {
 				table = nil
-where("#2 Error handler for all cases.")
 				return
 			}
 		}
-where(table.String())
 	}
-//where("LOOP RECURSIVE \n" + table.String() + "\n")
-/*
-if table.Name() == "T0" {
-var i int
-i, err = table.GetInt("k", 1)
-if err != nil {
-	table = nil
-	return
-}
-//where(i)
-}
-*/
-where(table.String())
 
 	return
 }
 
 func (tableSet *TableSet) GetTableSetAsYAML() (yamlString string, err error) {
-where("func GetTableSetAsYAML()")
 
 	if tableSet == nil {
 		return "", fmt.Errorf("%s tableSet.%s: table set is <nil>", UtilFuncSource(), UtilFuncName())
@@ -472,8 +456,6 @@ where("func GetTableSetAsYAML()")
 }
 
 func (tableSet *TableSet) GetTableSetAsMap() (yamlMap map[string]interface{}, err error) {
-where("func GetTableSetAsMap()")
-where("this func: ", UtilFuncName(), " caller: ", UtilFuncCaller(), " caller caller: ", UtilFuncCallerCaller())
 
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s: table set is <nil>", UtilFuncSource(), UtilFuncName())
@@ -490,36 +472,12 @@ where("this func: ", UtilFuncName(), " caller: ", UtilFuncCaller(), " caller cal
 		if err != nil {
 			return
 		}
-//where("fff INPUT:\n" + table.String() + "\n")
 
 		var yamlTable map[string]interface{}
 		yamlTable, err = table.getTableAsMap()
 		if err != nil {
 			return
 		}
-//where("fff YAML:\n" + fmt.Sprintf("%v", yamlTable) + "\n\n")
-//where("fff YAML:\n" + fmt.Sprintf("%#v", yamlTable) + "\n\n")
-/*
-var valid bool
-valid, err = isValidYAML("", yamlTable)
-//where(fmt.Sprintf("valid: %t err: %v", valid, err))
-*/
-/*
-println(" ttt ")
-where(fmt.Sprintf("ttt %v", yamlTable))
-where(fmt.Sprintf("ttt %#v", yamlTable))
-var tableOut *Table
-var tableOut2 *Table
-tableOut, err = newTableFromYAML_recursive(yamlTable)
-if err != nil {
-	return
-}
-println()
-where(fmt.Sprintf("RowCount()=%d ttt %s", tableOut.RowCount(), tableOut.String())
-println()
-//where("uuu OUTPUT:\n" + tableOut.String() + "\n")
-//where("uuu OUTPUT2:\n" + tableOut2.String() + "\n")
-*/
 
 		yamlTables[tableIndex] = yamlTable
 	}
