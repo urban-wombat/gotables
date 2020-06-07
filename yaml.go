@@ -14,8 +14,6 @@ import (
 	Unmarshal YAML document to a *gotables.TableSet
 */
 func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err error) {
-where("func NewTableSetFromYAML()")
-where(yamlTableSetString)
 
 /*
 	Note: Although the yamlTableSetString may (or may not) be the same in each case:
@@ -35,15 +33,11 @@ where(yamlTableSetString)
 		return nil, fmt.Errorf("%s: yamlTableSetString is empty", UtilFuncName())
 	}
 
-//where()
 	var tableSetMap map[string]interface{}
 	err = yaml.Unmarshal([]byte(yamlTableSetString), &tableSetMap)
 	if err != nil {
 		return
-}
-// DATA PRESENT
-//println()
-//where("\n" + printMap(tableSetMap))
+	}
 
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
@@ -58,30 +52,11 @@ where(yamlTableSetString)
 		return
 	}
 
-// DATA PRESENT
-where("\n" + tableSet.String())
 	// (2) Retrieve and process tables.
-where(fmt.Sprintf("tableSetMap: %v", tableSetMap))
-//	var tablesMap [][]interface{}
 	var tablesMap []interface{}
 	var anyVal interface{}
-//	tablesMap, exists = tableSetMap["tables"].([][]interface{})
-	whatever, exists := tableSetMap["tables"]
-where(fmt.Sprintf("whatever type: %T", whatever))
-
-var marshalledBytes []byte
-marshalledBytes, err = json.MarshalIndent(whatever, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
-
 	anyVal, exists = tableSetMap["tables"]
-//	anyVal, exists = existsInMap(tablesMap, "tables")
 	tablesMap = anyVal.([]interface{})
-where(fmt.Sprintf("tablesMap: %v", tablesMap))
-where(fmt.Sprintf("exists: %t", exists))
-where(fmt.Sprintf("len(tablesMap): %d", len(tablesMap)))
-
-marshalledBytes, err = json.MarshalIndent(tablesMap, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
 
 	if !exists {
 		return nil, fmt.Errorf("%s %s: in YAML doc: 'tables' is missing", UtilFuncSource(), UtilFuncName())
@@ -90,7 +65,6 @@ where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
 	var tableMap map[string]interface{}
 
 	// (3) Loop through the array of tables.
-where(fmt.Sprintf(" ttt %#v", tablesMap))
 	var tableIndex int
 	for tableIndex, anyVal = range tablesMap {
 where(fmt.Sprintf("tableIndex:%d anyVal:%v", tableIndex, anyVal))
@@ -101,15 +75,6 @@ where(fmt.Sprintf(" ttt %#v", anyVal))
 		tableMap = anyVal.(map[string]interface{})
 where(fmt.Sprintf(" ttt %v", tableMap))
 //where(fmt.Sprintf(" ttt %#v", tableMap))
-
-marshalledBytes, err = json.MarshalIndent(tableMap, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
-
-where(dataExists(tableMap, UtilLineNumber()))
-forMarshal, exists := existsInMap(tableMap, "data")
-where(exists)
-marshalledBytes, err = json.MarshalIndent(forMarshal, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
 
 		var table *Table
 		table, err = newTableFromYAML_recursive(tableMap)
@@ -842,76 +807,25 @@ println()
 			for i := 0; i < len(byteSlice); i++ {
 				where(fmt.Sprintf("byteSlice[%d] type = %T", i, byteSlice[i]))
 			}
-where(fmt.Sprintf("anyVal type = %T value = %v", anyVal, anyVal))
-where(fmt.Sprintf("anyVal type = %T value = %#v", anyVal, anyVal))
-where(anyVal)
 println()
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
 where(fmt.Sprintf("[%-8s] col:%2d row:%2d anyVal:%v", cell.Table.Name(), cell.ColIndex, cell.RowIndex, anyVal))
 println()
 		case "*Table":
-where(`case "*Table":`)
-// DOING:
-
-var marshalledbytes []byte
-marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
-where(fmt.Sprintf("yamlTable: [%s]\n%s", table.Name(), string(marshalledbytes)))
-marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
-where(fmt.Sprintf("yamlTableRow: [%s]\n%s", table.Name(), string(marshalledbytes)))
-where(GetGlobalString())
-
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
-where(fmt.Sprintf("cell.Table.Name() = %s", cell.Table.Name()))
-where(fmt.Sprintf("nestedTable.Name() = %s", nestedTable.Name()))
-println()
-where("\n" + nestedTable.String())
-println()
-where(err)
 			if err != nil {
 				return err
 			}
 
-where("nestedTable.getTableAsMap()")
 			anyVal, err = nestedTable.getTableAsMap()
 			if err != nil {
 				return err
 			}
 
-marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
-where(string(marshalledbytes))
-marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
-where(string(marshalledbytes))
-marshalledbytes, err = json.MarshalIndent(anyVal, "", "  ")
-where(string(marshalledbytes))
-
-/*
-where(fmt.Sprintf("nestedTableMap:\n%v", nestedTableMap))
-println(" ttt ")
-where(fmt.Sprintf("ttt %v", nestedTableMap))
-where(fmt.Sprintf("ttt %#v", nestedTableMap))
-var t *Table
-t, err = newTableFromYAML_recursive(nestedTableMap)
-if err != nil {
-	return err
-}
-println()
-where(fmt.Sprintf("RowCount()=%d ttt %s", t.RowCount(), t.String()))
-println()
-if cell.Table.Name() == "T3" || cell.Table.Name() == "Nested" {
-where("WHAT? \n" + cell.Table.String() + "\n")
-where("WHAT? \n" + t.String() + "\n")
-//os.Exit(66)
-}
-*/
-
-where()
 		default:
-//where()
 			msg := invalidColTypeMsg(table.Name(), cell.ColType)
-//where(msg)
 			err = fmt.Errorf("visitCell() YAML: %s", msg)
 			return err
 		}
@@ -920,55 +834,7 @@ where()
 			return err
 		}
 
-where("yamlTableRow[cell.ColIndex] = anyVal")
 		yamlTableRow[cell.ColIndex] = anyVal
-
-/*
-var marshalledbytes []byte
-marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
-where(string(marshalledbytes))
-marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
-where(string(marshalledbytes))
-marshalledbytes, err = json.MarshalIndent(anyVal, "", "  ")
-where(string(marshalledbytes))
-*/
-
-where(UtilFuncCallerCallerCaller())
-where(UtilFuncCallerCaller())
-where(UtilFuncCaller())
-where(fmt.Sprintf("yamlTableRow[cell.ColIndex = %d] = anyVal:%v", cell.ColIndex, anyVal))
-where(fmt.Sprintf("yamlTableRow: %v", yamlTableRow))
-where(fmt.Sprintf("yamlTableRow: %#v", yamlTableRow))
-
-switch anyVal.(type) {
-case string:
-	var sss string = anyVal.(string)
-	if strings.HasPrefix(sss, "sss") {
-		where(fmt.Sprintf("ggg %q", sss))
-		where(fmt.Sprintf("ggg yamlTableRow[cell.ColIndex=%d]: %v", cell.ColIndex, yamlTableRow[cell.ColIndex]))
-		where("ggg yamlTableRow:")
-		where(fmt.Sprintf("ggg %v", yamlTableRow))
-		where(fmt.Sprintf("ggg yamlTableData = %#v", yamlTableData))
-		where(fmt.Sprintf("ggg yamlTable = %#v", yamlTable))
-		where(dataExists(yamlTable, UtilLineNumber()))
-		_, _ = existsInMap(yamlTable, "data")
-		where(metadataExists(yamlTable, UtilLineNumber()))
-		_, _ = existsInMap(yamlTable, "metadata")
-		where(tableNameExists(yamlTable, UtilLineNumber()))
-		_, _ = existsInMap(yamlTable, "tableName")
-		var marshalledbytes []byte
-		marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
-		where(string(marshalledbytes))
-	}
-}
-
-/*
-//where(printSlice(yamlTableRow))
-//where("yamlObject")
-printYaml(nil, nil, yamlObject)
-printYaml(nil, yamlTableRow, nil)
-println()
-*/
 
 		return
 	}
@@ -978,62 +844,6 @@ println()
 	if err != nil {
 		return
 	}
-/*
-var valid bool
-valid, err = isValidYAML("", yamlTable)
-//where(fmt.Sprintf("valid: %t err: %v", valid, err))
-*/
-
-/*
-	var yamlBytes []byte
-	yamlBytes, err = yaml.Marshal(yamlDoc)
-	if err != nil {
-		return "", nil
-	}
-	yamlString = string(yamlBytes)
-*/
-println()
-where(fmt.Sprintf("%v", yamlTable))
-println()
-where(fmt.Sprintf("%#v", yamlTable))
-
-println()
-where(fmt.Sprintf("xxx input  table [%s]\n%s", table.Name(), table.String()))
-println()
-
-where(yamlTableData)
-where(yamlTable)
-
-println()
-println(" ttt ")
-where(fmt.Sprintf("ttt %v", yamlTable))
-where(fmt.Sprintf("ttt %#v", yamlTable))
-var marshalledBytes []byte
-marshalledBytes, err = json.MarshalIndent(yamlTable, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
-println()
-
-//where(dataExists(yamlTable, UtilLineNumber()))
-
-var t *Table
-t, err = newTableFromYAML_recursive(yamlTable)
-if err != nil {
-	return
-}
-println()
-where(fmt.Sprintf("yyy %v", yamlTable))
-where(fmt.Sprintf("RowCount()=%d ttt %s", t.RowCount(), t.String()))
-println()
-
-println()
-where(fmt.Sprintf("xxx output table [%s]\n%s", t.Name(), t.String()))
-println()
-
-where("END   func getTableAsMap()")
-
-var marshalledbytes []byte
-marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
-where(fmt.Sprintf("[%s]\n%s", table.Name(), string(marshalledbytes)))
 
 	return
 }
@@ -1087,7 +897,6 @@ func trimQuote(s string) string {
 }
 
 func isValidYAML(yamlString string, yamlMap map[string]interface{}) (isValid bool, err error) {
-where("zzz INSIDE isValidYAML()")
 
 	if yamlString == "" && yamlMap == nil {
 		err = fmt.Errorf("%s: yamlString and yamlMap are both empty", UtilFuncName())
@@ -1096,22 +905,18 @@ where("zzz INSIDE isValidYAML()")
 	var tableSet *TableSet
 
 	if yamlString != "" {
-where(fmt.Sprintf("zzz isValidYAML() checking yamlString:\n%s", yamlString))
 		tableSet, err = NewTableSetFromYAML(yamlString)
 		if err != nil {
 			err = fmt.Errorf("isValidYAML(): %v", err)
-where(fmt.Sprintf("isValidYAML(): %v\n%s", err, yamlString))
 			return
 		}
 
-where(fmt.Sprintf("zzz isValidYAML() checking tableCounts"))
 		var rowCount = 0
 		for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
 			var table *Table
 			table, err = tableSet.GetTableByTableIndex(tableIndex)
 			if err != nil {
 				err = fmt.Errorf("isValidYAML(): %v", err)
-where(fmt.Sprintf("isValidYAML(): %v tableIndex: %d:\n%s", err, tableIndex, yamlString))
 				return
 			}
 
@@ -1120,7 +925,6 @@ where(fmt.Sprintf("isValidYAML(): %v tableIndex: %d:\n%s", err, tableIndex, yaml
 		if rowCount == 0 {
 			err = fmt.Errorf("%s: from yamlString: tableSet [[%s]] with %d tables has 0 rows",
 				UtilFuncName(), tableSet.Name(), tableSet.TableCount())
-where(fmt.Sprintf("isValidYAML(): %v\n%s", err, tableSet.String()))
 			err = fmt.Errorf("isValidYAML(): %v", err)
 			return
 		}
@@ -1129,48 +933,31 @@ where(fmt.Sprintf("isValidYAML(): %v\n%s", err, tableSet.String()))
 	}
 
 	if yamlMap != nil {
-where(fmt.Sprintf("zzz isValidYAML() checking yamlMap: yaml.Marshal(yamlMap):\n%v", yamlMap))
 		var yamlBytes []byte
 		yamlBytes, err = yaml.Marshal(yamlMap)
 		if err != nil {
 			err = fmt.Errorf("isValidYAML(): %v", err)
-where(fmt.Sprintf("isValidYAML(): %v", err))
 			return
 		}
 		yamlString = string(yamlBytes)
 
-where(fmt.Sprintf("zzz isValidYAML() checking yamlMap: NewTableSetFromYAML(yamlString)"))
 		tableSet, err = NewTableSetFromYAML(yamlString)
 		if err != nil {
-where(fmt.Sprintf("zzz isValidYAML() false checked yamlMap: NewTableSetFromYAML(yamlString): %v", err))
 			// See if it is a table.
 			errFromTableSet := err
-println(" ttt ")
-where(fmt.Sprintf("ttt %v", yamlMap))
-where(fmt.Sprintf("ttt %#v", yamlMap))
-			var table *Table
-where(fmt.Sprintf("zzz isValidYAML() checking yamlMap: newTableFromYAML_recursive(yamlMap)"))
-			table, err = newTableFromYAML_recursive(yamlMap)
+			_, err = newTableFromYAML_recursive(yamlMap)
 			if err != nil {
-where(fmt.Sprintf("isValidYAML(): false %v\n%s", err, yamlString))
 				err = fmt.Errorf("isValidYAML(): %v (also %v)", err, errFromTableSet)
 				return
 			}
-println()
-where(fmt.Sprintf("RowCount()=%d ttt %s", table.RowCount(), table.String()))
-println()
-where(fmt.Sprintf("zzz isValidYAML() true checked yamlMap: newTableFromYAML_recursive(yamlMap) =\n%s", table.String()))
 		}
-where(fmt.Sprintf("zzz isValidYAML() true checked yamlMap: NewTableSetFromYAML(yamlString) =\n%s", tableSet.String()))
 
-where(fmt.Sprintf("zzz isValidYAML() checking tableCounts"))
 		var rowCount = 0
 		for tableIndex := 0; tableIndex < tableSet.TableCount(); tableIndex++ {
 			var table *Table
 			table, err = tableSet.GetTableByTableIndex(tableIndex)
 			if err != nil {
 				err = fmt.Errorf("isValidYAML(): %v", err)
-where(fmt.Sprintf("isValidYAML(): %v tableIndex: %d:\n%s", err, tableIndex, yamlString))
 				return
 			}
 
@@ -1179,7 +966,6 @@ where(fmt.Sprintf("isValidYAML(): %v tableIndex: %d:\n%s", err, tableIndex, yaml
 		if rowCount == 0 {
 			err = fmt.Errorf("%s: from yamlString: tableSet [[%s]] with %d tables has 0 rows",
 				UtilFuncName(), tableSet.Name(), tableSet.TableCount())
-where(fmt.Sprintf("isValidYAML(): %v\n%s", err, tableSet.String()))
 			err = fmt.Errorf("isValidYAML(): %v", err)
 			return
 		}
@@ -1190,41 +976,8 @@ where(fmt.Sprintf("isValidYAML(): %v\n%s", err, tableSet.String()))
 	return
 }
 
-//					case "*Table":
-//	//where("case table")
-//	//where(fmt.Sprintf("table [%s]", table.Name()))
-//	//where(fmt.Sprintf("row[%d] %#v type %T", colIndex, row[colIndex], row[colIndex]))
-//	//where(row[colIndex])
-//						var tableNested *Table
-//						if row[colIndex] == nil {
-//	//where()
-//							tableNested = NewNilTable()
-//						} else {
-//	//where()
-//	//where("LOOP CALLING RECURSIVELY")
-//	/*		UNDELETE!!!
-//							var mapVal map[string]interface{} = row[colIndex].(map[string]interface{})
-//	// UNDELETE!!!						tableNested, err = newTableFromYAML_recursive(mapVal)
-//							if err != nil {
-//	//where()
-//								return nil, err
-//							}
-//	*/
-//	//where(fmt.Sprintf("tableNested = %s\n", tableNested.String()))
-//						}
-//	//where()
-//						err = table.SetTableByColIndex(colIndex, rowIndex, tableNested)
-//						if err != nil {
-//	//where()
-//							table = nil
-//							return
-//						}
-//	//where()
-
 func dataExists(yamlTable map[string]interface{}, sourceLineNumber int) string {
-//	data, exists := yamlTable["data"].([][]interface{})
-	data, exists := yamlTable["data"]
-where(data)
+	_, exists := yamlTable["data"]
 	return fmt.Sprintf(`ggg "data" exists = %t called by %s at %d`, exists, UtilFuncCaller(), sourceLineNumber)
 }
 
@@ -1242,11 +995,8 @@ func existsInMap(tableMap map[string]interface{}, searchKey string) (element int
 	var key string
 	for key, element = range tableMap {
 		if key == searchKey {
-			where(fmt.Sprintf("ggg Key: %s => Element: %v", key, element))
-			where(fmt.Sprintf("existsInMap(): ggg %s exists, element type: %T", searchKey, element))
 			return element, true
 		}
 	}
-	where(fmt.Sprintf("existsInMap(): ggg %s does NOT exist, element type: %T", searchKey, element))
 	return nil, false
 }
