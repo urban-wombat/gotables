@@ -67,7 +67,6 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 	// (3) Loop through the array of tables.
 	for _, anyVal = range tablesMap {
 println(" ttt ")
-where(fmt.Sprintf(" ttt %#v", anyVal))
 
 		tableMap = anyVal.(map[string]interface{})
 
@@ -79,30 +78,19 @@ where(fmt.Sprintf(" ttt %#v", anyVal))
 
 		err = tableSet.Append(table)
 		if err != nil {
-//where(err)
 			return
 		}
 	}
-//where("fff LOOP END:\n" + tableSet.String() + "\n")
 
 println()
-where(fmt.Sprintf("yyy %s", tableSet.String()))
 println()
 
 	return
 }
 
 func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, err error) {
-where("func newTableFromYAML_recursive()")
-where(fmt.Sprintf("tableMap: %v", tableMap))
 var marshalledBytes []byte
-marshalledBytes, err = json.MarshalIndent(tableMap, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
 
-// DATA PRESENT
-//where(fmt.Sprintf("\n%v", tableMap))
-
-where()
 	var exists bool
 
 	/*
@@ -117,10 +105,7 @@ where()
 	// (1) Retrieve and process table name.
 	var tableName string
 	tableName, exists = tableMap["tableName"].(string)
-where(fmt.Sprintf("tableName exists = %t", exists))
-//where("fff tableName:\n" + fmt.Sprintf("%v", tableName) + "\n\n")
 	if !exists {
-//where(tableMap)
 		err = fmt.Errorf("%s %s: in YAML doc: table is missing 'tableName'", UtilFuncSource(), UtilFuncName())
 		return
 	}
