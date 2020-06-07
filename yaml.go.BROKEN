@@ -2,7 +2,7 @@ package gotables
 
 import (
 	"fmt"
-	"encoding/json"
+	_ "encoding/json"
 	_ "os"
 	"strings"
 	"time"
@@ -65,61 +65,27 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 	var tableMap map[string]interface{}
 
 	// (3) Loop through the array of tables.
-	var tableIndex int
-	for tableIndex, anyVal = range tablesMap {
-where(fmt.Sprintf("tableIndex:%d anyVal:%v", tableIndex, anyVal))
-println(" ttt ")
-where(fmt.Sprintf(" ttt %v", anyVal))
-where(fmt.Sprintf(" ttt %#v", anyVal))
+//	var tableIndex int
+	for _, anyVal = range tablesMap {
 
 		tableMap = anyVal.(map[string]interface{})
-where(fmt.Sprintf(" ttt %v", tableMap))
-//where(fmt.Sprintf(" ttt %#v", tableMap))
 
 		var table *Table
 		table, err = newTableFromYAML_recursive(tableMap)
-where()
 		if err != nil {
-where()
 			return
 		}
-where(table)
-println()
-where(fmt.Sprintf("RowCount()=%d ttt %s", table.RowCount(), table.String()))
-println()
-if table.Name() == "Tminus1" {
-// DATA PRESENT
-//where(fmt.Sprintf("\n%v", tableMap))
-// DATA MISSING
-where("\n" + table.String())
-//os.Exit(32)
-}
 		err = tableSet.Append(table)
 		if err != nil {
-//where(err)
 			return
 		}
 	}
-//where("fff LOOP END:\n" + tableSet.String() + "\n")
-
-println()
-where(fmt.Sprintf("yyy %s", tableSet.String()))
-println()
 
 	return
 }
 
 func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, err error) {
-where("func newTableFromYAML_recursive()")
-where(fmt.Sprintf("tableMap: %v", tableMap))
-var marshalledBytes []byte
-marshalledBytes, err = json.MarshalIndent(tableMap, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
 
-// DATA PRESENT
-//where(fmt.Sprintf("\n%v", tableMap))
-
-where()
 	var exists bool
 
 	/*
@@ -134,10 +100,7 @@ where()
 	// (1) Retrieve and process table name.
 	var tableName string
 	tableName, exists = tableMap["tableName"].(string)
-where(fmt.Sprintf("tableName exists = %t", exists))
-//where("fff tableName:\n" + fmt.Sprintf("%v", tableName) + "\n\n")
 	if !exists {
-//where(tableMap)
 		err = fmt.Errorf("%s %s: in YAML doc: table is missing 'tableName'", UtilFuncSource(), UtilFuncName())
 		return
 	}
@@ -151,12 +114,9 @@ where(fmt.Sprintf("tableName exists = %t", exists))
 		return
 	}
 
-where()
 	// If this optional isStructShape element is present, use it.
 	var isStructShape bool
 	isStructShape, exists = tableMap["isStructShape"].(bool)
-//where(fmt.Sprintf("isStructShape exists = %t", exists))
-//where("fff isStructShape:\n" + fmt.Sprintf("%v", isStructShape) + "\n\n")
 	if exists {
 		err = table.SetStructShape(isStructShape)
 		if err != nil {
@@ -164,19 +124,15 @@ where()
 		}
 	}
 
-where()
 	// (2) Retrieve and process metadata.
 	var metadata []interface{}
 	metadata, exists = tableMap["metadata"].([]interface{})
-//where(fmt.Sprintf("metadata exists = %t", exists))
-//where("fff metadata:\n" + fmt.Sprintf("%v", metadata) + "\n\n")
 	if !exists {
 		err = fmt.Errorf("%s %s: in YAML doc: table 'metadata' is missing", UtilFuncSource(), UtilFuncName())
 		return
 	}
 	// Loop through the array of metadata.
 	for _, colNameAndType := range metadata {
-where(fmt.Sprintf("colNameAndType type: %T", colNameAndType))
 		var colName string
 		var colType string
 		var typeVal interface{}
@@ -189,7 +145,6 @@ where(fmt.Sprintf("colNameAndType type: %T", colNameAndType))
 			return
 		}
 
-where()
 		colType = trimQuote(colType)	// YAML likes to quote some strings.
 		err = table.AppendCol(colName, colType)
 		if err != nil {
@@ -197,59 +152,44 @@ where()
 			return
 		}
 	}
-where("\n" + table.String() + "\n")
 
-where()
 	// (3) Retrieve and process data (if any).
 	var data [][]interface{}
-
-where("fff tableMap:\n" + fmt.Sprintf("%v",  tableMap) + "\n\n")
-where("fff tableMap:\n" + fmt.Sprintf("%#v", tableMap) + "\n\n")
-where("fff tableMap:\n" + fmt.Sprintf("%T",  tableMap) + "\n\n")
-UtilPrintCaller()
-
-marshalledBytes, err = json.MarshalIndent(tableMap, "", "  ")
-where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
-
-where(exists)
 	data, exists = tableMap["data"].([][]interface{})
-	whatever, _ := tableMap["data"]
-
-where(fmt.Sprintf("data type: %T", data))
-
-marshalledBytes, err = json.MarshalIndent(data, "", "  ")
-
+	whatever, exists := tableMap["data"]
 	var dataMapSlice []interface{}
 	var dataMapSliceSlice [][]interface{}
 
 	switch whatever.(type) {
 	case [][]interface{}:
-where(fmt.Sprintf("case 1 %#v", whatever))
 		dataMapSliceSlice = whatever.([][]interface{})
 		data = dataMapSliceSlice
+		for i, el1 := range dataMapSliceSlice {
+			for j, el2 := range el1 {
+				where(fmt.Sprintf("i:%d j:%d el2:%v", i, j, el2))
+			}
+		}
 	case []interface{}:
 		// Rewrite this nominal slice of interface{} as [][]interface{}
 		// Underneath it is "really" [][]interface{}
 		// Why this is so is a real puzzler, but this solution works.
-		dataMapSlice = whatever.([]interface{})
+where("case 2")
+where(fmt.Sprintf("i: len(dataMapSlice) = %d", len(dataMapSlice)))
 		data = make([][]interface{}, len(dataMapSlice))
 		for i, el1 := range dataMapSlice {
-			for _, el2 := range el1.([]interface{}) {
+			where(fmt.Sprintf("i:%d el1:%v", i, el1))
+			for j, el2 := range el1.([]interface{}) {
 				data[i] = append(data[i], el2)
+				where(fmt.Sprintf("i:%d j:%q el2:%v", i, j, el2))
 			}
 		}
 	default:
 where("case 3")
-where(fmt.Sprintf("case 3 %#v", whatever))
 	}
 
 where(fmt.Sprintf("dataMapSliceSlice: %v", dataMapSliceSlice))
 where(fmt.Sprintf("dataMapSlice: %v", dataMapSlice))
 
-	whatever, exists = existsInMap(tableMap, "data")
-where(fmt.Sprintf("whatever type: %T", whatever))
-where(fmt.Sprintf("whatever: %v", whatever))
-where(fmt.Sprintf("whatever: %#v", whatever))
 where(exists)
 /*
 	dataMapSlice = dataMap.([]interface{})
