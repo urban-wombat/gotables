@@ -173,14 +173,8 @@ gotables.SetGlobalString(gotables.UtilFuncSource())
 
 	tableSet2, err = gotables.NewTableSetFromYAML(yamlString)
 	if err != nil {
-where()
 		t.Fatal(err)
 	}
-// DATA MISSING
-where("DATA MISSING")
-where(tableSet2.TableCount())
-where("tableSet2.String()\n" + tableSet2.String())
-println()
 
 jsonStr1, err := tableSet1.GetTableSetAsJSONIndent()
 if err != nil {
