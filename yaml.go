@@ -325,28 +325,21 @@ UtilPrintCaller()
 					return
 				}
 			case byte:
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 				var byteVal byte = row[colIndex].(byte)
 				err = table.SetByteByColIndex(colIndex, rowIndex, byteVal)
 			case rune:
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 				var runeVal rune = row[colIndex].(rune)
 				err = table.SetRuneByColIndex(colIndex, rowIndex, runeVal)
 			case string:
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 				var stringVal string = row[colIndex].(string)
 				err = table.SetStringByColIndex(colIndex, rowIndex, stringVal)
 			case bool:
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 				err = table.SetBoolByColIndex(colIndex, rowIndex, row[colIndex].(bool))
 			case time.Time:
-where(fmt.Sprintf("%9s time.Time is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 				err = table.SetTimeByColIndex(colIndex, rowIndex, row[colIndex].(time.Time))
 			case interface{}:
-where()
 				switch table.colTypes[colIndex] {
 				case "byte":
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
 					err = table.SetByteByColIndex(colIndex, rowIndex, row[colIndex].(byte))
 
 				case "uint":
@@ -385,34 +378,19 @@ where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colT
 
 					switch row[colIndex].(type) {
 						case []byte:
-where("case []byte:")
 							byteSliceVal = row[colIndex].([]byte)
-where(fmt.Sprintf("byteSliceVal type = %T value = %v", byteSliceVal, byteSliceVal))
 						case []interface{}:
-where("case []interface{}:")
 							sliceVal = row[colIndex].([]interface{})
-where(sliceVal)
-where(len(sliceVal))
 							byteSliceVal = make([]byte, len(sliceVal))
 							for i := 0; i < len(sliceVal); i++ {
-where(i)
-where(fmt.Sprintf("sliceVal[%d] type: %T", i, sliceVal[i]))
-where(fmt.Sprintf("sliceVal[%d]  val: %v", i, sliceVal[i]))
 								var intVal int = sliceVal[i].(int)
-where(fmt.Sprintf("intVal intVal: %d", intVal))
 								byteSliceVal[i] = byte(intVal)
-where(fmt.Sprintf("byteSliceVal: %v", byteSliceVal))
 							}
 						case interface{}:
-where("case interface{}:")
 						default:
-where("default:")
 					}
-where()
-where(byteSliceVal)
 					switch table.colTypes[colIndex] {
 						case "[]byte":
-where(fmt.Sprintf("byteSliceVal type = %T value = %v", byteSliceVal, byteSliceVal))
 							err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
 						case "[]uint8":
 							err = table.SetUint8SliceByColIndex(colIndex, rowIndex, byteSliceVal)
@@ -420,7 +398,6 @@ where(fmt.Sprintf("byteSliceVal type = %T value = %v", byteSliceVal, byteSliceVa
 							msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
 							err = fmt.Errorf("#1 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 							table = nil
-where("#1 Error handler for all cases.")
 							return
 					}
 
@@ -433,18 +410,12 @@ where("#1 Error handler for all cases.")
 				// #1 Error handler for all cases.
 				if err != nil {
 					table = nil
-where("#2 Error handler for all cases.")
 					return
 				}
 			case []interface{}:
-where(fmt.Sprintf("%9s fac is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
 			case []byte:
-where(fmt.Sprintf("%9s []b is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
 			case *Table:
-where(fmt.Sprintf("%9s []b is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex], row[colIndex]))
 			default:
-where(fmt.Sprintf("default is type %9s %9T %v", table.colTypes[colIndex], row[colIndex], row[colIndex]))
-where()
 				msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
 				err = fmt.Errorf("#3 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 				table = nil
