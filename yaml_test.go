@@ -1,7 +1,7 @@
 package gotables_test
 
 import (
-	"os"
+	_ "os"
 	_"fmt"
 	"testing"
 
@@ -132,18 +132,11 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	y1 float32 = 1.1
 	y2 string = "one-point-one"
 	`
-/*
-	[T3]
-	t *Table = []
-*/
 	tableSet1, err = gotables.NewTableSetFromString(tableSetString)
 	if err != nil {
 		t.Fatal(err)
 	}
-where("tableSet1.String()\n" + tableSet1.String())
-println()
 
-//	empty *Table = [EmptyTable]
 	var nestedString string = `
 	[NestedTable]
 	noByte []byte = [1 3 5]
@@ -155,43 +148,28 @@ println()
 	if err != nil {
 		t.Fatal(err)
 	}
-where("nestedTable.String()\n" + nestedTable.String())
-println()
 
 	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}
-//where("tableSet1.String()\n" + tableSet1.String())
-//println()
+
 	err = t3.SetTable("t", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
-//where(tableSet1.TableCount())
-//where("tableSet1.String()\n" + tableSet1.String())
-println()
 
 gotables.SetGlobalString(gotables.UtilFuncSource())
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
 	}
-where("tableSet1.String()\n" + tableSet1.String())
-where("yamlString\n" + yamlString)
-println()
-//os.Exit(55)
-_, _ = os.Hostname()
 
-	var yamlMap map[string]interface{}
-	yamlMap, err = tableSet1.GetTableSetAsMap()
+//	var yamlMap map[string]interface{}
+	_, err = tableSet1.GetTableSetAsMap()
 	if err != nil {
 		t.Fatal(err)
 	}
-// DATA PRESENT
-//println()
-//where(yamlMap)
-_ = yamlMap
 
 	tableSet2, err = gotables.NewTableSetFromYAML(yamlString)
 	if err != nil {
