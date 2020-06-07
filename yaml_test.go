@@ -73,7 +73,6 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	y int = 4
 	s []byte = [4 3 2 1]
 	u []uint8 = [42 44 48 50 52]
-	t time.Time = 2020-03-15T14:22:30.123456789+17:00
 	Y float32 = 66.666
 
 	[T2]
@@ -86,11 +85,52 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	tableSetString = `
 	[[TwoTables]]
 
+	[Tminus1]
+	f32 float32 = 28
+	f64 float64 = 3.402823e+38
+	bt byte = 65
+	u8 uint8 = 99
+	u16 uint16 = 116
+	u32 uint32 = 500
+	u64 uint64 = 900
+	i int = 9223372036854775807
+	uInt4 uint = 4294967295
+	uInt8 uint = 18446744073709551615
+	i8 int8 = -128
+	i16 int16 = -32768
+	i32 int32 = 66
+	i64 int64 = 900
+	s string = "something"
+	bo bool = true
+	r rune = 'A'
+	bta []byte = [65 66 67]
+	u8a []uint8 = [97 98 99]
+	t time.Time = 2020-03-15T14:22:30.123456789+17:00
+
+	[T1]
+	a int = 1
+	y int = 4
+	s []byte = [88 89 90]
+	u []uint8 = [120 121 122 123 124]
+	Y float32 = 66.666
+
 	[T2]
 	x		y		s				sss
 	bool	byte	string			string
-	true	42		"forty two"		"sss0"
+	true	44		"forty-four"	"sss0"
 	false	55		"fifty-five"	"sss1"
+	true	66		"sixty-six"		"sss3"
+
+	[T3]
+	a rune = 'b'
+	t *Table = [WHAT]
+	b string = "b"
+
+	[T4]
+	x1 bool = true
+	x2 string = "true"
+	y1 float32 = 1.1
+	y2 string = "one-point-one"
 	`
 /*
 	[T3]
@@ -118,24 +158,21 @@ println()
 where("nestedTable.String()\n" + nestedTable.String())
 println()
 
-/*
 	t3, err := tableSet1.GetTable("T3")
 	if err != nil {
 		t.Fatal(err)
 	}
-*/
 //where("tableSet1.String()\n" + tableSet1.String())
 //println()
-/*
 	err = t3.SetTable("t", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
-*/
 //where(tableSet1.TableCount())
 //where("tableSet1.String()\n" + tableSet1.String())
 println()
 
+gotables.SetGlobalString(gotables.UtilFuncSource())
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)

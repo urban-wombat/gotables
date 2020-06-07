@@ -44,6 +44,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+var globalString string
+func SetGlobalString(s string) {
+	globalString = s
+}
+func GetGlobalString() string {
+	return globalString
+}
+
 func init() {
 	log.SetFlags(log.Lshortfile) // For var where
 }
@@ -425,6 +433,18 @@ func UtilFuncCaller() string {
 */
 func UtilFuncCallerCaller() string {
 	const stackFramesToSkip = 3
+	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
+	nameFull := runtime.FuncForPC(pc).Name() // main.foo
+	nameEnd := filepath.Ext(nameFull)        // .foo
+	name := strings.TrimPrefix(nameEnd, ".") // foo
+	return name + "()"
+}
+
+/*
+	Return the name of the function that called the caller of this function.
+*/
+func UtilFuncCallerCallerCaller() string {
+	const stackFramesToSkip = 4
 	pc, _, _, _ := runtime.Caller(stackFramesToSkip)
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
 	nameEnd := filepath.Ext(nameFull)        // .foo

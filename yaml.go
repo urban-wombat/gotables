@@ -354,6 +354,8 @@ where(table.colNames[colIndex])
 where()
 //where()
 			switch row[colIndex].(type) {
+			case uint:
+				err = table.SetUintByColIndex(colIndex, rowIndex, row[colIndex].(uint))
 			case int:
 where(fmt.Sprintf("%9s int is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex],  row[colIndex], row[colIndex]))
 				var intVal = row[colIndex].(int)
@@ -361,6 +363,11 @@ where(fmt.Sprintf("%9s int is type %9s %9T %v", table.colNames[colIndex], table.
 				case "int":
 where(intVal)
 					err = table.SetIntByColIndex(colIndex, rowIndex, row[colIndex].(int))
+				case "uint":
+where(intVal)
+					var intVal int = row[colIndex].(int)
+					var uintVal uint = uint(intVal)
+					err = table.SetUintByColIndex(colIndex, rowIndex, uintVal)
 				case "int8":
 where(intVal)
 					err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(intVal))
@@ -373,9 +380,6 @@ where(intVal)
 				case "int64":
 where(intVal)
 					err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(intVal))
-				case "uint":
-where(intVal)
-					err = table.SetUintByColIndex(colIndex, rowIndex, row[colIndex].(uint))
 				case "uint8":
 where(intVal)
 					err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(intVal))
@@ -394,15 +398,6 @@ where(intVal)
 				case "float32":
 where(intVal)
 					err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(intVal))
-//				case "float64":
-//where(intVal)
-//					err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(intVal))
-//				case "string":
-//where(intVal)
-//					err = table.SetStringByColIndex(colIndex, rowIndex, row[colIndex].(string))
-//				case "bool":
-//where(intVal)
-//					err = table.SetBoolByColIndex(colIndex, rowIndex, row[colIndex].(bool))
 				case "time.Time":
 where(intVal)
 					err = table.SetTimeByColIndex(colIndex, rowIndex, row[colIndex].(time.Time))
@@ -411,7 +406,7 @@ where(intVal)
 					err = table.SetRuneByColIndex(colIndex, rowIndex, rune(intVal))
 				default:
 where(intVal)
-					msg := invalidColTypeMsg(table.colTypes[colIndex])
+					msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
 					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
@@ -434,7 +429,7 @@ where(fmt.Sprintf("%T", row[colIndex]))
 				case "float64":
 					err = table.SetFloat64ByColIndex(colIndex, rowIndex, row[colIndex].(float64))
 				default:
-					msg := invalidColTypeMsg(table.colTypes[colIndex])
+					msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
 					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
@@ -462,48 +457,93 @@ where()
 				switch table.colTypes[colIndex] {
 				case "byte":
 where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
-					var byteVal byte = row[colIndex].(byte)
-					err = table.SetByteByColIndex(colIndex, rowIndex, byteVal)
-				case "[]byte":
-where()
-/*
-					var byteSliceVal1 []byte = row[colIndex].([]byte)
-where(byteSliceVal1)
+					err = table.SetByteByColIndex(colIndex, rowIndex, row[colIndex].(byte))
 
-					var sliceVal []interface{} = row[colIndex].([]interface{})
-					var byteSliceVal []byte = make([]byte, len(sliceVal))
-					for i := 0; i < len(sliceVal); i++ {
-						var faceVal interface{} = sliceVal[i]
-						var intVal int = faceVal.(int)
-						byteSliceVal[i] = byte(intVal)
+				case "uint":
+					var uint64Val uint64 = row[colIndex].(uint64)
+					err = table.SetUintByColIndex(colIndex, rowIndex, uint(uint64Val))
+
+				case "uint16":
+					err = table.SetUint16ByColIndex(colIndex, rowIndex, row[colIndex].(uint16))
+
+				case "uint32":
+					err = table.SetUint32ByColIndex(colIndex, rowIndex, row[colIndex].(uint32))
+
+				case "uint64":
+					err = table.SetUint64ByColIndex(colIndex, rowIndex, row[colIndex].(uint64))
+
+				case "int8":
+					err = table.SetInt8ByColIndex(colIndex, rowIndex, row[colIndex].(int8))
+
+				case "int16":
+					err = table.SetInt16ByColIndex(colIndex, rowIndex, row[colIndex].(int16))
+
+				case "int64":
+					err = table.SetInt64ByColIndex(colIndex, rowIndex, row[colIndex].(int64))
+
+				case "*Table":
+					var tableOut *Table
+					tableOut, err = newTableFromYAML_recursive(row[colIndex].(map[string]interface{}))
+					if err != nil {
+						return
 					}
-*/
-					var byteSliceVal []byte = row[colIndex].([]byte)
-					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
-				case "[]uint8":
+					err = table.SetTableByColIndex(colIndex, rowIndex, tableOut)
+
+				case "[]byte", "[]uint8":
+					var sliceVal []interface{}
+					var byteSliceVal []byte
+
+					switch row[colIndex].(type) {
+						case []byte:
+where("case []byte:")
+							byteSliceVal = row[colIndex].([]byte)
+where(fmt.Sprintf("byteSliceVal type = %T value = %v", byteSliceVal, byteSliceVal))
+						case []interface{}:
+where("case []interface{}:")
+							sliceVal = row[colIndex].([]interface{})
+where(sliceVal)
+where(len(sliceVal))
+							byteSliceVal = make([]byte, len(sliceVal))
+							for i := 0; i < len(sliceVal); i++ {
+where(i)
+where(fmt.Sprintf("sliceVal[%d] type: %T", i, sliceVal[i]))
+where(fmt.Sprintf("sliceVal[%d]  val: %v", i, sliceVal[i]))
+								var intVal int = sliceVal[i].(int)
+where(fmt.Sprintf("intVal intVal: %d", intVal))
+								byteSliceVal[i] = byte(intVal)
+where(fmt.Sprintf("byteSliceVal: %v", byteSliceVal))
+							}
+						case interface{}:
+where("case interface{}:")
+						default:
+where("default:")
+					}
 where()
-/*
-					var sliceVal []interface{} = row[colIndex].([]interface{})
-					var uint8SliceVal []uint8 = make([]uint8, len(sliceVal))
-					for i := 0; i < len(sliceVal); i++ {
-						var faceVal interface{} = sliceVal[i]
-						var intVal int = faceVal.(int)
-						uint8SliceVal[i] = uint8(intVal)
+where(byteSliceVal)
+					switch table.colTypes[colIndex] {
+						case "[]byte":
+where(fmt.Sprintf("byteSliceVal type = %T value = %v", byteSliceVal, byteSliceVal))
+							err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
+						case "[]uint8":
+							err = table.SetUint8SliceByColIndex(colIndex, rowIndex, byteSliceVal)
+						default:
+							msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
+							err = fmt.Errorf("#1 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
+							table = nil
+where("#1 Error handler for all cases.")
+							return
 					}
-*/
-					var uint8SliceVal []uint8 = row[colIndex].([]uint8)
-					err = table.SetUint8SliceByColIndex(colIndex, rowIndex, uint8SliceVal)
+
 				default:
-where()
-					msg := invalidColTypeMsg(table.colTypes[colIndex])
-					err = fmt.Errorf("#1 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
+					msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
+					err = fmt.Errorf("#2 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
 					return
 				}
 				// #1 Error handler for all cases.
 				if err != nil {
 					table = nil
-where("#1 Error handler for all cases.")
+where("#2 Error handler for all cases.")
 					return
 				}
 			case []interface{}:
@@ -515,12 +555,12 @@ where(fmt.Sprintf("%9s []b is type %9s %9T %v", table.colNames[colIndex], table.
 			default:
 where(fmt.Sprintf("default is type %9s %9T %v", table.colTypes[colIndex], row[colIndex], row[colIndex]))
 where()
-				msg := invalidColTypeMsg(table.colTypes[colIndex])
-				err = fmt.Errorf("#2 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
+				msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
+				err = fmt.Errorf("#3 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 				table = nil
 				return
 			}
-			// #2 Error handler for all cases.
+			// #3 Error handler for all cases.
 			if err != nil {
 				table = nil
 where("#2 Error handler for all cases.")
@@ -572,6 +612,7 @@ where("func GetTableSetAsYAML()")
 
 func (tableSet *TableSet) GetTableSetAsMap() (yamlMap map[string]interface{}, err error) {
 where("func GetTableSetAsMap()")
+where("this func: ", UtilFuncName(), " caller: ", UtilFuncCaller(), " caller caller: ", UtilFuncCallerCaller())
 
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s: table set is <nil>", UtilFuncSource(), UtilFuncName())
@@ -629,8 +670,9 @@ println()
 }
 
 func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error) {
-where("BEGIN func getTableAsMap()")
+where("BEGIN func getTableAsMap(): ", table.Name())
 where("\n" + table.String() + "\n")
+where(UtilFuncCaller())
 
 	var yamlObject map[string]interface{}	// Cell name and value pair.
 	var yamlTableData [][]interface{}
@@ -639,7 +681,7 @@ where("\n" + table.String() + "\n")
 	var visitTable = func(table *Table) (err error) {
 where("visitTable()")
 
-		// Used only in visitTable() function.
+		// Used (and re-used) only in visitTable() function.
 		var yamlTableMetadata = make([]interface{}, table.ColCount())
 where()
 
@@ -650,23 +692,19 @@ where()
 		yamlTable["tableName"] = table.Name()
 		yamlTable["data"] = yamlTableData
 
-where()
 		if table.isStructShape {
 			yamlTable["isStructShape"] = true
 		}
 
-where()
 		// Build metadata map.
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-where(fmt.Sprintf("table: [%s] colName: %s colIndex: %d colType: %q", table.Name(), table.colNames[colIndex], colIndex, table.colTypes[colIndex]))
+//where(fmt.Sprintf("table: [%s] colName: %s colIndex: %d colType: %q", table.Name(), table.colNames[colIndex], colIndex, table.colTypes[colIndex]))
 			yamlObject = make(map[string]interface{}, 0)
 			if table.colTypes[colIndex] == "*Table" {
 				// Quote "*Table" to avoid YAML interpreting it as an alias.
-where()
 				yamlObject[table.colNames[colIndex]] = fmt.Sprintf("%q", table.colTypes[colIndex])
-where(yamlObject[table.colNames[colIndex]])
+//where(yamlObject[table.colNames[colIndex]])
 			} else {
-where()
 				yamlObject[table.colNames[colIndex]] = table.colTypes[colIndex]
 			}
 			yamlTableMetadata[colIndex] = yamlObject
@@ -715,7 +753,7 @@ where(fmt.Sprintf("previous row should be populated: yamlTableData[%d] = %v", ro
 		return
 	}
 
-	var visitCell = func(cell Cell) (err error) {
+	var visitCell = func(walkDeep bool, cell Cell) (err error) {
 where("visitCell()")
 where(table.Name())
 
@@ -798,16 +836,32 @@ println()
 where(anyVal)
 println()
 		case "[]byte":
-			anyVal, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
+			var byteSlice []byte
+			byteSlice, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
+			anyVal = byteSlice
+			for i := 0; i < len(byteSlice); i++ {
+				where(fmt.Sprintf("byteSlice[%d] type = %T", i, byteSlice[i]))
+			}
+where(fmt.Sprintf("anyVal type = %T value = %v", anyVal, anyVal))
+where(fmt.Sprintf("anyVal type = %T value = %#v", anyVal, anyVal))
 where(anyVal)
 println()
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
 where(anyVal)
+where(fmt.Sprintf("[%-8s] col:%2d row:%2d anyVal:%v", cell.Table.Name(), cell.ColIndex, cell.RowIndex, anyVal))
 println()
 		case "*Table":
 where(`case "*Table":`)
 // DOING:
+
+var marshalledbytes []byte
+marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
+where(fmt.Sprintf("yamlTable: [%s]\n%s", table.Name(), string(marshalledbytes)))
+marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
+where(fmt.Sprintf("yamlTableRow: [%s]\n%s", table.Name(), string(marshalledbytes)))
+where(GetGlobalString())
+
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
 where(fmt.Sprintf("cell.Table.Name() = %s", cell.Table.Name()))
@@ -820,17 +874,26 @@ where(err)
 				return err
 			}
 
-			var nestedTableYAML map[string]interface{}
-			nestedTableYAML, err = nestedTable.getTableAsMap()
+where("nestedTable.getTableAsMap()")
+			anyVal, err = nestedTable.getTableAsMap()
 			if err != nil {
 				return err
 			}
-where(fmt.Sprintf("nestedTableYAML:\n%v", nestedTableYAML))
+
+marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
+where(string(marshalledbytes))
+marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
+where(string(marshalledbytes))
+marshalledbytes, err = json.MarshalIndent(anyVal, "", "  ")
+where(string(marshalledbytes))
+
+/*
+where(fmt.Sprintf("nestedTableMap:\n%v", nestedTableMap))
 println(" ttt ")
-where(fmt.Sprintf("ttt %v", nestedTableYAML))
-where(fmt.Sprintf("ttt %#v", nestedTableYAML))
+where(fmt.Sprintf("ttt %v", nestedTableMap))
+where(fmt.Sprintf("ttt %#v", nestedTableMap))
 var t *Table
-t, err = newTableFromYAML_recursive(nestedTableYAML)
+t, err = newTableFromYAML_recursive(nestedTableMap)
 if err != nil {
 	return err
 }
@@ -842,15 +905,12 @@ where("WHAT? \n" + cell.Table.String() + "\n")
 where("WHAT? \n" + t.String() + "\n")
 //os.Exit(66)
 }
-where("anyVal = nestedTableYAML")
-			anyVal = nestedTableYAML
-where(anyVal)
-println()
+*/
 
 where()
 		default:
 //where()
-			msg := invalidColTypeMsg(cell.ColType)
+			msg := invalidColTypeMsg(table.Name(), cell.ColType)
 //where(msg)
 			err = fmt.Errorf("visitCell() YAML: %s", msg)
 			return err
@@ -862,6 +922,23 @@ where()
 
 where("yamlTableRow[cell.ColIndex] = anyVal")
 		yamlTableRow[cell.ColIndex] = anyVal
+
+/*
+var marshalledbytes []byte
+marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
+where(string(marshalledbytes))
+marshalledbytes, err = json.MarshalIndent(yamlTableRow, "", "  ")
+where(string(marshalledbytes))
+marshalledbytes, err = json.MarshalIndent(anyVal, "", "  ")
+where(string(marshalledbytes))
+*/
+
+where(UtilFuncCallerCallerCaller())
+where(UtilFuncCallerCaller())
+where(UtilFuncCaller())
+where(fmt.Sprintf("yamlTableRow[cell.ColIndex = %d] = anyVal:%v", cell.ColIndex, anyVal))
+where(fmt.Sprintf("yamlTableRow: %v", yamlTableRow))
+where(fmt.Sprintf("yamlTableRow: %#v", yamlTableRow))
 
 switch anyVal.(type) {
 case string:
@@ -896,7 +973,8 @@ println()
 		return
 	}
 
-	err = table.Walk(visitTable, visitRow, visitCell)
+	const walkDeep = false
+	err = table.Walk(walkDeep, visitTable, visitRow, visitCell)
 	if err != nil {
 		return
 	}
@@ -929,7 +1007,7 @@ where(yamlTable)
 println()
 println(" ttt ")
 where(fmt.Sprintf("ttt %v", yamlTable))
-//where(fmt.Sprintf("ttt %#v", yamlTable))
+where(fmt.Sprintf("ttt %#v", yamlTable))
 var marshalledBytes []byte
 marshalledBytes, err = json.MarshalIndent(yamlTable, "", "  ")
 where(fmt.Sprintf("ttt %s", string(marshalledBytes)))
@@ -952,6 +1030,10 @@ where(fmt.Sprintf("xxx output table [%s]\n%s", t.Name(), t.String()))
 println()
 
 where("END   func getTableAsMap()")
+
+var marshalledbytes []byte
+marshalledbytes, err = json.MarshalIndent(yamlTable, "", "  ")
+where(fmt.Sprintf("[%s]\n%s", table.Name(), string(marshalledbytes)))
 
 	return
 }

@@ -759,7 +759,7 @@ func IsValidColType(colType string) (bool, error) {
 
 	_, contains := globalColTypesMap[colType]
 	if !contains {
-		msg := invalidColTypeMsg(colType)
+		msg := invalidColTypeMsg("", colType)
 		err := fmt.Errorf("%s: %s", UtilFuncCaller(), msg)
 		return false, err
 	}
@@ -1361,8 +1361,6 @@ func isValidUnicode(code uint64) (bool, error) {
 
 	return true, nil
 }
-
-var globalPrevRuneVal rune
 
 func parseRune(runeText string) (rune, error) {
 	var err error

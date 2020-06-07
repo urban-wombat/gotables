@@ -161,7 +161,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 					case "rune":
 						buf.WriteString(fmt.Sprintf("%q", valStr))
 					default:
-						msg := invalidColTypeMsg(fmt.Sprintf("%s: %s", UtilFuncName(), table.colTypes[colIndex]))
+						msg := invalidColTypeMsg(table.Name(), fmt.Sprintf("%s: %s", UtilFuncName(), table.colTypes[colIndex]))
 						buf.WriteString(msg)
 				}
 

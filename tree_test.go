@@ -92,7 +92,7 @@ func TestTable_Walk_countInts(t *testing.T) {
 	var intCount int
 	var intSum int
 	var float32Count int
-	var visitCell = func(cell gotables.Cell) (err error) {
+	var visitCell = func(walkDeep bool, cell gotables.Cell) (err error) {
 		cellCount++
 		if cell.ColType == "int" {
 			intCount++
@@ -104,7 +104,8 @@ func TestTable_Walk_countInts(t *testing.T) {
 		return
 	}
 
-	err = table1.Walk(visitTable, nil, visitCell)
+	const walkDeep = true
+	err = table1.Walk(walkDeep, visitTable, nil, visitCell)
 	if err != nil {
 		t.Fatal(err)
 	}

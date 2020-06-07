@@ -218,7 +218,7 @@ func TestTable_Visit(t *testing.T) {
 		return
 	}
 
-	var visitCell = func(cell gotables.Cell) (err error) {
+	var visitCell = func(walkDeep bool, cell gotables.Cell) (err error) {
 		/*
 			fmt.Printf("cell.Table.Name() = %s\n", cell.Table.Name())
 			fmt.Printf("cell.ColName = %s\n", cell.ColName)
@@ -260,7 +260,8 @@ func TestTable_Visit(t *testing.T) {
 		panic(err)
 	}
 
-	err = table.Walk(visitTable, nil, visitCell)
+	const walkDeep = true
+	err = table.Walk(walkDeep, visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}
@@ -312,7 +313,7 @@ func ExampleTable_Walk() {
 
 	// Define the visitCell function.
 
-	var visitCell = func(cell gotables.Cell) (err error) {
+	var visitCell = func(walkDeep bool, cell gotables.Cell) (err error) {
 
 		fmt.Printf("[%s].visitCell(colName=%s, colIndex=%d, rowIndex=%d)\n",
 			cell.Table.Name(), cell.ColName, cell.ColIndex, cell.RowIndex)
@@ -359,7 +360,8 @@ func ExampleTable_Walk() {
 		panic(err)
 	}
 
-	err = table.Walk(visitTable, nil, visitCell)
+	const walkDeep = true
+	err = table.Walk(walkDeep, visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}

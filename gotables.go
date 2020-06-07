@@ -52,8 +52,6 @@ SOFTWARE.
 
 const debugging bool = false
 const printCaller = false
-const printstack bool = false
-const todo bool = false
 
 var MinTime time.Time = time.Time{} // 0001-01-01T00:00:00Z
 
@@ -3209,15 +3207,22 @@ func isExportableName(name string) bool {
 	Useful for testing.
 */
 func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
+where(fmt.Sprintf("table1[%s].Equals(table2[%s])", table1.Name(), table2.Name()))
 
 	if table1 == nil {
 		return false, fmt.Errorf("table1.%s(table2): table1 is nil", UtilFuncNameNoParens())
 	}
 
+where()
 	if table2 == nil {
 		return false, fmt.Errorf("table1.%s(table2): table2 is nil", UtilFuncNameNoParens())
 	}
 
+where()
+if table1.Name() == "T3" {
+where("table1\n" + table1.String() + "\n")
+where("table2\n" + table2.String() + "\n")
+}
 	// Compare NilTable status.
 	var table1IsNil bool
 	var table2IsNil bool
@@ -3236,65 +3241,88 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 		return false, fmt.Errorf("table1[%s].Equals(table2[]): table2 is a NilTable", table1.Name())
 	}
 
+where()
+if table1.Name() == "T3" { where("\n" + table1.String()); where("\n" + table2.String()) }
 	// Compare table names.
 	if table1.Name() != table2.Name() {
-		return false, fmt.Errorf("[%s].Equals([%s]): table1.Name() %q != table2.Name() %q",
+		return false, fmt.Errorf("table1[%s].Equals(table2[%s]): table1.Name() %q != table2.Name() %q",
 			table1.Name(), table2.Name(), table1.Name(), table2.Name())
 	}
 
+where()
+if table1.Name() == "T3" { where("\n" + table1.String()); where("\n" + table2.String()) }
 	// Compare number of rows.
 	if table1.RowCount() != table2.RowCount() {
-		return false, fmt.Errorf("[%s].Equals([%s]): row count: %d != %d",
+where("\n" + table1.String())
+where("\n" + table2.String())
+		return false, fmt.Errorf("table1[%s].Equals(table2[%s]): row count: %d != %d",
 			table1.Name(), table2.Name(), table1.RowCount(), table2.RowCount())
 	}
 
+where()
 	// Compare number of columns.
 	if table1.ColCount() != table2.ColCount() {
-		return false, fmt.Errorf("[%s].Equals([%s]): col count: %d != %d",
+		return false, fmt.Errorf("table1[%s].Equals(table2[%s]): col count: %d != %d",
 			table1.Name(), table2.Name(), table1.ColCount(), table2.ColCount())
 	}
 
+where()
 	// Compare column types.
 	// This has the side-effect of comparing all column names.
 	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
 
+where()
 		colName, err := table1.ColName(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		type1, err := table1.ColTypeByColIndex(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
+		// Column type comparison does not require matching column order.
 		type2, err := table2.ColType(colName)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		if type1 != type2 {
-			return false, fmt.Errorf("[%s].Equals([%s]): col %q type: %s != %s",
+			return false, fmt.Errorf("table1[%s].Equals(table2[%s]): col %q type: %s != %s",
 				table1.Name(), table2.Name(), colName, type1, type2)
 		}
 	}
 
+where()
 	// Compare cell values.
 	for colIndex := 0; colIndex < table1.ColCount(); colIndex++ {
 
+where()
 		colName, err := table1.ColName(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		colType, err := table1.ColTypeByColIndex(colIndex)
 		if err != nil {
 			return false, err
 		}
 
+where()
 		isSlice := IsSliceColType(colType)
 		isTable := IsTableColType(colType)
 		isTime := colType == "time.Time"
+if table1.Name() == "T3" || table1.Name() == "T3" {
+where(fmt.Sprintf("table1[%s].Equals(table2[%s])", table1.Name(), table2.Name()))
+where(fmt.Sprintf("[%s] col:%s type:%s", table1.Name(), colName, colType))
+} else {
+where(table1.Name())
+}
 
 		for rowIndex := 0; rowIndex < table1.RowCount(); rowIndex++ {
 
@@ -3309,28 +3337,32 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 			}
 
 			if isSlice { // For slice.
+where("isisSlice")
 
 				slice1 := val1.([]byte)
 				slice2 := val2.([]byte)
 				if len(slice1) != len(slice2) {
-					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+					return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 				}
 
 				for i := 0; i < len(slice1); i++ {
 					if slice1[i] != slice2[i] {
-						return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex%d: %v != %v",
+						return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex%d: %v != %v",
 							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}
 
 			} else if isTable {
+where("isisTable")
 
 				nestedTable1, err := table1.GetTableByColIndex(colIndex, rowIndex)
+where(nestedTable1.String())
 				if err != nil {
 					return false, err
 				}
 				nestedTable2, err := table2.GetTableByColIndex(colIndex, rowIndex)
+where(nestedTable2.String())
 				if err != nil {
 					return false, err
 				}
@@ -3349,19 +3381,21 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 					}
 				}
 			} else if isTime {
+where("isisTime")
 				var t1 time.Time = val1.(time.Time)
 				var t2 time.Time = val2.(time.Time)
 				if !t1.Equal(t2) {
-					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+					return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, t1, t2)
 				}
 			} else { // For all other (atomic) types.
+where("isis something else")
 				if val1 != val2 {
 					if colType == "string" {
-					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
+					return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					} else {
-					return false, fmt.Errorf("[%s].Equals([%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+					return false, fmt.Errorf("table1[%s].Equals(table1[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}
@@ -3800,7 +3834,7 @@ func zeroValue(typeName string) (interface{}, error) {
 			}
 			msg += ")"
 		*/
-		msg := invalidColTypeMsg(typeName)
+		msg := invalidColTypeMsg("", typeName)
 		err := fmt.Errorf("%s: %s", UtilFuncName(), msg)
 		return nil, err
 	}
@@ -3850,7 +3884,7 @@ func nonZeroValue(typeName string) (interface{}, error) {
 	case "time.Time":
 		return MaxTime, nil
 	default:
-		msg := invalidColTypeMsg(typeName)
+		msg := invalidColTypeMsg("", typeName)
 		err := fmt.Errorf("%s: %s", UtilFuncName(), msg)
 		return nil, err
 	}
@@ -3875,6 +3909,7 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 	}
 
 	for tableIndex := 0; tableIndex < tableSet1.TableCount(); tableIndex++ {
+where(tableIndex)
 
 		table1, err := tableSet1.GetTableByTableIndex(tableIndex)
 		if err != nil {
@@ -4290,14 +4325,14 @@ func isValidTableNesting_recursive(topTable *Table, table *Table, refMap circRef
 	return true, nil
 }
 
-func invalidColTypeMsg(typeName string) (msg string) {
-	msg = fmt.Sprintf("invalid col type: %s (Valid types: ", typeName)
-	/*
-		// Note: Because maps are not ordered, this (desirably) shuffles the order of valid col types with each call.
-		for typeName, _ := range globalColTypesMap {
-			msg += fmt.Sprintf(" %s", typeName)
-		}
-	*/
+func invalidColTypeMsg(tableName string, typeName string) (msg string) {
+
+	if len(tableName) > 0 {
+		msg = fmt.Sprintf("table [%s]: invalid col type: %s (Valid types: ", tableName, typeName)
+	} else {
+		msg = fmt.Sprintf("invalid col type: %s (Valid types: ", typeName)
+	}
+
 	msg += TypesList()
 	msg += ")"
 	return
