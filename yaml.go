@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"encoding/json"
 	_ "os"
-	"strings"
+	_ "strings"
 	"time"
 
 	yaml "gopkg.in/yaml.v3"
@@ -65,35 +65,18 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 	var tableMap map[string]interface{}
 
 	// (3) Loop through the array of tables.
-	var tableIndex int
-	for tableIndex, anyVal = range tablesMap {
-where(fmt.Sprintf("tableIndex:%d anyVal:%v", tableIndex, anyVal))
+	for _, anyVal = range tablesMap {
 println(" ttt ")
-where(fmt.Sprintf(" ttt %v", anyVal))
 where(fmt.Sprintf(" ttt %#v", anyVal))
 
 		tableMap = anyVal.(map[string]interface{})
-where(fmt.Sprintf(" ttt %v", tableMap))
-//where(fmt.Sprintf(" ttt %#v", tableMap))
 
 		var table *Table
 		table, err = newTableFromYAML_recursive(tableMap)
-where()
 		if err != nil {
-where()
 			return
 		}
-where(table)
-println()
-where(fmt.Sprintf("RowCount()=%d ttt %s", table.RowCount(), table.String()))
-println()
-if table.Name() == "Tminus1" {
-// DATA PRESENT
-//where(fmt.Sprintf("\n%v", tableMap))
-// DATA MISSING
-where("\n" + table.String())
-//os.Exit(32)
-}
+
 		err = tableSet.Append(table)
 		if err != nil {
 //where(err)
@@ -539,98 +522,54 @@ println()
 	}
 
 	var visitCell = func(walkDeep bool, cell Cell) (err error) {
-where("visitCell()")
 where(table.Name())
 
 		var anyVal interface{}
 //		yamlObject = make(map[string]interface{}, 1)
 
-where("switch cell.ColType")
 println()
 		switch cell.ColType {
 		case "string":
 			anyVal, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
-var sss string = anyVal.(string)
-if strings.HasPrefix(sss, "sss") {
-where(fmt.Sprintf("ggg %q", sss))
-}
-where(anyVal)
-println()
 		case "bool":
 			anyVal, err = cell.Table.GetBoolByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "rune":
 			anyVal, err = cell.Table.GetRuneByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "byte":
 			anyVal, err = cell.Table.GetByteByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "int":
 			anyVal, err = cell.Table.GetIntByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "int8":
 			anyVal, err = cell.Table.GetInt8ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "int16":
 			anyVal, err = cell.Table.GetInt16ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "int32":
 			anyVal, err = cell.Table.GetInt32ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "int64":
 			anyVal, err = cell.Table.GetInt64ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "uint":
 			anyVal, err = cell.Table.GetUintByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "uint8":
 			anyVal, err = cell.Table.GetUint8ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "uint16":
 			anyVal, err = cell.Table.GetUint16ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "uint32":
 			anyVal, err = cell.Table.GetUint32ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "uint64":
 			anyVal, err = cell.Table.GetUint64ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "float32":
 			anyVal, err = cell.Table.GetFloat32ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "float64":
 			anyVal, err = cell.Table.GetFloat64ByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "[]uint8":
 			anyVal, err = cell.Table.GetUint8SliceByColIndex(cell.ColIndex, cell.RowIndex)
-where(anyVal)
-println()
 		case "[]byte":
 			var byteSlice []byte
 			byteSlice, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
 			anyVal = byteSlice
-			for i := 0; i < len(byteSlice); i++ {
-				where(fmt.Sprintf("byteSlice[%d] type = %T", i, byteSlice[i]))
-			}
 println()
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
-where(fmt.Sprintf("[%-8s] col:%2d row:%2d anyVal:%v", cell.Table.Name(), cell.ColIndex, cell.RowIndex, anyVal))
 println()
 		case "*Table":
 			var nestedTable *Table
