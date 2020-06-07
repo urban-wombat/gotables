@@ -489,24 +489,18 @@ func (tableSet *TableSet) GetTableSetAsMap() (yamlMap map[string]interface{}, er
 }
 
 func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error) {
-where("BEGIN func getTableAsMap(): ", table.Name())
-where("\n" + table.String() + "\n")
-where(UtilFuncCaller())
 
 	var yamlObject map[string]interface{}	// Cell name and value pair.
 	var yamlTableData [][]interface{}
 	var yamlTableRow []interface{}
 
 	var visitTable = func(table *Table) (err error) {
-where("visitTable()")
 
 		// Used (and re-used) only in visitTable() function.
 		var yamlTableMetadata = make([]interface{}, table.ColCount())
-where()
 
 		yamlTable = make(map[string]interface{}, 0)
 		yamlTableData = make([][]interface{}, table.RowCount())
-where()
 
 		yamlTable["tableName"] = table.Name()
 		yamlTable["data"] = yamlTableData
@@ -517,57 +511,29 @@ where()
 
 		// Build metadata map.
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-//where(fmt.Sprintf("table: [%s] colName: %s colIndex: %d colType: %q", table.Name(), table.colNames[colIndex], colIndex, table.colTypes[colIndex]))
 			yamlObject = make(map[string]interface{}, 0)
 			if table.colTypes[colIndex] == "*Table" {
 				// Quote "*Table" to avoid YAML interpreting it as an alias.
 				yamlObject[table.colNames[colIndex]] = fmt.Sprintf("%q", table.colTypes[colIndex])
-//where(yamlObject[table.colNames[colIndex]])
 			} else {
 				yamlObject[table.colNames[colIndex]] = table.colTypes[colIndex]
 			}
 			yamlTableMetadata[colIndex] = yamlObject
 		}
 
-where(yamlTableMetadata)
 println()
 		yamlTable["metadata"] = yamlTableMetadata
-where(yamlTable)
-/*
-		yamlTables = append(yamlTables, yamlTable)
-		yamlDoc["tables"] = yamlTables
-*/
-
-// DOING:
-/*
-		if table.parentTable != nil {	// Not a top-level table.
-			// Add this to the parent table's cell?
-			var nestedTable *Table
-			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
-			if err != nil {
-				return err
-			}
-			yamlTableRow[cell.ColIndex] = anyVal
-		}
-*/
 
 		return
 	}
 
 	var visitRow = func(row Row) (err error) {
-where("visitRow()")
 
 		// Make a fresh yamlTableRow.
 		yamlTableRow = make([]interface{}, row.Table.ColCount())
-where(fmt.Sprintf("should be blank: yamlTableRow = %v", yamlTableRow))
 
 		// Assign it to yamlTableData.
 		yamlTableData[row.RowIndex] = yamlTableRow
-
-// Check to see if previous row has been assigned to table data.
-if row.RowIndex > 0 {
-where(fmt.Sprintf("previous row should be populated: yamlTableData[%d] = %v", row.RowIndex-1, yamlTableData[row.RowIndex-1]))
-}
 
 		return
 	}
