@@ -239,44 +239,18 @@ where(fmt.Sprintf("case 1 %#v", whatever))
 			}
 		}
 	default:
-where("case 3")
-where(fmt.Sprintf("case 3 %#v", whatever))
 	}
 
-where(fmt.Sprintf("dataMapSliceSlice: %v", dataMapSliceSlice))
-where(fmt.Sprintf("dataMapSlice: %v", dataMapSlice))
 
 	whatever, exists = existsInMap(tableMap, "data")
-where(fmt.Sprintf("whatever type: %T", whatever))
-where(fmt.Sprintf("whatever: %v", whatever))
-where(fmt.Sprintf("whatever: %#v", whatever))
-where(exists)
-/*
-	dataMapSlice = dataMap.([]interface{})
-	dataMapSliceSlice = dataMapSlice.([][]interface{})
-	data = dataMapSliceSlice
-*/
 
 UtilPrintCaller()
-where(fmt.Sprintf(`ggg "data" exists = %t [%s]`, exists, tableName))
-//where("fff data:\n" + fmt.Sprintf("%#v", data) + "\n\n")
-
-where()
-//	var exists2 bool
-//	data2, exists2 = tableMap["data"].([]interface{})
-//where(fmt.Sprintf("data2 exists2 = %t", exists2))
-UtilPrintCallerCaller()
-//where("fff data2:\n" + fmt.Sprintf("%#v", data2) + "\n\n")
-
-where()
 
 	if !exists {
 		// Zero rows in this table. That's okay.
-where("Zero rows in this table.")
 		return
 	}
 
-where()
 	// Loop through the array of rows.
 	var row []interface{}
 	for rowIndex := 0; rowIndex < len(data); rowIndex++ {
@@ -285,77 +259,45 @@ where()
 			table = nil
 			return
 		}
-//		row = data[rowIndex].([]interface{})
 		row = data[rowIndex]
-where(row)
 		for colIndex := 0; colIndex < len(row); colIndex++ {
-if table.colNames[colIndex] == "bta" || table.colNames[colIndex] == "t" {
-where(table.colNames[colIndex])
-}
-//where(fmt.Sprintf("rowIndex=%d: %v", rowIndex, row))
-
-//		var row []interface{} = rowVal.([]interface{})
-//		var row []interface{} = rowVal
-//where(fmt.Sprintf("row    type: %T", row))
-//where(fmt.Sprintf("row        : %#v", row))
-//where(printMap(row))
-			// where(fmt.Sprintf("\t\tcol [%d] %v", colIndex, val))
-
-where()
-//where()
 			switch row[colIndex].(type) {
 			case uint:
 				err = table.SetUintByColIndex(colIndex, rowIndex, row[colIndex].(uint))
 			case int:
-where(fmt.Sprintf("%9s int is type %9s %9T %v", table.colNames[colIndex], table.colTypes[colIndex],  row[colIndex], row[colIndex]))
 				var intVal = row[colIndex].(int)
 				switch table.colTypes[colIndex] {
 				case "int":
-where(intVal)
 					err = table.SetIntByColIndex(colIndex, rowIndex, row[colIndex].(int))
 				case "uint":
-where(intVal)
 					var intVal int = row[colIndex].(int)
 					var uintVal uint = uint(intVal)
 					err = table.SetUintByColIndex(colIndex, rowIndex, uintVal)
 				case "int8":
-where(intVal)
 					err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(intVal))
 				case "int16":
-where(intVal)
 					err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(intVal))
 				case "int32":
-where(intVal)
 					err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(intVal))
 				case "int64":
-where(intVal)
 					err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(intVal))
 				case "uint8":
-where(intVal)
 					err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(intVal))
 				case "byte":
-where(intVal)
 					err = table.SetByteByColIndex(colIndex, rowIndex, uint8(intVal))
 				case "uint16":
-where(intVal)
 					err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(intVal))
 				case "uint32":
-where(intVal)
 					err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(intVal))
 				case "uint64":
-where(intVal)
 					err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(intVal))
 				case "float32":
-where(intVal)
 					err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(intVal))
 				case "time.Time":
-where(intVal)
 					err = table.SetTimeByColIndex(colIndex, rowIndex, row[colIndex].(time.Time))
 				case "rune":
-where(intVal)
 					err = table.SetRuneByColIndex(colIndex, rowIndex, rune(intVal))
 				default:
-where(intVal)
 					msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
 					err = fmt.Errorf("%s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
 					table = nil
@@ -370,8 +312,6 @@ where(intVal)
 				var float32Val float32 = row[colIndex].(float32)
 				err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32Val)
 			case float64:
-where(fmt.Sprintf("%9s int is type %9s %v", table.colNames[colIndex], table.colTypes[colIndex], row[colIndex]))
-where(fmt.Sprintf("%T", row[colIndex]))
 				switch table.colTypes[colIndex] {
 				case "float32":
 					var float64Val float64 = row[colIndex].(float64)
