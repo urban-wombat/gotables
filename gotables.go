@@ -1622,8 +1622,6 @@ func printStruct(table *Table) string {
 		s += "\n"
 	}
 
-	// where(s)
-
 	return s
 }
 
@@ -3234,7 +3232,6 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 		return false, fmt.Errorf("table1[%s].Equals(table2[]): table2 is a NilTable", table1.Name())
 	}
 
-if table1.Name() == "T3" { where("\n" + table1.String()); where("\n" + table2.String()) }
 	// Compare table names.
 	if table1.Name() != table2.Name() {
 		return false, fmt.Errorf("table1[%s].Equals(table2[%s]): table1.Name() %q != table2.Name() %q",
@@ -3243,7 +3240,6 @@ if table1.Name() == "T3" { where("\n" + table1.String()); where("\n" + table2.St
 
 	// Compare number of rows.
 	if table1.RowCount() != table2.RowCount() {
-where("\n" + table2.String())
 		return false, fmt.Errorf("table1[%s].Equals(table2[%s]): row count: %d != %d",
 			table1.Name(), table2.Name(), table1.RowCount(), table2.RowCount())
 	}

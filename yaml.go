@@ -66,7 +66,6 @@ func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err err
 
 	// (3) Loop through the array of tables.
 	for _, anyVal = range tablesMap {
-println(" ttt ")
 
 		tableMap = anyVal.(map[string]interface{})
 
@@ -81,9 +80,6 @@ println(" ttt ")
 			return
 		}
 	}
-
-println()
-println()
 
 	return
 }
@@ -186,8 +182,6 @@ func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, 
 
 
 	whatever, exists = existsInMap(tableMap, "data")
-
-UtilPrintCaller()
 
 	if !exists {
 		// Zero rows in this table. That's okay.
@@ -464,7 +458,6 @@ func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error
 			yamlTableMetadata[colIndex] = yamlObject
 		}
 
-println()
 		yamlTable["metadata"] = yamlTableMetadata
 
 		return
@@ -484,9 +477,7 @@ println()
 	var visitCell = func(walkDeep bool, cell Cell) (err error) {
 
 		var anyVal interface{}
-//		yamlObject = make(map[string]interface{}, 1)
 
-println()
 		switch cell.ColType {
 		case "string":
 			anyVal, err = cell.Table.GetStringByColIndex(cell.ColIndex, cell.RowIndex)
@@ -526,10 +517,8 @@ println()
 			var byteSlice []byte
 			byteSlice, err = cell.Table.GetByteSliceByColIndex(cell.ColIndex, cell.RowIndex)
 			anyVal = byteSlice
-println()
 		case "time.Time":
 			anyVal, err = cell.Table.GetTimeByColIndex(cell.ColIndex, cell.RowIndex)
-println()
 		case "*Table":
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
