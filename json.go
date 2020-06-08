@@ -264,7 +264,7 @@ func checkJsonDecodeError(checkErr error) (err error) {
 	return nil
 }
 
-func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err error) {
+func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 
 	var exists bool
@@ -280,7 +280,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 
 	// (1) Retrieve and process table name.
 	var tableName string
-	tableName, exists = m["tableName"].(string)
+	tableName, exists = jsonMap["tableName"].(string)
 	if !exists {
 		return nil, fmt.Errorf("JSON is missing table name")
 	}
@@ -291,7 +291,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 
 	// If this optional isStructShape element is present, use it.
 	var isStructShape bool
-	isStructShape, exists = m["isStructShape"].(bool)
+	isStructShape, exists = jsonMap["isStructShape"].(bool)
 	if exists {
 		err = table.SetStructShape(isStructShape)
 		if err != nil {
@@ -301,7 +301,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 
 	// (2) Retrieve and process metadata.
 	var metadata []interface{}
-	metadata, exists = m["metadata"].([]interface{})
+	metadata, exists = jsonMap["metadata"].([]interface{})
 	if !exists {
 		return nil, fmt.Errorf("JSON is missing table metadata")
 	}
@@ -313,7 +313,8 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 		for colName, val = range colNameAndType.(map[string]interface{}) {
 			// There's only one map element here: colName and colType.
 		}
-		colType, ok := val.(string)
+		var ok bool
+		colType, ok = val.(string)
 		if !ok {
 			return nil, fmt.Errorf("expecting col type value from JSON string value but got type %T: %v", val, val)
 		}
@@ -326,7 +327,7 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 
 	// (3) Retrieve and process data (if any).
 	var data []interface{}
-	data, exists = m["data"].([]interface{})
+	data, exists = jsonMap["data"].([]interface{})
 	if !exists {
 		// Zero rows in this table. That's okay.
 		return table, nil
@@ -352,6 +353,11 @@ func newTableFromJSON_recursive(m map[string]interface{}) (table *Table, err err
 				switch cell.(type) {
 				case string:
 					switch colType { // We need to convert time string format to time.Time
+					case "rune":
+						var stringVal = cell.(string)
+						var runeSlice []rune = []rune(stringVal)
+						var runeVal rune = runeSlice[0]
+						err = table.SetRuneByColIndex(colIndex, rowIndex, runeVal)
 					case "time.Time":
 						var timeVal time.Time
 						timeVal, err = time.Parse(time.RFC3339, cell.(string))
@@ -536,8 +542,8 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: jsonTableSetString is empty", UtilFuncName())
 	}
 
-	var m map[string]interface{}
-	err = json.Unmarshal([]byte(jsonTableSetString), &m)
+	var jsonMap map[string]interface{}
+	err = json.Unmarshal([]byte(jsonTableSetString), &jsonMap)
 	if err != nil {
 		return nil, err
 	}
@@ -545,7 +551,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
 	var exists bool
-	tableSetName, exists = m["tableSetName"].(string)
+	tableSetName, exists = jsonMap["tableSetName"].(string)
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tableSet name", UtilFuncName())
 	}
@@ -557,7 +563,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 
 	// (2) Retrieve and process tables.
 	var tablesMap []interface{}
-	tablesMap, exists = m["tables"].([]interface{})
+	tablesMap, exists = jsonMap["tables"].([]interface{})
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tables", UtilFuncName())
 	}

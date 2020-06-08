@@ -36,7 +36,6 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	var tableSet1 *gotables.TableSet
 	var tableSet2 *gotables.TableSet
 	var tableSetString string
-	var yamlString string
 
 	tableSetString = `
 	[[TipTopName]]
@@ -93,7 +92,9 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	u16 uint16 = 116
 	u32 uint32 = 500
 	u64 uint64 = 900
-	i int = 9223372036854775807
+	iii1 int = 9223372036854775807
+	iii2 int = 13
+	iii3 int = -20
 	uInt4 uint = 4294967295
 	uInt8 uint = 18446744073709551615
 	i8 int8 = -128
@@ -159,6 +160,7 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	var yamlString string
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
@@ -178,4 +180,26 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+/*
+This fails with an overflow from float64 to int and uint.
+This may have a fix: http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#json_num
+
+	var jsonString string
+	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
+	if err != nil {
+		t.Fatal(err)
+	}
+println(jsonString)
+
+	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = tableSet1.Equals(tableSet2)
+	if err != nil {
+		t.Fatal(err)
+	}
+*/
 }
