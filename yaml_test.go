@@ -159,13 +159,11 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 		t.Fatal(err)
 	}
 
-gotables.SetGlobalString(gotables.UtilFuncSource())
 	yamlString, err = tableSet1.GetTableSetAsYAML()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-//	var yamlMap map[string]interface{}
 	_, err = tableSet1.GetTableSetAsMap()
 	if err != nil {
 		t.Fatal(err)
@@ -176,27 +174,8 @@ gotables.SetGlobalString(gotables.UtilFuncSource())
 		t.Fatal(err)
 	}
 
-jsonStr1, err := tableSet1.GetTableSetAsJSONIndent()
-if err != nil {
-	t.Fatal(err)
-}
-where("tableSet1 jsonStr1:\n" + jsonStr1)
-println()
-
-jsonStr2, err := tableSet2.GetTableSetAsJSONIndent()
-if err != nil {
-	t.Fatal(err)
-}
-where("tableSet2 jsonStr2:\n" + jsonStr2)
-println()
-
-	equals, err := tableSet1.Equals(tableSet2)
+	_, err = tableSet1.Equals(tableSet2)
 	if err != nil {
-where("\ntableSet1:\n------------\n" + tableSet1.String() + "------------\n")
-where("\ntableSet2:\n------------\n" + tableSet2.String() + "------------\n")
-where(err)
-//os.Exit(22)
 		t.Fatal(err)
 	}
-where(equals)
 }
