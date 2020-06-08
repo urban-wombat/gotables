@@ -21,7 +21,7 @@ func (tableSet *TableSet) Walk(
 	visitTableSet func(*TableSet) error,
 	visitTable func(*Table) error,
 	visitRow func(Row) error,
-	visitCell func(bool, Cell) error) (err error) {
+	visitCell func(bool, CellInfo) error) (err error) {
 
 	if tableSet == nil {
 		err = fmt.Errorf("TableSet.%s(): tableSet is nil", UtilFuncNameNoParens())
@@ -66,7 +66,7 @@ func (table *Table) Walk(
 	walkDeep bool,
 	visitTable func(*Table) error,
 	visitRow func(Row) error,
-	visitCell func(bool, Cell) error) (err error) {
+	visitCell func(bool, CellInfo) error) (err error) {
 
 	if table == nil {
 		err = fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
@@ -103,22 +103,22 @@ func (table *Table) Walk(
 
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 
-			var cell Cell
-			cell, err = table.GetCellByColIndex(colIndex, rowIndex)
+			var cellInfo CellInfo
+			cellInfo, err = table.GetCellInfoByColIndex(colIndex, rowIndex)
 			if err != nil {
 				return
 			}
 
 			// Visit cell.
 			if visitCell != nil {
-				err = visitCell(walkDeep, cell)
+				err = visitCell(walkDeep, cellInfo)
 				if err != nil {
 					return
 				}
 			}
 
 			if walkDeep {
-				if IsTableColType(cell.ColType) {
+				if IsTableColType(cellInfo.ColType) {
 	
 					var nestedTable *Table
 					nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
@@ -146,9 +146,9 @@ func (table *Table) Walk(
 }
 
 /*
-	Return a type Cell struct populated with *Table, col and row information:
+	Return a type CellInfo struct populated with *Table, col and row information:
 
-		type Cell struct {
+		type CellInfo struct {
 			Table    *Table
 			ColName  string
 			ColType  string
@@ -165,29 +165,29 @@ func (table *Table) Walk(
 		Get String()
 		Get StringByColIndex()
 */
-func (table *Table) GetCellByColIndex(colIndex int, rowIndex int) (cell Cell, err error) {
+func (table *Table) GetCellInfoByColIndex(colIndex int, rowIndex int) (cellInfo CellInfo, err error) {
 
 	if table == nil {
-		return cell, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+		return cellInfo, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 	}
 
-	cell.Table = table
-	cell.ColIndex = colIndex
-	cell.RowIndex = rowIndex
-	cell.ColType = table.colTypes[colIndex]
+	cellInfo.Table = table
+	cellInfo.ColIndex = colIndex
+	cellInfo.RowIndex = rowIndex
+	cellInfo.ColType = table.colTypes[colIndex]
 
-	cell.ColName, err = table.ColName(colIndex)
+	cellInfo.ColName, err = table.ColName(colIndex)
 	if err != nil {
-		return cell, err
+		return cellInfo, err
 	}
 
-	return cell, nil
+	return cellInfo, nil
 }
 
 /*
-	Return a type Cell struct populated with *Table, col and row information:
+	Return a type CellInfo struct populated with *Table, col and row information:
 
-		type Cell struct {
+		type CellInfo struct {
 			Table    *Table
 			ColName  string
 			ColType  string
@@ -199,31 +199,31 @@ func (table *Table) GetCellByColIndex(colIndex int, rowIndex int) (cell Cell, er
 
 	Caution: Table is a mutable reference to the enclosing *Table.
 
-	If you want the value of a cell (and not a type Cell struct) use:
+	If you want the value of a cell (and not a type CellInfo struct) use:
 
 		GetVal()
 		GetValByColIndex()
 		Get String()
 		Get StringByColIndex()
 */
-func (table *Table) GetCell(colName string, rowIndex int) (cell Cell, err error) {
+func (table *Table) GetCellInfo(colName string, rowIndex int) (cellInfo CellInfo, err error) {
 
 	if table == nil {
-		return cell, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
+		return cellInfo, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 	}
 
 	var colIndex int
 	colIndex, err = table.ColIndex(colName)
 	if err != nil {
-		return cell, err
+		return cellInfo, err
 	}
 
-	cell, err = table.GetCellByColIndex(colIndex, rowIndex)
+	cellInfo, err = table.GetCellInfoByColIndex(colIndex, rowIndex)
 	if err != nil {
-		return cell, err
+		return cellInfo, err
 	}
 
-	return cell, nil
+	return cellInfo, nil
 }
 
 func (table *Table) RowByRowIndex(rowIndex int) (row Row, err error) {
@@ -239,8 +239,8 @@ func (table *Table) RowByRowIndex(rowIndex int) (row Row, err error) {
 }
 
 /*
-func (cell Cell) TableName() string {
-	return cell.Table.Name()
+func (cellInfo CellInfo) TableName() string {
+	return cellInfo.Table.Name()
 }
 */
 
@@ -263,11 +263,11 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 	refMap[rootTable] = EmptyStruct // Add the root table to the map.
 
-	var visitCell func(walkDeep bool, cell Cell) (err error)
-	visitCell = func(walkDeep bool, cell Cell) (err error) {
-		if IsTableColType(cell.ColType) {
+	var visitCell func(walkDeep bool, cellInfo CellInfo) (err error)
+	visitCell = func(walkDeep bool, cellInfo CellInfo) (err error) {
+		if IsTableColType(cellInfo.ColType) {
 			var nestedTable *Table
-			nestedTable, err = rootTable.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+			nestedTable, err = rootTable.GetTableByColIndex(cellInfo.ColIndex, cellInfo.RowIndex)
 			if err != nil {
 				return err
 			}

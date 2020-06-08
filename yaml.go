@@ -474,7 +474,7 @@ func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error
 		return
 	}
 
-	var visitCell = func(walkDeep bool, cell Cell) (err error) {
+	var visitCell = func(walkDeep bool, cell CellInfo) (err error) {
 
 		var anyVal interface{}
 

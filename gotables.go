@@ -525,7 +525,7 @@ type Row struct {
 	RowIndex int
 }
 
-type Cell struct {
+type CellInfo struct {
 	Table    *Table
 	ColName  string
 	ColType  string
