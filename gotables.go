@@ -278,7 +278,13 @@ func NewTableFromFileByTableName(fileName string, tableName string) (*Table, err
 }
 
 /*
-Returns a set of parsable tables with format right-aligned (numbers) as a string.
+	Returns a set of parsable tables with format right-aligned (numbers) as a string.
+
+	Note: This method does not handle nested tables (type *Table).
+	To serialise nested tables, use yaml:
+
+		gotables.GetTableSetAsYAML()
+		gotables.NewTableSetFromYAML()
 */
 func (tableSet *TableSet) String() string {
 	if tableSet == nil {
@@ -1365,7 +1371,13 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 }
 
 /*
-Return a parsable table as a string with numbers format aligned right.
+	Return a parsable table as a string with numbers format aligned right.
+
+	Note: This method does not handle nested tables (type *Table).
+	To serialise nested tables, use yaml:
+
+		gotables.GetTableSetAsYAML()
+		gotables.NewTableSetFromYAML()
 */
 func (table *Table) String() string {
 	if table == nil {
@@ -4192,8 +4204,8 @@ func (table *Table) ShuffleRandom() error {
 
 	Type time.Time is supported.
 
-	Custom type *Table is not a Go type
-	but is supported by gotables to allow nested tables within table cells.
+	Custom type *Table is a gotables type, not a Go type.
+	It is supported by gotables to allow nesting of tables within tables.
 
 	The list includes some aliases:-
 		[]byte and []uint8

@@ -104,7 +104,7 @@ func (table *Table) Walk(
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 
 			var cell Cell
-			cell, err = table.CellByColIndex(colIndex, rowIndex)
+			cell, err = table.GetCellByColIndex(colIndex, rowIndex)
 			if err != nil {
 				return
 			}
@@ -113,8 +113,6 @@ func (table *Table) Walk(
 			if visitCell != nil {
 				err = visitCell(walkDeep, cell)
 				if err != nil {
-//where()
-//UtilPrintCallerCaller()
 					return
 				}
 			}
@@ -147,7 +145,27 @@ func (table *Table) Walk(
 	return
 }
 
-func (table *Table) CellByColIndex(colIndex int, rowIndex int) (cell Cell, err error) {
+/*
+	Return a type Cell struct populated with *Table, col and row information:
+
+		type Cell struct {
+			Table    *Table
+			ColName  string
+			ColType  string
+			ColIndex int
+			RowIndex int
+		}
+
+	ColName, ColType, ColIndex, and RowIndex are read-only.
+
+	Caution: Table is a mutable reference to the enclosing *Table.
+
+		GetVal()
+		GetValByColIndex()
+		Get String()
+		Get StringByColIndex()
+*/
+func (table *Table) GetCellByColIndex(colIndex int, rowIndex int) (cell Cell, err error) {
 
 	if table == nil {
 		return cell, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
@@ -166,7 +184,29 @@ func (table *Table) CellByColIndex(colIndex int, rowIndex int) (cell Cell, err e
 	return cell, nil
 }
 
-func (table *Table) Cell(colName string, rowIndex int) (cell Cell, err error) {
+/*
+	Return a type Cell struct populated with *Table, col and row information:
+
+		type Cell struct {
+			Table    *Table
+			ColName  string
+			ColType  string
+			ColIndex int
+			RowIndex int
+		}
+
+	ColName, ColType, ColIndex, and RowIndex are read-only.
+
+	Caution: Table is a mutable reference to the enclosing *Table.
+
+	If you want the value of a cell (and not a type Cell struct) use:
+
+		GetVal()
+		GetValByColIndex()
+		Get String()
+		Get StringByColIndex()
+*/
+func (table *Table) GetCell(colName string, rowIndex int) (cell Cell, err error) {
 
 	if table == nil {
 		return cell, fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
@@ -178,7 +218,7 @@ func (table *Table) Cell(colName string, rowIndex int) (cell Cell, err error) {
 		return cell, err
 	}
 
-	cell, err = table.CellByColIndex(colIndex, rowIndex)
+	cell, err = table.GetCellByColIndex(colIndex, rowIndex)
 	if err != nil {
 		return cell, err
 	}
