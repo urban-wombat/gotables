@@ -90,8 +90,8 @@ func (table *Table) Walk(
 		if err != nil {
 			return
 		}
-//where(fmt.Sprintf("row = %#v", row))
-//where(fmt.Sprintf("row = %v", row))
+		//where(fmt.Sprintf("row = %#v", row))
+		//where(fmt.Sprintf("row = %v", row))
 
 		// Visit row.
 		if visitRow != nil {
@@ -119,22 +119,22 @@ func (table *Table) Walk(
 
 			if walkDeep {
 				if IsTableColType(cellInfo.ColType) {
-	
+
 					var nestedTable *Table
 					nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 					if err != nil {
 						return
 					}
-	
+
 					// Down into nested table.
 					nestedTable.depth++
-	
+
 					// Recursive call to visit nested tables.
 					err = nestedTable.Walk(walkDeep, visitTable, visitRow, visitCell)
 					if err != nil {
 						return
 					}
-	
+
 					// Back up from nested table.
 					nestedTable.depth--
 				}
@@ -245,7 +245,7 @@ func (cellInfo CellInfo) TableName() string {
 */
 
 func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
-//UtilPrintCaller()
+	//UtilPrintCaller()
 
 	const funcName = "IsValidTableNesting()"
 	const walkDeep = true

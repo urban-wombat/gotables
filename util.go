@@ -460,15 +460,15 @@ func utilFuncTopCaller() string {
 	for skip = 0; ok; skip++ {
 		pc, _, _, ok = runtime.Caller(skip)
 		pcSlice = append(pcSlice, pc)
-nameFull = runtime.FuncForPC(pc).Name() // main.foo
-where(fmt.Sprintf("xxxx %d %s", skip, nameFull))
+		nameFull = runtime.FuncForPC(pc).Name() // main.foo
+		where(fmt.Sprintf("xxxx %d %s", skip, nameFull))
 	}
 	const minSliceLen = 7
 	if len(pcSlice) >= minSliceLen {
-		pc = pcSlice[len(pcSlice) - (minSliceLen - 2)]
+		pc = pcSlice[len(pcSlice)-(minSliceLen-2)]
 	}
 	nameFull = runtime.FuncForPC(pc).Name() // main.foo
-where(nameFull)
+	where(nameFull)
 	nameEnd := filepath.Ext(nameFull)        // .foo
 	name := strings.TrimPrefix(nameEnd, ".") // foo
 	return name + "()"

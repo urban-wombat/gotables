@@ -156,13 +156,13 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 					return err
 				}
 				switch table.colTypes[colIndex] {
-					case "int32":
-						buf.WriteString(valStr)
-					case "rune":
-						buf.WriteString(fmt.Sprintf("%q", valStr))
-					default:
-						msg := invalidColTypeMsg(table.Name(), fmt.Sprintf("%s: %s", UtilFuncName(), table.colTypes[colIndex]))
-						buf.WriteString(msg)
+				case "int32":
+					buf.WriteString(valStr)
+				case "rune":
+					buf.WriteString(fmt.Sprintf("%q", valStr))
+				default:
+					msg := invalidColTypeMsg(table.Name(), fmt.Sprintf("%s: %s", UtilFuncName(), table.colTypes[colIndex]))
+					buf.WriteString(msg)
 				}
 
 			case []byte:

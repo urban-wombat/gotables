@@ -1,8 +1,8 @@
 package gotables
 
 import (
-	"fmt"
 	_ "encoding/json"
+	"fmt"
 	_ "os"
 	_ "strings"
 	"time"
@@ -15,19 +15,19 @@ import (
 */
 func NewTableSetFromYAML(yamlTableSetString string) (tableSet *TableSet, err error) {
 
-/*
-	Note: Although the yamlTableSetString may (or may not) be the same in each case:
-	(1) GetTableSetAsYAML() produces a YAML document marshalled from:
-	map[string]interface{}
-		{"data":[][]interface{}{[]interface{}{11.1, 0x2, 97, 3}, []interface{}{22.2, 0x4, 98, 4}, []interface{}{33.3, 0x6, 99, 5}}
-	(2) but is parsed as:
-	map[string]interface{}
-		{"data":[]  interface{}{[]interface{}{11.1, 2, 97, 3},   []interface{}{22.2, 4, 98, 4},   []interface{}{33.3, 6, 99, 5}}
-	The critical difference is that:
-		(i)  "data" in (1) is a 2-dimensional array (rows by cols), whereas
-		(ii) "data" in (2) is an array of rows of maps.
-	For this reason, NewTableSetFromYAML parses the unmarshalled yaml differently from the way GetTableSetAsYAML() generates it.
-*/
+	/*
+		Note: Although the yamlTableSetString may (or may not) be the same in each case:
+		(1) GetTableSetAsYAML() produces a YAML document marshalled from:
+		map[string]interface{}
+			{"data":[][]interface{}{[]interface{}{11.1, 0x2, 97, 3}, []interface{}{22.2, 0x4, 98, 4}, []interface{}{33.3, 0x6, 99, 5}}
+		(2) but is parsed as:
+		map[string]interface{}
+			{"data":[]  interface{}{[]interface{}{11.1, 2, 97, 3},   []interface{}{22.2, 4, 98, 4},   []interface{}{33.3, 6, 99, 5}}
+		The critical difference is that:
+			(i)  "data" in (1) is a 2-dimensional array (rows by cols), whereas
+			(ii) "data" in (2) is an array of rows of maps.
+		For this reason, NewTableSetFromYAML parses the unmarshalled yaml differently from the way GetTableSetAsYAML() generates it.
+	*/
 
 	if yamlTableSetString == "" {
 		return nil, fmt.Errorf("%s: yamlTableSetString is empty", UtilFuncName())
@@ -145,7 +145,7 @@ func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, 
 			return
 		}
 
-		colType = trimQuote(colType)	// YAML likes to quote some strings.
+		colType = trimQuote(colType) // YAML likes to quote some strings.
 		err = table.AppendCol(colName, colType)
 		if err != nil {
 			table = nil
@@ -179,7 +179,6 @@ func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, 
 		}
 	default:
 	}
-
 
 	whatever, exists = existsInMap(tableMap, "data")
 
@@ -314,28 +313,28 @@ func newTableFromYAML_recursive(tableMap map[string]interface{}) (table *Table, 
 					var byteSliceVal []byte
 
 					switch row[colIndex].(type) {
-						case []byte:
-							byteSliceVal = row[colIndex].([]byte)
-						case []interface{}:
-							sliceVal = row[colIndex].([]interface{})
-							byteSliceVal = make([]byte, len(sliceVal))
-							for i := 0; i < len(sliceVal); i++ {
-								var intVal int = sliceVal[i].(int)
-								byteSliceVal[i] = byte(intVal)
-							}
-						case interface{}:
-						default:
+					case []byte:
+						byteSliceVal = row[colIndex].([]byte)
+					case []interface{}:
+						sliceVal = row[colIndex].([]interface{})
+						byteSliceVal = make([]byte, len(sliceVal))
+						for i := 0; i < len(sliceVal); i++ {
+							var intVal int = sliceVal[i].(int)
+							byteSliceVal[i] = byte(intVal)
+						}
+					case interface{}:
+					default:
 					}
 					switch table.colTypes[colIndex] {
-						case "[]byte":
-							err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
-						case "[]uint8":
-							err = table.SetUint8SliceByColIndex(colIndex, rowIndex, byteSliceVal)
-						default:
-							msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
-							err = fmt.Errorf("#1 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
-							table = nil
-							return
+					case "[]byte":
+						err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSliceVal)
+					case "[]uint8":
+						err = table.SetUint8SliceByColIndex(colIndex, rowIndex, byteSliceVal)
+					default:
+						msg := invalidColTypeMsg(table.Name(), table.colTypes[colIndex])
+						err = fmt.Errorf("#1 %s %s: %s", UtilFuncSource(), UtilFuncName(), msg)
+						table = nil
+						return
 					}
 
 				default:
@@ -427,7 +426,7 @@ func (tableSet *TableSet) GetTableSetAsMap() (yamlMap map[string]interface{}, er
 
 func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error) {
 
-	var yamlObject map[string]interface{}	// Cell name and value pair.
+	var yamlObject map[string]interface{} // Cell name and value pair.
 	var yamlTableData [][]interface{}
 	var yamlTableRow []interface{}
 

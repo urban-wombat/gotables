@@ -1,8 +1,8 @@
 package gotables_test
 
 import (
+	_ "fmt"
 	_ "os"
-	_"fmt"
 	"testing"
 
 	"github.com/urban-wombat/gotables"
@@ -181,25 +181,25 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 		t.Fatal(err)
 	}
 
-/*
-This fails with an overflow from float64 to int and uint.
-This may have a fix: http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#json_num
+	/*
+	   This fails with an overflow from float64 to int and uint.
+	   This may have a fix: http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#json_num
 
-	var jsonString string
-	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
-	if err != nil {
-		t.Fatal(err)
-	}
-println(jsonString)
+	   	var jsonString string
+	   	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
+	   	if err != nil {
+	   		t.Fatal(err)
+	   	}
+	   println(jsonString)
 
-	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
-	if err != nil {
-		t.Fatal(err)
-	}
+	   	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
+	   	if err != nil {
+	   		t.Fatal(err)
+	   	}
 
-	_, err = tableSet1.Equals(tableSet2)
-	if err != nil {
-		t.Fatal(err)
-	}
-*/
+	   	_, err = tableSet1.Equals(tableSet2)
+	   	if err != nil {
+	   		t.Fatal(err)
+	   	}
+	*/
 }

@@ -467,9 +467,9 @@ func (tableSet *TableSet) GetTableByTableIndex(tableIndex int) (*Table, error) {
 	}
 
 	if tableIndex < 0 || tableIndex > tableSet.TableCount()-1 {
-		//		err := fmt.Errorf("in *TableSet with %d tables, table index %d does not exist",
-		//			tableSet.TableCount(), tableIndex)
-		//		return nil, err
+//		err := fmt.Errorf("in *TableSet with %d tables, table index %d does not exist",
+//			tableSet.TableCount(), tableIndex)
+//		return nil, err
 		return nil, fmt.Errorf("%s: in tableSet [[%s]] tableIndex [%d] out of range with TableCount() length %d",
 			UtilFuncName(), tableSet.tableSetName, tableIndex, tableSet.TableCount())
 	}
@@ -995,8 +995,8 @@ func (table *Table) DeleteRow(rowIndex int) error {
 	}
 
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		//		return fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
-		//			UtilFuncName(), table.tableName, table.RowCount(), rowIndex)
+//		return fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
+//			UtilFuncName(), table.tableName, table.RowCount(), rowIndex)
 		return fmt.Errorf("%s: in table [%s] rowIndex [%d] out of range with RowCount() length %d",
 			UtilFuncName(), table.tableName, rowIndex, table.RowCount())
 	}
@@ -1070,8 +1070,8 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 		if err != nil {
 			debug.PrintStack()
 		}
-		//		return fmt.Errorf("%s: in table [%s] with %d rows, firstRowIndex %d does not exist",
-		//			UtilFuncName(), table.tableName, table.RowCount(), firstRowIndex)
+//		return fmt.Errorf("%s: in table [%s] with %d rows, firstRowIndex %d does not exist",
+//			UtilFuncName(), table.tableName, table.RowCount(), firstRowIndex)
 		return fmt.Errorf("%s: in table [%s] firstRowIndex [%d] out of range with RowCount() length %d",
 			UtilFuncName(), table.tableName, firstRowIndex, table.RowCount())
 	}
@@ -1080,8 +1080,8 @@ func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 		if err != nil {
 			debug.PrintStack()
 		}
-		//		return fmt.Errorf("%s: in table [%s] with %d rows, lastRowIndex %d does not exist",
-		//			UtilFuncName(), table.tableName, table.RowCount(), lastRowIndex)
+//		return fmt.Errorf("%s: in table [%s] with %d rows, lastRowIndex %d does not exist",
+//			UtilFuncName(), table.tableName, table.RowCount(), lastRowIndex)
 		return fmt.Errorf("%s: in table [%s] lastRowIndex [%d] out of range with RowCount() length %d",
 			UtilFuncName(), table.tableName, lastRowIndex, table.RowCount())
 	}
@@ -1838,9 +1838,9 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		//		err := fmt.Errorf("%s: in table [%s] with %d cols, col index %d does not exist",
-		//			UtilFuncName(), table.tableName, table.ColCount(), colIndex)
-		//		return err
+//		err := fmt.Errorf("%s: in table [%s] with %d cols, col index %d does not exist",
+//			UtilFuncName(), table.tableName, table.ColCount(), colIndex)
+//		return err
 		return fmt.Errorf("%s: in table [%s] colIndex [%d] out of range with ColCount() length %d",
 			UtilFuncName(), table.tableName, colIndex, table.ColCount())
 	}
@@ -2039,8 +2039,8 @@ func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
-		//		err := fmt.Errorf("%s: in table [%s] with %d col%s, col index %d does not exist",
-		//			UtilFuncName(), table.tableName, table.ColCount(), plural(table.ColCount()), colIndex)
+//		err := fmt.Errorf("%s: in table [%s] with %d col%s, col index %d does not exist",
+//			UtilFuncName(), table.tableName, table.ColCount(), plural(table.ColCount()), colIndex)
 		err := fmt.Errorf("%s: in table [%s] colIndex [%d] out of range with ColCount() length %d",
 			UtilFuncName(), table.tableName, colIndex, table.ColCount())
 		return false, err
@@ -2184,7 +2184,7 @@ func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 	}
 
 	if colIndex < 0 || colIndex > len(table.colTypes)-1 {
-		//		err := fmt.Errorf("table [%s] col index does not exist: %d", table.tableName, colIndex)
+//		err := fmt.Errorf("table [%s] col index does not exist: %d", table.tableName, colIndex)
 		err := fmt.Errorf("%s: in table [%s] colIndex [%d] out of range with ColCount() length %d",
 			UtilFuncName(), table.tableName, colIndex, table.ColCount())
 		return "", err
@@ -2425,10 +2425,10 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 	hasRow = len(table.rows) >= rowIndex+1
 	if !hasRow {
-		//		err = fmt.Errorf("%s: in table [%s] row %d does not exist",
-		//			UtilFuncName(),
-		//			table.tableName,
-		//			rowIndex)
+//		err = fmt.Errorf("%s: in table [%s] row %d does not exist",
+//			UtilFuncName(),
+//			table.tableName,
+//			rowIndex)
 		err := fmt.Errorf("%s: in table [%s] rowIndex [%d] out of range with RowCount() length %d",
 			UtilFuncName(), table.tableName, rowIndex, table.RowCount())
 		return false, err
@@ -2445,13 +2445,13 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 	hasCol := rowElementCount >= colIndex+1
 	if !hasCol {
-		//		err := fmt.Errorf("%s: in table [%s] in row %d with %d col element%s, col %d does not exist",
-		//			UtilFuncName(),
-		//			table.tableName,
-		//			rowIndex,
-		//			rowElementCount,
-		//			plural(rowElementCount),
-		//			colIndex)
+//		err := fmt.Errorf("%s: in table [%s] in row %d with %d col element%s, col %d does not exist",
+//			UtilFuncName(),
+//			table.tableName,
+//			rowIndex,
+//			rowElementCount,
+//			plural(rowElementCount),
+//			colIndex)
 		err := fmt.Errorf("%s: in table [%s] colIndex [%d] out of range with ColCount() length %d",
 			UtilFuncName(), table.tableName, colIndex, table.ColCount())
 		return false, err
@@ -2472,7 +2472,7 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 				table.Name(), rowCount, plural(rowCount), rowIndex)
 		} else {
 			return false, fmt.Errorf("in table [%s] with %d row%s row index %d is out of range (0..%d)",
-				table.Name(), rowCount, plural(rowCount), rowIndex, rowCount-1)
+				table.Name(), rowCount, plural(rowCount),  rowIndex, rowCount-1)
 		}
 	}
 
@@ -2678,8 +2678,8 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	var err error
 
 	if rowIndex < 0 || rowIndex > table.RowCount()-1 {
-		//		return false, fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
-		//			UtilFuncName(), table.tableName, table.RowCount(), rowIndex)
+//		return false, fmt.Errorf("%s: in table [%s] with %d rows, row index %d does not exist",
+//			UtilFuncName(), table.tableName, table.RowCount(), rowIndex)
 		return false, fmt.Errorf("%s: in table [%s] rowIndex [%d] out of range with RowCount() length %d",
 			UtilFuncName(), table.tableName, rowIndex, table.RowCount())
 	}
@@ -2705,7 +2705,7 @@ func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 func (table *Table) IsValidTable() (isValid bool, err error) {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	//where(fmt.Sprintf("***CALLED BY %s", UtilFuncCaller()))
-	//UtilPrintCaller()
+//UtilPrintCaller()
 
 	if table == nil {
 		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -3387,11 +3387,11 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 			} else { // For all other (atomic) types.
 				if val1 != val2 {
 					if colType == "string" {
-						return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
-							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
+					return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					} else {
-						return false, fmt.Errorf("table1[%s].Equals(table1[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
-							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
+					return false, fmt.Errorf("table1[%s].Equals(table1[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+						table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}
 			}
@@ -3679,8 +3679,8 @@ func (tableSet *TableSet) DeleteTableByTableIndex(tableIndex int) error {
 	}
 
 	if tableIndex < 0 || tableIndex > tableSet.TableCount()-1 {
-		//		return fmt.Errorf("in tableSet %q with %d tables, table index %d does not exist",
-		//			tableSet.Name(), tableSet.TableCount(), tableIndex)
+//		return fmt.Errorf("in tableSet %q with %d tables, table index %d does not exist",
+//			tableSet.Name(), tableSet.TableCount(), tableIndex)
 		return fmt.Errorf("%s: in tableSet [[%s]] tableIndex [%d] out of range with TableCount() length %d",
 			UtilFuncName(), tableSet.tableSetName, tableIndex, tableSet.TableCount())
 	}
