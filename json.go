@@ -387,6 +387,11 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
 
+				case float64:
+					// Should never happen. All numbers are (now) type json.Number
+					return nil, fmt.Errorf("%s %s: unexpected value of type: float64",
+						UtilFuncSource(), UtilFuncName())
+
 				// Deal with conversions to larger ints: int64 uint64
 				case json.Number: // We set to json.Number with: decoder.UseNumber()
 					var float64Val float64
