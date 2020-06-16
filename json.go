@@ -275,7 +275,7 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 	var exists bool
 
 	/*
-		We don't know the order map values will be returned if we iterate of the map:
+		We may not know the order map values will be returned if we iterate of the map:
 		(1) tableName
 		(2) isStructShape (if there)
 		(3) metadata
@@ -375,8 +375,11 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 							err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
 							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
-					default: // Is a string
+					case "string":
 						err = table.SetStringByColIndex(colIndex, rowIndex, cell.(string))
+					default:
+						return nil, fmt.Errorf("%s %s: unexpected value of type: %s",
+							UtilFuncSource(), UtilFuncName(), colType)
 					}
 					// Single error handler for all the calls in this switch statement.
 					if err != nil {
@@ -384,7 +387,7 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
 
-				// Deal with conversions to larger ints.
+				// Deal with conversions to larger ints: int64 uint64
 				case json.Number:	// We set to json.Number with: decoder.UseNumber()
 					var float64Val float64
 					float64Val, err = cell.(json.Number).Float64()
@@ -434,16 +437,14 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 
 				case []interface{}: // This cell is a slice (probably either byte or uint8)
 					var interfaceSlice []interface{} = cell.([]interface{})
-					var byteSlice []byte = []byte{}
+					var byteSlice []byte = []byte{}	// Ready to append to.
 					var float64Val float64
 					for _, sliceVal := range interfaceSlice {
-//						float64Val, err = cell.(json.Number).Float64()
 						float64Val, err = sliceVal.(json.Number).Float64()
 						if err != nil {
 							err := fmt.Errorf("could not convert json.Number to float64")
 							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 						}
-//						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
 						byteSlice = append(byteSlice, byte(float64Val))
 					}
 					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
@@ -475,8 +476,8 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 							return nil, err
 						}
 					default:
-						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
-							tableName, colIndex, rowIndex)
+						return nil, fmt.Errorf("%s %s: unexpected nil value at [%s].(%d,%d)",
+							UtilFuncSource(), UtilFuncName(), tableName, colIndex, rowIndex)
 					}
 				default:
 					return nil, fmt.Errorf("%s %s: unexpected value of type: %v",
@@ -568,7 +569,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: jsonTableSetString is empty", UtilFuncName())
 	}
 
-	var JsonMap map[string]interface{}
+	var jsonMap map[string]interface{}
 /*
 	err = json.Unmarshal([]byte(jsonTableSetString), &jsonMap)
 	if err != nil {
@@ -577,8 +578,8 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 */
 
 	decoder := json.NewDecoder(strings.NewReader(jsonTableSetString))
-	decoder.UseNumber()
-	err = decoder.Decode(&JsonMap)
+	decoder.UseNumber()	// This prevents json from messing with int64 and uint64 values.
+	err = decoder.Decode(&jsonMap)
 	if err != nil {
 		return nil, err
 	}
@@ -586,7 +587,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
 	var exists bool
-	tableSetName, exists = JsonMap["tableSetName"].(string)
+	tableSetName, exists = jsonMap["tableSetName"].(string)
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tableSet name", UtilFuncName())
 	}
@@ -598,7 +599,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 
 	// (2) Retrieve and process tables.
 	var tablesMap []interface{}
-	tablesMap, exists = JsonMap["tables"].([]interface{})
+	tablesMap, exists = jsonMap["tables"].([]interface{})
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tables", UtilFuncName())
 	}
