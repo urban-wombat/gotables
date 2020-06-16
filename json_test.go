@@ -1883,3 +1883,90 @@ func TestTable_isCircularReference(t *testing.T) {
 	   where(fmt.Sprintf("\n%s", table3))
 	*/
 }
+
+//	func TestGetTableSetAsJSON_int64_float64_conversion(t *testing.T) {
+//		//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
+//		const verbose bool = false
+//	
+//		var err error
+//		var tableSet1 *TableSet
+//		var tableSet2 *TableSet
+//	
+//		var tableSet1String string = `
+//		[TypesGalore12]
+//	    i   s      f       f32     t     b    ui    bb            uu8
+//	    int string float64 float32 bool  byte uint8 []byte        []uint8
+//	    1   "abc"  2.3     6.6     true  11   0     [11 12 13 14] [15 16 17]
+//	    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
+//	    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
+//	    4   "xxxx" 5.9     9.9     true  44   3     []            []
+//	
+//		[AnotherTable]
+//		fred int = 33
+//		wilma int = 29
+//	
+//		[Tminus1]
+//		f32 float32 = 28
+//		f64 float64 = 3.402823e+38
+//		bt byte = 65
+//		u8 uint8 = 99
+//		u16 uint16 = 116
+//		u32 uint32 = 500
+//		u64 uint64 = 900
+//		maxint int = 9223372036854775807
+//		iii2 int = 13
+//		iii3 int = -20
+//		uInt4 uint = 4294967295
+//		maxuint uint = 18446744073709551615
+//		i8 int8 = -128
+//		i16 int16 = -32768
+//		i32 int32 = 66
+//		i64 int64 = 900
+//		s string = "something"
+//		bo bool = true
+//		r rune = 'A'
+//		bta []byte = [65 66 67]
+//		u8a []uint8 = [97 98 99]
+//		t time.Time = 2020-03-15T14:22:30.123456789+17:00
+//	    `
+//		tableSet1, err = NewTableSetFromString(tableSet1String)
+//		if err != nil {
+//			t.Fatal(err)
+//		}
+//	
+//		err = tableSet1.SetName("MySet")
+//		if err != nil {
+//			t.Fatal(err)
+//		}
+//	
+//		var jsonTableSet string
+//		jsonTableSet, err = tableSet1.GetTableSetAsJSON()
+//		if err != nil {
+//			t.Fatal(err)
+//		}
+//		_ = jsonTableSet
+//	
+//		if verbose {
+//			fmt.Println(jsonTableSet)
+//			var out bytes.Buffer
+//			// For readability.
+//			err = json.Indent(&out, []byte(jsonTableSet), "", "\t")
+//			if err != nil {
+//				t.Fatal(err)
+//			}
+//	
+//			_, _ = out.WriteTo(os.Stdout)
+//			fmt.Println()
+//		}
+//	
+//		// Now turn it back into a TableSet.
+//		tableSet2, err = NewTableSetFromJSON(jsonTableSet)
+//		if err != nil {
+//			t.Fatal(err)
+//		}
+//	
+//		_, err = tableSet1.Equals(tableSet2)
+//		if err != nil {
+//			t.Fatal(err)
+//		}
+//	}

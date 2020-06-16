@@ -3390,7 +3390,7 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 						return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %q != %q",
 							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					} else {
-						return false, fmt.Errorf("table1[%s].Equals(table1[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
+						return false, fmt.Errorf("table1[%s].Equals(table2[%s]): colIndex=%d colName=%q rowIndex=%d: %v != %v",
 							table1.Name(), table2.Name(), colIndex, colName, rowIndex, val1, val2)
 					}
 				}

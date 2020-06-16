@@ -5,8 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	_ "math"
+	_"os"
 	"reflect"
 	"regexp"
+	_ "strconv"
+	"strings"
 	"time"
 )
 
@@ -149,6 +153,7 @@ func getTableAsJSON_recursive(table *Table, buf *bytes.Buffer, refMap circRefMap
 				}
 				buf.WriteString(valStr)
 
+			// rune vs int32
 			case int32:
 				var valStr string
 				valStr, err = table.GetValAsStringByColIndex(colIndex, rowIndex)
@@ -378,34 +383,46 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 						err := fmt.Errorf("could not convert JSON string to gotables %s", colType)
 						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
 					}
-				case float64: // All JSON number values are stored as float64
+
+				// Deal with conversions to larger ints.
+				case json.Number:	// We set to json.Number with: decoder.UseNumber()
+					var float64Val float64
+					float64Val, err = cell.(json.Number).Float64()
+					if err != nil {
+						err := fmt.Errorf("could not convert json.Number to float64")
+						return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
+					}
+
 					switch colType { // We need to convert them back to gotables numeric types
-					case "int":
-						err = table.SetIntByColIndex(colIndex, rowIndex, int(cell.(float64)))
-					case "uint":
-						err = table.SetUintByColIndex(colIndex, rowIndex, uint(cell.(float64)))
-					case "byte":
-						err = table.SetByteByColIndex(colIndex, rowIndex, byte(cell.(float64)))
-					case "int8":
-						err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(cell.(float64)))
-					case "int16":
-						err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(cell.(float64)))
-					case "int32":
-						err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(cell.(float64)))
 					case "int64":
-						err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(cell.(float64)))
-					case "uint8":
-						err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(cell.(float64)))
-					case "uint16":
-						err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(cell.(float64)))
-					case "uint32":
-						err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(cell.(float64)))
+						err = table.SetInt64ByColIndex(colIndex, rowIndex, int64(float64Val))
 					case "uint64":
-						err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(cell.(float64)))
+						err = table.SetUint64ByColIndex(colIndex, rowIndex, uint64(float64Val))
 					case "float32":
-						err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(cell.(float64)))
+						err = table.SetFloat32ByColIndex(colIndex, rowIndex, float32(float64Val))
 					case "float64":
-						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64(cell.(float64)))
+						err = table.SetFloat64ByColIndex(colIndex, rowIndex, float64Val)
+					case "int":
+						err = table.SetIntByColIndex(colIndex, rowIndex, int(float64Val))
+					case "uint":
+						err = table.SetUintByColIndex(colIndex, rowIndex, uint(float64Val))
+					case "byte":
+						err = table.SetByteByColIndex(colIndex, rowIndex, byte(float64Val))
+					case "int8":
+						err = table.SetInt8ByColIndex(colIndex, rowIndex, int8(float64Val))
+					case "int16":
+						err = table.SetInt16ByColIndex(colIndex, rowIndex, int16(float64Val))
+					case "int32":
+						err = table.SetInt32ByColIndex(colIndex, rowIndex, int32(float64Val))
+					case "uint8":
+						err = table.SetUint8ByColIndex(colIndex, rowIndex, uint8(float64Val))
+					case "uint16":
+						err = table.SetUint16ByColIndex(colIndex, rowIndex, uint16(float64Val))
+					case "uint32":
+						err = table.SetUint32ByColIndex(colIndex, rowIndex, uint32(float64Val))
+					default:
+						return nil, fmt.Errorf("%s %s: unexpected value of type: %s",
+							UtilFuncSource(), UtilFuncName(), colType)
 					}
 					// Single error handler for all the calls in this switch statement.
 					if err != nil {
@@ -414,16 +431,26 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 					}
 				case bool:
 					err = table.SetBoolByColIndex(colIndex, rowIndex, cell.(bool))
-				case []interface{}: // This cell is a slice
+
+				case []interface{}: // This cell is a slice (probably either byte or uint8)
 					var interfaceSlice []interface{} = cell.([]interface{})
 					var byteSlice []byte = []byte{}
+					var float64Val float64
 					for _, sliceVal := range interfaceSlice {
-						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
+//						float64Val, err = cell.(json.Number).Float64()
+						float64Val, err = sliceVal.(json.Number).Float64()
+						if err != nil {
+							err := fmt.Errorf("could not convert json.Number to float64")
+							return nil, fmt.Errorf("%s %s: %v", UtilFuncSource(), UtilFuncName(), err)
+						}
+//						byteSlice = append(byteSlice, byte(sliceVal.(float64)))
+						byteSlice = append(byteSlice, byte(float64Val))
 					}
 					err = table.SetByteSliceByColIndex(colIndex, rowIndex, byteSlice)
 					if err != nil {
 						return nil, err
 					}
+
 				case map[string]interface{}: // This cell is a table.
 					switch colType {
 					case "*Table":
@@ -451,13 +478,9 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 						return nil, fmt.Errorf("newTableFromJSON_recursive(): unexpected nil value at [%s].(%d,%d)",
 							tableName, colIndex, rowIndex)
 					}
-					/*
-						case time.Time:
-							err = table.SetTimeByColIndex(colIndex, rowIndex, cell.(time.Time))
-					*/
 				default:
 					return nil, fmt.Errorf("%s %s: unexpected value of type: %v",
-						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(val))
+						UtilFuncSource(), UtilFuncName(), reflect.TypeOf(cell))
 				}
 				// Single error handler for all the calls in this switch statement.
 				if err != nil {
@@ -535,6 +558,9 @@ func (tableSet *TableSet) GetTableSetAsJSON() (jsonTableSetString string, err er
 
 /*
 	Unmarshal JSON documents to a *gotables.TableSet
+
+	See also:
+		GetTableSetAsJSON()
 */
 func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err error) {
 
@@ -542,8 +568,17 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 		return nil, fmt.Errorf("%s: jsonTableSetString is empty", UtilFuncName())
 	}
 
-	var jsonMap map[string]interface{}
+	var JsonMap map[string]interface{}
+/*
 	err = json.Unmarshal([]byte(jsonTableSetString), &jsonMap)
+	if err != nil {
+		return nil, err
+	}
+*/
+
+	decoder := json.NewDecoder(strings.NewReader(jsonTableSetString))
+	decoder.UseNumber()
+	err = decoder.Decode(&JsonMap)
 	if err != nil {
 		return nil, err
 	}
@@ -551,7 +586,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 	// (1) Retrieve and process TableSet name.
 	var tableSetName string
 	var exists bool
-	tableSetName, exists = jsonMap["tableSetName"].(string)
+	tableSetName, exists = JsonMap["tableSetName"].(string)
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tableSet name", UtilFuncName())
 	}
@@ -563,7 +598,7 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 
 	// (2) Retrieve and process tables.
 	var tablesMap []interface{}
-	tablesMap, exists = jsonMap["tables"].([]interface{})
+	tablesMap, exists = JsonMap["tables"].([]interface{})
 	if !exists {
 		return nil, fmt.Errorf("%s: JSON is missing tables", UtilFuncName())
 	}

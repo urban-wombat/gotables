@@ -1,7 +1,9 @@
 package gotables_test
 
 import (
-	_ "fmt"
+	"encoding/binary"
+	"fmt"
+	"math"
 	_ "os"
 	"testing"
 
@@ -38,53 +40,13 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	var tableSetString string
 
 	tableSetString = `
-	[[TipTopName]]
-
-	[Tminus1]
-	f32 float32 = 27
-	f64 float64 = 3.402823e+38
-	u8 uint8 = 99
-	u16 uint16 = 116
-	u32 uint32 = 500
-	u64 uint64 = 900
-	i int = 9223372036854775807
-	i8 int8 = -128
-	i16 int16 = -32768
-	i32 int32 = 66
-	i64 int64 = 900
-	s string = "something"
-	bo bool = true
-	r rune = 'F'
-	bt byte = 65
-	bta []byte = [1 2 3]
-	u8a []uint8 = [4 5 6]
-	t time.Time = 2020-03-15T14:22:30.123456789+17:00
-
-	[T0]
-	f		u		c		k
-	float64	uint16	rune	int
-	11.1	2		'a'		3
-	22.2	4		'b'		4
-	33.3	6		'c'		5
-
-	[T1]
-	a int = 1
-	y int = 4
-	s []byte = [4 3 2 1]
-	u []uint8 = [42 44 48 50 52]
-	Y float32 = 66.666
-
-	[T2]
-	x		y		s
-	bool	byte	string
-	true	42		"forty two"
-	false	55		"fifty-five"
-	`
-
-	tableSetString = `
 	[[TwoTables]]
 
 	[Tminus1]
+	maxint64  int64  =  9000000000000000000
+	maxuint64 uint64 = 18000000000000000000
+	maxint32  int32  =  2147483647
+	maxuint32 uint32 = 4294967295
 	f32 float32 = 28
 	f64 float64 = 3.402823e+38
 	bt byte = 65
@@ -92,11 +54,9 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	u16 uint16 = 116
 	u32 uint32 = 500
 	u64 uint64 = 900
-	iii1 int = 9223372036854775807
 	iii2 int = 13
 	iii3 int = -20
 	uInt4 uint = 4294967295
-	uInt8 uint = 18446744073709551615
 	i8 int8 = -128
 	i16 int16 = -32768
 	i32 int32 = 66
@@ -181,25 +141,116 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	/*
-	   This fails with an overflow from float64 to int and uint.
-	   This may have a fix: http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#json_num
+	//where(math.MaxInt64 == 9223372036854775807)
+{
+	var i1 int = 9223372036854775807 // MaxInt64
+	fmt.Printf("i1: %d\n", i1)
 
-	   	var jsonString string
-	   	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
-	   	if err != nil {
-	   		t.Fatal(err)
-	   	}
-	   println(jsonString)
+	var f1 float64 = float64(i1)
+	fmt.Printf("f1: %0f\n", f1)
 
-	   	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
-	   	if err != nil {
-	   		t.Fatal(err)
-	   	}
+	var f2 float64 = 9223372036854775807
+	fmt.Printf("f2: %0f\n", f2)
 
-	   	_, err = tableSet1.Equals(tableSet2)
-	   	if err != nil {
-	   		t.Fatal(err)
-	   	}
-	*/
+	var i2 int = int(f2)
+	fmt.Printf("i2: %d\n", i2)
+}
+println()
+{
+	var i1 int64 = 9223372036854775807 // MaxInt64
+	fmt.Printf("i1: %d\n", i1)
+
+	var f1 float64 = float64(i1)
+	fmt.Printf("f1: %0f\n", f1)
+
+	var f2 float64 = 9223372036854775807
+	fmt.Printf("f2: %0f\n", f2)
+
+	var i2 int64 = int64(f2)
+	fmt.Printf("i2: %d\n", i2)
+}
+
+/*
+{
+	var i1 int64
+	var i2 int64
+	var f float64
+println()
+//where("working ...")
+//	const start = 17000000000000000
+	const start = 1152921504600000000
+	const inc = 10000000
+	for i1 = start; i1 <= math.MaxInt64; i1 += inc {
+		f = float64(i1)
+		i2 = int64(f)
+		if i2 != i1 {
+			fmt.Printf("i1 %d != i2 %d\n", i1, i2)
+			if (i2-inc) == (i1-inc) {
+				fmt.Printf("%d == %d\n", i1-inc, i2-inc)
+			} else {
+				println("What th!")
+			}
+			os.Exit(43)
+		}
+	}
+}
+*/
+var maxint int = 9223372036854775807
+fmt.Printf("%d\n", maxint)
+fmt.Printf("%b\n", maxint)
+println()
+
+maxint = -9223372036854775808
+fmt.Printf("%d\n", maxint)
+fmt.Printf("%b\n", maxint)
+println()
+
+var f float64 = float64(9223372036854775807)
+fmt.Printf("%f\n", f)
+fmt.Printf("%b\n", f)
+println()
+
+maxint = 9223372036854775807
+fmt.Printf("maxint bits: %b\n", maxint)
+var b []byte = make([]byte, 8)
+binary.LittleEndian.PutUint64(b, uint64(maxint))
+//where(fmt.Sprintf("%b\n", b))
+
+{
+	var f64 float64
+
+	// int64
+	var i64 int64 = 9223372036854775807
+	//where(i64)
+	f64 = math.Float64frombits(uint64(i64))
+	i64 = int64(math.Float64bits(f64))
+	//where(i64)
+
+	// uint64
+	var ui64 uint64 = 18446744073709551615
+	//where(ui64)
+	f64 = math.Float64frombits(uint64(ui64))
+	ui64 = math.Float64bits(f64)
+	//where(ui64)
+}
+
+// os.Exit(44)
+
+   	var jsonString string
+   	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
+   	if err != nil {
+   		t.Fatal(err)
+   	}
+	//where(jsonString)
+
+   	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
+   	if err != nil {
+   		t.Fatal(err)
+   	}
+	//where(tableSet2)
+
+   	_, err = tableSet1.Equals(tableSet2)
+   	if err != nil {
+   		t.Fatal(err)
+   	}
 }
