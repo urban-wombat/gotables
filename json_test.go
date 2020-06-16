@@ -1887,11 +1887,11 @@ func TestTable_isCircularReference(t *testing.T) {
 //	func TestGetTableSetAsJSON_int64_float64_conversion(t *testing.T) {
 //		//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 //		const verbose bool = false
-//	
+//
 //		var err error
 //		var tableSet1 *TableSet
 //		var tableSet2 *TableSet
-//	
+//
 //		var tableSet1String string = `
 //		[TypesGalore12]
 //	    i   s      f       f32     t     b    ui    bb            uu8
@@ -1900,11 +1900,11 @@ func TestTable_isCircularReference(t *testing.T) {
 //	    2   "xyz"  4.5     7.7     false 22   1     [22 23 24 25] [26 27 28]
 //	    3   "ssss" 4.9     8.8     false 33   2     [33 34 35 36] [37 38 39]
 //	    4   "xxxx" 5.9     9.9     true  44   3     []            []
-//	
+//
 //		[AnotherTable]
 //		fred int = 33
 //		wilma int = 29
-//	
+//
 //		[Tminus1]
 //		f32 float32 = 28
 //		f64 float64 = 3.402823e+38
@@ -1933,19 +1933,19 @@ func TestTable_isCircularReference(t *testing.T) {
 //		if err != nil {
 //			t.Fatal(err)
 //		}
-//	
+//
 //		err = tableSet1.SetName("MySet")
 //		if err != nil {
 //			t.Fatal(err)
 //		}
-//	
+//
 //		var jsonTableSet string
 //		jsonTableSet, err = tableSet1.GetTableSetAsJSON()
 //		if err != nil {
 //			t.Fatal(err)
 //		}
 //		_ = jsonTableSet
-//	
+//
 //		if verbose {
 //			fmt.Println(jsonTableSet)
 //			var out bytes.Buffer
@@ -1954,17 +1954,17 @@ func TestTable_isCircularReference(t *testing.T) {
 //			if err != nil {
 //				t.Fatal(err)
 //			}
-//	
+//
 //			_, _ = out.WriteTo(os.Stdout)
 //			fmt.Println()
 //		}
-//	
+//
 //		// Now turn it back into a TableSet.
 //		tableSet2, err = NewTableSetFromJSON(jsonTableSet)
 //		if err != nil {
 //			t.Fatal(err)
 //		}
-//	
+//
 //		_, err = tableSet1.Equals(tableSet2)
 //		if err != nil {
 //			t.Fatal(err)

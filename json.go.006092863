@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	_ "math"
-	_ "os"
+	_"os"
 	"reflect"
 	"regexp"
 	_ "strconv"
@@ -388,7 +388,7 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 					}
 
 				// Deal with conversions to larger ints: int64 uint64
-				case json.Number: // We set to json.Number with: decoder.UseNumber()
+				case json.Number:	// We set to json.Number with: decoder.UseNumber()
 					var float64Val float64
 					float64Val, err = cell.(json.Number).Float64()
 					if err != nil {
@@ -437,7 +437,7 @@ func newTableFromJSON_recursive(jsonMap map[string]interface{}) (table *Table, e
 
 				case []interface{}: // This cell is a slice (probably either byte or uint8)
 					var interfaceSlice []interface{} = cell.([]interface{})
-					var byteSlice []byte = []byte{} // Ready to append to.
+					var byteSlice []byte = []byte{}	// Ready to append to.
 					var float64Val float64
 					for _, sliceVal := range interfaceSlice {
 						float64Val, err = sliceVal.(json.Number).Float64()
@@ -570,15 +570,15 @@ func NewTableSetFromJSON(jsonTableSetString string) (tableSet *TableSet, err err
 	}
 
 	var jsonMap map[string]interface{}
-	/*
-		err = json.Unmarshal([]byte(jsonTableSetString), &jsonMap)
-		if err != nil {
-			return nil, err
-		}
-	*/
+/*
+	err = json.Unmarshal([]byte(jsonTableSetString), &jsonMap)
+	if err != nil {
+		return nil, err
+	}
+*/
 
 	decoder := json.NewDecoder(strings.NewReader(jsonTableSetString))
-	decoder.UseNumber() // This prevents json from messing with int64 and uint64 values.
+	decoder.UseNumber()	// This prevents json from messing with int64 and uint64 values.
 	err = decoder.Decode(&jsonMap)
 	if err != nil {
 		return nil, err

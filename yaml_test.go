@@ -142,115 +142,115 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	}
 
 	//where(math.MaxInt64 == 9223372036854775807)
-{
-//	var i1 int = 9223372036854775807 // MaxInt64
-//	fmt.Printf("i1: %d\n", i1)
-//
-//	var f1 float64 = float64(i1)
-//	fmt.Printf("f1: %0f\n", f1)
-//
-//	var f2 float64 = 9223372036854775807
-//	fmt.Printf("f2: %0f\n", f2)
+	{
+		//	var i1 int = 9223372036854775807 // MaxInt64
+		//	fmt.Printf("i1: %d\n", i1)
+		//
+		//	var f1 float64 = float64(i1)
+		//	fmt.Printf("f1: %0f\n", f1)
+		//
+		//	var f2 float64 = 9223372036854775807
+		//	fmt.Printf("f2: %0f\n", f2)
 
-//	var i2 int = int(f2)
-//	fmt.Printf("i2: %d\n", i2)
-}
-println()
-{
-//	var i1 int64 = 9223372036854775807 // MaxInt64
-//	fmt.Printf("i1: %d\n", i1)
-//
-//	var f1 float64 = float64(i1)
-//	fmt.Printf("f1: %0f\n", f1)
-//
-//	var f2 float64 = 9223372036854775807
-//	fmt.Printf("f2: %0f\n", f2)
-
-//	var i2 int64 = int64(f2)
-//	fmt.Printf("i2: %d\n", i2)
-}
-
-/*
-{
-	var i1 int64
-	var i2 int64
-	var f float64
-println()
-//where("working ...")
-//	const start = 17000000000000000
-	const start = 1152921504600000000
-	const inc = 10000000
-	for i1 = start; i1 <= math.MaxInt64; i1 += inc {
-		f = float64(i1)
-		i2 = int64(f)
-		if i2 != i1 {
-			fmt.Printf("i1 %d != i2 %d\n", i1, i2)
-			if (i2-inc) == (i1-inc) {
-				fmt.Printf("%d == %d\n", i1-inc, i2-inc)
-			} else {
-				println("What th!")
-			}
-			os.Exit(43)
-		}
+		//	var i2 int = int(f2)
+		//	fmt.Printf("i2: %d\n", i2)
 	}
-}
-*/
-//var maxint int = 9223372036854775807
-//fmt.Printf("%d\n", maxint)
-//fmt.Printf("%b\n", maxint)
-//println()
-//
-//maxint = -9223372036854775808
-//fmt.Printf("%d\n", maxint)
-//fmt.Printf("%b\n", maxint)
-//println()
-//
-//var f float64 = float64(9223372036854775807)
-//fmt.Printf("%f\n", f)
-//fmt.Printf("%b\n", f)
-//println()
-//
-//maxint = 9223372036854775807
-//fmt.Printf("maxint bits: %b\n", maxint)
-//var b []byte = make([]byte, 8)
-//binary.LittleEndian.PutUint64(b, uint64(maxint))
-////where(fmt.Sprintf("%b\n", b))
+	println()
+	{
+		//	var i1 int64 = 9223372036854775807 // MaxInt64
+		//	fmt.Printf("i1: %d\n", i1)
+		//
+		//	var f1 float64 = float64(i1)
+		//	fmt.Printf("f1: %0f\n", f1)
+		//
+		//	var f2 float64 = 9223372036854775807
+		//	fmt.Printf("f2: %0f\n", f2)
 
-{
-	var f64 float64
+		//	var i2 int64 = int64(f2)
+		//	fmt.Printf("i2: %d\n", i2)
+	}
 
-	// int64
-	var i64 int64 = 9223372036854775807
-	//where(i64)
-	f64 = math.Float64frombits(uint64(i64))
-	i64 = int64(math.Float64bits(f64))
-	//where(i64)
+	/*
+	   {
+	   	var i1 int64
+	   	var i2 int64
+	   	var f float64
+	   println()
+	   //where("working ...")
+	   //	const start = 17000000000000000
+	   	const start = 1152921504600000000
+	   	const inc = 10000000
+	   	for i1 = start; i1 <= math.MaxInt64; i1 += inc {
+	   		f = float64(i1)
+	   		i2 = int64(f)
+	   		if i2 != i1 {
+	   			fmt.Printf("i1 %d != i2 %d\n", i1, i2)
+	   			if (i2-inc) == (i1-inc) {
+	   				fmt.Printf("%d == %d\n", i1-inc, i2-inc)
+	   			} else {
+	   				println("What th!")
+	   			}
+	   			os.Exit(43)
+	   		}
+	   	}
+	   }
+	*/
+	//var maxint int = 9223372036854775807
+	//fmt.Printf("%d\n", maxint)
+	//fmt.Printf("%b\n", maxint)
+	//println()
+	//
+	//maxint = -9223372036854775808
+	//fmt.Printf("%d\n", maxint)
+	//fmt.Printf("%b\n", maxint)
+	//println()
+	//
+	//var f float64 = float64(9223372036854775807)
+	//fmt.Printf("%f\n", f)
+	//fmt.Printf("%b\n", f)
+	//println()
+	//
+	//maxint = 9223372036854775807
+	//fmt.Printf("maxint bits: %b\n", maxint)
+	//var b []byte = make([]byte, 8)
+	//binary.LittleEndian.PutUint64(b, uint64(maxint))
+	////where(fmt.Sprintf("%b\n", b))
 
-	// uint64
-	var ui64 uint64 = 18446744073709551615
-	//where(ui64)
-	f64 = math.Float64frombits(uint64(ui64))
-	ui64 = math.Float64bits(f64)
-	//where(ui64)
-}
+	{
+		var f64 float64
 
-// os.Exit(44)
+		// int64
+		var i64 int64 = 9223372036854775807
+		//where(i64)
+		f64 = math.Float64frombits(uint64(i64))
+		i64 = int64(math.Float64bits(f64))
+		//where(i64)
 
-   	var jsonString string
-   	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
-   	if err != nil {
-   		t.Fatal(err)
-   	}
+		// uint64
+		var ui64 uint64 = 18446744073709551615
+		//where(ui64)
+		f64 = math.Float64frombits(uint64(ui64))
+		ui64 = math.Float64bits(f64)
+		//where(ui64)
+	}
+
+	// os.Exit(44)
+
+	var jsonString string
+	jsonString, err = tableSet1.GetTableSetAsJSONIndent()
+	if err != nil {
+		t.Fatal(err)
+	}
 	//where(jsonString)
 
-   	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
-   	if err != nil {
-   		t.Fatal(err)
-   	}
+	tableSet2, err = gotables.NewTableSetFromJSON(jsonString)
+	if err != nil {
+		t.Fatal(err)
+	}
 	//where(tableSet2)
 
-   	_, err = tableSet1.Equals(tableSet2)
-   	if err != nil {
-   		t.Fatal(err)
-   	}
+	_, err = tableSet1.Equals(tableSet2)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
