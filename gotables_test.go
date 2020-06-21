@@ -6118,7 +6118,7 @@ func ExampleReverse() {
 	// "Sun"     333333.0        0.0     0     0 ""
 }
 
-func ExampleTable_ShuffleDeterministic() {
+func ExampleTable_ShufflePseudorandom() {
 	var err error
 	var table *Table
 
@@ -6144,7 +6144,7 @@ func ExampleTable_ShuffleDeterministic() {
 
 	fmt.Println(table)
 
-	err = table.ShuffleDeterministic()
+	err = table.ShufflePseudorandom()
 	if err != nil {
 		log.Println(err)
 	}
