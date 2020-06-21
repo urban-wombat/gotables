@@ -4211,7 +4211,7 @@ func (table *Table) ShuffleRandom() error {
 		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-	random := rand.New(rand.NewSource(time.Now().Unix()))
+	random := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 	random.Shuffle(len(table.rows), func(i, j int) {
 		table.rows[i], table.rows[j] = table.rows[j], table.rows[i]
 	})
