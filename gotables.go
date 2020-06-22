@@ -4343,3 +4343,52 @@ func (table *Table) ParentTable() (parentTable *Table) {
 
 	return table.parentTable
 }
+
+func (table *Table) IsTableColByColIndex(colIndex int) (isTableCol bool, err error) {
+	if table == nil {
+		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	colType, err := table.ColTypeByColIndex(colIndex)
+	if err != nil {
+		return
+	}
+
+	isTableCol = IsTableColType(colType)
+
+	return
+}
+
+func (table *Table) NestedString() (nestedString string) {
+
+	if table == nil {
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(UtilFuncSource() + " ")
+		UtilPrintCaller()
+		return ""
+	}
+
+	nestedString += table.String()
+
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		if isTableCol, _ := table.IsTableColByColIndex(colIndex); isTableCol {
+			colName, _ := table.ColNameByColIndex(colIndex)
+			for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return ""
+				}
+
+				err = nestedTable.SetName(fmt.Sprintf("%s_from_%s_%s_%d",
+					nestedTable.Name(), table.Name(), colName, rowIndex))
+				if err != nil {
+					return ""
+				}
+
+				nestedString += fmt.Sprintf("\n%s", nestedTable.String())
+			}
+		}
+	}
+
+	return
+}
