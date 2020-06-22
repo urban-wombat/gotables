@@ -1,32 +1,32 @@
-[Table]
-tbl
+[TableName]
+ColName
 *Table
 [a]
 [b]
 [c]
 
-[a]([Table][0][0])
+[_TableName_ColName_0_a_]
 TBL
 *Table
 [x]
 [y]
 [z]
 
-[b]([Table][0][1])
+[_TableName_ColName_1_b_]
 TBL
 *Table
 [x]
 [y]
 [z]
 
-[c]([Table][0][2])
+[_TableName_ColName_2_c_]
 TBL
 *Table
 [x]
 [y]
 [z]
 
-[x]([a][0][0])
+[_TableName_ColName_0_a_] ???
 i
 int
 1
