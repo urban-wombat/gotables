@@ -4359,33 +4359,82 @@ func (table *Table) IsTableColByColIndex(colIndex int) (isTableCol bool, err err
 	return
 }
 
+func (table *Table) IsTableCol(colName string) (isTableCol bool, err error) {
+	if table == nil {
+		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	colIndex, err := table.ColIndex(colName)
+	if err != nil {
+		return
+	}
+
+	isTableCol, err = table.IsTableColByColIndex(colIndex)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 func (table *Table) NestedString() (nestedString string) {
+	table.nestedString_recursive("", "", 0, &nestedString)
+	return
+}
+
+var globalRecursive int
+func (table *Table) nestedString_recursive(parentTableName string, parentColName string, parentRowIndex int, nestedString *string) {
+where(fmt.Sprintf("[%d] [%s]",  globalRecursive, table.Name()))
+globalRecursive++
+
+// println()
+
+where(fmt.Sprintf("    nestedString_recursive(parentTableName: [%s], parentColName: %q, parentRowIndex: %d, nestedString)\n",
+	parentTableName, parentColName, parentRowIndex))
 
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		_, _ = os.Stderr.WriteString(UtilFuncSource() + " ")
 		UtilPrintCaller()
-		return ""
+		return
 	}
 
-	nestedString += table.String()
+/*
+	if UtilFuncCaller() != UtilFuncName() {
+		// This is the top-level parent table.
+		*nestedString += table.String() + "\n"
+	}
+*/
+	*nestedString += table.String() + "\n"
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+// where(fmt.Sprintf("table: [%s] colIndex := %d nestedString_recursive(parentColName: %q, parentRowIndex: %d, nestedString)\n", table.Name(), colIndex, parentColName, parentRowIndex))
 		if isTableCol, _ := table.IsTableColByColIndex(colIndex); isTableCol {
 			colName, _ := table.ColNameByColIndex(colIndex)
 			for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
-					return ""
+// where(err)
+					return
 				}
 
-				err = nestedTable.SetName(fmt.Sprintf("%s_from_%s_%s_%d",
-					nestedTable.Name(), table.Name(), colName, rowIndex))
-				if err != nil {
-					return ""
+				if rowIndex == 0 {
+// where(fmt.Sprintf("table.Name()       = %s", table.Name()))
+// where(fmt.Sprintf("nestedTable.Name() = %s", nestedTable.Name()))
+//					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), parentColName, parentRowIndex)
+//					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
+//					newName := fmt.Sprintf("%s_col_%s_row_%d_from_%s", table.Name(), colName, rowIndex, nestedTable.Name())
+					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
+// where(fmt.Sprintf("           newName = %s", newName))
+					err = nestedTable.SetName(newName)
+					if err != nil {
+// where(err)
+						return
+					}
 				}
 
-				nestedString += fmt.Sprintf("\n%s", nestedTable.String())
+				// where(fmt.Sprintf("\n\n>>>nestedTable.nestedString_recursive(%q, %d, nestedString=\n%s<<<)", colName, rowIndex, *nestedString))
+				nestedTable.nestedString_recursive(table.Name(), colName, rowIndex, nestedString)
 			}
 		}
 	}

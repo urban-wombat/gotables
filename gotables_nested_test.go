@@ -81,10 +81,8 @@ func TestTable_NestedString(t *testing.T) {
 	true	66		"sixty-six"		"sss3"
 
 	[T3]
-	a rune = 'b'
-	t *Table = [WHAT]
-	b string = "b"
-	ttt *Table = []
+	WHATCOL *Table = [WHAT]
+	NILCOL *Table = []
 
 	[T4]
 	x1 bool = true
@@ -110,8 +108,8 @@ func TestTable_NestedString(t *testing.T) {
 	}
 
 	var nestedNestedString string = `
-	[NNS]
-	ttt
+	[DeeplyNestedTable]
+	TROWS
 	*Table
 	[]
 	[]
@@ -131,7 +129,7 @@ func TestTable_NestedString(t *testing.T) {
 		t.Fatal(err)
 	}
 	for rowIndex := 0; rowIndex < nestedNestedTable.RowCount(); rowIndex++ {
-		err = nestedNestedTable.SetTable("ttt", rowIndex, anyTable)
+		err = nestedNestedTable.SetTable("TROWS", rowIndex, anyTable)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -142,17 +140,17 @@ func TestTable_NestedString(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = t3.SetTable("t", 0, nestedTable)
+	err = t3.SetTable("WHATCOL", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = t3.SetTable("ttt", 0, nestedNestedTable)
+	err = t3.SetTable("NILCOL", 0, nestedNestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	where("\n" + t3.NestedString() + "\n")
+	where("\n\n" + t3.NestedString())
 
 //		var yamlString string
 //		yamlString, err = tableSet1.GetTableSetAsYAML()
