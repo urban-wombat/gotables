@@ -4424,7 +4424,7 @@ where(fmt.Sprintf("    nestedString_recursive(parentTableName: [%s], parentColNa
 //					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), parentColName, parentRowIndex)
 //					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
 //					newName := fmt.Sprintf("%s_col_%s_row_%d_from_%s", table.Name(), colName, rowIndex, nestedTable.Name())
-					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
+					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), parentTableName, parentColName, parentRowIndex)
 // where(fmt.Sprintf("           newName = %s", newName))
 					err = nestedTable.SetName(newName)
 					if err != nil {
