@@ -371,7 +371,7 @@ func (tableSet *TableSet) SetName(tableSetName string) error {
 	//			return
 	//		}
 	if tableSet == nil {
-		return fmt.Errorf("%s tableSet.%s: tableSet is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	tableSet.tableSetName = tableSetName
@@ -513,7 +513,7 @@ type TableExported struct {
 
 func (table *Table) getColTypes() []string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return nil
 	}
@@ -650,7 +650,7 @@ Note: This is used by the parser. Not for use by end-users.
 */
 func (table *Table) appendRowOfNil() error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	return nil
@@ -666,7 +666,7 @@ func (table *Table) appendRowOfNil() error {
 func (table *Table) AppendRows(howMany int) error {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -717,7 +717,7 @@ func (table *Table) AppendRows(howMany int) error {
 func (table *Table) AppendRow() error {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -766,7 +766,7 @@ func (table *Table) AppendRow() error {
 // Set all float cells in this row to NaN. This is a convenience function to use NaN as a proxy for a missing value.
 func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -793,7 +793,7 @@ func (table *Table) SetRowFloatCellsToNaN(rowIndex int) error {
 func (table *Table) SetAllFloatCellsToNaN() error {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
@@ -821,7 +821,7 @@ func (table *Table) SetColCellsToZeroValue(colName string) error {
 		UtilPrintCaller()
 	}
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 	colIndex, err := table.ColIndex(colName)
 	if err != nil {
@@ -837,7 +837,7 @@ func (table *Table) SetColCellsToZeroValueByColIndex(colIndex int) error {
 	}
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
@@ -858,7 +858,7 @@ func (table *Table) SetColFloatCellsToNaN(colName string) error {
 	}
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	colIndex, err := table.ColIndex(colName)
@@ -877,7 +877,7 @@ func (table *Table) SetColFloatCellsToNaNByColIndex(colIndex int) error {
 	}
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
@@ -893,7 +893,7 @@ func (table *Table) SetColFloatCellsToNaNByColIndex(colIndex int) error {
 func (table *Table) SetFloatCellToNaN(colName string, rowIndex int) (err error) {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colIndex int
@@ -908,7 +908,7 @@ func (table *Table) SetFloatCellToNaN(colName string, rowIndex int) (err error) 
 func (table *Table) SetFloatCellToNaNByColIndex(colIndex int, rowIndex int) (err error) {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colType string
@@ -940,7 +940,7 @@ func (table *Table) SetFloatCellToNaNByColIndex(colIndex int, rowIndex int) (err
 
 func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 	var err error
 	var colIndex int
@@ -960,7 +960,7 @@ func (table *Table) SetCellToZeroValue(colName string, rowIndex int) error {
 
 func (table *Table) appendRowSlice(rowSlice tableRow) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// We're going to assume that all error checking was done in getRowSlice()
@@ -982,7 +982,7 @@ func (table *Table) appendRowSlice(rowSlice tableRow) error {
 
 func (table *Table) DeleteRow(rowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -1019,7 +1019,7 @@ func (table *Table) DeleteRow(rowIndex int) error {
 // If table has any rows, delete them all. This is to deal simply with empty tables.
 func (table *Table) DeleteRowsAll() error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -1051,7 +1051,7 @@ func (table *Table) DeleteRowsAll() error {
 // Delete rows from firstRowIndex to lastRowIndex inclusive. This means lastRowIndex will be deleted.
 func (table *Table) DeleteRows(firstRowIndex int, lastRowIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -1132,7 +1132,7 @@ func missingValueForType(typeName string) (missingValue interface{}, hasMissing 
 func (table *Table) StringUnpadded() string {
 
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return ""
 	}
@@ -1146,7 +1146,7 @@ Return a parsable table as a string. Intended for internal library use.
 func (table *Table) _String(horizontalSeparator byte) string {
 
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return ""
 	}
@@ -1340,7 +1340,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 					// Convert back to float so we can format it again in light of the maximum precision in the column.
 					float64Val, err := strconv.ParseFloat(matrix[col][row], bits)
 					if err != nil {
-						_, _ = os.Stderr.WriteString(fmt.Sprintf("%s %s: %s\n", UtilFuncSource(), UtilFuncName(), err))
+						_, _ = os.Stderr.WriteString(fmt.Sprintf("%s %s %s\n", UtilFuncSource(), UtilFuncName(), err))
 						UtilPrintCaller()
 						return ""
 					}
@@ -1389,7 +1389,7 @@ func printMatrix(tableName string, matrix [][]string, width []int, precis []int,
 */
 func (table *Table) String() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		_, _ = os.Stderr.WriteString(UtilFuncSource() + " ")
 		UtilPrintCaller()
 		return ""
@@ -1404,7 +1404,7 @@ func (table *Table) StringPadded() string {
 	}
 
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return ""
 	}
@@ -1564,7 +1564,7 @@ func (table *Table) StringPadded() string {
 				}
 			default:
 				setWidths(s, colIndex, prenum, points, precis, width)
-				log.Printf("#2 %s ERROR IN %s: unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
+				log.Printf("#2 %s ERROR IN %s unknown type: %s\n", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
 				return ""
 			}
 			matrix[colIndex][headingRows+rowIndex] = s
@@ -1605,7 +1605,7 @@ func (table *Table) StringPadded() string {
 
 func printStruct(table *Table) string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 	}
 
@@ -1621,7 +1621,7 @@ func printStruct(table *Table) string {
 			const RowIndexZero = 0
 			asString, err = table.GetValAsStringByColIndex(colIndex, RowIndexZero)
 			if err != nil {
-				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s %s: %s\n", UtilFuncSource(), UtilFuncName(), err))
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("%s %s %s\n", UtilFuncSource(), UtilFuncName(), err))
 				UtilPrintCaller()
 			}
 
@@ -1698,7 +1698,7 @@ func (table *Table) GetTableAsCSV(optionalSubstituteHeadingNames ...string) (str
 	var err error
 
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -1791,7 +1791,7 @@ func (table *Table) GetTableAsCSV(optionalSubstituteHeadingNames ...string) (str
 func (table *Table) AppendCol(colName string, colType string) error {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -1834,7 +1834,7 @@ func (table *Table) AppendCol(colName string, colType string) error {
 
 func (table *Table) DeleteColByColIndex(colIndex int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
@@ -1876,7 +1876,7 @@ func (table *Table) DeleteColByColIndex(colIndex int) error {
 
 func (table *Table) DeleteCol(colName string) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	colIndex, err := table.ColIndex(colName)
@@ -1890,7 +1890,7 @@ func (table *Table) DeleteCol(colName string) error {
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// Prevent nil value for type *Table
@@ -1928,7 +1928,7 @@ func (table *Table) SetVal(colName string, rowIndex int, val interface{}) error 
 // Requires a val of valid type for the col in the table.
 func (table *Table) SetValByColIndex(colIndex int, rowIndex int, val interface{}) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// Prevent nil value for type *Table
@@ -2020,7 +2020,7 @@ type colInfoStruct struct {
 // Checks whether col exists
 func (table *Table) HasCol(colName string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if printCaller {
@@ -2035,7 +2035,7 @@ func (table *Table) HasCol(colName string) (bool, error) {
 // Checks whether col exists
 func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
@@ -2052,7 +2052,7 @@ func (table *Table) HasColByColIndex(colIndex int) (bool, error) {
 func (table *Table) getColInfo(colName string) (colInfoStruct, error) {
 	var cInfo colInfoStruct
 	if table == nil {
-		return cInfo, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return cInfo, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 	var index int
 	var exists bool
@@ -2068,7 +2068,7 @@ func (table *Table) getColInfo(colName string) (colInfoStruct, error) {
 
 func (table *Table) GetColInfoAsTable() (*Table, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -2136,7 +2136,7 @@ func (table *Table) GetColInfoAsTable() (*Table, error) {
 */
 func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 	if table == nil {
-		return nil, nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -2166,7 +2166,7 @@ func (table *Table) GetColInfoAsSlices() ([]string, []string, error) {
 
 func (table *Table) ColType(colName string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	index, exists := table.colNamesMap[colName]
@@ -2180,7 +2180,7 @@ func (table *Table) ColType(colName string) (string, error) {
 
 func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if colIndex < 0 || colIndex > len(table.colTypes)-1 {
@@ -2195,7 +2195,7 @@ func (table *Table) ColTypeByColIndex(colIndex int) (string, error) {
 
 func (table *Table) ColIndex(colName string) (int, error) {
 	if table == nil {
-		return -1, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return -1, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	index, exists := table.colNamesMap[colName]
@@ -2215,7 +2215,7 @@ func (table *Table) ColIndex(colName string) (int, error) {
 */
 func (table *Table) lastRowIndex() (int, error) {
 	if table == nil {
-		return -1, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return -1, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -2229,7 +2229,7 @@ func (table *Table) lastRowIndex() (int, error) {
 
 func (table *Table) Name() string {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR calling table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return ""
 	}
@@ -2238,7 +2238,7 @@ func (table *Table) Name() string {
 
 func (table *Table) ColCount() int {
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s table.%s table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		UtilPrintCaller()
 		return -1
 	}
@@ -2285,7 +2285,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 	// Because old memory model makes it faster to look up colName than to lookup colIndex.
 
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -2328,7 +2328,7 @@ func (table *Table) GetVal(colName string, rowIndex int) (interface{}, error) {
 */
 func (table *Table) GetValByColIndexMustGet(colIndex int, rowIndex int) (val interface{}) {
 	if table == nil {
-		err := fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		err := fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 		panic(err)
 	}
 
@@ -2347,7 +2347,7 @@ func (table *Table) GetValByColIndexMustGet(colIndex int, rowIndex int) (val int
 // Returns an interface{} value which may contain any valid gotables data type or NaN.
 func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -2380,7 +2380,7 @@ func (table *Table) GetValByColIndex(colIndex int, rowIndex int) (interface{}, e
 // Returns true if this table has colName and has rowIndex.
 func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if printCaller {
@@ -2403,7 +2403,7 @@ func (table *Table) HasCell(colName string, rowIndex int) (bool, error) {
 // Returns true if this table has colIndex and has rowIndex.
 func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -2462,7 +2462,7 @@ func (table *Table) HasCellByColIndex(colIndex int, rowIndex int) (bool, error) 
 
 func (table *Table) HasRow(rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	rowCount := len(table.rows)
@@ -2481,7 +2481,7 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 
 func (table *Table) IsColType(colName string, typeNameQuestioning string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	colType, err := table.ColType(colName)
@@ -2498,7 +2498,7 @@ func (table *Table) IsColType(colName string, typeNameQuestioning string) (bool,
 
 func (table *Table) IsColTypeByColIndex(colIndex int, typeNameQuestioning string) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	hasColIndex, err := table.HasColByColIndex(colIndex)
@@ -2536,7 +2536,7 @@ type rowAsInterface []interface{}
 */
 func (table *Table) SetName(tableName string) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	_, err := IsValidTableName(tableName)
@@ -2573,7 +2573,7 @@ func (table *TableExported) setTableNameExported(tableName string) error {
 */
 func (table *Table) RenameTable(tableName string) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 	return table.SetName(tableName)
 }
@@ -2607,7 +2607,7 @@ func (tableSet *TableSet) RenameTable(renameFrom string, renameTo string) error 
 // Note: This may leave the table in an invalid or unstable state if an error is returned.
 func (table *Table) RenameCol(oldName string, newName string) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// Make a copy of the table to reinstate in case there is an error that invalidates the table?
@@ -2631,7 +2631,7 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	// Rename col in array of col names.
 	colIndex, err := table.ColIndex(oldName)
 	if err != nil {
-		return nil
+		return err
 	}
 	table.colNames[colIndex] = newName
 
@@ -2642,13 +2642,31 @@ func (table *Table) RenameCol(oldName string, newName string) error {
 	return nil
 }
 
+func (table *Table) RenameColByColIndex(colIndex int, newName string) error {
+	if table == nil {
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	oldName, err := table.ColNameByColIndex(colIndex)
+	if err != nil {
+		return err
+	}
+
+	err = table.RenameCol(oldName, newName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 /*
 	Return the name of the column at this column index.
 	Same as table.ColNameByColIndex(colIndex)
 */
 func (table *Table) ColName(colIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 	if colIndex < 0 || colIndex > table.ColCount()-1 {
 		return "", fmt.Errorf("table [%s] has %d col%s. Col index out of range: %d",
@@ -2672,7 +2690,7 @@ func (table *Table) ColNameByColIndex(colIndex int) (string, error) {
 */
 func (table *Table) IsValidRow(rowIndex int) (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -2708,7 +2726,7 @@ func (table *Table) IsValidTable() (isValid bool, err error) {
 	//UtilPrintCaller()
 
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if printCaller {
@@ -2811,7 +2829,7 @@ func (table *Table) IsValidTable() (isValid bool, err error) {
 func (table *Table) IsNilTable() (bool, error) {
 
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	return table.isNilTable, nil
@@ -2819,7 +2837,7 @@ func (table *Table) IsNilTable() (bool, error) {
 
 func (table *Table) isValidColNamesMap() (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	for colIndex := 0; colIndex < len(table.colNamesMap); colIndex++ {
@@ -2861,7 +2879,7 @@ type Table struct {
 
 func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -2977,7 +2995,7 @@ func (table *Table) GetValAsStringByColIndex(colIndex int, rowIndex int) (string
 			buf.WriteString(timeVal.Format(time.RFC3339))
 		}
 	default:
-		err = fmt.Errorf("%s ERROR IN %s: unknown type: %s", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
+		err = fmt.Errorf("%s ERROR IN %s unknown type: %s", UtilFuncSource(), UtilFuncName(), table.colTypes[colIndex])
 		return "", err
 	}
 
@@ -2991,7 +3009,7 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 	var err error
 
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -3012,7 +3030,7 @@ func (table *Table) GetValAsString(colName string, rowIndex int) (string, error)
 
 func (table *Table) IsStructShape() (bool, error) {
 	if table == nil {
-		return false, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return false, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	return table.isStructShape, nil
@@ -3021,7 +3039,7 @@ func (table *Table) IsStructShape() (bool, error) {
 // Will be ignored (when writing table as string) if table RowCount() is more than 1
 func (table *Table) SetStructShape(isStructShape bool) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	table.isStructShape = isStructShape
@@ -3032,7 +3050,7 @@ func (table *Table) SetStructShape(isStructShape bool) error {
 // Join together a column of values. To compose a set of commands into a single command.
 func (table *Table) JoinColVals(colName string, separator string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	sVals, err := table.GetColValsAsStrings(colName)
@@ -3048,7 +3066,7 @@ func (table *Table) JoinColVals(colName string, separator string) (string, error
 // Join together a column of values. To compose a set of commands into a single command.
 func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (string, error) {
 	if table == nil {
-		return "", fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return "", fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	colName, err := table.ColName(colIndex)
@@ -3062,7 +3080,7 @@ func (table *Table) JoinColValsByColIndex(colIndex int, separator string) (strin
 // Get column values (of any type) as a slice of strings.
 func (table *Table) GetColValsAsStrings(colName string) ([]string, error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if table.isNilTable {
@@ -3207,7 +3225,7 @@ func (table *Table) reflectTypeOfColByColIndex(colIndex int) (reflect.Type, erro
 		tableVal, _ := NewTable("anyName")
 		typeOfCol = reflect.TypeOf(tableVal)
 	default:
-		err = fmt.Errorf("%s ERROR IN %s(%q): unknown type: %s", UtilFuncSource(), UtilFuncName(), colType, table.colTypes[colIndex])
+		err = fmt.Errorf("%s ERROR IN %s(%q) unknown type: %s", UtilFuncSource(), UtilFuncName(), colType, table.colTypes[colIndex])
 		return nil, err
 	}
 
@@ -3410,7 +3428,7 @@ func (table1 *Table) Equals(table2 *Table) (equals bool, err error) {
 func (table *Table) AppendColsFromTable(fromTable *Table) error {
 
 	if table == nil {
-		return fmt.Errorf("%s table.%s(fromTable): table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s(fromTable) table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	if fromTable == nil {
@@ -3573,7 +3591,7 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 func (table *Table) Copy(copyRowsAlso bool) (*Table, error) {
 
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var err error
@@ -3933,7 +3951,7 @@ func (tableSet1 *TableSet) Equals(tableSet2 *TableSet) (bool, error) {
 */
 func (table *Table) NewTableReorderCols(orderNames ...string) (reorderedTable *Table, err error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colCount int = table.ColCount()
@@ -3975,7 +3993,7 @@ func (table *Table) NewTableReorderCols(orderNames ...string) (reorderedTable *T
 */
 func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reorderedTable *Table, err error) {
 	if table == nil {
-		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colCount int = table.ColCount()
@@ -4055,7 +4073,7 @@ func (table *Table) NewTableReorderColsByColIndex(orderIndices ...int) (reordere
 */
 func (table *Table) ReorderColsByColIndex(orderIndices ...int) error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colCount int = table.ColCount()
@@ -4130,7 +4148,7 @@ func (table *Table) ReorderColsByColIndex(orderIndices ...int) error {
 */
 func (table *Table) ReorderCols(orderNames ...string) (err error) {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	var colCount int = table.ColCount()
@@ -4170,7 +4188,7 @@ func (table *Table) ReorderCols(orderNames ...string) (err error) {
 */
 func (table *Table) Reverse() error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// Reversing algorithm from https://github.com/golang/go/wiki/SliceTricks
@@ -4188,7 +4206,7 @@ func (table *Table) Reverse() error {
 */
 func (table *Table) ShufflePseudorandom() error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	// This forces rand.Shuffle() to start from scratch on each call.
@@ -4208,7 +4226,7 @@ func (table *Table) ShufflePseudorandom() error {
 */
 func (table *Table) ShuffleRandom() error {
 	if table == nil {
-		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
 	random := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
@@ -4377,23 +4395,21 @@ func (table *Table) IsTableCol(colName string) (isTableCol bool, err error) {
 	return
 }
 
-func (table *Table) NestedString() (nestedString string) {
-	table.nestedString_recursive("", "", 0, &nestedString)
+func (table *Table) StringNested() (stringNested string) {
+	table.stringNested_recursive(table.Name(), "", "", 0, &stringNested)
 	return
 }
 
-var globalRecursive int
-func (table *Table) nestedString_recursive(parentTableName string, parentColName string, parentRowIndex int, nestedString *string) {
-where(fmt.Sprintf("[%d] [%s]",  globalRecursive, table.Name()))
-globalRecursive++
+var globalDepth int
+func (table *Table) stringNested_recursive(parentTableName string, parentTailName, parentColName string, parentRowIndex int, stringNested *string) {
+where(fmt.Sprintf("depth=%d [%s]",  globalDepth, table.Name()))
+globalDepth++
 
-// println()
-
-where(fmt.Sprintf("    nestedString_recursive(parentTableName: [%s], parentColName: %q, parentRowIndex: %d, nestedString)\n",
+where(fmt.Sprintf("stringNested_recursive(parentTableName: [%s], parentColName: %q, parentRowIndex: %d, stringNested)\n",
 	parentTableName, parentColName, parentRowIndex))
 
 	if table == nil {
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR: table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
+		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
 		_, _ = os.Stderr.WriteString(UtilFuncSource() + " ")
 		UtilPrintCaller()
 		return
@@ -4402,42 +4418,142 @@ where(fmt.Sprintf("    nestedString_recursive(parentTableName: [%s], parentColNa
 /*
 	if UtilFuncCaller() != UtilFuncName() {
 		// This is the top-level parent table.
-		*nestedString += table.String() + "\n"
+		*stringNested += table.String() + "\n"
 	}
 */
-	*nestedString += table.String() + "\n"
+	*stringNested += table.String() + "\n"
+where("\n" + *stringNested)
+println("-------------------- stringNested_recursive() --------------------")
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-// where(fmt.Sprintf("table: [%s] colIndex := %d nestedString_recursive(parentColName: %q, parentRowIndex: %d, nestedString)\n", table.Name(), colIndex, parentColName, parentRowIndex))
+// where(fmt.Sprintf("table: [%s] colIndex := %d stringNested_recursive(parentColName: %q, parentRowIndex: %d, stringNested)\n", table.Name(), colIndex, parentColName, parentRowIndex))
 		if isTableCol, _ := table.IsTableColByColIndex(colIndex); isTableCol {
 			colName, _ := table.ColNameByColIndex(colIndex)
 			for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
-// where(err)
 					return
 				}
 
-				if rowIndex == 0 {
 // where(fmt.Sprintf("table.Name()       = %s", table.Name()))
 // where(fmt.Sprintf("nestedTable.Name() = %s", nestedTable.Name()))
-//					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), parentColName, parentRowIndex)
-//					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
-//					newName := fmt.Sprintf("%s_col_%s_row_%d_from_%s", table.Name(), colName, rowIndex, nestedTable.Name())
-					newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), parentTableName, parentColName, parentRowIndex)
-// where(fmt.Sprintf("           newName = %s", newName))
-					err = nestedTable.SetName(newName)
-					if err != nil {
-// where(err)
-						return
-					}
+//				newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), parentColName, parentRowIndex)
+//				newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
+//				newName := fmt.Sprintf("%s_col_%s_row_%d_from_%s", table.Name(), colName, rowIndex, nestedTable.Name())
+				headName := nestedTable.Name()
+//				tailName := fmt.Sprintf("_from_table_%s_col_%s_row_%d%s", parentTableName, colName, parentRowIndex, parentTailName)
+//				tailName := fmt.Sprintf("__from_table_%s_col_%s_row_%d%s", parentTableName, colName, rowIndex, parentTailName)
+				tailName := fmt.Sprintf("__FROM_%s_%s_%d%s", parentTableName, colName, rowIndex, parentTailName)
+				newName := headName + tailName
+where(fmt.Sprintf("newName = %s", newName))
+				err = nestedTable.SetName(newName)
+				if err != nil {
+					return
 				}
 
-				// where(fmt.Sprintf("\n\n>>>nestedTable.nestedString_recursive(%q, %d, nestedString=\n%s<<<)", colName, rowIndex, *nestedString))
-				nestedTable.nestedString_recursive(table.Name(), colName, rowIndex, nestedString)
+				where(fmt.Sprintf("\n>>> nestedTable.stringNested_recursive(%q, %q, %d, stringNested=\n%s)",
+					table.Name(), colName, rowIndex, *stringNested))
+				nestedTable.stringNested_recursive(headName, tailName, colName, rowIndex, stringNested)
 			}
 		}
 	}
 
+	globalDepth--
+
+	return
+}
+
+/*
+	Build nested treeTable from table.
+
+	If table contains 1 or more cols of type *Tree then
+	replicate tree to depth levels, where depth 1 means
+	create 1 new level below table.
+
+	If there are no type *Table cols in table, or if tablesDepth is set to 0, then
+	return table unchanged.
+*/
+func (parentTable *Table) NewTreeTable(tablesDepth int) (treeTable *Table, err error) {
+	const DontWalkNestedTables = false
+	var depth int = -1	// Allow that visitTable pre-increments depth.
+	var cellCount int = 0
+
+	// This may be an unnecessary precaution to avoid repeated table references.
+	// TODO: test this with circular reference checker.
+	treeTable, err = parentTable.Copy(true)
+	if err != nil {
+		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+	}
+
+	var visitTable = func(treeTable *Table) (err error) {
+where("visitTable")
+		depth++
+where(fmt.Sprintf("depth++ = %d", depth))
+		return
+	}
+
+	var visitCell = func(DontWalkNestedTables bool, cell CellInfo) (err error) {
+where("visitCell")
+		cellCount++
+where(fmt.Sprintf("cellCount = %d", cellCount))
+where(fmt.Sprintf("depth=%d", depth))
+		if depth >= tablesDepth {
+where(depth)
+where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth))
+			return
+		}
+
+		if cell.ColType == "*Table" {
+where(fmt.Sprintf(`cell.ColType == "*Table"`))
+			var nestedTable *Table
+			nestedTable, err = parentTable.GetTable(cell.ColName, cell.RowIndex)
+			if err != nil {
+				return fmt.Errorf("%s %v", UtilFuncSource(), err)
+			}
+where(fmt.Sprintf("nestedTable:\n%s", nestedTable.String()))
+
+			// Replace only NilTable cell entries, and not cells that are already populated.
+			if nestedTable.Name() == "" {	// NilTable doesn't have a name.
+where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
+				parentTableCopy, err := parentTable.Copy(true)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+				tableCopyName := parentTableCopy.Name()
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+//				parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
+				newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + cellCount-1))
+where(fmt.Sprintf("newTableName: %s", newTableName))
+				err = parentTableCopy.SetName(newTableName)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+where(fmt.Sprintf("parentTableCopy:\n%s", parentTableCopy))
+
+				newColName := fmt.Sprintf("%s%02d", cell.ColName, cellCount)
+where(fmt.Sprintf("newColName: %s", newColName))
+				err = parentTableCopy.RenameCol(cell.ColName, newColName)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+
+				err = treeTable.SetTable(cell.ColName, cell.RowIndex, parentTableCopy)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+			}
+		}
+		return
+	}
+
+	err = treeTable.Walk(DontWalkNestedTables, visitTable, nil, visitCell)
+	if err != nil {
+where("visit return")
+		return
+	}
+
+where("visit final return")
 	return
 }

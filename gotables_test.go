@@ -3826,6 +3826,46 @@ func TestTable_RenameCol(t *testing.T) {
 	}
 }
 
+func TestTable_RenameColByColIndex(t *testing.T) {
+
+	tableString :=
+		`[Renaming]
+	i int
+	j int
+	k int
+	`
+
+	var tests = []struct {
+		colIndex int
+		from     string
+		to       string
+		expected bool
+	}{
+		{0, "i", "m", true},	// okay
+		{1, "i", "i", false},	// name already exists
+		{2, "i", "j", false},	// name already exists
+		{3, "f", "m", false},	// col index 3 "f" doesn't exist
+	}
+
+	for _, test := range tests {
+
+		// Reinstate table for each test. For cognitive simplicity.
+		table, err := NewTableFromString(tableString)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = table.RenameColByColIndex(test.colIndex, test.to)
+		if (err == nil) != test.expected {
+			t.Fatalf("Expecting table.RenameColByColIndex(%d, %q) %s but found err = %v",
+				test.colIndex, test.to, ternString(test.expected, "SUCCESS", "FAILURE"), err)
+		}
+		if isValid, err := table.IsValidTable(); !isValid {
+			t.Fatal(err)
+		}
+	}
+}
+
 func ternString(itIs bool, ifTrue string, ifFalse string) string {
 	if itIs {
 		return ifTrue

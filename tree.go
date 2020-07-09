@@ -8,16 +8,18 @@ import (
 /*
 	Visit each table in tableSet.
 
-	Visit the root table and any nested child tables: run visitTable on each table.
+	To visit the root table and any nested child tables: run visitTable on each table.
 
-	Visit all cells in each table: run visitCell on each cell.
+	To visit all rows in each table: run visitRow on each row.
+
+	To visit all cells in each table: run visitCell on each cell.
 
 	Define func variables visitTable and visitCell (see Example).
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
 func (tableSet *TableSet) Walk(
-	walkDeep bool,
+	walkNestedTables bool,
 	visitTableSet func(*TableSet) error,
 	visitTable func(*Table) error,
 	visitRow func(Row) error,
@@ -44,7 +46,7 @@ func (tableSet *TableSet) Walk(
 			return
 		}
 
-		err = table.Walk(walkDeep, visitTable, visitRow, visitCell)
+		err = table.Walk(walkNestedTables, visitTable, visitRow, visitCell)
 		if err != nil {
 			return
 		}
@@ -63,7 +65,7 @@ func (tableSet *TableSet) Walk(
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
 func (table *Table) Walk(
-	walkDeep bool,
+	walkNestedTables bool,
 	visitTable func(*Table) error,
 	visitRow func(Row) error,
 	visitCell func(bool, CellInfo) error) (err error) {
@@ -111,13 +113,13 @@ func (table *Table) Walk(
 
 			// Visit cell.
 			if visitCell != nil {
-				err = visitCell(walkDeep, cellInfo)
+				err = visitCell(walkNestedTables, cellInfo)
 				if err != nil {
 					return
 				}
 			}
 
-			if walkDeep {
+			if walkNestedTables {
 				if IsTableColType(cellInfo.ColType) {
 
 					var nestedTable *Table
@@ -130,7 +132,7 @@ func (table *Table) Walk(
 					nestedTable.depth++
 
 					// Recursive call to visit nested tables.
-					err = nestedTable.Walk(walkDeep, visitTable, visitRow, visitCell)
+					err = nestedTable.Walk(walkNestedTables, visitTable, visitRow, visitCell)
 					if err != nil {
 						return
 					}
@@ -248,7 +250,7 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 	//UtilPrintCaller()
 
 	const funcName = "IsValidTableNesting()"
-	const walkDeep = true
+	const walkNestedTables = true
 
 	if rootTable == nil {
 		return false, fmt.Errorf("rootTable.%s(): rootTable is nil", UtilFuncNameNoParens())
@@ -263,8 +265,8 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 	var refMap circRefMap = map[*Table]struct{}{}
 	refMap[rootTable] = EmptyStruct // Add the root table to the map.
 
-	var visitCell func(walkDeep bool, cellInfo CellInfo) (err error)
-	visitCell = func(walkDeep bool, cellInfo CellInfo) (err error) {
+	var visitCell func(walkNestedTables bool, cellInfo CellInfo) (err error)
+	visitCell = func(walkNestedTables bool, cellInfo CellInfo) (err error) {
 		if IsTableColType(cellInfo.ColType) {
 			var nestedTable *Table
 			nestedTable, err = rootTable.GetTableByColIndex(cellInfo.ColIndex, cellInfo.RowIndex)
@@ -293,7 +295,7 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 		return nil
 	}
 
-	err = rootTable.Walk(walkDeep, nil, nil, visitCell)
+	err = rootTable.Walk(walkNestedTables, nil, nil, visitCell)
 	if err != nil {
 		// Found a circular reference!
 		return false, err

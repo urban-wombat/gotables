@@ -1,7 +1,7 @@
 package gotables_test
 
 import (
-	_ "fmt"
+	"fmt"
 	_ "math"
 	"testing"
 
@@ -30,7 +30,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-func TestTable_NestedString(t *testing.T) {
+func TestTable_StringNested1(t *testing.T) {
 
 	var err error
 	var tableSet1 *gotables.TableSet
@@ -81,8 +81,8 @@ func TestTable_NestedString(t *testing.T) {
 	true	66		"sixty-six"		"sss3"
 
 	[T3]
-	WHATCOL *Table = [WHAT]
-	NILCOL *Table = []
+	AAA *Table = [AAA]
+	BBB *Table = []
 
 	[T4]
 	x1 bool = true
@@ -96,7 +96,7 @@ func TestTable_NestedString(t *testing.T) {
 	}
 
 	var nestedString string = `
-	[NestedTable]
+	[NNN]
 	noByte []byte = [1 3 5]
 	noUint8 []uint8 = [2 4 6]
 	runeVal rune = 'A'
@@ -108,8 +108,8 @@ func TestTable_NestedString(t *testing.T) {
 	}
 
 	var nestedNestedString string = `
-	[DeeplyNestedTable]
-	TROWS
+	[DDD]
+	DDD
 	*Table
 	[]
 	[]
@@ -121,15 +121,15 @@ func TestTable_NestedString(t *testing.T) {
 	}
 
 	var anyString string = `
-	[Any]
-	t time.Time = 2020-06-22T14:22:30.123456789+17:00
+	[TTT]
+	TTT time.Time = 2020-06-22T14:22:30.123456789+17:00
 	`
 	anyTable, err := gotables.NewTableFromString(anyString)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for rowIndex := 0; rowIndex < nestedNestedTable.RowCount(); rowIndex++ {
-		err = nestedNestedTable.SetTable("TROWS", rowIndex, anyTable)
+		err = nestedNestedTable.SetTable("DDD", rowIndex, anyTable)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -140,17 +140,17 @@ func TestTable_NestedString(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = t3.SetTable("WHATCOL", 0, nestedTable)
+	err = t3.SetTable("AAA", 0, nestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = t3.SetTable("NILCOL", 0, nestedNestedTable)
+	err = t3.SetTable("BBB", 0, nestedNestedTable)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	where("\n\n" + t3.NestedString())
+	where("\n\n" + t3.StringNested())
 
 //		var yamlString string
 //		yamlString, err = tableSet1.GetTableSetAsYAML()
@@ -285,4 +285,144 @@ func TestTable_NestedString(t *testing.T) {
 //		if err != nil {
 //			t.Fatal(err)
 //		}
+}
+
+func TestTable_StringNested2(t *testing.T) {
+	var err error
+	const TableCount     = 1
+	const RowCount       = 1
+	const NestedRowCount = 0
+	var tableSlice []*gotables.Table
+
+	for tableIndex := 0; tableIndex < TableCount; tableIndex++ {
+		var table *gotables.Table
+		var colName string = fmt.Sprintf("t%d", tableIndex+1)
+/*
+		var tableName string = fmt.Sprintf("T%d", tableIndex)
+		var colType = "*Table"
+		var colNames []string
+		var colTypes []string
+		colNames = append(colNames, colName)
+		colTypes = append(colTypes, colType)
+
+		table, err = gotables.NewTableFromMetadata(tableName, colNames, colTypes)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = table.SetStructShape(true)
+		if err != nil {
+			t.Fatal(err)
+		}
+*/
+		table, err = newTableFromTableIndex(tableIndex, RowCount)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// TODO: Also see what happens with a nil cell.
+
+		for rowIndex := 0; rowIndex < RowCount; rowIndex++ {
+			err = table.AppendRow()
+			if err != nil {
+				t.Fatal(err)
+			}
+	
+//			var nestedTable *gotables.Table = gotables.NewNilTable()
+			var nestedTable *gotables.Table
+			nestedTable, err = newTableFromTableIndex(tableIndex, NestedRowCount)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			err = nestedTable.SetName(fmt.Sprintf("T%d", tableIndex+1))
+			if err != nil {
+				t.Fatal(err)
+			}
+	
+			err = table.SetTable(colName, rowIndex, nestedTable)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+println(table.String())
+		tableSlice = append(tableSlice, table)
+	}
+
+	for tableIndex := 0; tableIndex < len(tableSlice)-1; tableIndex++ {
+		err = tableSlice[tableIndex].SetTable(fmt.Sprintf("t%d", tableIndex+1), 0, tableSlice[tableIndex+1])
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	println(tableSlice[0].StringNested())
+}
+
+func newTableFromTableIndex(tableIndex int, rows int) (table *gotables.Table, err error) {
+	var tableName string = fmt.Sprintf("T%d", tableIndex)
+	var colName string = fmt.Sprintf("t%d", tableIndex+1)
+	var colType = "*Table"
+	var colNames []string
+	var colTypes []string
+	colNames = append(colNames, colName)
+	colTypes = append(colTypes, colType)
+
+	table, err = gotables.NewTableFromMetadata(tableName, colNames, colTypes)
+	if err != nil {
+		return
+	}
+
+	err = table.SetStructShape(true)
+	if err != nil {
+		return
+	}
+
+	for rowIndex := 0; rowIndex < rows; rowIndex++ {
+		err = table.AppendRow()
+		if err != nil {
+			err = fmt.Errorf("%s: %v", gotables.UtilFuncSource(), err)
+			return
+		}
+
+		err = table.SetTable(colName, rowIndex, gotables.NewNilTable())
+		if err != nil {
+			err = fmt.Errorf("%s: %v", gotables.UtilFuncSource(), err)
+			return
+		}
+	}
+
+	return
+}
+
+func TestTable_NewTreeTable(t *testing.T) {
+	var err error
+
+	table, err := gotables.NewTableFromString(`
+		[TableName]
+		TableColumn
+		*Table
+		[]
+		[]
+		[]`)
+	if err != nil {
+		t.Error(err)
+	}
+
+	const tablesDepth = 3
+	treeTable, err := table.NewTreeTable(tablesDepth)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var treeTableStringNestedString string = treeTable.StringNested()
+where("\n" + treeTableStringNestedString)
+
+	tableSet, err := gotables.NewTableSetFromString(treeTableStringNestedString)
+	if err != nil {
+		t.Error(err)
+	}
+where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
+
+	return
 }

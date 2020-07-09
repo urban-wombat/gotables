@@ -297,7 +297,8 @@ func UtilPrintCaller() {
 	// Get the file name and line number
 	fileName, lineNum := caller.FileLine(fpcs[0] - 1)
 	fileName = filepath.Base(fileName)
-	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+//	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+	callerFile = fmt.Sprintf("%s:%d:", fileName, lineNum)
 
 	_, _ = fmt.Fprintf(os.Stderr, "ttt UtilPrintCaller(): %s called by %s at %s\n", calledName, callerName, callerFile)
 }
@@ -385,7 +386,8 @@ func UtilPrintCallerCaller() {
 	// Get the file name and line number
 	fileName, lineNum := callerCaller.FileLine(fpcs[0] - 1)
 	fileName = filepath.Base(fileName)
-	callerCallerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+//	callerCallerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
+	callerCallerFile = fmt.Sprintf("%s:%d:", fileName, lineNum)
 
 	_, _ = fmt.Fprintf(os.Stderr, "UtilPrintCallerCaller(): %s called by %s at %s\n", calledName, callerCallerName, callerCallerFile)
 }
@@ -502,7 +504,8 @@ func UtilFuncNameFull() string {
 		return "Could not obtain func name and source file information."
 	}
 	nameFull := runtime.FuncForPC(pc).Name() // main.foo
-	return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
+//	return fmt.Sprintf("%s[%d] %s", sourceFile, lineNumber, nameFull)
+	return fmt.Sprintf("%s:%d: %s", sourceFile, lineNumber, nameFull)
 }
 
 /*
@@ -516,7 +519,8 @@ func UtilFuncSource() string {
 		return "Could not obtain func name and source file information."
 	}
 	sourceBase := filepath.Base(sourceFile)
-	return fmt.Sprintf("%s[%d]", sourceBase, lineNumber)
+//	return fmt.Sprintf("%s[%d]", sourceBase, lineNumber)
+	return fmt.Sprintf("%s:%d:", sourceBase, lineNumber)
 }
 
 /*
