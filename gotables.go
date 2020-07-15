@@ -4473,14 +4473,14 @@ where(fmt.Sprintf("newName = %s", newName))
 	If there are no type *Table cols in table, or if tablesDepth is set to 0, then
 	return table unchanged.
 */
-func (parentTable *Table) NewTreeTable(tablesDepth int) (treeTable *Table, err error) {
-	const DontWalkNestedTables = false
+func (rootTable *Table) NewTreeTable1(tablesDepth int) (treeTable *Table, err error) {
+	const DontWalkNestedTables = true
 	var depth int = -1	// Allow that visitTable pre-increments depth.
 	var cellCount int = 0
 
 	// This may be an unnecessary precaution to avoid repeated table references.
 	// TODO: test this with circular reference checker.
-	treeTable, err = parentTable.Copy(true)
+	treeTable, err = rootTable.Copy(true)
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
@@ -4506,23 +4506,22 @@ where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth
 		if cell.ColType == "*Table" {
 where(fmt.Sprintf(`cell.ColType == "*Table"`))
 			var nestedTable *Table
-			nestedTable, err = parentTable.GetTable(cell.ColName, cell.RowIndex)
+			nestedTable, err = cell.Table.GetTable(cell.ColName, cell.RowIndex)
 			if err != nil {
 				return fmt.Errorf("%s %v", UtilFuncSource(), err)
 			}
-where(fmt.Sprintf("nestedTable:\n%s", nestedTable.String()))
+			where(fmt.Sprintf("TABLE nestedTable colName=%s rowIndex=%d:\n%s", cell.ColName, cell.RowIndex, nestedTable.String()))
 
 			// Replace only NilTable cell entries, and not cells that are already populated.
 			if nestedTable.Name() == "" {	// NilTable doesn't have a name.
-where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
+				where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
+				var parentTable *Table = nestedTable.ParentTable()
+				where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
 				parentTableCopy, err := parentTable.Copy(true)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 				tableCopyName := parentTableCopy.Name()
-				if err != nil {
-					return fmt.Errorf("%s %v", UtilFuncSource(), err)
-				}
 //				parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
 				newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + cellCount-1))
 where(fmt.Sprintf("newTableName: %s", newTableName))
@@ -4539,10 +4538,12 @@ where(fmt.Sprintf("newColName: %s", newColName))
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 
+where(fmt.Sprintf("BEFORE treeTable:\n%s", treeTable.String()))
 				err = treeTable.SetTable(cell.ColName, cell.RowIndex, parentTableCopy)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
+where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
 			}
 		}
 		return
@@ -4553,6 +4554,105 @@ where(fmt.Sprintf("newColName: %s", newColName))
 where("visit return")
 		return
 	}
+
+where("visit final return")
+	return
+}
+
+/*
+	Build nested treeTable from table.
+
+	If table contains 1 or more cols of type *Tree then
+	replicate tree to depth levels, where depth 1 means
+	create 1 new level below table.
+
+	If there are no type *Table cols in table, or if tablesDepth is set to 0, then
+	return table unchanged.
+*/
+func (rootTable *Table) NewTreeTable(tablesDepth int) (treeTable *Table, err error) {
+	var depth int = -1	// Allow that visitTable pre-increments depth.
+	var cellCount int = 0
+
+	// This may be an unnecessary precaution to avoid repeated table references.
+	// TODO: test this with circular reference checker.
+	treeTable, err = rootTable.Copy(true)
+	if err != nil {
+		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+	}
+
+/*
+	var visitTable = func(treeTable *Table) (err error) {
+where("visitTable")
+		depth++
+where(fmt.Sprintf("depth++ = %d", depth))
+		return
+	}
+*/
+
+	var visitCell = func(DontWalkNestedTables bool, cell CellInfo) (err error) {
+where("visitCell")
+		cellCount++
+where(fmt.Sprintf("cellCount = %d", cellCount))
+where(fmt.Sprintf("depth=%d", depth))
+		if depth >= tablesDepth {
+where(depth)
+where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth))
+			return
+		}
+
+		if cell.ColType == "*Table" {
+where(fmt.Sprintf(`cell.ColType == "*Table"`))
+			var nestedTable *Table
+			nestedTable, err = cell.Table.GetTable(cell.ColName, cell.RowIndex)
+			if err != nil {
+				return fmt.Errorf("%s %v", UtilFuncSource(), err)
+			}
+			where(fmt.Sprintf("TABLE nestedTable colName=%s rowIndex=%d:\n%s", cell.ColName, cell.RowIndex, nestedTable.String()))
+
+			// Replace only NilTable cell entries, and not cells that are already populated.
+			if nestedTable.Name() == "" {	// NilTable doesn't have a name.
+				where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
+				var parentTable *Table = nestedTable.ParentTable()
+				where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
+				parentTableCopy, err := parentTable.Copy(true)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+				tableCopyName := parentTableCopy.Name()
+//				parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
+				newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + cellCount-1))
+where(fmt.Sprintf("newTableName: %s", newTableName))
+				err = parentTableCopy.SetName(newTableName)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+where(fmt.Sprintf("parentTableCopy:\n%s", parentTableCopy))
+
+				newColName := fmt.Sprintf("%s%02d", cell.ColName, cellCount)
+where(fmt.Sprintf("newColName: %s", newColName))
+				err = parentTableCopy.RenameCol(cell.ColName, newColName)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+
+where(fmt.Sprintf("BEFORE treeTable:\n%s", treeTable.String()))
+				err = treeTable.SetTable(cell.ColName, cell.RowIndex, parentTableCopy)
+				if err != nil {
+					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
+			}
+		}
+		return
+	}
+
+/*
+	err = treeTable.Walk(DontWalkNestedTables, visitTable, nil, visitCell)
+	if err != nil {
+where("visit return")
+		return
+	}
+*/
 
 where("visit final return")
 	return
