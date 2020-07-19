@@ -409,7 +409,7 @@ func TestTable_NewTreeTable(t *testing.T) {
 		t.Error(err)
 	}
 
-	const tablesDepth = 3
+	const tablesDepth = 1
 	treeTable, err := table.NewTreeTable(tablesDepth)
 	if err != nil {
 		t.Error(err)

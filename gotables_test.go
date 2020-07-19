@@ -7130,3 +7130,46 @@ func ExampleTable_SetAllFloatCellsToNaN() {
 	//   0   0   0     NaN     NaN     NaN
 	//  20  40  60     NaN     NaN     NaN
 }
+
+func TestTable_NilTablePointer(t *testing.T) {
+	table, err := NewTableFromString(`
+	[Numbers]
+	a	b	c	d
+	int	int	int	int
+	1	3	5	7
+	9	11	13	15
+	17	19	21	23
+	`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// table = nil
+
+	// added, err := table.addAll()
+	_, err = table.addAll()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// fmt.Printf("table.addAll() = %d\n", added)
+}
+
+func (table *Table) addAll() (added int, err error) {
+	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+		colType, err := table.ColTypeByColIndex(colIndex)
+		if err != nil {
+			return 0, err
+		}
+		if colType == "int" {
+			for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
+				i, err := table.GetIntByColIndex(colIndex, rowIndex)
+				if err != nil {
+					return 0, err
+				}
+				added += i
+			}
+		}
+	}
+	return
+}

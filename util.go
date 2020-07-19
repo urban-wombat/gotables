@@ -300,7 +300,7 @@ func UtilPrintCaller() {
 //	callerFile = fmt.Sprintf("%s[%d]", fileName, lineNum)
 	callerFile = fmt.Sprintf("%s:%d:", fileName, lineNum)
 
-	_, _ = fmt.Fprintf(os.Stderr, "ttt UtilPrintCaller(): %s called by %s at %s\n", calledName, callerName, callerFile)
+	_, _ = fmt.Fprintf(os.Stderr, "UtilPrintCaller(): %s called by %s at %s\n", calledName, callerName, callerFile)
 }
 
 /*

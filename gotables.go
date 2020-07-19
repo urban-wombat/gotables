@@ -2468,10 +2468,10 @@ func (table *Table) HasRow(rowIndex int) (bool, error) {
 	rowCount := len(table.rows)
 	if rowIndex < 0 || rowIndex > rowCount-1 {
 		if rowCount == 0 {
-			return false, fmt.Errorf("in table [%s] with %d row%s row index %d is out of range",
+			return false, fmt.Errorf("in table [%s] with %d row%s, row index %d is out of range",
 				table.Name(), rowCount, plural(rowCount), rowIndex)
 		} else {
-			return false, fmt.Errorf("in table [%s] with %d row%s row index %d is out of range (0..%d)",
+			return false, fmt.Errorf("in table [%s] with %d row%s, row index %d is out of range (0..%d)",
 				table.Name(), rowCount, plural(rowCount), rowIndex, rowCount-1)
 		}
 	}
@@ -4570,90 +4570,85 @@ where("visit final return")
 	return table unchanged.
 */
 func (rootTable *Table) NewTreeTable(tablesDepth int) (treeTable *Table, err error) {
-	var depth int = -1	// Allow that visitTable pre-increments depth.
-	var cellCount int = 0
 
-	// This may be an unnecessary precaution to avoid repeated table references.
-	// TODO: test this with circular reference checker.
-	treeTable, err = rootTable.Copy(true)
+where("\n" + rootTable.String())
+	treeTable, err = myrecursive(rootTable, rootTable, 3)
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
 
-/*
-	var visitTable = func(treeTable *Table) (err error) {
-where("visitTable")
-		depth++
-where(fmt.Sprintf("depth++ = %d", depth))
-		return
-	}
-*/
+where("visit final return")
+	return
+}
 
-	var visitCell = func(DontWalkNestedTables bool, cell CellInfo) (err error) {
-where("visitCell")
-		cellCount++
-where(fmt.Sprintf("cellCount = %d", cellCount))
-where(fmt.Sprintf("depth=%d", depth))
-		if depth >= tablesDepth {
-where(depth)
-where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth))
-			return
-		}
+func myrecursive(rootTable *Table, table *Table, depth int) (treeTable *Table, err error) {
+	fmt.Printf("myrecursive(%d)\n", depth)
 
-		if cell.ColType == "*Table" {
-where(fmt.Sprintf(`cell.ColType == "*Table"`))
-			var nestedTable *Table
-			nestedTable, err = cell.Table.GetTable(cell.ColName, cell.RowIndex)
+	var nestedTable *Table
+
+	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {	// Row Major order.
+		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+			isTableCol, err := table.IsTableColByColIndex(colIndex)
 			if err != nil {
-				return fmt.Errorf("%s %v", UtilFuncSource(), err)
+				return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 			}
-			where(fmt.Sprintf("TABLE nestedTable colName=%s rowIndex=%d:\n%s", cell.ColName, cell.RowIndex, nestedTable.String()))
 
-			// Replace only NilTable cell entries, and not cells that are already populated.
-			if nestedTable.Name() == "" {	// NilTable doesn't have a name.
-				where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
-				var parentTable *Table = nestedTable.ParentTable()
-				where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
-				parentTableCopy, err := parentTable.Copy(true)
+			if isTableCol {
+where(fmt.Sprintf(`cell.ColType == "*Table"`))
+				nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
-					return fmt.Errorf("%s %v", UtilFuncSource(), err)
+					return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
-				tableCopyName := parentTableCopy.Name()
-//				parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
-				newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + cellCount-1))
+				colName, err := table.ColName(colIndex)
+				if err != nil {
+					return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+				}
+				where(fmt.Sprintf("TABLE nestedTable colName=%s rowIndex=%d:\n%s", colName, rowIndex, nestedTable.String()))
+
+				// Replace only NilTable cell entries, and not cells that are already populated.
+				if nestedTable.Name() == "" {	// NilTable doesn't have a name.
+					where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", table.Name(), colName, rowIndex))
+					var parentTable *Table = nestedTable.ParentTable()
+					where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
+					parentTableCopy, err := parentTable.Copy(true)
+					if err != nil {
+						return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+					}
+					tableCopyName := parentTableCopy.Name()
+//					parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
+					newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + depth-1))
 where(fmt.Sprintf("newTableName: %s", newTableName))
-				err = parentTableCopy.SetName(newTableName)
-				if err != nil {
-					return fmt.Errorf("%s %v", UtilFuncSource(), err)
-				}
+					err = parentTableCopy.SetName(newTableName)
+					if err != nil {
+						return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+					}
 where(fmt.Sprintf("parentTableCopy:\n%s", parentTableCopy))
 
-				newColName := fmt.Sprintf("%s%02d", cell.ColName, cellCount)
+					newColName := fmt.Sprintf("%s%02d", colName, depth)
 where(fmt.Sprintf("newColName: %s", newColName))
-				err = parentTableCopy.RenameCol(cell.ColName, newColName)
-				if err != nil {
-					return fmt.Errorf("%s %v", UtilFuncSource(), err)
-				}
+					err = parentTableCopy.RenameCol(colName, newColName)
+					if err != nil {
+						return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+					}
 
 where(fmt.Sprintf("BEFORE treeTable:\n%s", treeTable.String()))
-				err = treeTable.SetTable(cell.ColName, cell.RowIndex, parentTableCopy)
-				if err != nil {
-					return fmt.Errorf("%s %v", UtilFuncSource(), err)
-				}
+					err = treeTable.SetTable(colName, rowIndex, parentTableCopy)
+					if err != nil {
+						return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
+					}
 where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
+				}
 			}
 		}
-		return
 	}
 
-/*
-	err = treeTable.Walk(DontWalkNestedTables, visitTable, nil, visitCell)
-	if err != nil {
-where("visit return")
+	if depth <= 0 {
+		fmt.Printf("myrecursive depth %d <= 0 return\n", depth)
 		return
+	} else {
+		fmt.Printf("calling myrecursive(%d)\n", depth-1)
+		myrecursive(rootTable, nestedTable, depth-1)
 	}
-*/
 
-where("visit final return")
 	return
 }
