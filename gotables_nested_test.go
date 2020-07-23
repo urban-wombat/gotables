@@ -399,8 +399,8 @@ func TestTable_NewTreeTable(t *testing.T) {
 	var err error
 
 	table, err := gotables.NewTableFromString(`
-		[TableName]
-		TableColumn
+		[TABLE]
+		COL
 		*Table
 		[]
 		[]
@@ -409,7 +409,7 @@ func TestTable_NewTreeTable(t *testing.T) {
 		t.Error(err)
 	}
 
-	const tablesDepth = 1
+	const tablesDepth = 0
 	treeTable, err := table.NewTreeTable(tablesDepth)
 	if err != nil {
 		t.Error(err)

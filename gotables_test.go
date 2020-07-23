@@ -2992,6 +2992,7 @@ func TestTableSet_SetName(t *testing.T) {
 
 func TestTable_SetName(t *testing.T) {
 	expected := "InitialName"
+
 	table, err := NewTable(expected)
 	if err != nil {
 		t.Fatal(err)
@@ -3012,6 +3013,13 @@ func TestTable_SetName(t *testing.T) {
 	}
 	if isValid, err := table.IsValidTable(); !isValid {
 		t.Fatal(err)
+	}
+
+	expected = ""
+	table = NewNilTable()
+	tableName = table.Name()
+	if tableName != expected {
+		t.Fatalf("Expecting tableName = %q but found %q", expected, tableName)
 	}
 }
 
