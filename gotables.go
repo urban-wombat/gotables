@@ -2224,6 +2224,7 @@ func (table *Table) lastRowIndex() (int, error) {
 		err = fmt.Errorf("table [%s] has zero rows", table.Name())
 		return -1, err
 	}
+
 	return table.RowCount() - 1, nil
 }
 
@@ -2233,6 +2234,7 @@ func (table *Table) Name() string {
 		UtilPrintCaller()
 		return ""
 	}
+
 	return table.tableName
 }
 
@@ -4410,11 +4412,13 @@ func (table *Table) StringNested() (stringNested string) {
 
 var globalDepth int
 func (table *Table) stringNested_recursive(parentTableName string, parentTailName, parentColName string, parentRowIndex int, stringNested *string) {
-where(fmt.Sprintf("depth=%d [%s]",  globalDepth, table.Name()))
+//where(fmt.Sprintf("depth=%d [%s]",  globalDepth, table.Name()))
 globalDepth++
 
-where(fmt.Sprintf("stringNested_recursive(parentTableName: [%s], parentColName: %q, parentRowIndex: %d, stringNested)\n",
-	parentTableName, parentColName, parentRowIndex))
+	const debug = true
+
+//where(fmt.Sprintf("stringNested_recursive(parentTableName: [%s], parentColName: %q, parentRowIndex: %d, stringNested)\n",
+//parentTableName, parentColName, parentRowIndex))
 
 	if table == nil {
 		_, _ = os.Stderr.WriteString(fmt.Sprintf("%s ERROR table.%s: table is <nil>\n", UtilFuncSource(), UtilFuncName()))
@@ -4430,8 +4434,8 @@ where(fmt.Sprintf("stringNested_recursive(parentTableName: [%s], parentColName: 
 	}
 */
 	*stringNested += table.String() + "\n"
-where("\n" + *stringNested)
-println("-------------------- stringNested_recursive() --------------------")
+//where("\n" + *stringNested)
+//where("-------------------- stringNested_recursive() --------------------")
 
 	for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 // where(fmt.Sprintf("table: [%s] colIndex := %d stringNested_recursive(parentColName: %q, parentRowIndex: %d, stringNested)\n", table.Name(), colIndex, parentColName, parentRowIndex))
@@ -4445,22 +4449,30 @@ println("-------------------- stringNested_recursive() --------------------")
 
 // where(fmt.Sprintf("table.Name()       = %s", table.Name()))
 // where(fmt.Sprintf("nestedTable.Name() = %s", nestedTable.Name()))
+/*
 //				newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), parentColName, parentRowIndex)
 //				newName := fmt.Sprintf("%s_from_table_%s_col_%s_row_%d", nestedTable.Name(), table.Name(), colName, rowIndex)
 //				newName := fmt.Sprintf("%s_col_%s_row_%d_from_%s", table.Name(), colName, rowIndex, nestedTable.Name())
-				headName := nestedTable.Name()
 //				tailName := fmt.Sprintf("_from_table_%s_col_%s_row_%d%s", parentTableName, colName, parentRowIndex, parentTailName)
 //				tailName := fmt.Sprintf("__from_table_%s_col_%s_row_%d%s", parentTableName, colName, rowIndex, parentTailName)
 				tailName := fmt.Sprintf("__FROM_%s_%s_%d%s", parentTableName, colName, rowIndex, parentTailName)
+*/
+				headName := nestedTable.Name()
+				var tailName string
+				if debug {
+					tailName = fmt.Sprintf("__FROM_TABLE_%s_COL_%s_row_%d%s", parentTableName, colName, rowIndex, parentTailName)
+				} else {
+					tailName = fmt.Sprintf("__FROM_%s_%s_%d%s", parentTableName, colName, rowIndex, parentTailName)
+				}
 				newName := headName + tailName
-where(fmt.Sprintf("newName = %s", newName))
+//where(fmt.Sprintf("newName = %s", newName))
 				err = nestedTable.SetName(newName)
 				if err != nil {
 					return
 				}
 
-				where(fmt.Sprintf("\n>>> nestedTable.stringNested_recursive(%q, %q, %d, stringNested=\n%s)",
-					table.Name(), colName, rowIndex, *stringNested))
+// where(fmt.Sprintf("\n>>> nestedTable.stringNested_recursive(%q, %q, %d, stringNested=\n%s)",
+// table.Name(), colName, rowIndex, *stringNested))
 				nestedTable.stringNested_recursive(headName, tailName, colName, rowIndex, stringNested)
 			}
 		}
@@ -4574,15 +4586,15 @@ where("visit final return")
 	replicate tree to depth levels, where depth 1 means
 	create 1 new level below table.
 
-	If there are no type *Table cols in table, or if tablesDepth is set to 0, then
+	If there are no type *Table cols in table, or if depth is set to 0, then
 	return table unchanged.
 */
-func (rootTable *Table) NewTreeTable(tablesDepth int) (treeTable *Table, err error) {
+func (rootTable *Table) NewTreeTable(depth int) (treeTable *Table, err error) {
 
-where("\n" + rootTable.String())
+//where("\n" + rootTable.String())
 	var treeTablePointer *Table	// We build the treeTable on this treeTablePointer.
-	var nestedTable *Table		// Placeholder for recursive calls.
-	err = newTreeTable_recursive(rootTable, &treeTablePointer, nestedTable, tablesDepth)
+	var nestedTable *Table = rootTable // Placeholder for recursive calls.
+	err = newTreeTable_recursive(rootTable, &treeTablePointer, nestedTable, depth)
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
@@ -4592,21 +4604,39 @@ where("visit final return")
 }
 
 func newTreeTable_recursive(rootTable *Table, treeTablePointer **Table, table *Table, depth int) (err error) {
-	fmt.Printf("newTreeTable_recursive(%d)\n", depth)
+where(fmt.Sprintf("newTreeTable_recursive(depth=%d)\n", depth))
 
 	if rootTable == nil {
 		return fmt.Errorf("%s rootTable.%s: rootTable is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
+	if treeTablePointer == nil {
+		return fmt.Errorf("%s treeTablePointer.%s: treeTablePointer is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if table == nil {
+		return fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+	if depth <= 0 {
+		return nil
+	}
+
 	if *treeTablePointer == nil {
-where(fmt.Sprintf("*treeTablePointer = %v", *treeTablePointer))
+where(fmt.Sprintf("*treeTablePointer = <nil>"))
 		// Initialise treeTablePointer with a copy of rootTable on first call to newTreeTable_recursive()
+where("*treeTablePointer = rootTable.Copy(true)")
 		*treeTablePointer, err = rootTable.Copy(true)
 		if err != nil {
 			return fmt.Errorf("%s %v", UtilFuncSource(), err)
 		}
 	}
 
+if table == nil {
+	where("table = <nil>")
+}
+//where(fmt.Sprintf("BEFORE processing isTableCol table:\n%s", table.StringNested()))
+where(fmt.Sprintf("for rowIndex := 0; rowIndex < table.RowCount()=%d; rowIndex++", table.RowCount()))
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {	// Row Major order.
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 			isTableCol, err := table.IsTableColByColIndex(colIndex)
@@ -4625,7 +4655,8 @@ where(fmt.Sprintf(`cell.ColType == "*Table"`))
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
-				where(fmt.Sprintf("TABLE table colName=%s rowIndex=%d:\n%s", colName, rowIndex, table.String()))
+				where(fmt.Sprintf("table [%s] colName %s rowIndex %d:\n%s", table.Name(), colName, rowIndex, table.String()))
+				where(fmt.Sprintf("nestedTable:\n%s", nestedTable.StringNested()))
 
 				// Replace only NilTable cell entries, and not cells that are already populated.
 				isNilTable, err := nestedTable.IsNilTable()
@@ -4633,10 +4664,11 @@ where(fmt.Sprintf(`cell.ColType == "*Table"`))
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 				if isNilTable {
+where("isNilTable")
 					// Copy the parentTable into this cell.
-					where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
+where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
 					var parentTable *Table = nestedTable.ParentTable()
-					where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
+where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
 					parentTableCopy, err := parentTable.Copy(true)
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
@@ -4662,12 +4694,12 @@ where(fmt.Sprintf("newColName: %s", newColName))
 					}
 */
 
-where(fmt.Sprintf("BEFORE *treeTablePointer:\n%s", (*treeTablePointer).String()))
+where(fmt.Sprintf("BEFORE *treeTablePointer:\n%s", (*treeTablePointer).StringNested()))
 					err = (*treeTablePointer).SetTable(colName, rowIndex, parentTableCopy)
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
-where(fmt.Sprintf("AFTER  *treeTablePointer:\n%s", (*treeTablePointer).String()))
+where(fmt.Sprintf("AFTER  *treeTablePointer:\n%s", (*treeTablePointer).StringNested()))
 				
 					if depth <= 0 {
 						fmt.Printf("newTreeTable_recursive depth %d <= 0 return\n", depth)
@@ -4684,5 +4716,6 @@ where(fmt.Sprintf("AFTER  *treeTablePointer:\n%s", (*treeTablePointer).String())
 		}
 	}
 
+where("return")
 	return
 }

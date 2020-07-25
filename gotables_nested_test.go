@@ -399,22 +399,24 @@ func TestTable_NewTreeTable(t *testing.T) {
 	var err error
 
 	table, err := gotables.NewTableFromString(`
-		[TABLE]
-		COL
+		[table]
+		col
 		*Table
+		[Fred]
 		[]
-		[]
-		[]`)
+		[Wilma]`)
 	if err != nil {
 		t.Error(err)
 	}
 
-	const tablesDepth = 0
-	treeTable, err := table.NewTreeTable(tablesDepth)
+	const depth = 1
+	treeTable, err := table.NewTreeTable(depth)
+where()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
+where("############################################################")
 	var treeTableStringNestedString string = treeTable.StringNested()
 where("\n" + treeTableStringNestedString)
 
