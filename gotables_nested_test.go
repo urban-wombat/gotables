@@ -406,25 +406,28 @@ func TestTable_NewTreeTable(t *testing.T) {
 		[]
 		[Wilma]`)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
-	const depth = 1
+	const depth = 0
 	treeTable, err := table.NewTreeTable(depth)
-where()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-where("############################################################")
 	var treeTableStringNestedString string = treeTable.StringNested()
-where("\n" + treeTableStringNestedString)
+where("############################################################\n" + treeTableStringNestedString)
 
 	tableSet, err := gotables.NewTableSetFromString(treeTableStringNestedString)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
+
+	_, err = gotables.NewTableSetFromString(treeTableStringNestedString)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	return
 }
