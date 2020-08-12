@@ -1152,6 +1152,19 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	}
 	fmt.Println()
 
+/*
+	hasCircularReference, err := table.HasCircularReference()
+	if hasCircularReference {
+where(err)
+		os.Exit(1)
+	}
+
+	isValidTableNesting, err := table.IsValidTableNesting()
+	if !isValidTableNesting {
+		panic(err)
+	}
+*/
+
 	fmt.Println("Now try again with a COPY of the same table, which will have a new reference.")
 	var jsonString string
 	var tableCopy *Table

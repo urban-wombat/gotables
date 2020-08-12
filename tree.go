@@ -3,6 +3,7 @@ package gotables
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 /*
@@ -246,6 +247,28 @@ func (cellInfo CellInfo) TableName() string {
 }
 */
 
+/*
+	This is a logical flip of table.IsValidTableNesting()
+*/
+func (rootTable *Table) HasCircularReference() (hasCircularReference bool, err error) {
+	if rootTable == nil {
+		return false, fmt.Errorf("rootTable.%s(): rootTable is nil", UtilFuncNameNoParens())
+	}
+
+	isValidTableNesting, err := rootTable.IsValidTableNesting()
+	if !isValidTableNesting {
+		// Say the error is from here, not from the called method.
+		replacedMsg := strings.Replace(err.Error(), "IsValidTableNesting", "HasCircularReference", 1)
+		err = fmt.Errorf("%s", replacedMsg)
+		return !isValidTableNesting, err
+	}
+
+	return
+}
+
+/*
+	This is a logical flip of table.HasCircularReference()
+*/
 func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 	//UtilPrintCaller()
 

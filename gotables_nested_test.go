@@ -409,7 +409,7 @@ func TestTable_NewTreeTable(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	const depth = 0
+	const depth = 1
 	treeTable, err := table.NewTreeTable(depth)
 	if err != nil {
 		t.Fatal(err)
@@ -423,11 +423,6 @@ where("############################################################\n" + treeTab
 		t.Fatal(err)
 	}
 where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
-
-	_, err = gotables.NewTableSetFromString(treeTableStringNestedString)
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	return
 }
