@@ -3622,17 +3622,20 @@ where(UtilFuncName())
 		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-where("table.HasCircularReference() ???")
+// TODO: Restore the HasCircularReference() test.
+//
 	hasCircularReference, err := table.HasCircularReference()
 	if hasCircularReference {
-where("Yes it has")
+where("table.HasCircularReference() = true")
 		return nil, err
 	} else {
-where("No it hasn't")
+where("table.HasCircularReference() = false")
 	}
+//
 
 	const firstRow = 0
-where("\n" + table.String())
+where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
+where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
 
 	tableCopy, err = NewTable(table.Name())
 	if err != nil {
@@ -3643,7 +3646,8 @@ where("\n" + table.String())
 	if err != nil {
 		return nil, err
 	}
-where("\n" + tableCopy.String())
+where("AFTER AppendColsFromTable()\n\n" + tableCopy.String() + "\n")
+where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
 
 	if copyRowsAlso {
 		if table.RowCount() > 0 {
@@ -3654,8 +3658,8 @@ where("\n" + tableCopy.String())
 			}
 		}
 	}
-where("\n" + table.String())
-where("\n" + tableCopy.String())
+where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
+where("AFTER AppendRowsFromTable()\n\n" + tableCopy.String() + "\n")
 
 	return tableCopy, nil
 }
@@ -4733,23 +4737,23 @@ where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowI
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
 where(fmt.Sprintf("tableCopy:>>>>>>\n%s\n<<<<<<", tableCopy.StringNested()))
-/*
-					tableCopyName := tableCopy.Name()
-//					tableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
-					newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + depth-1))
-where(fmt.Sprintf("newTableName: %s", newTableName))
-					err = tableCopy.SetName(newTableName)
-					if err != nil {
-						return fmt.Errorf("%s %v", UtilFuncSource(), err)
-					}
-
-					newColName := fmt.Sprintf("%s%02d", colName, depth)
-where(fmt.Sprintf("newColName: %s", newColName))
-					err = tableCopy.RenameCol(colName, newColName)
-					if err != nil {
-						return fmt.Errorf("%s %v", UtilFuncSource(), err)
-					}
-*/
+//	
+//						tableCopyName := tableCopy.Name()
+//	//					tableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
+//						newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + depth-1))
+//	where(fmt.Sprintf("newTableName: %s", newTableName))
+//						err = tableCopy.SetName(newTableName)
+//						if err != nil {
+//							return fmt.Errorf("%s %v", UtilFuncSource(), err)
+//						}
+//	
+//						newColName := fmt.Sprintf("%s%02d", colName, depth)
+//	where(fmt.Sprintf("newColName: %s", newColName))
+//						err = tableCopy.RenameCol(colName, newColName)
+//						if err != nil {
+//							return fmt.Errorf("%s %v", UtilFuncSource(), err)
+//						}
+//	
 
 //where(fmt.Sprintf("BEFORE *originalTable:\n%s", (*originalTable).StringNested()))
 where(fmt.Sprintf("BEFORE *table:\n%s", table.StringNested()))

@@ -4289,6 +4289,13 @@ func TestTable_Copy(t *testing.T) {
 			if err != nil {
 				t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
 			}
+
+			tableRowCount := table.RowCount()
+			tableCopyRowCount := tableCopy.RowCount()
+where(fmt.Sprintf("tableRowCount = %d, tableCopyRowCount = %d", tableRowCount, tableCopyRowCount))
+			if tableCopyRowCount != tableRowCount {
+				t.Fatalf("table.Copy(%t) expecting %d rows but got %d rows", test.copyRows, tableRowCount, tableCopyRowCount)
+			}
 		} else {
 			// Expecting zero rowCount in tableCopy.
 			// Need to delete rowCount in source table for Equals to compare empty with empty.

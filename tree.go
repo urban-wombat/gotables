@@ -86,6 +86,9 @@ func (table *Table) Walk(
 
 	// Visit cell values, row by row.
 
+	var isLeafTable bool = true	// This table has zero nested tables.
+	_ = isLeafTable
+
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 
 		var row Row
@@ -127,6 +130,15 @@ func (table *Table) Walk(
 					nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 					if err != nil {
 						return
+					}
+
+					var isNilTable bool
+					isNilTable, err = nestedTable.IsNilTable()
+					if err != nil {
+						return
+					}
+					if !isNilTable {
+						isLeafTable = false
 					}
 
 					// Down into nested table.
@@ -352,4 +364,8 @@ func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCir
 
 	// where(fmt.Sprintf("depth:%d return -1", depth))
 	return false, -1
+}
+
+func (table *Table) CopyDeep(copyRowsAlso bool) (tableCopy *Table, err error) {
+	return
 }

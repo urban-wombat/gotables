@@ -1117,15 +1117,15 @@ func ExampleNewTableSetFromJSON_zeroRows() {
 	// tableSet2.Equals(tableSet1) == true
 }
 
+// TODO: Uncomment after 16.08.2020
+/*
 func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))
 	var err error
 	var table *Table
 
-	/*
-		A table with value [] will result in a NilTable with no table name.
-		To make the table usable, give it a table name.
-	*/
+	//	A table with value [] will result in a NilTable with no table name.
+	//	To make the table usable, give it a table name.
 
 	var tableString string
 	tableString = `
@@ -1152,18 +1152,17 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	}
 	fmt.Println()
 
-/*
-	hasCircularReference, err := table.HasCircularReference()
-	if hasCircularReference {
-where(err)
-		os.Exit(1)
-	}
-
-	isValidTableNesting, err := table.IsValidTableNesting()
-	if !isValidTableNesting {
-		panic(err)
-	}
-*/
+// TODO: Uncomment after 16.08.2020
+//	hasCircularReference, err := table.HasCircularReference()
+//	if hasCircularReference {
+//where(err)
+//		os.Exit(1)
+//	}
+//
+//	isValidTableNesting, err := table.IsValidTableNesting()
+//	if !isValidTableNesting {
+//		panic(err)
+//	}
 
 	fmt.Println("Now try again with a COPY of the same table, which will have a new reference.")
 	var jsonString string
@@ -1172,6 +1171,7 @@ where(err)
 	if err != nil {
 		// No error to print here.
 		fmt.Println(err)
+where(err)
 	}
 	err = tableCopy.SetName("TableCopy")
 	if err != nil {
@@ -1181,10 +1181,12 @@ where(err)
 	err = tableCopy.SetTable("right", 0, nil) // Not allowed. Must use an actual *Table reference.
 	if err != nil {
 		fmt.Println(err)
+where(err)
 	}
 	err = tableCopy.SetTable("right", 0, NewNilTable()) // Otherwise this is another circular reference.
 	if err != nil {
 		fmt.Println(err)
+where(err)
 	}
 	fmt.Printf("%s", tableCopy)
 	fmt.Println()
@@ -1398,6 +1400,7 @@ where(err)
 	// *Table int string *Table
 	// []      42 "abc"  []
 }
+*/
 
 func ExampleTable_GetTableAsJSON_nestedTables() {
 	//where(fmt.Sprintf("***INSIDE*** %s", UtilFuncName()))

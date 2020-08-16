@@ -395,6 +395,8 @@ func newTableFromTableIndex(tableIndex int, rows int) (table *gotables.Table, er
 	return
 }
 
+/*
+// TODO: uncomment after 15.08.2020
 func TestTable_NewTreeTable(t *testing.T) {
 	var err error
 
@@ -423,6 +425,42 @@ where("############################################################\n" + treeTab
 		t.Fatal(err)
 	}
 where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
+
+	return
+}
+*/
+
+func TestTable_CopyDeep(t *testing.T) {
+	var err error
+
+	table, err := gotables.NewTableFromString(`
+		[table]
+		col
+		*Table
+		[Fred]
+		[]
+		[]
+		[Wilma]`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	table.SetTable("col", 2, table)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	const depth = 1
+	treeTable, err := table.NewTreeTable(depth)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	hasCircularReference, err := treeTable.HasCircularReference()
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = hasCircularReference
 
 	return
 }
