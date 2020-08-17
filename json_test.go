@@ -1167,7 +1167,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	fmt.Println("Now try again with a COPY of the same table, which will have a new reference.")
 	var jsonString string
 	var tableCopy *Table
-	tableCopy, err = table.Copy(true)
+	tableCopy, err = table.Copy()
 	if err != nil {
 		// No error to print here.
 		fmt.Println(err)

@@ -403,11 +403,13 @@ where(UtilFuncName())
 	// to set tableCopy before all the recursive calls have occurred.
 	tableCopy = table
 
+/*
 	if copyRows == false {
 		// Zero nested tables to copy, revert to simple Copy().
 		var dontCopyRows bool = copyRows
 		return table.Copy(dontCopyRows)
 	}
+*/
 
 	var visitTable = func(t *Table) (err error) {
 		where(fmt.Sprintf("[%s]", t.Name()))
@@ -435,8 +437,7 @@ where(UtilFuncName())
 			if isNilTable {
 				nestedTableCopy = NewNilTable()	// New reference just to be on the safe side.
 			} else {
-				const copyRows = true
-				nestedTableCopy, err = nestedTable.Copy(copyRows)
+				nestedTableCopy, err = nestedTable.Copy()
 				if err != nil {
 					return
 				}

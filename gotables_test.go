@@ -4255,14 +4255,10 @@ func TestTable_Copy(t *testing.T) {
 	var tests = []struct {
 		tableString string
 		rowCount    int
-		copyRows    bool
 	}{
-		{tableStringRows0, 0, false},
-		{tableStringRows0, 0, true},
-		{tableStringRows1, 1, false},
-		{tableStringRows1, 1, true},
-		{tableStringRows2, 2, false},
-		{tableStringRows2, 2, true},
+		{tableStringRows0, 0},
+		{tableStringRows1, 1},
+		{tableStringRows2, 2},
 	}
 
 	for _, test := range tests {
@@ -4275,34 +4271,25 @@ func TestTable_Copy(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		tableCopy, err := table.Copy(test.copyRows)
+		tableCopy, err := table.Copy()
 		if err != nil {
-			t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
+			t.Fatalf("table.Copy() with rowCount=%d: %s", test.rowCount, err)
 		}
 		if isValid, err := tableCopy.IsValidTable(); !isValid {
 			t.Fatal(err)
 		}
 
-		if test.copyRows {
-			// Expecting same rowCount in each.
-			_, err = tableCopy.Equals(table)
-			if err != nil {
-				t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
-			}
+		// Expecting same rowCount in each.
+		_, err = tableCopy.Equals(table)
+		if err != nil {
+			t.Fatalf("table.Copy() with rowCount=%d: %s", test.rowCount, err)
+		}
 
-			tableRowCount := table.RowCount()
-			tableCopyRowCount := tableCopy.RowCount()
+		tableRowCount := table.RowCount()
+		tableCopyRowCount := tableCopy.RowCount()
 where(fmt.Sprintf("tableRowCount = %d, tableCopyRowCount = %d", tableRowCount, tableCopyRowCount))
-			if tableCopyRowCount != tableRowCount {
-				t.Fatalf("table.Copy(%t) expecting %d rows but got %d rows", test.copyRows, tableRowCount, tableCopyRowCount)
-			}
-		} else {
-			// Expecting zero rowCount in tableCopy.
-			// Need to delete rowCount in source table for Equals to compare empty with empty.
-			err = table.DeleteRowsAll()
-			if err != nil {
-				t.Fatalf("table.Copy(%t) with rowCount=%d: %s", test.copyRows, test.rowCount, err)
-			}
+		if tableCopyRowCount != tableRowCount {
+			t.Fatalf("table.Copy() expecting %d rows but got %d rows", tableRowCount, tableCopyRowCount)
 		}
 	}
 }
@@ -5386,7 +5373,7 @@ func BenchmarkSetValByColIndex(b *testing.B) {
 	}
 
 	var toTable *Table
-	toTable, err = fromTable.Copy(true)
+	toTable, err = fromTable.Copy()
 	if err != nil {
 		b.Error(err)
 	}

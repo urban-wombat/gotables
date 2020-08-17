@@ -3618,7 +3618,48 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 
 	To copy some but not all rows, use NewTableFromRows()
 */
-func (table *Table) Copy(copyRows bool) (tableCopy *Table, err error) {
+func (table *Table) CopyCols() (tableCopy *Table, err error) {
+where("caller: " + UtilFuncCaller())
+where(UtilFuncName())
+
+	if table == nil {
+		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
+	}
+
+// TODO: Restore the HasCircularReference() test.
+	hasCircularReference, err := table.HasCircularReference()
+	if hasCircularReference {
+where("table.HasCircularReference() = true")
+		return nil, err
+	} else {
+where("table.HasCircularReference() = false")
+	}
+
+	const firstRow = 0
+where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
+where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
+
+UtilPrintCaller()
+where(UtilFuncName())
+	tableCopy, err = NewTable(table.Name())
+	if err != nil {
+		return nil, err
+	}
+
+	err = tableCopy.AppendColsFromTable(table)
+	if err != nil {
+		return nil, err
+	}
+
+	return tableCopy, nil
+}
+
+/*
+	Create a copy of table, with or without copying its rows of data.
+
+	To copy some but not all rows, use NewTableFromRows()
+*/
+func (table *Table) Copy() (tableCopy *Table, err error) {
 where("caller: " + UtilFuncCaller())
 where(UtilFuncName())
 
@@ -3653,13 +3694,11 @@ where(UtilFuncName())
 where("AFTER AppendColsFromTable()\n\n" + tableCopy.String() + "\n")
 where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
 
-	if copyRows {
-		if table.RowCount() > 0 {
-			lastRow := table.RowCount() - 1
-			err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)
-			if err != nil {
-				return nil, err
-			}
+	if table.RowCount() > 0 {
+		lastRow := table.RowCount() - 1
+		err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)
+		if err != nil {
+			return nil, err
 		}
 	}
 where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
@@ -3671,7 +3710,7 @@ where("AFTER AppendRowsFromTable()\n\n" + tableCopy.String() + "\n")
 /*
 	Create a copy of TableSet, with or without copying table rows of data.
 */
-func (tableSet *TableSet) Copy(copyRowsAlso bool) (*TableSet, error) {
+func (tableSet *TableSet) Copy() (*TableSet, error) {
 
 	if tableSet == nil {
 		return nil, fmt.Errorf("%s tableSet.%s tableSet is <nil>", UtilFuncSource(), UtilFuncName())
@@ -3692,7 +3731,7 @@ func (tableSet *TableSet) Copy(copyRowsAlso bool) (*TableSet, error) {
 			return nil, err
 		}
 
-		tableCopy, err := table.Copy(copyRowsAlso)
+		tableCopy, err := table.Copy()
 		if err != nil {
 			return nil, err
 		}
@@ -4563,7 +4602,7 @@ where(UtilFuncName())
 
 	// This may be an unnecessary precaution to avoid repeated table references.
 	// TODO: test this with circular reference checker.
-	treeTable, err = rootTable.Copy(true)
+	treeTable, err = rootTable.Copy()
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
@@ -4600,7 +4639,7 @@ where(fmt.Sprintf(`cell.ColType == "*Table"`))
 				where(fmt.Sprintf("[%s] col=%s row=%d is NilTable", cell.Table.Name(), cell.ColName, cell.RowIndex))
 				var parentTable *Table = nestedTable.ParentTable()
 				where(fmt.Sprintf("TABLE parentTable:\n%s", parentTable.String()))
-				parentTableCopy, err := parentTable.Copy(true)
+				parentTableCopy, err := parentTable.Copy()
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
@@ -4666,8 +4705,7 @@ where(UtilFuncName())
 	}
 
 where("\n" + table.String())
-	const allRows = true
-	nestedTable, err := table.Copy(allRows)
+	nestedTable, err := table.Copy()
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
@@ -4736,8 +4774,7 @@ where("isNilTable")
 					// Copy the originalTable into this cell.
 where("Copy the originalTable into this cell.")
 where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
-					const allRows = true
-					tableCopy, err := originalTable.Copy(allRows)
+					tableCopy, err := originalTable.Copy()
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
