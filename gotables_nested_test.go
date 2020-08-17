@@ -458,8 +458,7 @@ where(gotables.UtilFuncName())
 	}
 
 	var tableCopy *gotables.Table
-	var copyRows bool = true
-	tableCopy, err = table.CopyDeep(copyRows)
+	tableCopy, err = table.CopyDeep()
 	if err == nil {
 		t.Fatal("expecting a circular reference")
 	}
@@ -470,7 +469,7 @@ where(gotables.UtilFuncName())
 		t.Fatal(err)
 	}
 
-	tableCopy, err = table.CopyDeep(copyRows)
+	tableCopy, err = table.CopyDeep()
 	if err != nil {
 		t.Fatal(err)
 	}

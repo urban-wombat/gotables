@@ -393,7 +393,7 @@ func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCir
 	return false, -1
 }
 
-func (table *Table) CopyDeep(copyRows bool) (tableCopy *Table, err error) {
+func (table *Table) CopyDeep() (tableCopy *Table, err error) {
 where(UtilFuncName())
 	if table == nil {
 		return nil, fmt.Errorf("table.%s: table is nil", UtilFuncName())
@@ -402,14 +402,6 @@ where(UtilFuncName())
 	// This may seem odd, but this is the point in CopyDeep() where it's possible
 	// to set tableCopy before all the recursive calls have occurred.
 	tableCopy = table
-
-/*
-	if copyRows == false {
-		// Zero nested tables to copy, revert to simple Copy().
-		var dontCopyRows bool = copyRows
-		return table.Copy(dontCopyRows)
-	}
-*/
 
 	var visitTable = func(t *Table) (err error) {
 		where(fmt.Sprintf("[%s]", t.Name()))
