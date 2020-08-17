@@ -57,16 +57,19 @@ func (tableSet *TableSet) Walk(
 	return
 }
 
-/*
-	Visit the root table and any nested child tables: run visitTable on each table.
-
-	Visit all cells in each table: run visitCell on each cell.
-
-	Define func variables visitTable and visitCell (see Example).
-
-	If visitTable or visitCell are nil, no action will be taken in the nil case.
-*/
 type WalkSafe map[*Table]struct{}
+
+/*
+	Visit the root table, each of its cells, and any nested child tables (inside cells):
+
+		* run visitTable() on each table
+		* run visitRow() on each row
+		* run visitCell() on each cell
+
+	Define one or more func variables visitTable(), visitRow() and visitCell() (see Example).
+
+	If visitTable(), visitRow() or visitCell() are nil, no action will be taken.
+*/
 func (table *Table) Walk(
 	walkNestedTables bool,
 	walkSafe WalkSafe,
@@ -79,15 +82,11 @@ func (table *Table) Walk(
 		return
 	}
 
-where(fmt.Sprintf("Walk() walkSafe = %p", walkSafe))
-where(fmt.Sprintf("Walk() walkSafe = %v", walkSafe))
-
-	// Set to true and set false later if found to be false.
-	table.leafTable.isLeafTable = true
-	table.leafTable.isKnown = false
+where(fmt.Sprintf("Walk() walkSafe %p = %v", walkSafe, walkSafe))
 
 	// Visit table.
 	if visitTable != nil {
+where("visitTable")
 		err = visitTable(table)
 		if err != nil {
 			return
@@ -115,6 +114,7 @@ where(fmt.Sprintf("Walk() walkSafe = %v", walkSafe))
 		}
 
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
+where(fmt.Sprintf("visiting cell col %d row %d", colIndex, rowIndex))
 
 			var cellInfo CellInfo
 			cellInfo, err = table.GetCellInfoByColIndex(colIndex, rowIndex)
@@ -133,43 +133,44 @@ where(fmt.Sprintf("Walk() walkSafe = %v", walkSafe))
 			if walkNestedTables {
 				if IsTableColType(cellInfo.ColType) {
 
-					table.leafTable.isKnown = true	// Kind of "known" at this point.
-
 					var nestedTable *Table
 					nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 					if err != nil {
 						return
 					}
 
-/*
 					var isNilTable bool
 					isNilTable, err = nestedTable.IsNilTable()
 					if err != nil {
 						return
 					}
-*/
-//					if !isNilTable {
+
+					if !isNilTable {
 						// Only worry about tables that may have nested tables.
-						table.leafTable.isLeafTable = false
 
 						// Have we already seen this table?
-where(fmt.Sprintf("walkSafe: %v", walkSafe))
+// where(fmt.Sprintf("walkSafe %p = %v", walkSafe, walkSafe))
 						_, exists := walkSafe[nestedTable]
+// where(fmt.Sprintf("[%s] exists = %t", nestedTable.Name(), exists))
 						if exists { // Invalid table with circular reference!
 							// Construct CircRefError.
 							circError := NewCircRefError(table, nestedTable, "")
-							err = fmt.Errorf("%s: visitCell()", circError) // Wrap circError in err.
+							err = fmt.Errorf("visitCell(): %s", circError) // Wrap circError in err.
 							return err
 						} else {
 							// Add this nested table to the map.
+// where(fmt.Sprintf("ADDING [%s] to %p %v", nestedTable.Name(), walkSafe, walkSafe))
 							walkSafe[nestedTable] = EmptyStruct
+// where(fmt.Sprintf("walkSafe %p = %v", walkSafe, walkSafe))
 						}
-//					}
+					}
 
 					// Down into nested table.
 					nestedTable.depth++
 
 					// Recursive call to visit nested tables.
+// where(fmt.Sprintf("walkSafe %p = %v", walkSafe, walkSafe))
+// where("calling nestedTable.Walk()")
 					err = nestedTable.Walk(walkNestedTables, walkSafe, visitTable, visitRow, visitCell)
 					if err != nil {
 						return
@@ -392,21 +393,24 @@ func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCir
 	return false, -1
 }
 
-func (table *Table) CopyDeep(copyRowsAlso bool) (tableCopy *Table, err error) {
+func (table *Table) CopyDeep(copyRows bool) (tableCopy *Table, err error) {
+where(UtilFuncName())
 	if table == nil {
 		return nil, fmt.Errorf("table.%s: table is nil", UtilFuncName())
 	}
 
-	if copyRowsAlso == false {
+	// This may seem odd, but this is the point in CopyDeep() where it's possible
+	// to set tableCopy before all the recursive calls have occurred.
+	tableCopy = table
+
+	if copyRows == false {
 		// Zero nested tables to copy, revert to simple Copy().
-		var dontCopyRows bool = copyRowsAlso
+		var dontCopyRows bool = copyRows
 		return table.Copy(dontCopyRows)
 	}
 
 	var visitTable = func(t *Table) (err error) {
 		where(fmt.Sprintf("[%s]", t.Name()))
-		where(fmt.Sprintf("isKnown = %t", t.leafTable.isKnown))
-		where(fmt.Sprintf("isLeafTable = %t", t.leafTable.isLeafTable))
 		return
 	}
 
@@ -419,27 +423,32 @@ func (table *Table) CopyDeep(copyRowsAlso bool) (tableCopy *Table, err error) {
 			if err != nil {
 				return
 			}
+			where(fmt.Sprintf("nestedTable = %p", nestedTable))
 
-			var hasCircularReference bool
-			hasCircularReference, err = nestedTable.HasCircularReference()
-			if !hasCircularReference && err != nil {
+			var isNilTable bool
+			isNilTable, err = nestedTable.IsNilTable()
+			if err != nil {
 				return
 			}
 
-			if hasCircularReference {
-				const copyRowsAlso = true
-				var nestedTableCopy *Table
-				nestedTableCopy, err = nestedTable.Copy(copyRowsAlso)
-				if err != nil {
-					return
-				}
-
-				err = cell.Table.SetTableByColIndex(cell.ColIndex, cell.RowIndex, nestedTableCopy)
+			var nestedTableCopy *Table
+			if isNilTable {
+				nestedTableCopy = NewNilTable()	// New reference just to be on the safe side.
+			} else {
+				const copyRows = true
+				nestedTableCopy, err = nestedTable.Copy(copyRows)
 				if err != nil {
 					return
 				}
 			}
+
+			err = cell.Table.SetTableByColIndex(cell.ColIndex, cell.RowIndex, nestedTableCopy)
+			if err != nil {
+where(fmt.Sprintf("nestedTableCopy = %p", nestedTableCopy))
+				return
+			}
 		}
+		tableCopy = cell.Table
 
 		return
 	}
@@ -447,7 +456,9 @@ func (table *Table) CopyDeep(copyRowsAlso bool) (tableCopy *Table, err error) {
 	const walkDeep = true
 	var walkSafe WalkSafe = make(WalkSafe)
 where(fmt.Sprintf("declaring walkSafe = %p", walkSafe))
+where("BEGIN Walk()")
 	err = table.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
+where("END Walk()")
 	if err != nil {
 		return nil, err
 	}

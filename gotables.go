@@ -485,11 +485,6 @@ Table
 #####################################################################################
 */
 
-type leafTable struct {
-	isLeafTable bool	// Table has zero nested tables.
-	isKnown bool
-}
-
 type Table struct {
 	tableName     string
 	colNames      []string
@@ -501,7 +496,6 @@ type Table struct {
 	isNilTable    bool
 	parentTable   *Table
 	depth         int
-	leafTable
 }
 
 // For GOB.
@@ -579,6 +573,8 @@ func NewNilTable() *Table {
 		}
 */
 func NewTable(tableName string) (*Table, error) {
+UtilPrintCaller()
+where(UtilFuncName())
 	var newTable *Table = NewNilTable()
 
 	err := newTable.SetName(tableName)
@@ -2547,6 +2543,8 @@ type rowAsInterface []interface{}
 	To avoid this, use the TableSet.SetName() method.
 */
 func (table *Table) SetName(tableName string) error {
+UtilPrintCaller()
+where(UtilFuncName())
 	if table == nil {
 		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -3620,7 +3618,7 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 
 	To copy some but not all rows, use NewTableFromRows()
 */
-func (table *Table) Copy(copyRowsAlso bool) (tableCopy *Table, err error) {
+func (table *Table) Copy(copyRows bool) (tableCopy *Table, err error) {
 where("caller: " + UtilFuncCaller())
 where(UtilFuncName())
 
@@ -3629,7 +3627,6 @@ where(UtilFuncName())
 	}
 
 // TODO: Restore the HasCircularReference() test.
-/*
 	hasCircularReference, err := table.HasCircularReference()
 	if hasCircularReference {
 where("table.HasCircularReference() = true")
@@ -3637,12 +3634,13 @@ where("table.HasCircularReference() = true")
 	} else {
 where("table.HasCircularReference() = false")
 	}
-*/
 
 	const firstRow = 0
 where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
 where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
 
+UtilPrintCaller()
+where(UtilFuncName())
 	tableCopy, err = NewTable(table.Name())
 	if err != nil {
 		return nil, err
@@ -3655,7 +3653,7 @@ where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
 where("AFTER AppendColsFromTable()\n\n" + tableCopy.String() + "\n")
 where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
 
-	if copyRowsAlso {
+	if copyRows {
 		if table.RowCount() > 0 {
 			lastRow := table.RowCount() - 1
 			err = tableCopy.AppendRowsFromTable(table, firstRow, lastRow)

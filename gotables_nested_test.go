@@ -431,6 +431,7 @@ where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
 */
 
 func TestTable_CopyDeep(t *testing.T) {
+where(gotables.UtilFuncName())
 	var err error
 
 	table, err := gotables.NewTableFromString(`
@@ -445,6 +446,7 @@ func TestTable_CopyDeep(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Create a circular reference.
 	err = table.SetTable("col", 2, table)
 	if err != nil {
 		t.Fatal(err)
@@ -455,13 +457,27 @@ func TestTable_CopyDeep(t *testing.T) {
 		t.Fatal(fmt.Errorf("expecting table to have CircRefError"))
 	}
 
+	var tableCopy *gotables.Table
 	var copyRows bool = true
-	tableCopy, err := table.CopyDeep(copyRows)
+	tableCopy, err = table.CopyDeep(copyRows)
+	if err == nil {
+		t.Fatal("expecting a circular reference")
+	}
+
+	// Remove circular reference.
+	err = table.SetTable("col", 2, gotables.NewNilTable())
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	hasCircularReference, err = tableCopy.HasCircularReference()
+	tableCopy, err = table.CopyDeep(copyRows)
+	if err != nil {
+		t.Fatal(err)
+	}
+where(table)
+where(tableCopy)
+
+	_, err = tableCopy.HasCircularReference()
 	if err != nil {
 		t.Fatal(err)
 	}
