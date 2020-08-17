@@ -434,10 +434,10 @@ func TestTable_CopyDeep(t *testing.T) {
 	var err error
 
 	table, err := gotables.NewTableFromString(`
-		[table]
+		[TableRoot]
 		col
 		*Table
-		[Fred]
+		[FRED]
 		[]
 		[]
 		[Wilma]`)
@@ -445,22 +445,35 @@ func TestTable_CopyDeep(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	table.SetTable("col", 2, table)
+	err = table.SetTable("col", 2, table)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	hasCircularReference, err := table.HasCircularReference()
+	if !hasCircularReference {
+		t.Fatal(fmt.Errorf("expecting table to have CircRefError"))
+	}
+
+	var copyRows bool = true
+	tableCopy, err := table.CopyDeep(copyRows)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	hasCircularReference, err = tableCopy.HasCircularReference()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+/*
 	const depth = 1
 	treeTable, err := table.NewTreeTable(depth)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	hasCircularReference, err := treeTable.HasCircularReference()
-	if err != nil {
-		t.Fatal(err)
-	}
-	_ = hasCircularReference
+	_ = treeTable
+*/
 
 	return
 }

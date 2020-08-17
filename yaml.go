@@ -546,7 +546,8 @@ func (table *Table) getTableAsMap() (yamlTable map[string]interface{}, err error
 	}
 
 	const walkDeep = false
-	err = table.Walk(walkDeep, visitTable, visitRow, visitCell)
+	var walkSafe WalkSafe = make(WalkSafe)
+	err = table.Walk(walkDeep, walkSafe, visitTable, visitRow, visitCell)
 	if err != nil {
 		return
 	}

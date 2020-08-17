@@ -485,6 +485,11 @@ Table
 #####################################################################################
 */
 
+type leafTable struct {
+	isLeafTable bool	// Table has zero nested tables.
+	isKnown bool
+}
+
 type Table struct {
 	tableName     string
 	colNames      []string
@@ -496,6 +501,7 @@ type Table struct {
 	isNilTable    bool
 	parentTable   *Table
 	depth         int
+	leafTable
 }
 
 // For GOB.
@@ -528,7 +534,7 @@ type Row struct {
 }
 
 type CellInfo struct {
-	Table    *Table
+	Table    *Table	// A reference to (not a copy of) the enclosing table (not the parent table, not a cell table).
 	ColName  string
 	ColType  string
 	ColIndex int
@@ -3623,7 +3629,7 @@ where(UtilFuncName())
 	}
 
 // TODO: Restore the HasCircularReference() test.
-//
+/*
 	hasCircularReference, err := table.HasCircularReference()
 	if hasCircularReference {
 where("table.HasCircularReference() = true")
@@ -3631,7 +3637,7 @@ where("table.HasCircularReference() = true")
 	} else {
 where("table.HasCircularReference() = false")
 	}
-//
+*/
 
 	const firstRow = 0
 where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
@@ -4628,7 +4634,8 @@ where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
 		return
 	}
 
-	err = treeTable.Walk(DontWalkNestedTables, visitTable, nil, visitCell)
+	var walkSafe WalkSafe = make(WalkSafe)
+	err = treeTable.Walk(DontWalkNestedTables, walkSafe, visitTable, nil, visitCell)
 	if err != nil {
 where("visit return")
 		return

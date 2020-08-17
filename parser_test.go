@@ -261,7 +261,8 @@ func TestTable_Visit(t *testing.T) {
 	}
 
 	const walkDeep = true
-	err = table.Walk(walkDeep, visitTable, nil, visitCell)
+	var walkSafe gotables.WalkSafe = make(gotables.WalkSafe)
+	err = table.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}
@@ -361,7 +362,8 @@ func ExampleTable_Walk() {
 	}
 
 	const walkDeep = true
-	err = table.Walk(walkDeep, visitTable, nil, visitCell)
+	var walkSafe gotables.WalkSafe = make(gotables.WalkSafe)
+	err = table.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
 	if err != nil {
 		panic(err)
 	}

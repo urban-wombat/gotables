@@ -1152,7 +1152,7 @@ func ExampleTable_GetTableAsJSON_nestedTablesCircularReference() {
 	}
 	fmt.Println()
 
-// TODO: Uncomment after 16.08.2020
+// TODO: Restore Uncomment after 16.08.2020
 //	hasCircularReference, err := table.HasCircularReference()
 //	if hasCircularReference {
 //where(err)

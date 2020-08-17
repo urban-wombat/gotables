@@ -105,7 +105,8 @@ func TestTable_Walk_countInts(t *testing.T) {
 	}
 
 	const walkDeep = true
-	err = table1.Walk(walkDeep, visitTable, nil, visitCell)
+	var walkSafe gotables.WalkSafe = make(gotables.WalkSafe)
+	err = table1.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
 	if err != nil {
 		t.Fatal(err)
 	}

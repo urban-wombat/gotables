@@ -47,7 +47,8 @@ func (tableSet *TableSet) Walk(
 			return
 		}
 
-		err = table.Walk(walkNestedTables, visitTable, visitRow, visitCell)
+		var walkSafe WalkSafe = make(WalkSafe)
+		err = table.Walk(walkNestedTables, walkSafe, visitTable, visitRow, visitCell)
 		if err != nil {
 			return
 		}
@@ -65,8 +66,10 @@ func (tableSet *TableSet) Walk(
 
 	If visitTable or visitCell are nil, no action will be taken in the nil case.
 */
+type WalkSafe map[*Table]struct{}
 func (table *Table) Walk(
 	walkNestedTables bool,
+	walkSafe WalkSafe,
 	visitTable func(*Table) error,
 	visitRow func(Row) error,
 	visitCell func(bool, CellInfo) error) (err error) {
@@ -75,6 +78,13 @@ func (table *Table) Walk(
 		err = fmt.Errorf("table.%s(): table is nil", UtilFuncNameNoParens())
 		return
 	}
+
+where(fmt.Sprintf("Walk() walkSafe = %p", walkSafe))
+where(fmt.Sprintf("Walk() walkSafe = %v", walkSafe))
+
+	// Set to true and set false later if found to be false.
+	table.leafTable.isLeafTable = true
+	table.leafTable.isKnown = false
 
 	// Visit table.
 	if visitTable != nil {
@@ -85,9 +95,6 @@ func (table *Table) Walk(
 	}
 
 	// Visit cell values, row by row.
-
-	var isLeafTable bool = true	// This table has zero nested tables.
-	_ = isLeafTable
 
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {
 
@@ -126,26 +133,44 @@ func (table *Table) Walk(
 			if walkNestedTables {
 				if IsTableColType(cellInfo.ColType) {
 
+					table.leafTable.isKnown = true	// Kind of "known" at this point.
+
 					var nestedTable *Table
 					nestedTable, err = table.GetTableByColIndex(colIndex, rowIndex)
 					if err != nil {
 						return
 					}
 
+/*
 					var isNilTable bool
 					isNilTable, err = nestedTable.IsNilTable()
 					if err != nil {
 						return
 					}
-					if !isNilTable {
-						isLeafTable = false
-					}
+*/
+//					if !isNilTable {
+						// Only worry about tables that may have nested tables.
+						table.leafTable.isLeafTable = false
+
+						// Have we already seen this table?
+where(fmt.Sprintf("walkSafe: %v", walkSafe))
+						_, exists := walkSafe[nestedTable]
+						if exists { // Invalid table with circular reference!
+							// Construct CircRefError.
+							circError := NewCircRefError(table, nestedTable, "")
+							err = fmt.Errorf("%s: visitCell()", circError) // Wrap circError in err.
+							return err
+						} else {
+							// Add this nested table to the map.
+							walkSafe[nestedTable] = EmptyStruct
+						}
+//					}
 
 					// Down into nested table.
 					nestedTable.depth++
 
 					// Recursive call to visit nested tables.
-					err = nestedTable.Walk(walkNestedTables, visitTable, visitRow, visitCell)
+					err = nestedTable.Walk(walkNestedTables, walkSafe, visitTable, visitRow, visitCell)
 					if err != nil {
 						return
 					}
@@ -330,7 +355,8 @@ func (rootTable *Table) IsValidTableNesting() (valid bool, err error) {
 		return nil
 	}
 
-	err = rootTable.Walk(walkNestedTables, nil, nil, visitCell)
+	var walkSafe WalkSafe = make(WalkSafe)
+	err = rootTable.Walk(walkNestedTables, walkSafe, nil, nil, visitCell)
 	if err != nil {
 		// Found a circular reference!
 		return false, err
@@ -367,5 +393,64 @@ func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCir
 }
 
 func (table *Table) CopyDeep(copyRowsAlso bool) (tableCopy *Table, err error) {
+	if table == nil {
+		return nil, fmt.Errorf("table.%s: table is nil", UtilFuncName())
+	}
+
+	if copyRowsAlso == false {
+		// Zero nested tables to copy, revert to simple Copy().
+		var dontCopyRows bool = copyRowsAlso
+		return table.Copy(dontCopyRows)
+	}
+
+	var visitTable = func(t *Table) (err error) {
+		where(fmt.Sprintf("[%s]", t.Name()))
+		where(fmt.Sprintf("isKnown = %t", t.leafTable.isKnown))
+		where(fmt.Sprintf("isLeafTable = %t", t.leafTable.isLeafTable))
+		return
+	}
+
+	var visitCell = func(walkDeep bool, cell CellInfo) (err error) {
+		if IsTableColType(cell.ColType) {
+			where(fmt.Sprintf("[%s] IsTableColType", cell.Table.Name()))
+
+			var nestedTable *Table
+			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
+			if err != nil {
+				return
+			}
+
+			var hasCircularReference bool
+			hasCircularReference, err = nestedTable.HasCircularReference()
+			if !hasCircularReference && err != nil {
+				return
+			}
+
+			if hasCircularReference {
+				const copyRowsAlso = true
+				var nestedTableCopy *Table
+				nestedTableCopy, err = nestedTable.Copy(copyRowsAlso)
+				if err != nil {
+					return
+				}
+
+				err = cell.Table.SetTableByColIndex(cell.ColIndex, cell.RowIndex, nestedTableCopy)
+				if err != nil {
+					return
+				}
+			}
+		}
+
+		return
+	}
+
+	const walkDeep = true
+	var walkSafe WalkSafe = make(WalkSafe)
+where(fmt.Sprintf("declaring walkSafe = %p", walkSafe))
+	err = table.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
+	if err != nil {
+		return nil, err
+	}
+
 	return
 }
