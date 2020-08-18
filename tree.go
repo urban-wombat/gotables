@@ -82,11 +82,16 @@ func (table *Table) Walk(
 		return
 	}
 
-where(fmt.Sprintf("Walk() walkSafe %p = %v", walkSafe, walkSafe))
+	if table == nil {
+		err = fmt.Errorf("table.%s(): walkSafe is nil", UtilFuncNameNoParens())
+		return
+	}
+
+	// where(fmt.Sprintf("Walk() walkSafe %p = %v", walkSafe, walkSafe))
 
 	// Visit table.
 	if visitTable != nil {
-where("visitTable")
+		// where("visitTable")
 		err = visitTable(table)
 		if err != nil {
 			return
@@ -114,7 +119,7 @@ where("visitTable")
 		}
 
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
-where(fmt.Sprintf("visiting cell col %d row %d", colIndex, rowIndex))
+		// where(fmt.Sprintf("visiting cell col %d row %d", colIndex, rowIndex))
 
 			var cellInfo CellInfo
 			cellInfo, err = table.GetCellInfoByColIndex(colIndex, rowIndex)
@@ -394,7 +399,7 @@ func (parentTable *Table) isCircularReference(candidateChildTable *Table) (isCir
 }
 
 func (table *Table) CopyDeep() (tableCopy *Table, err error) {
-where(UtilFuncName())
+	// where(UtilFuncName())
 	if table == nil {
 		return nil, fmt.Errorf("table.%s: table is nil", UtilFuncName())
 	}
@@ -404,20 +409,20 @@ where(UtilFuncName())
 	tableCopy = table
 
 	var visitTable = func(t *Table) (err error) {
-		where(fmt.Sprintf("[%s]", t.Name()))
+		// where(fmt.Sprintf("[%s]", t.Name()))
 		return
 	}
 
 	var visitCell = func(walkDeep bool, cell CellInfo) (err error) {
 		if IsTableColType(cell.ColType) {
-			where(fmt.Sprintf("[%s] IsTableColType", cell.Table.Name()))
+			// where(fmt.Sprintf("[%s] IsTableColType", cell.Table.Name()))
 
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTableByColIndex(cell.ColIndex, cell.RowIndex)
 			if err != nil {
 				return
 			}
-			where(fmt.Sprintf("nestedTable = %p", nestedTable))
+			// where(fmt.Sprintf("nestedTable = %p", nestedTable))
 
 			var isNilTable bool
 			isNilTable, err = nestedTable.IsNilTable()
@@ -437,7 +442,7 @@ where(UtilFuncName())
 
 			err = cell.Table.SetTableByColIndex(cell.ColIndex, cell.RowIndex, nestedTableCopy)
 			if err != nil {
-where(fmt.Sprintf("nestedTableCopy = %p", nestedTableCopy))
+			// where(fmt.Sprintf("nestedTableCopy = %p", nestedTableCopy))
 				return
 			}
 		}
@@ -448,10 +453,10 @@ where(fmt.Sprintf("nestedTableCopy = %p", nestedTableCopy))
 
 	const walkDeep = true
 	var walkSafe WalkSafe = make(WalkSafe)
-where(fmt.Sprintf("declaring walkSafe = %p", walkSafe))
-where("BEGIN Walk()")
+	// where(fmt.Sprintf("declaring walkSafe = %p", walkSafe))
+	// where("BEGIN Walk()")
 	err = table.Walk(walkDeep, walkSafe, visitTable, nil, visitCell)
-where("END Walk()")
+	// where("END Walk()")
 	if err != nil {
 		return nil, err
 	}

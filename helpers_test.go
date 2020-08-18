@@ -8870,5 +8870,5 @@ func TestColumnConstants(t *testing.T) {
 	}
 	colName++
 
-	// println(table.String())
+	// fmt.Println(table.String())
 }

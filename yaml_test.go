@@ -2,7 +2,7 @@ package gotables_test
 
 import (
 	_ "encoding/binary"
-	_ "fmt"
+	"fmt"
 	"math"
 	_ "os"
 	"testing"
@@ -155,7 +155,7 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 		//	var i2 int = int(f2)
 		//	fmt.Printf("i2: %d\n", i2)
 	}
-	println()
+	fmt.Println()
 	{
 		//	var i1 int64 = 9223372036854775807 // MaxInt64
 		//	fmt.Printf("i1: %d\n", i1)
@@ -175,7 +175,7 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	   	var i1 int64
 	   	var i2 int64
 	   	var f float64
-	   println()
+	   fmt.Println()
 	   //where("working ...")
 	   //	const start = 17000000000000000
 	   	const start = 1152921504600000000
@@ -188,7 +188,7 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	   			if (i2-inc) == (i1-inc) {
 	   				fmt.Printf("%d == %d\n", i1-inc, i2-inc)
 	   			} else {
-	   				println("What th!")
+	   				fmt.Println("What th!")
 	   			}
 	   			os.Exit(43)
 	   		}
@@ -198,17 +198,17 @@ func Test_NewTableSetFromYAML(t *testing.T) {
 	//var maxint int = 9223372036854775807
 	//fmt.Printf("%d\n", maxint)
 	//fmt.Printf("%b\n", maxint)
-	//println()
+	//fmt.Println()
 	//
 	//maxint = -9223372036854775808
 	//fmt.Printf("%d\n", maxint)
 	//fmt.Printf("%b\n", maxint)
-	//println()
+	//fmt.Println()
 	//
 	//var f float64 = float64(9223372036854775807)
 	//fmt.Printf("%f\n", f)
 	//fmt.Printf("%b\n", f)
-	//println()
+	//fmt.Println()
 	//
 	//maxint = 9223372036854775807
 	//fmt.Printf("maxint bits: %b\n", maxint)

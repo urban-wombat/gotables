@@ -4287,7 +4287,7 @@ func TestTable_Copy(t *testing.T) {
 
 		tableRowCount := table.RowCount()
 		tableCopyRowCount := tableCopy.RowCount()
-where(fmt.Sprintf("tableRowCount = %d, tableCopyRowCount = %d", tableRowCount, tableCopyRowCount))
+//where(fmt.Sprintf("tableRowCount = %d, tableCopyRowCount = %d", tableRowCount, tableCopyRowCount))
 		if tableCopyRowCount != tableRowCount {
 			t.Fatalf("table.Copy() expecting %d rows but got %d rows", tableRowCount, tableCopyRowCount)
 		}

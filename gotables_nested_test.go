@@ -150,7 +150,7 @@ func TestTable_StringNested1(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	where("\n\n" + t3.StringNested())
+//	where("\n\n" + t3.StringNested())
 
 //		var yamlString string
 //		yamlString, err = tableSet1.GetTableSetAsYAML()
@@ -187,7 +187,6 @@ func TestTable_StringNested1(t *testing.T) {
 //			//	var i2 int = int(f2)
 //			//	fmt.Printf("i2: %d\n", i2)
 //		}
-//		println()
 //		{
 //			//	var i1 int64 = 9223372036854775807 // MaxInt64
 //			//	fmt.Printf("i1: %d\n", i1)
@@ -207,7 +206,6 @@ func TestTable_StringNested1(t *testing.T) {
 //		   	var i1 int64
 //		   	var i2 int64
 //		   	var f float64
-//		   println()
 //		   //where("working ...")
 //		   //	const start = 17000000000000000
 //		   	const start = 1152921504600000000
@@ -220,7 +218,7 @@ func TestTable_StringNested1(t *testing.T) {
 //		   			if (i2-inc) == (i1-inc) {
 //		   				fmt.Printf("%d == %d\n", i1-inc, i2-inc)
 //		   			} else {
-//		   				println("What th!")
+//		   				fmt.Println("What th!")
 //		   			}
 //		   			os.Exit(43)
 //		   		}
@@ -230,17 +228,14 @@ func TestTable_StringNested1(t *testing.T) {
 //		//var maxint int = 9223372036854775807
 //		//fmt.Printf("%d\n", maxint)
 //		//fmt.Printf("%b\n", maxint)
-//		//println()
 //		//
 //		//maxint = -9223372036854775808
 //		//fmt.Printf("%d\n", maxint)
 //		//fmt.Printf("%b\n", maxint)
-//		//println()
 //		//
 //		//var f float64 = float64(9223372036854775807)
 //		//fmt.Printf("%f\n", f)
 //		//fmt.Printf("%b\n", f)
-//		//println()
 //		//
 //		//maxint = 9223372036854775807
 //		//fmt.Printf("maxint bits: %b\n", maxint)
@@ -346,7 +341,7 @@ func TestTable_StringNested2(t *testing.T) {
 			}
 		}
 
-println(table.String())
+//where(table.String())
 		tableSlice = append(tableSlice, table)
 	}
 
@@ -356,7 +351,7 @@ println(table.String())
 			t.Fatal(err)
 		}
 	}
-	println(tableSlice[0].StringNested())
+//where(tableSlice[0].StringNested())
 }
 
 func newTableFromTableIndex(tableIndex int, rows int) (table *gotables.Table, err error) {
@@ -431,7 +426,7 @@ where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
 */
 
 func TestTable_CopyDeep(t *testing.T) {
-where(gotables.UtilFuncName())
+	// where(gotables.UtilFuncName())
 	var err error
 
 	table, err := gotables.NewTableFromString(`
@@ -473,22 +468,18 @@ where(gotables.UtilFuncName())
 	if err != nil {
 		t.Fatal(err)
 	}
-where(table)
-where(tableCopy)
+	// where(table)
+	// where(tableCopy)
 
 	_, err = tableCopy.HasCircularReference()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-/*
-	const depth = 1
-	treeTable, err := table.NewTreeTable(depth)
+	_, err = tableCopy.Equals(table)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_ = treeTable
-*/
 
 	return
 }

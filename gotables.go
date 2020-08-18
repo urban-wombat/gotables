@@ -573,8 +573,8 @@ func NewNilTable() *Table {
 		}
 */
 func NewTable(tableName string) (*Table, error) {
-UtilPrintCaller()
-where(UtilFuncName())
+//UtilPrintCaller()
+//where(UtilFuncName())
 	var newTable *Table = NewNilTable()
 
 	err := newTable.SetName(tableName)
@@ -2543,8 +2543,8 @@ type rowAsInterface []interface{}
 	To avoid this, use the TableSet.SetName() method.
 */
 func (table *Table) SetName(tableName string) error {
-UtilPrintCaller()
-where(UtilFuncName())
+//UtilPrintCaller()
+//where(UtilFuncName())
 	if table == nil {
 		return fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
@@ -3495,8 +3495,8 @@ func (table *Table) AppendColsFromTable(fromTable *Table) error {
 }
 
 func (toTable *Table) AppendRowsFromTable(fromTable *Table, firstRow int, lastRow int) error {
-where("caller: " + UtilFuncCaller())
-where(UtilFuncName())
+	// where("caller: " + UtilFuncCaller())
+	// where(UtilFuncName())
 	var err error
 
 	if toTable == nil {
@@ -3549,6 +3549,7 @@ where(UtilFuncName())
 			if err != nil {
 				return err
 			}
+/*
 where("\n" + fromTable.String())
 where("\n" + fromTable.StringNested())
 isTable, err := fromTable.IsTableColByColIndex(fromCol)
@@ -3563,6 +3564,7 @@ os.Exit(666)
 where("\n" + cellVal.(*Table).String())
 where("\n" + cellVal.(*Table).StringNested())
 }
+*/
 
 			err = toTable.SetVal(colName, toRow, cellVal)
 			if err != nil {
@@ -3619,8 +3621,8 @@ func (table *Table) NewTableFromRows(newTableName string, firstRow int, lastRow 
 	To copy some but not all rows, use NewTableFromRows()
 */
 func (table *Table) CopyCols() (tableCopy *Table, err error) {
-where("caller: " + UtilFuncCaller())
-where(UtilFuncName())
+	// where("caller: " + UtilFuncCaller())
+	// where(UtilFuncName())
 
 	if table == nil {
 		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -3629,18 +3631,18 @@ where(UtilFuncName())
 // TODO: Restore the HasCircularReference() test.
 	hasCircularReference, err := table.HasCircularReference()
 	if hasCircularReference {
-where("table.HasCircularReference() = true")
+		// where("table.HasCircularReference() = true")
 		return nil, err
 	} else {
-where("table.HasCircularReference() = false")
+		// where("table.HasCircularReference() = false")
 	}
 
 	const firstRow = 0
-where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
-where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
+	// where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
+	// where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
 
-UtilPrintCaller()
-where(UtilFuncName())
+//UtilPrintCaller()
+	// where(UtilFuncName())
 	tableCopy, err = NewTable(table.Name())
 	if err != nil {
 		return nil, err
@@ -3660,8 +3662,8 @@ where(UtilFuncName())
 	To copy some but not all rows, use NewTableFromRows()
 */
 func (table *Table) Copy() (tableCopy *Table, err error) {
-where("caller: " + UtilFuncCaller())
-where(UtilFuncName())
+	// where("caller: " + UtilFuncCaller())
+	// where(UtilFuncName())
 
 	if table == nil {
 		return nil, fmt.Errorf("%s table.%s table is <nil>", UtilFuncSource(), UtilFuncName())
@@ -3670,18 +3672,18 @@ where(UtilFuncName())
 // TODO: Restore the HasCircularReference() test.
 	hasCircularReference, err := table.HasCircularReference()
 	if hasCircularReference {
-where("table.HasCircularReference() = true")
+		// where("table.HasCircularReference() = true")
 		return nil, err
 	} else {
-where("table.HasCircularReference() = false")
+		// where("table.HasCircularReference() = false")
 	}
 
 	const firstRow = 0
-where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
-where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
+	// where("BEFORE AppendColsFromTable()\n\n" + table.String() + "\n")
+	// where(fmt.Sprintf("table.RowCount() = %d", table.RowCount()))
 
-UtilPrintCaller()
-where(UtilFuncName())
+//UtilPrintCaller()
+	// where(UtilFuncName())
 	tableCopy, err = NewTable(table.Name())
 	if err != nil {
 		return nil, err
@@ -3691,8 +3693,8 @@ where(UtilFuncName())
 	if err != nil {
 		return nil, err
 	}
-where("AFTER AppendColsFromTable()\n\n" + tableCopy.String() + "\n")
-where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
+	// where("AFTER AppendColsFromTable()\n\n" + tableCopy.String() + "\n")
+	// where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
 
 	if table.RowCount() > 0 {
 		lastRow := table.RowCount() - 1
@@ -3701,8 +3703,8 @@ where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
 			return nil, err
 		}
 	}
-where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
-where("AFTER AppendRowsFromTable()\n\n" + tableCopy.String() + "\n")
+	// where(fmt.Sprintf("tableCopy.RowCount() = %d", tableCopy.RowCount()))
+	// where("AFTER AppendRowsFromTable()\n\n" + tableCopy.String() + "\n")
 
 	return tableCopy, nil
 }
@@ -4594,8 +4596,8 @@ globalDepth++
 	return table unchanged.
 */
 func (rootTable *Table) NewTreeTable1(tablesDepth int) (treeTable *Table, err error) {
-where("caller: " + UtilFuncCaller())
-where(UtilFuncName())
+	// where("caller: " + UtilFuncCaller())
+	// where(UtilFuncName())
 	const DontWalkNestedTables = true
 	var depth int = -1	// Allow that visitTable pre-increments depth.
 	var cellCount int = 0
@@ -4608,25 +4610,25 @@ where(UtilFuncName())
 	}
 
 	var visitTable = func(treeTable *Table) (err error) {
-where("visitTable")
+		// where("visitTable")
 		depth++
-where(fmt.Sprintf("depth++ = %d", depth))
+		// where(fmt.Sprintf("depth++ = %d", depth))
 		return
 	}
 
 	var visitCell = func(DontWalkNestedTables bool, cell CellInfo) (err error) {
-where("visitCell")
+		// where("visitCell")
 		cellCount++
-where(fmt.Sprintf("cellCount = %d", cellCount))
-where(fmt.Sprintf("depth=%d", depth))
+		// where(fmt.Sprintf("cellCount = %d", cellCount))
+		// where(fmt.Sprintf("depth=%d", depth))
 		if depth >= tablesDepth {
-where(depth)
-where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth))
+			// where(depth)
+			// where(fmt.Sprintf("visit return: depth=%d >= tablesDepth=%d", depth, tablesDepth))
 			return
 		}
 
 		if cell.ColType == "*Table" {
-where(fmt.Sprintf(`cell.ColType == "*Table"`))
+			// where(fmt.Sprintf(`cell.ColType == "*Table"`))
 			var nestedTable *Table
 			nestedTable, err = cell.Table.GetTable(cell.ColName, cell.RowIndex)
 			if err != nil {
@@ -4646,26 +4648,26 @@ where(fmt.Sprintf(`cell.ColType == "*Table"`))
 				tableCopyName := parentTableCopy.Name()
 //				parentTableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
 				newTableName := fmt.Sprintf("%s%c", tableCopyName, rune('A' + cellCount-1))
-where(fmt.Sprintf("newTableName: %s", newTableName))
+				// where(fmt.Sprintf("newTableName: %s", newTableName))
 				err = parentTableCopy.SetName(newTableName)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
-where(fmt.Sprintf("parentTableCopy:\n%s", parentTableCopy))
+				// where(fmt.Sprintf("parentTableCopy:\n%s", parentTableCopy))
 
 				newColName := fmt.Sprintf("%s%02d", cell.ColName, cellCount)
-where(fmt.Sprintf("newColName: %s", newColName))
+				// where(fmt.Sprintf("newColName: %s", newColName))
 				err = parentTableCopy.RenameCol(cell.ColName, newColName)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 
-where(fmt.Sprintf("BEFORE treeTable:\n%s", treeTable.String()))
+				// where(fmt.Sprintf("BEFORE treeTable:\n%s", treeTable.String()))
 				err = treeTable.SetTable(cell.ColName, cell.RowIndex, parentTableCopy)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
-where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
+				// where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
 			}
 		}
 		return
@@ -4674,11 +4676,11 @@ where(fmt.Sprintf("AFTER  treeTable:\n%s", treeTable.String()))
 	var walkSafe WalkSafe = make(WalkSafe)
 	err = treeTable.Walk(DontWalkNestedTables, walkSafe, visitTable, nil, visitCell)
 	if err != nil {
-where("visit return")
+		// where("visit return")
 		return
 	}
 
-where("visit final return")
+	// where("visit final return")
 	return
 }
 
@@ -4697,31 +4699,31 @@ where("visit final return")
 	return table unchanged.
 */
 func (table *Table) NewTreeTable(depth int) (treeTable *Table, err error) {
-where("caller: " + UtilFuncCaller())
-where(UtilFuncName())
+	// where("caller: " + UtilFuncCaller())
+	// where(UtilFuncName())
 
 	if table == nil {
 		return nil, fmt.Errorf("%s table.%s: table is <nil>", UtilFuncSource(), UtilFuncName())
 	}
 
-where("\n" + table.String())
+	// where("\n" + table.String())
 	nestedTable, err := table.Copy()
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
-where("\n" + nestedTable.String())
+	// where("\n" + nestedTable.String())
 
 	err = newTreeTable_recursive(table, nestedTable, depth)
 	if err != nil {
 		return nil, fmt.Errorf("%s %v", UtilFuncSource(), err)
 	}
 
-where("visit final return")
+	// where("visit final return")
 	return table, nil
 }
 
 func newTreeTable_recursive(originalTable *Table, table *Table, depth int) (err error) {
-where(fmt.Sprintf("newTreeTable_recursive(depth=%d)\n", depth))
+	// where(fmt.Sprintf("newTreeTable_recursive(depth=%d)\n", depth))
 
 	if originalTable == nil {
 		return fmt.Errorf("%s originalTable.%s: originalTable is <nil>", UtilFuncSource(), UtilFuncName())
@@ -4741,7 +4743,7 @@ where(fmt.Sprintf("newTreeTable_recursive(depth=%d)\n", depth))
 	}
 
 //where(fmt.Sprintf("BEFORE processing isTableCol table:\n%s", table.StringNested()))
-where(fmt.Sprintf("for rowIndex := 0; rowIndex < table.RowCount()=%d; rowIndex++", table.RowCount()))
+	// where(fmt.Sprintf("for rowIndex := 0; rowIndex < table.RowCount()=%d; rowIndex++", table.RowCount()))
 	for rowIndex := 0; rowIndex < table.RowCount(); rowIndex++ {	// Row Major order.
 		for colIndex := 0; colIndex < table.ColCount(); colIndex++ {
 			isTableCol, err := table.IsTableColByColIndex(colIndex)
@@ -4751,7 +4753,7 @@ where(fmt.Sprintf("for rowIndex := 0; rowIndex < table.RowCount()=%d; rowIndex++
 
 //where("\n" + table.String())
 			if isTableCol {
-where(fmt.Sprintf("cell.ColType == \"*Table\""))
+	// where(fmt.Sprintf("cell.ColType == \"*Table\""))
 				nestedTable, err := table.GetTableByColIndex(colIndex, rowIndex)
 				if err != nil {
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
@@ -4763,7 +4765,7 @@ where(fmt.Sprintf("cell.ColType == \"*Table\""))
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 				if isNilTable {
-where("isNilTable")
+//where("isNilTable")
 					colName, err := table.ColName(colIndex)
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
@@ -4772,13 +4774,13 @@ where("isNilTable")
 					where(fmt.Sprintf("originalTable:>>>>>>\n%s\n<<<<<<", originalTable.StringNested()))
 
 					// Copy the originalTable into this cell.
-where("Copy the originalTable into this cell.")
-where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
+//where("Copy the originalTable into this cell.")
+//where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
 					tableCopy, err := originalTable.Copy()
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
-where(fmt.Sprintf("tableCopy:>>>>>>\n%s\n<<<<<<", tableCopy.StringNested()))
+//where(fmt.Sprintf("tableCopy:>>>>>>\n%s\n<<<<<<", tableCopy.StringNested()))
 //	
 //						tableCopyName := tableCopy.Name()
 //	//					tableCopy.SetName(tableCopyName + "_" + string('a' + cellCount-1))
@@ -4798,14 +4800,14 @@ where(fmt.Sprintf("tableCopy:>>>>>>\n%s\n<<<<<<", tableCopy.StringNested()))
 //	
 
 //where(fmt.Sprintf("BEFORE *originalTable:\n%s", (*originalTable).StringNested()))
-where(fmt.Sprintf("BEFORE *table:\n%s", table.StringNested()))
+//where(fmt.Sprintf("BEFORE *table:\n%s", table.StringNested()))
 //					err = (*originalTable).SetTable(colName, rowIndex, tableCopy)
 					err = table.SetTable(colName, rowIndex, tableCopy)
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
 //where(fmt.Sprintf("AFTER  *originalTable:\n%s", (*originalTable).StringNested()))
-where(fmt.Sprintf("AFTER  *table:\n%s", table.StringNested()))
+//where(fmt.Sprintf("AFTER  *table:\n%s", table.StringNested()))
 				
 					if depth >= 1 {
 						fmt.Printf("calling newTreeTable_recursive(%d)\n", depth-1)
@@ -4821,6 +4823,6 @@ where(fmt.Sprintf("AFTER  *table:\n%s", table.StringNested()))
 		}
 	}
 
-where("return")
+//where("return")
 	return
 }

@@ -561,22 +561,22 @@ func printYaml(yamlSlices []map[string][]map[string]interface{}, yamlArray []map
 	if yamlArray != nil {
 		out, err = yaml.Marshal(yamlArray)
 		if err != nil {
-			println("PARSE ERROR")
+			fmt.Println("PARSE ERROR")
 		}
 	} else if yamlSlices != nil {
 		out, err = yaml.Marshal(yamlSlices)
 		if err != nil {
-			println("PARSE ERROR")
+			fmt.Println("PARSE ERROR")
 		}
 	} else if yamlObject != nil {
 		out, err = yaml.Marshal(yamlObject)
 		if err != nil {
-			println("PARSE ERROR")
+			fmt.Println("PARSE ERROR")
 		}
 	} else {
-		println("ARG ERROR!")
+		fmt.Println("ARG ERROR!")
 	}
-	println("---\n" + string(out))
+	fmt.Println("---\n" + string(out))
 }
 
 func printSlice(s []map[string]interface{}) string {
