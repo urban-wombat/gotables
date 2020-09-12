@@ -390,7 +390,6 @@ func newTableFromTableIndex(tableIndex int, rows int) (table *gotables.Table, er
 	return
 }
 
-/*
 // TODO: uncomment after 15.08.2020
 func TestTable_NewTreeTable(t *testing.T) {
 	var err error
@@ -399,12 +398,16 @@ func TestTable_NewTreeTable(t *testing.T) {
 		[table]
 		col
 		*Table
-		[Fred]
+		[Betty]
 		[]
 		[Wilma]`)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+where(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+where(table.String())
+where("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
 	const depth = 1
 	treeTable, err := table.NewTreeTable(depth)
@@ -412,8 +415,14 @@ func TestTable_NewTreeTable(t *testing.T) {
 		t.Fatal(err)
 	}
 
+where(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+where(treeTable.String())
+where("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
+where()
 	var treeTableStringNestedString string = treeTable.StringNested()
 where("############################################################\n" + treeTableStringNestedString)
+where()
 
 	tableSet, err := gotables.NewTableSetFromString(treeTableStringNestedString)
 	if err != nil {
@@ -423,7 +432,6 @@ where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
 
 	return
 }
-*/
 
 func TestTable_CopyDeep(t *testing.T) {
 	// where(gotables.UtilFuncName())
