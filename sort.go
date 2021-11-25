@@ -293,6 +293,7 @@ func (table *Table) getColNames() []string {
 
 // Sorting functions:
 
+// Note: Uppercase sorts to before lowercase.
 var compare_Alphabetic_string compareFunc = func(i, j interface{}) int {
 	var si_string string = i.(string)
 	var sj_string string = j.(string)
@@ -472,11 +473,10 @@ var compare_bool compareFunc = func(i, j interface{}) int {
 /*
 	table.Sort() has 2 modes:-
 
-	Mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
+	Sort mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
+	Sort mode (1) limitation: sorts in ascending order only.
 
-	Mode (2) Zero args: Sort this table by this table's currently-set sort keys.
-
-	Mode (1) limitation: sorts in ascending order only.
+	Sort mode (2) Zero args: Sort this table by this table's currently-set sort keys.
 
 	To sort one or more columns (keys) in reverse-order ("key2" in this example):
 
@@ -493,13 +493,14 @@ func (table *Table) Sort(sortCols ...string) error {
 	}
 
 	if len(sortCols) > 0 {
-		// Mode (1)
+		// Sort mode (1)
 		err := table.SetSortKeys(sortCols...)
 		if err != nil {
 			return err
 		}
 	}
 
+	// Zero arguments provided, so expecting at least one sort key.
 	if len(table.sortKeys) == 0 {
 		return fmt.Errorf("%s cannot sort table that has 0 sort keys - use SetSortKeys() or Sort(keys []string)",
 			UtilFuncName())
@@ -1238,11 +1239,11 @@ func (table *Table) SearchRange(searchValues ...interface{}) (firstRow int, last
 
 	table.SortUnique() has 2 modes:-
 
-	Mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
+	Sort mode (1) With args: Sort this table by 1 or more column names provided as arguments, OR
 
-	Mode (2) Zero args: Sort this table by this table's currently-set sort keys.
+	Sort mode (2) Zero args: Sort this table by this table's currently-set sort keys.
 
-	Mode (1) limitation: sorts in ascending order only.
+	Sort mode (1) limitation: sorts in ascending order only.
 
 	To sort one or more columns (keys) in reverse-order ("key2" in this example):
 
@@ -1263,7 +1264,7 @@ func (inputTable *Table) SortUnique(sortCols ...string) (newTableUnique *Table, 
 	}
 
 	if len(sortCols) > 0 {
-		// Mode (1)
+		// Sort mode (1)
 		err := inputTable.SetSortKeys(sortCols...)
 		if err != nil {
 			return nil, err

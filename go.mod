@@ -21,8 +21,7 @@ require (
 	gobot.io/x/gobot v1.14.0 // indirect
 	gocv.io/x/gocv v0.25.0 // indirect
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
-	golang.org/x/net v0.0.0-20201022231255-08b38378de70 // indirect
-	golang.org/x/sys v0.0.0-20201022201747-fb209a7c41cd // indirect
+	golang.org/x/mobile v0.0.0-20210716004757-34ab1303b554 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86
 	periph.io/x/periph v3.6.4+incompatible // indirect
 )

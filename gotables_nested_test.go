@@ -8,6 +8,8 @@ import (
 	"github.com/urban-wombat/gotables"
 )
 
+var CURRENT_TESTS_VERBOSE bool = false
+
 /*
 Copyright (c) 2018 Malcolm Gorman
 
@@ -405,9 +407,11 @@ func TestTable_NewTreeTable(t *testing.T) {
 		t.Fatal(err)
 	}
 
+if CURRENT_TESTS_VERBOSE {
 where(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 where(table.String())
 where("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+}
 
 	const depth = 1
 	treeTable, err := table.NewTreeTable(depth)
@@ -415,20 +419,26 @@ where("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 		t.Fatal(err)
 	}
 
+if CURRENT_TESTS_VERBOSE {
 where(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 where(treeTable.String())
 where("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
 where()
+}
 	var treeTableStringNestedString string = treeTable.StringNested()
+if CURRENT_TESTS_VERBOSE {
 where("############################################################\n" + treeTableStringNestedString)
 where()
+}
 
 	tableSet, err := gotables.NewTableSetFromString(treeTableStringNestedString)
 	if err != nil {
 		t.Fatal(err)
 	}
+if CURRENT_TESTS_VERBOSE {
 where(fmt.Sprintf("tableSet.TableCount = %d", tableSet.TableCount()))
+}
 
 	return
 }

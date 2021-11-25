@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+var CURRENT_TESTS_VERBOSE bool = false
+
 /*
 	Visit each table in tableSet.
 
@@ -581,7 +583,9 @@ var globalTreeCalls int
 var globalTreeDepth int
 func (table *Table) NewTreeTable(depth int) (treeTable *Table, err error) {
 globalTreeCalls++
+if CURRENT_TESTS_VERBOSE {
 where(fmt.Sprintf("NewTreeTable(globalTreeCalls=%d)\n", globalTreeCalls))
+}
 	// where("caller: " + UtilFuncCaller())
 	// where(UtilFuncName())
 
@@ -607,9 +611,11 @@ where(fmt.Sprintf("NewTreeTable(globalTreeCalls=%d)\n", globalTreeCalls))
 
 func newTreeTable_recursive(originalTable *Table, table *Table, depth int) (err error) {
 globalTreeDepth++
+if CURRENT_TESTS_VERBOSE {
 where(fmt.Sprintf("newTreeTable_recursive(depth=%d)\n", depth))
 where(fmt.Sprintf("newTreeTable_recursive(globalTreeCalls=%d)\n", globalTreeCalls))
 where(fmt.Sprintf("newTreeTable_recursive(globalTreeDepth=%d)\n", globalTreeDepth))
+}
 
 	if originalTable == nil {
 		return fmt.Errorf("%s originalTable.%s: originalTable is <nil>", UtilFuncSource(), UtilFuncName())
@@ -624,7 +630,10 @@ where(fmt.Sprintf("newTreeTable_recursive(globalTreeDepth=%d)\n", globalTreeDept
 	}
 
 	if depth <= 0 {
+if CURRENT_TESTS_VERBOSE {
+		where()
 		fmt.Printf("newTreeTable_recursive depth %d <= 0 return\n", depth)
+}
 		return nil
 	}
 
@@ -651,19 +660,25 @@ where(fmt.Sprintf("newTreeTable_recursive(globalTreeDepth=%d)\n", globalTreeDept
 					return fmt.Errorf("%s %v", UtilFuncSource(), err)
 				}
 				if isNilTable {
+if CURRENT_TESTS_VERBOSE {
 where("isNilTable")
+}
 					colName, err := table.ColName(colIndex)
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
 					}
+if CURRENT_TESTS_VERBOSE {
 					where(fmt.Sprintf("table [%s] colName %s rowIndex %d\n", table.Name(), colName, rowIndex))
 					where(fmt.Sprintf("\noriginalTable: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"))
 					where(fmt.Sprintf("%s", originalTable.StringNested()))
 					where(fmt.Sprintf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"))
+}
 
 					// Copy the originalTable into this cell.
+if CURRENT_TESTS_VERBOSE {
 where("Copy the originalTable into this cell.")
 where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowIndex))
+}
 					tableCopy, err := originalTable.Copy()
 					if err != nil {
 						return fmt.Errorf("%s %v", UtilFuncSource(), err)
@@ -698,14 +713,19 @@ where(fmt.Sprintf("[%s] col=%s row=%d IsNilTable()", table.Name(), colName, rowI
 //where(fmt.Sprintf("AFTER  *table:\n%s", table.StringNested()))
 				
 					if depth >= 1 {
+if CURRENT_TESTS_VERBOSE {
+						where()
 						fmt.Printf("calling newTreeTable_recursive(%d)\n", depth-1)
+}
 						err = newTreeTable_recursive(originalTable, nestedTable, depth-1)
 						if err != nil {
 							return fmt.Errorf("%s %v", UtilFuncSource(), err)
 						}
 					}
 				} else {
+if CURRENT_TESTS_VERBOSE {
 					where(fmt.Sprintf("not a NilTable: [%s]", nestedTable.Name()))
+}
 				}
 			}
 		}

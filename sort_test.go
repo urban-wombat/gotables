@@ -2058,3 +2058,436 @@ func ExampleTable_SortSimple() {
 	// "ken"    "Go"          200
 	// "rsc"    "Go"          200
 }
+
+func ExampleTable_SortAlphabetic() {
+
+	var tableString string
+	var table *Table
+	var err error
+
+	tableString =
+		`[planets]
+	name         mass distance moons index mnemonic
+	string    float64   float64   int   int string
+	"earth"     1.000      1.0     1     2 "elegant"
+	"Earth"     1.000      1.0     1     2 "elegant"
+	"jupiter" 318.000      5.2    79     4 "just"
+	"Jupiter" 318.000      5.2    79     4 "just"
+	"mars"      0.107      1.5     2     3 "mother"
+	"Mars"      0.107      1.5     2     3 "mother"
+	"mercury"   0.055      0.4     0     0 "my"
+	"Mercury"   0.055      0.4     0     0 "my"
+	"neptune"  17.000     30.6    13     7 "nine"
+	"Neptune"  17.000     30.6    13     7 "nine"
+	"pluto"     0.002     39.4     5     8 "porcupines"
+	"Pluto"     0.002     39.4     5     8 "porcupines"
+	"saturn"   95.000      9.5    82     5 "sat"
+	"Saturn"   95.000      9.5    82     5 "sat"
+	"sun"      333333        0     0    -1 ""
+	"Sun"      333333        0     0    -1 ""
+	"uranus"   15.000     19.2    27     6 "upon"
+	"Uranus"   15.000     19.2    27     6 "upon"
+	"venus"     0.815      0.7     0     1 "very"
+	"Venus"     0.815      0.7     0     1 "very"
+	`
+
+	table, err = NewTableFromString(tableString)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Single column sort. Sort the planets in alphabetic order by name.
+	err = table.SortSimple("name")
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(table)
+
+	// Output:
+	// [planets]
+	// name            mass distance moons index mnemonic
+	// string       float64  float64   int   int string
+	// "Earth"        1.0        1.0     1     2 "elegant"
+	// "earth"        1.0        1.0     1     2 "elegant"
+	// "Jupiter"    318.0        5.2    79     4 "just"
+	// "jupiter"    318.0        5.2    79     4 "just"
+	// "Mars"         0.107      1.5     2     3 "mother"
+	// "mars"         0.107      1.5     2     3 "mother"
+	// "Mercury"      0.055      0.4     0     0 "my"
+	// "mercury"      0.055      0.4     0     0 "my"
+	// "Neptune"     17.0       30.6    13     7 "nine"
+	// "neptune"     17.0       30.6    13     7 "nine"
+	// "Pluto"        0.002     39.4     5     8 "porcupines"
+	// "pluto"        0.002     39.4     5     8 "porcupines"
+	// "Saturn"      95.0        9.5    82     5 "sat"
+	// "saturn"      95.0        9.5    82     5 "sat"
+	// "Sun"     333333.0        0.0     0    -1 ""
+	// "sun"     333333.0        0.0     0    -1 ""
+	// "Uranus"      15.0       19.2    27     6 "upon"
+	// "uranus"      15.0       19.2    27     6 "upon"
+	// "Venus"        0.815      0.7     0     1 "very"
+	// "venus"        0.815      0.7     0     1 "very"
+}
+
+// From: http://listofrandomwords.com/index.cfm?blist
+var words = []string {
+"Adult",
+"Aeroplane",
+"Air",
+"Aircraft Carrier",
+"Airforce",
+"Airport",
+"Album",
+"Alphabet",
+"Apple",
+"Arm",
+"Army",
+"Baby",
+"Baby",
+"Backpack",
+"Balloon",
+"Banana",
+"Bank",
+"Barbecue",
+"Bathroom",
+"Bathtub",
+"Bed",
+"Bed",
+"Bee",
+"Bible",
+"Bible",
+"Bird",
+"Bomb",
+"Book",
+"Boss",
+"Bottle",
+"Bowl",
+"Box",
+"Boy",
+"Brain",
+"Bridge",
+"Butterfly",
+"Button",
+"Cappuccino",
+"Car",
+"Car-race",
+"Carpet",
+"Carrot",
+"Cave",
+"Chair",
+"Chess Board",
+"Chief",
+"Child",
+"Chisel",
+"Chocolates",
+"Church",
+"Church",
+"Circle",
+"Circus",
+"Circus",
+"Clock",
+"Clown",
+"Coffee",
+"Coffee-shop",
+"Comet",
+"Compact Disc",
+"Compass",
+"Computer",
+"Crystal",
+"Cup",
+"Cycle",
+"Data Base",
+"Desk",
+"Diamond",
+"Dress",
+"Drill",
+"Drink",
+"Drum",
+"Dung",
+"Ears",
+"Earth",
+"Egg",
+"Electricity",
+"Elephant",
+"Eraser",
+"Explosive",
+"Eyes",
+"Family",
+"Fan",
+"Feather",
+"Festival",
+"Film",
+"Finger",
+"Fire",
+"Floodlight",
+"Flower",
+"Foot",
+"Fork",
+"Freeway",
+"Fruit",
+"Fungus",
+"Game",
+"Garden",
+"Gas",
+"Gate",
+"Gemstone",
+"Girl",
+"Gloves",
+"God",
+"Grapes",
+"Guitar",
+"Hammer",
+"Hat",
+"Hieroglyph",
+"Highway",
+"Horoscope",
+"Horse",
+"Hose",
+"Ice",
+"Ice-cream",
+"Insect",
+"Jet fighter",
+"Junk",
+"Kaleidoscope",
+"Kitchen",
+"Knife",
+"Leather jacket",
+"Leg",
+"Library",
+"Liquid",
+"Magnet",
+"Man",
+"Map",
+"Maze",
+"Meat",
+"Meteor",
+"Microscope",
+"Milk",
+"Milkshake",
+"Mist",
+"Money $$$$",
+"Monster",
+"Mosquito",
+"Mouth",
+"Nail",
+"Navy",
+"Necklace",
+"Needle",
+"Onion",
+"PaintBrush",
+"Pants",
+"Parachute",
+"Passport",
+"Pebble",
+"Pendulum",
+"Pepper",
+"Perfume",
+"Pillow",
+"Plane",
+"Planet",
+"Pocket",
+"Post-office",
+"Potato",
+"Printer",
+"Prison",
+"Pyramid",
+"Radar",
+"Rainbow",
+"Record",
+"Restaurant",
+"Rifle",
+"Ring",
+"Robot",
+"Rock",
+"Rocket",
+"Roof",
+"Room",
+"Rope",
+"Saddle",
+"Salt",
+"Sandpaper",
+"Sandwich",
+"Satellite",
+"School",
+"Sex",
+"Ship",
+"Shoes",
+"Shop",
+"Shower",
+"Signature",
+"Skeleton",
+"Slave",
+"Snail",
+"Software",
+"Solid",
+"Space Shuttle",
+"Spectrum",
+"Sphere",
+"Spice",
+"Spiral",
+"Spoon",
+"Sports-car",
+"Spot Light",
+"Square",
+"Staircase",
+"Star",
+"Stomach",
+"Sun",
+"Sunglasses",
+"Surveyor",
+"Swimming Pool",
+"Sword",
+"Table",
+"Tapestry",
+"Teeth",
+"Telescope",
+"Television",
+"Tennis racquet",
+"Thermometer",
+"Tiger",
+"Toilet",
+"Tongue",
+"Torch",
+"Torpedo",
+"Train",
+"Treadmill",
+"Triangle",
+"Tunnel",
+"Typewriter",
+"Umbrella",
+"Vacuum",
+"Vampire",
+"Videotape",
+"Vulture",
+"Water",
+"Weapon",
+"Web",
+"Wheelchair",
+"Window",
+"Woman",
+"Worm",
+"X-ray",
+"unfantastic",
+"odalisk",
+"overexcitement",
+"pryingness",
+"overpollinated",
+"reptiloid",
+"kekkonen",
+"cystitis",
+"porbeagle",
+"cocksure",
+"corvus",
+"aeacus",
+"bumbledom",
+"overdesire",
+"yarest",
+"hippocurius",
+"streetcar",
+"nonmeasurable",
+"centrolinead",
+"woollen",
+"bardily",
+"solidifying",
+"carpet",
+"jugulate",
+"lovelessness",
+"raiment",
+"apprizing",
+"intaglios",
+"fixer",
+"explantation",
+"rhapsodist",
+"reputably",
+"thesaurismosis",
+"premonetary",
+"episcopize",
+"uninstructedly",
+"hypersubtlety",
+"michelozzo",
+"friskily",
+"unencumbering",
+"licensed",
+"vï¿¥ï¾ tter",
+"imparadised",
+"outrant",
+"cyclamycin",
+"frontolysis",
+"interchased",
+"verticity",
+"cerebroid",
+"nonexculpable",
+"toadies",
+"uncapitulating",
+"highflyer",
+"filling",
+"cancerousness",
+"groovy",
+"oft",
+"bunkie",
+"gmc",
+"rifling",
+"carle",
+"anomite",
+"postpaludal",
+"semiretirement",
+"expositorily",
+"overstay",
+"borer",
+"superknowledge",
+"meow",
+"uncaptained",
+"cohort",
+"astrologer",
+"prethyroid",
+"paste",
+"grundyite",
+"exultation",
+"describable",
+"decanically",
+"photolytic",
+"chumminess",
+"inghirami",
+"jackstone",
+"nonstatutable",
+"beardsley",
+"rememorized",
+"zingiberaceous",
+"pilgrimage",
+"galvanically",
+"quippish",
+"tittivation",
+"unspecialising",
+"kooky",
+"taproom",
+"eth",
+"shoptalk",
+"disorderedly",
+"faker",
+"calcinable",
+"divinize",
+"scheel",
+}
+
+type sortExisting []string
+type sortProposed []string
+var wordsExisting sortExisting = words
+var wordsProposed sortProposed = words
+
+
+
+/*
+func BenchmarkStringSortExisting(b *testing.B) {
+
+	compare_Alphabetic_string
+
+	var err error
+	for i := 0; i < b.N; i++ {
+		_, err = NewTableSetFromString(globalTableSetString)
+		if err != nil {
+			b.Error(err)
+		}
+	}
+}
+*/
