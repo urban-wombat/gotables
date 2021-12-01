@@ -2,6 +2,8 @@
 
 // Golang tabular data format for configs and channels, with a rich set of helper functions.
 
+// To import gotables: import "github.com/urban-wombat/gotables"
+
 package gotables
 
 import (
